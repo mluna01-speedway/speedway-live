@@ -1,5 +1,67 @@
 <!DOCTYPE html>
 <html lang="it">
+<!-- ICONA APP SPEEDWAY LIVE (Generazione automatica PNG + SVG) -->
+<script>
+(function() {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+    <defs>
+      <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1e293b"/>
+        <stop offset="100%" stop-color="#090d16"/>
+      </linearGradient>
+    </defs>
+    <!-- Sfondo App -->
+    <rect width="512" height="512" rx="110" fill="url(#bg)"/>
+    
+    <!-- Pista Ovale in Derapata con i 4 Colori Speedway (Rosso, Blu, Bianco, Giallo) -->
+    <g fill="none" stroke-linecap="round">
+      <path d="M 90 330 C 50 180, 190 80, 410 110" stroke="#ef4444" stroke-width="26"/>
+      <path d="M 115 360 C 85 220, 210 125, 420 150" stroke="#3b82f6" stroke-width="26"/>
+      <path d="M 140 390 C 120 260, 230 170, 430 190" stroke="#f8fafc" stroke-width="26"/>
+      <path d="M 165 420 C 155 300, 250 215, 440 230" stroke="#eab308" stroke-width="26"/>
+    </g>
+
+    <!-- Effetto Scintille / Terra alzata -->
+    <circle cx="435" cy="112" r="8" fill="#ef4444"/>
+    <circle cx="450" cy="152" r="7" fill="#3b82f6"/>
+    <circle cx="460" cy="192" r="6" fill="#f8fafc"/>
+    <circle cx="468" cy="232" r="8" fill="#eab308"/>
+
+    <!-- Testo Centrale Racing -->
+    <text x="256" y="345" font-family="Arial, Impact, sans-serif" font-size="115" font-weight="900" font-style="italic" fill="#ffffff" text-anchor="middle" letter-spacing="2">SGP</text>
+    
+    <!-- Badge LIVE -->
+    <rect x="156" y="380" width="200" height="64" rx="32" fill="#ef4444"/>
+    <circle cx="192" cy="412" r="10" fill="#ffffff"/>
+    <text x="272" y="426" font-family="Arial, sans-serif" font-size="38" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="3">LIVE</text>
+  </svg>`;
+
+  const svgUrl = "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+  
+  // Imposta favicon immediata
+  let iconLink = document.createElement("link");
+  iconLink.rel = "icon";
+  iconLink.href = svgUrl;
+  document.head.appendChild(iconLink);
+
+  // Converte in PNG 512x512 per la schermata Home di Android e iPhone
+  const img = new Image();
+  img.onload = function() {
+    const canvas = document.createElement("canvas");
+    canvas.width = 512;
+    canvas.height = 512;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    const pngUrl = canvas.toDataURL("image/png");
+
+    let appleLink = document.createElement("link");
+    appleLink.rel = "apple-touch-icon";
+    appleLink.href = pngUrl;
+    document.head.appendChild(appleLink);
+  };
+  img.src = svgUrl;
+})();
+</script>  
 <head>
   <meta charset="UTF-8">
   <link rel="manifest" href="manifest.json">
