@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1e2229">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Speedway Live">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%231e2229%22/><text y=%22.88em%22 x=%2210%22 font-size=%2275%22>🏁</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%231e2229%22/><text y=%22.88em%22 x=%2210%22 font-size=%2275%22>🏁</text></svg>">
+  <title>Speedway Live</title>
+  <style>
+    :root {
+      --bg: #121418; --card: #1e2229; --border: #2e3440;
+      --text: #eceff4; --muted: #8892b0; --accent: #00e676;
+      --red: #e53935; --blue: #1e88e5; --white: #f5f5f5; --yellow: #fdd835;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 85px; user-select: none; }
+    header { background: var(--card); padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+    header h1 { font-size: 1.05rem; font-weight: 800; letter-spacing: 0.5px; }
+    .event-badge { font-size: 0.75rem; background: #2e3440; padding: 4px 8px; border-radius: 6px; color: var(--accent); font-weight: 700; }
+
+    nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); display: flex; z-index: 100; }
+    nav button { flex: 1; background: none; border: none; color: var(--muted); padding: 12px 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    nav button.active { color: var(--accent); border-top: 2px solid var(--accent); }
+
+    .container { max-width: 600px; margin: 0 auto; padding: 12px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .heat-nav { display: flex; align-items: center; justify-content: space-between; background: var(--card); padding: 10px 12px; border-radius: 10px; margin-bottom: 12px; border: 1px solid var(--border); }
+    .heat-nav button { background: #2e3440; color: var(--text); border: none; padding: 10px 16px; border-radius: 8px; font-weight: 800; font-size: 0.9rem; cursor: pointer; }
+    .heat-nav select { background: #121418; color: var(--text); border: 1px solid var(--border); padding: 6px 10px; border-radius: 6px; font-size: 0.95rem; font-weight: 800; }
+
+    .gate-card { background: var(--card); border-radius: 12px; padding: 12px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden; }
+    .gate-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 10px; }
+    .gate-red::before { background: var(--red); }
+    .gate-blue::before { background: var(--blue); }
+    .gate-white::before { background: var(--white); }
+    .gate-yellow::before { background: var(--yellow); }
+
+    .rider-header { display: flex; justify-content: space-between; align-items: center; padding-left: 8px; }
+    .helmet-badge { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; }
+    .badge-red { background: var(--red); color: #fff; }
+    .badge-blue { background: var(--blue); color: #fff; }
+    .badge-white { background: var(--white); color: #111; }
+    .badge-yellow { background: var(--yellow); color: #111; }
+
+    .rider-name { font-size: 1.1rem; font-weight: 800; padding-left: 8px; }
+    .sub-select { background: #2e3440; color: var(--text); border: 1px solid #3b4252; border-radius: 6px; padding: 4px 6px; font-size: 0.75rem; }
+
+    .score-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding-left: 8px; }
+    .score-btn { background: #2b303c; border: 1px solid #3b4252; color: var(--text); padding: 12px 0; border-radius: 8px; font-weight: 800; font-size: 1rem; cursor: pointer; }
+    .score-btn.selected-3 { background: #00c853; color: #000; border-color: #00e676; }
+    .score-btn.selected-2 { background: #29b6f6; color: #000; border-color: #4fc3f7; }
+    .score-btn.selected-1 { background: #ffa726; color: #000; border-color: #ffb74d; }
+    .score-btn.selected-0 { background: #78909c; color: #000; border-color: #90a4ae; }
+
+    .special-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding-left: 8px; }
+    .spec-btn { background: #181b20; border: 1px solid #2e3440; color: var(--muted); padding: 8px 0; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+    .spec-btn.selected-spec { background: #d32f2f; color: #fff; border-color: #f44336; }
+
+    table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; font-size: 0.85rem; }
+    th, td { padding: 9px 6px; text-align: center; border-bottom: 1px solid var(--border); }
+    th { background: #252a34; color: var(--muted); font-size: 0.72rem; }
+    td.name-col { text-align: left; font-weight: 700; padding-left: 10px; }
+    tr.qual-line td { border-bottom: 2px dashed var(--accent); }
+    .tot-col { font-weight: 900; color: var(--accent); font-size: 1rem; background: rgba(0, 230, 118, 0.08); }
+
+    .rider-input-row { display: flex; align-items: center; gap: 10px; background: var(--card); padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; border: 1px solid var(--border); }
+    .rider-input-row span { width: 28px; font-weight: 800; color: var(--muted); }
+    .rider-input-row input { flex: 1; background: #121418; border: 1px solid var(--border); color: var(--text); padding: 8px 10px; border-radius: 6px; font-size: 0.95rem; }
+    .btn-reset { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 700; background: #c62828; color: #fff; margin-top: 12px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🏁 SPEEDWAY LIVE</h1>
+  <span class="event-badge" id="progress-badge">0 / 20 Batterie</span>
+</header>
+
+<div class="container">
+  <div id="tab-heats" class="tab-content active">
+    <div class="heat-nav">
+      <button type="button" onclick="changeHeat(-1)">◀ Prec</button>
+      <select id="heat-select" onchange="selectHeat(this.value)"></select>
+      <button type="button" onclick="changeHeat(1)">Succ ▶</button>
+    </div>
+    <div id="gates-container"></div>
+  </div>
+
+  <div id="tab-standings" class="tab-content">
+    <div style="overflow-x:auto;">
+      <table id="standings-table">
+        <thead>
+          <tr><th>Pos</th><th style="text-align:left;padding-left:10px;">Pilota</th><th>1°</th><th>2°</th><th>3°</th><th>0</th><th>Serie</th><th>TOT</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tab-card" class="tab-content">
+    <div style="overflow-x:auto;">
+      <table id="scorecard-table">
+        <thead>
+          <tr><th>#</th><th style="text-align:left;padding-left:10px;">Pilota</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>TOT</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tab-riders" class="tab-content">
+    <div id="riders-inputs"></div>
+    <button type="button" class="btn-reset" onclick="resetAllScores()">Azzera Punteggi</button>
+  </div>
+</div>
+
+<nav>
+  <button type="button" class="active" onclick="switchTab('heats', this)">⏱️<span>Batterie</span></button>
+  <button type="button" onclick="switchTab('standings', this)">🏆<span>Classifica</span></button>
+  <button type="button" onclick="switchTab('card', this)">📋<span>Tabellone</span></button>
+  <button type="button" onclick="switchTab('riders', this)">⚙️<span>Piloti</span></button>
+</nav>
+
+<script>
+  const FIM_SCHEDULE = [
+    [1, 2, 3, 4], [5, 7, 6, 8], [10, 11, 9, 12], [15, 14, 16, 13],
+    [13, 1, 5, 9], [14, 10, 2, 6], [11, 15, 7, 3], [4, 8, 12, 16],
+    [6, 16, 1, 11], [12, 5, 15, 2], [8, 9, 3, 14], [7, 4, 13, 10],
+    [7, 12, 14, 1], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 4, 15],
+    [1, 8, 15, 10], [9, 2, 7, 16], [3, 12, 13, 6], [5, 14, 11, 4]
+  ];
+
+  const GATE_INFO = [
+    { name: "Corsia 1 - Rosso", cls: "gate-red", badge: "badge-red" },
+    { name: "Corsia 2 - Blu", cls: "gate-blue", badge: "badge-blue" },
+    { name: "Corsia 3 - Bianco", cls: "gate-white", badge: "badge-white" },
+    { name: "Corsia 4 - Giallo", cls: "gate-yellow", badge: "badge-yellow" }
+  ];
+
+  let state = { currentHeat: 0, riders: {}, heats: [] };
+
+  function safeLoad() {
+    try {
+      const s = localStorage.getItem('speedway_fim_pwa_v1');
+      if (s && s.startsWith('{')) return JSON.parse(s);
+    } catch (e) {}
+    return null;
+  }
+
+  function saveState() {
+    try { localStorage.setItem('speedway_fim_pwa_v1', JSON.stringify(state)); } catch (e) {}
+    updateProgressBadge();
+  }
+
+  function initState() {
+    const saved = safeLoad();
+    if (saved && saved.heats && saved.heats.length > 0) {
+      state = saved;
+    } else {
+      for (let i = 1; i <= 18; i++) {
+        state.riders[i] = i <= 16 ? "Pilota " + i : "Riserva " + i;
+      }
+      state.heats = FIM_SCHEDULE.map((gates, idx) => ({
+        heatNumber: idx + 1,
+        label: "Batteria " + (idx + 1) + " (Serie " + (Math.floor(idx / 4) + 1) + ")",
+        slots: gates.map(rId => ({ riderId: rId, score: null }))
+      }));
+      ["Batteria 21 (Semifinale 1 / Spareggio)", "Batteria 22 (Semifinale 2)", "Batteria 23 (Finale)"].forEach((lbl, i) => {
+        state.heats.push({
+          heatNumber: 21 + i,
+          label: lbl,
+          slots: [1, 2, 3, 4].map(rId => ({ riderId: rId, score: null }))
+        });
+      });
+      saveState();
+    }
+  }
+
+  function updateProgressBadge() {
+    const completed = state.heats.slice(0, 20).filter(h => h.slots.some(s => s.score !== null)).length;
+    document.getElementById('progress-badge').textContent = completed + " / 20 Batterie";
+  }
+
+  function renderHeatSelect() {
+    const sel = document.getElementById('heat-select');
+    sel.innerHTML = state.heats.map((h, i) =>
+      '<option value="' + i + '" ' + (i === state.currentHeat ? 'selected' : '') + '>' + h.label + '</option>'
+    ).join('');
+  }
+
+  function renderCurrentHeat() {
+    renderHeatSelect();
+    const heat = state.heats[state.currentHeat];
+    const container = document.getElementById('gates-container');
+
+    container.innerHTML = heat.slots.map((slot, gIdx) => {
+      const g = GATE_INFO[gIdx];
+      const sc = slot.score;
+      let opts = '';
+      for (let r = 1; r <= 18; r++) {
+        opts += '<option value="' + r + '" ' + (slot.riderId == r ? 'selected' : '') + '>#' + r + ' ' + state.riders[r] + '</option>';
+      }
+      return '<div class="gate-card ' + g.cls + '">' +
+        '<div class="rider-header">' +
+          '<span class="helmet-badge ' + g.badge + '">' + g.name + '</span>' +
+          '<select class="sub-select" onchange="changeSlotRider(' + gIdx + ', this.value)">' + opts + '</select>' +
+        '</div>' +
+        '<div class="rider-name">#' + slot.riderId + ' ' + state.riders[slot.riderId] + '</div>' +
+        '<div class="score-btns">' +
+          [3, 2, 1, 0].map(pt =>
+            '<button type="button" class="score-btn ' + (sc === pt ? 'selected-' + pt : '') + '" onclick="setScore(' + gIdx + ', ' + pt + ')">' + pt + ' pt</button>'
+          ).join('') +
+        '</div>' +
+        '<div class="special-btns">' +
+          ['R', 'F', 'X', 'T'].map(code =>
+            '<button type="button" class="spec-btn ' + (sc === code ? 'selected-spec' : '') + '" onclick="setScore(' + gIdx + ', \'' + code + '\')">' + code + '</button>'
+          ).join('') +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function setScore(gateIdx, val) {
+    const heat = state.heats[state.currentHeat];
+    if (heat.slots[gateIdx].score === val) {
+      heat.slots[gateIdx].score = null;
+    } else {
+      if (typeof val === 'number' && val > 0) {
+        heat.slots.forEach(s => { if (s.score === val) s.score = null; });
+      }
+      heat.slots[gateIdx].score = val;
+    }
+    saveState();
+    renderCurrentHeat();
+  }
+
+  function changeSlotRider(gateIdx, newRiderId) {
+    state.heats[state.currentHeat].slots[gateIdx].riderId = parseInt(newRiderId, 10);
+    saveState();
+    renderCurrentHeat();
+  }
+
+  function changeHeat(delta) {
+    const next = state.currentHeat + delta;
+    if (next >= 0 && next < state.heats.length) {
+      state.currentHeat = next;
+      saveState();
+      renderCurrentHeat();
+    }
+  }
+
+  function selectHeat(idx) {
+    state.currentHeat = parseInt(idx, 10);
+    saveState();
+    renderCurrentHeat();
+  }
+
+  function computeStats() {
+    const stats = [];
+    for (let r = 1; r <= 18; r++) {
+      stats.push({ id: r, name: state.riders[r], runs: [], total: 0, ones: 0, twos: 0, threes: 0, zeros: 0 });
+    }
+    state.heats.slice(0, 20).forEach(h => {
+      h.slots.forEach(s => {
+        const st = stats.find(x => x.id === s.riderId);
+        if (!st) return;
+        if (s.score !== null) {
+          st.runs.push(s.score);
+          if (typeof s.score === 'number') {
+            st.total += s.score;
+            if (s.score === 3) st.ones++;
+            else if (s.score === 2) st.twos++;
+            else if (s.score === 1) st.threes++;
+            else st.zeros++;
+          } else { st.zeros++; }
+        } else { st.runs.push('-'); }
+      });
+    });
+    return stats;
+  }
+
+  function renderStandings() {
+    const stats = computeStats().filter(s => s.id <= 16 || s.runs.some(x => x !== '-'));
+    stats.sort((a, b) => b.total - a.total || b.ones - a.ones || b.twos - a.twos || b.threes - a.threes || a.id - b.id);
+    document.querySelector('#standings-table tbody').innerHTML = stats.map((st, idx) =>
+      '<tr class="' + (idx === 7 ? 'qual-line' : '') + '">' +
+        '<td><strong>' + (idx + 1) + '</strong></td>' +
+        '<td class="name-col">#' + st.id + ' ' + st.name + '</td>' +
+        '<td>' + st.ones + '</td><td>' + st.twos + '</td><td>' + st.threes + '</td><td>' + st.zeros + '</td>' +
+        '<td>(' + (st.runs.filter(r => r !== '-').join(',') || '-') + ')</td>' +
+        '<td class="tot-col">' + st.total + '</td>' +
+      '</tr>'
+    ).join('');
+  }
+
+  function renderScorecard() {
+    document.querySelector('#scorecard-table tbody').innerHTML = computeStats().map(st => {
+      const r = st.runs;
+      return '<tr><td><strong>' + st.id + '</strong></td><td class="name-col">' + st.name + '</td>' +
+        '<td>' + (r[0] ?? '-') + '</td><td>' + (r[1] ?? '-') + '</td><td>' + (r[2] ?? '-') + '</td><td>' + (r[3] ?? '-') + '</td><td>' + (r[4] ?? '-') + '</td>' +
+        '<td class="tot-col">' + st.total + '</td></tr>';
+    }).join('');
+  }
+
+  function renderRidersInputs() {
+    let html = '';
+    for (let r = 1; r <= 18; r++) {
+      html += '<div class="rider-input-row"><span>#' + r + '</span>' +
+        '<input type="text" value="' + state.riders[r] + '" oninput="updateRiderName(' + r + ', this.value)"></div>';
+    }
+    document.getElementById('riders-inputs').innerHTML = html;
+  }
+
+  function updateRiderName(id, val) {
+    state.riders[id] = val || ("Pilota " + id);
+    saveState();
+  }
+
+  function resetAllScores() {
+    if (confirm("Vuoi azzerare tutti i punteggi della gara?")) {
+      state.heats.forEach(h => h.slots.forEach(s => s.score = null));
+      state.currentHeat = 0;
+      saveState();
+      renderCurrentHeat();
+    }
+  }
+
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    btn.classList.add('active');
+    if (tabId === 'heats') renderCurrentHeat();
+    if (tabId === 'standings') renderStandings();
+    if (tabId === 'card') renderScorecard();
+    if (tabId === 'riders') renderRidersInputs();
+  }
+
+  initState();
+  renderCurrentHeat();
+  updateProgressBadge();
+</script>
+</body>
+</html>
