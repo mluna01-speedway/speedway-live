@@ -9,70 +9,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Speedway Live">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
   <title>Speedway SGP Live</title>
 
   <!-- Libreria OCR Tesseract.js per lettura foto elenco piloti -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-
-  <!-- Generatore automatico Icona Speedway (PNG diretto compatibile Android/iOS) -->
-  <script>
-  (function() {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-      <defs>
-        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#1a202c"/>
-          <stop offset="100%" stop-color="#090b10"/>
-        </linearGradient>
-      </defs>
-      <rect width="512" height="512" rx="115" fill="url(#bg)"/>
-      <ellipse cx="256" cy="265" rx="210" ry="135" fill="none" stroke="#e53935" stroke-width="14" transform="rotate(-14 256 265)"/>
-      <ellipse cx="256" cy="265" rx="193" ry="118" fill="none" stroke="#1e88e5" stroke-width="14" transform="rotate(-14 256 265)"/>
-      <ellipse cx="256" cy="265" rx="176" ry="101" fill="none" stroke="#f5f5f5" stroke-width="14" transform="rotate(-14 256 265)"/>
-      <ellipse cx="256" cy="265" rx="159" ry="84" fill="none" stroke="#fdd835" stroke-width="14" transform="rotate(-14 256 265)"/>
-      <path d="M 95 330 Q 150 365 235 340" fill="none" stroke="#ff9800" stroke-width="10" stroke-linecap="round" stroke-dasharray="12 14"/>
-      <circle cx="110" cy="345" r="7" fill="#fdd835"/>
-      <circle cx="140" cy="362" r="5" fill="#e53935"/>
-      <circle cx="85" cy="320" r="6" fill="#ff9800"/>
-      <g transform="translate(135, 135) rotate(-12)">
-        <circle cx="50" cy="165" r="38" fill="#121418" stroke="#eceff4" stroke-width="12"/>
-        <circle cx="50" cy="165" r="14" fill="#e53935"/>
-        <ellipse cx="215" cy="145" rx="36" ry="26" transform="rotate(-28 215 145)" fill="#121418" stroke="#eceff4" stroke-width="11"/>
-        <circle cx="215" cy="145" r="11" fill="#1e88e5"/>
-        <path d="M 50 165 L 125 125 L 195 90 L 215 145" fill="none" stroke="#00e676" stroke-width="12" stroke-linejoin="round" stroke-linecap="round"/>
-        <path d="M 50 165 L 145 160 L 125 125" fill="none" stroke="#b0bec5" stroke-width="9" stroke-linejoin="round"/>
-        <path d="M 110 130 L 85 195 L 65 202" fill="none" stroke="#fdd835" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M 105 130 Q 130 80 175 82" fill="none" stroke="#e53935" stroke-width="24" stroke-linecap="round"/>
-        <path d="M 160 85 L 198 92" fill="none" stroke="#f5f5f5" stroke-width="12" stroke-linecap="round"/>
-        <circle cx="172" cy="56" r="24" fill="#e53935" stroke="#ffffff" stroke-width="5"/>
-        <path d="M 178 48 L 196 58 L 178 64 Z" fill="#121418"/>
-      </g>
-      <text x="256" y="102" font-family="Arial, Impact, sans-serif" font-size="78" font-weight="900" font-style="italic" fill="#ffffff" text-anchor="middle" letter-spacing="3">SGP LIVE</text>
-    </svg>`;
-
-    const svgUrl = "data:image/svg+xml;utf8," + encodeURIComponent(svg);
-    const img = new Image();
-    img.onload = function() {
-      const canvas = document.createElement("canvas");
-      canvas.width = 192;
-      canvas.height = 192;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, 192, 192);
-      const pngUrl = canvas.toDataURL("image/png");
-
-      ["icon", "shortcut icon", "apple-touch-icon"].forEach(rel => {
-        const link = document.createElement("link");
-        link.rel = rel;
-        link.type = "image/png";
-        link.sizes = "192x192";
-        link.href = pngUrl;
-        document.head.appendChild(link);
-      });
-    };
-    img.src = svgUrl;
-  })();
-  </script>
-
-  <style>
+<style>
     :root {
       --bg: #121418; --card: #1e2229; --border: #2e3440;
       --text: #eceff4; --muted: #8892b0; --accent: #00e676;
