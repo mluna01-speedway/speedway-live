@@ -13,7 +13,7 @@
   <!-- Libreria OCR Tesseract.js per lettura foto elenco piloti -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
-  <!-- Generatore automatico Icona Speedway (Ovale 4 colori + Moto di traverso) + Manifest PWA -->
+  <!-- Generatore automatico Icona Speedway (PNG diretto compatibile Android/iOS) -->
   <script>
   (function() {
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
@@ -24,20 +24,14 @@
         </linearGradient>
       </defs>
       <rect width="512" height="512" rx="115" fill="url(#bg)"/>
-      
-      <!-- Ovale Pista 4 Colori Caschi (Rosso, Blu, Bianco, Giallo) -->
       <ellipse cx="256" cy="265" rx="210" ry="135" fill="none" stroke="#e53935" stroke-width="14" transform="rotate(-14 256 265)"/>
       <ellipse cx="256" cy="265" rx="193" ry="118" fill="none" stroke="#1e88e5" stroke-width="14" transform="rotate(-14 256 265)"/>
       <ellipse cx="256" cy="265" rx="176" ry="101" fill="none" stroke="#f5f5f5" stroke-width="14" transform="rotate(-14 256 265)"/>
       <ellipse cx="256" cy="265" rx="159" ry="84" fill="none" stroke="#fdd835" stroke-width="14" transform="rotate(-14 256 265)"/>
-
-      <!-- Scia di terra / Scintille derapata -->
       <path d="M 95 330 Q 150 365 235 340" fill="none" stroke="#ff9800" stroke-width="10" stroke-linecap="round" stroke-dasharray="12 14"/>
       <circle cx="110" cy="345" r="7" fill="#fdd835"/>
       <circle cx="140" cy="362" r="5" fill="#e53935"/>
       <circle cx="85" cy="320" r="6" fill="#ff9800"/>
-
-      <!-- Moto e Pilota in Derapata (Speedway Slide) -->
       <g transform="translate(135, 135) rotate(-12)">
         <circle cx="50" cy="165" r="38" fill="#121418" stroke="#eceff4" stroke-width="12"/>
         <circle cx="50" cy="165" r="14" fill="#e53935"/>
@@ -51,45 +45,27 @@
         <circle cx="172" cy="56" r="24" fill="#e53935" stroke="#ffffff" stroke-width="5"/>
         <path d="M 178 48 L 196 58 L 178 64 Z" fill="#121418"/>
       </g>
-
       <text x="256" y="102" font-family="Arial, Impact, sans-serif" font-size="78" font-weight="900" font-style="italic" fill="#ffffff" text-anchor="middle" letter-spacing="3">SGP LIVE</text>
     </svg>`;
 
     const svgUrl = "data:image/svg+xml;utf8," + encodeURIComponent(svg);
-
-    const iconLink = document.createElement("link");
-    iconLink.rel = "icon";
-    iconLink.href = svgUrl;
-    document.head.appendChild(iconLink);
-
     const img = new Image();
     img.onload = function() {
       const canvas = document.createElement("canvas");
-      canvas.width = 512;
-      canvas.height = 512;
+      canvas.width = 192;
+      canvas.height = 192;
       const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0);
+      ctx.drawImage(img, 0, 0, 192, 192);
       const pngUrl = canvas.toDataURL("image/png");
 
-      const appleLink = document.createElement("link");
-      appleLink.rel = "apple-touch-icon";
-      appleLink.href = pngUrl;
-      document.head.appendChild(appleLink);
-
-      const manifest = {
-        name: "Speedway SGP Live",
-        short_name: "Speedway",
-        start_url: ".",
-        display: "standalone",
-        background_color: "#121418",
-        theme_color: "#121418",
-        icons: [{ src: pngUrl, sizes: "512x512", type: "image/png", purpose: "any maskable" }]
-      };
-      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: "application/json" });
-      const manifestLink = document.createElement("link");
-      manifestLink.rel = "manifest";
-      manifestLink.href = URL.createObjectURL(manifestBlob);
-      document.head.appendChild(manifestLink);
+      ["icon", "shortcut icon", "apple-touch-icon"].forEach(rel => {
+        const link = document.createElement("link");
+        link.rel = rel;
+        link.type = "image/png";
+        link.sizes = "192x192";
+        link.href = pngUrl;
+        document.head.appendChild(link);
+      });
     };
     img.src = svgUrl;
   })();
