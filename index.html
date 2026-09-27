@@ -1,79 +1,100 @@
 <!DOCTYPE html>
 <html lang="it">
-<!-- ICONA APP SPEEDWAY LIVE (Generazione automatica PNG + SVG) -->
-<script>
-(function() {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-    <defs>
-      <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#1e293b"/>
-        <stop offset="100%" stop-color="#090d16"/>
-      </linearGradient>
-    </defs>
-    <!-- Sfondo App -->
-    <rect width="512" height="512" rx="110" fill="url(#bg)"/>
-    
-    <!-- Pista Ovale in Derapata con i 4 Colori Speedway (Rosso, Blu, Bianco, Giallo) -->
-    <g fill="none" stroke-linecap="round">
-      <path d="M 90 330 C 50 180, 190 80, 410 110" stroke="#ef4444" stroke-width="26"/>
-      <path d="M 115 360 C 85 220, 210 125, 420 150" stroke="#3b82f6" stroke-width="26"/>
-      <path d="M 140 390 C 120 260, 230 170, 430 190" stroke="#f8fafc" stroke-width="26"/>
-      <path d="M 165 420 C 155 300, 250 215, 440 230" stroke="#eab308" stroke-width="26"/>
-    </g>
-
-    <!-- Effetto Scintille / Terra alzata -->
-    <circle cx="435" cy="112" r="8" fill="#ef4444"/>
-    <circle cx="450" cy="152" r="7" fill="#3b82f6"/>
-    <circle cx="460" cy="192" r="6" fill="#f8fafc"/>
-    <circle cx="468" cy="232" r="8" fill="#eab308"/>
-
-    <!-- Testo Centrale Racing -->
-    <text x="256" y="345" font-family="Arial, Impact, sans-serif" font-size="115" font-weight="900" font-style="italic" fill="#ffffff" text-anchor="middle" letter-spacing="2">SGP</text>
-    
-    <!-- Badge LIVE -->
-    <rect x="156" y="380" width="200" height="64" rx="32" fill="#ef4444"/>
-    <circle cx="192" cy="412" r="10" fill="#ffffff"/>
-    <text x="272" y="426" font-family="Arial, sans-serif" font-size="38" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="3">LIVE</text>
-  </svg>`;
-
-  const svgUrl = "data:image/svg+xml;utf8," + encodeURIComponent(svg);
-  
-  // Imposta favicon immediata
-  let iconLink = document.createElement("link");
-  iconLink.rel = "icon";
-  iconLink.href = svgUrl;
-  document.head.appendChild(iconLink);
-
-  // Converte in PNG 512x512 per la schermata Home di Android e iPhone
-  const img = new Image();
-  img.onload = function() {
-    const canvas = document.createElement("canvas");
-    canvas.width = 512;
-    canvas.height = 512;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0);
-    const pngUrl = canvas.toDataURL("image/png");
-
-    let appleLink = document.createElement("link");
-    appleLink.rel = "apple-touch-icon";
-    appleLink.href = pngUrl;
-    document.head.appendChild(appleLink);
-  };
-  img.src = svgUrl;
-})();
-</script>  
 <head>
   <meta charset="UTF-8">
-  <link rel="manifest" href="manifest.json">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#1e2229">
+  <meta name="theme-color" content="#121418">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Speedway Live">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%231e2229%22/><text y=%22.88em%22 x=%2210%22 font-size=%2275%22>🏁</text></svg>">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%231e2229%22/><text y=%22.88em%22 x=%2210%22 font-size=%2275%22>🏁</text></svg>">
-  <title>Speedway Live</title>
+  <title>Speedway SGP Live</title>
+
+  <!-- Libreria OCR Tesseract.js per lettura foto elenco piloti -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+  <!-- Generatore automatico Icona Speedway (Ovale 4 colori + Moto di traverso) + Manifest PWA -->
+  <script>
+  (function() {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+      <defs>
+        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#1a202c"/>
+          <stop offset="100%" stop-color="#090b10"/>
+        </linearGradient>
+      </defs>
+      <rect width="512" height="512" rx="115" fill="url(#bg)"/>
+      
+      <!-- Ovale Pista 4 Colori Caschi (Rosso, Blu, Bianco, Giallo) -->
+      <ellipse cx="256" cy="265" rx="210" ry="135" fill="none" stroke="#e53935" stroke-width="14" transform="rotate(-14 256 265)"/>
+      <ellipse cx="256" cy="265" rx="193" ry="118" fill="none" stroke="#1e88e5" stroke-width="14" transform="rotate(-14 256 265)"/>
+      <ellipse cx="256" cy="265" rx="176" ry="101" fill="none" stroke="#f5f5f5" stroke-width="14" transform="rotate(-14 256 265)"/>
+      <ellipse cx="256" cy="265" rx="159" ry="84" fill="none" stroke="#fdd835" stroke-width="14" transform="rotate(-14 256 265)"/>
+
+      <!-- Scia di terra / Scintille derapata -->
+      <path d="M 95 330 Q 150 365 235 340" fill="none" stroke="#ff9800" stroke-width="10" stroke-linecap="round" stroke-dasharray="12 14"/>
+      <circle cx="110" cy="345" r="7" fill="#fdd835"/>
+      <circle cx="140" cy="362" r="5" fill="#e53935"/>
+      <circle cx="85" cy="320" r="6" fill="#ff9800"/>
+
+      <!-- Moto e Pilota in Derapata (Speedway Slide) -->
+      <g transform="translate(135, 135) rotate(-12)">
+        <circle cx="50" cy="165" r="38" fill="#121418" stroke="#eceff4" stroke-width="12"/>
+        <circle cx="50" cy="165" r="14" fill="#e53935"/>
+        <ellipse cx="215" cy="145" rx="36" ry="26" transform="rotate(-28 215 145)" fill="#121418" stroke="#eceff4" stroke-width="11"/>
+        <circle cx="215" cy="145" r="11" fill="#1e88e5"/>
+        <path d="M 50 165 L 125 125 L 195 90 L 215 145" fill="none" stroke="#00e676" stroke-width="12" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M 50 165 L 145 160 L 125 125" fill="none" stroke="#b0bec5" stroke-width="9" stroke-linejoin="round"/>
+        <path d="M 110 130 L 85 195 L 65 202" fill="none" stroke="#fdd835" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 105 130 Q 130 80 175 82" fill="none" stroke="#e53935" stroke-width="24" stroke-linecap="round"/>
+        <path d="M 160 85 L 198 92" fill="none" stroke="#f5f5f5" stroke-width="12" stroke-linecap="round"/>
+        <circle cx="172" cy="56" r="24" fill="#e53935" stroke="#ffffff" stroke-width="5"/>
+        <path d="M 178 48 L 196 58 L 178 64 Z" fill="#121418"/>
+      </g>
+
+      <text x="256" y="102" font-family="Arial, Impact, sans-serif" font-size="78" font-weight="900" font-style="italic" fill="#ffffff" text-anchor="middle" letter-spacing="3">SGP LIVE</text>
+    </svg>`;
+
+    const svgUrl = "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+
+    const iconLink = document.createElement("link");
+    iconLink.rel = "icon";
+    iconLink.href = svgUrl;
+    document.head.appendChild(iconLink);
+
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement("canvas");
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      const pngUrl = canvas.toDataURL("image/png");
+
+      const appleLink = document.createElement("link");
+      appleLink.rel = "apple-touch-icon";
+      appleLink.href = pngUrl;
+      document.head.appendChild(appleLink);
+
+      const manifest = {
+        name: "Speedway SGP Live",
+        short_name: "Speedway",
+        start_url: ".",
+        display: "standalone",
+        background_color: "#121418",
+        theme_color: "#121418",
+        icons: [{ src: pngUrl, sizes: "512x512", type: "image/png", purpose: "any maskable" }]
+      };
+      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: "application/json" });
+      const manifestLink = document.createElement("link");
+      manifestLink.rel = "manifest";
+      manifestLink.href = URL.createObjectURL(manifestBlob);
+      document.head.appendChild(manifestLink);
+    };
+    img.src = svgUrl;
+  })();
+  </script>
+
   <style>
     :root {
       --bg: #121418; --card: #1e2229; --border: #2e3440;
@@ -81,114 +102,299 @@
       --red: #e53935; --blue: #1e88e5; --white: #f5f5f5; --yellow: #fdd835;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--text); padding-bottom: 85px; user-select: none; }
-    header { background: var(--card); padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-    header h1 { font-size: 1.05rem; font-weight: 800; letter-spacing: 0.5px; }
-    .event-badge { font-size: 0.75rem; background: #2e3440; padding: 4px 8px; border-radius: 6px; color: var(--accent); font-weight: 700; }
+    html, body { width: 100%; max-width: 100vw; overflow-x: hidden; background: var(--bg); color: var(--text); user-select: none; }
+    body { padding-bottom: 85px; }
 
-    nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); display: flex; z-index: 100; }
-    nav button { flex: 1; background: none; border: none; color: var(--muted); padding: 12px 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    header { background: var(--card); padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; gap: 8px; width: 100%; }
+    .header-title-box { min-width: 0; flex: 1; }
+    header h1 { font-size: 1rem; font-weight: 800; letter-spacing: 0.4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .header-sub { font-size: 0.72rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .event-badge { font-size: 0.72rem; background: #2e3440; padding: 5px 8px; border-radius: 6px; color: var(--accent); font-weight: 800; white-space: nowrap; flex-shrink: 0; }
+
+    /* Banner Orizzontale Pista */
+    .track-hero { width: 100%; height: 115px; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); display: none; background: #090b10; }
+    .track-hero.visible { display: block; }
+    .track-hero img { width: 100%; height: 100%; object-fit: cover; opacity: 0.75; }
+    .track-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(18,20,24,0.95), rgba(18,20,24,0.15)); display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 14px; }
+    .track-hero-title { font-size: 1.05rem; font-weight: 900; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+    .track-hero-meta { font-size: 0.75rem; color: var(--accent); font-weight: 700; }
+
+    nav { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; background: var(--card); border-top: 1px solid var(--border); display: flex; z-index: 100; }
+    nav button { flex: 1; min-width: 0; background: none; border: none; color: var(--muted); padding: 9px 2px; font-size: 0.65rem; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
     nav button.active { color: var(--accent); border-top: 2px solid var(--accent); }
 
-    .container { max-width: 600px; margin: 0 auto; padding: 12px; }
-    .tab-content { display: none; }
+    .container { width: 100%; max-width: 600px; margin: 0 auto; padding: 10px; overflow-x: hidden; }
+    .tab-content { display: none; width: 100%; }
     .tab-content.active { display: block; }
 
-    .heat-nav { display: flex; align-items: center; justify-content: space-between; background: var(--card); padding: 10px 12px; border-radius: 10px; margin-bottom: 12px; border: 1px solid var(--border); }
-    .heat-nav button { background: #2e3440; color: var(--text); border: none; padding: 10px 16px; border-radius: 8px; font-weight: 800; font-size: 0.9rem; cursor: pointer; }
-    .heat-nav select { background: #121418; color: var(--text); border: 1px solid var(--border); padding: 6px 10px; border-radius: 6px; font-size: 0.95rem; font-weight: 800; }
+    /* Navigazione Batterie */
+    .heat-nav { display: flex; align-items: center; justify-content: space-between; gap: 6px; background: var(--card); padding: 8px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); width: 100%; }
+    .heat-nav button { background: #2e3440; color: var(--text); border: none; padding: 9px 11px; border-radius: 8px; font-weight: 800; font-size: 0.82rem; cursor: pointer; flex-shrink: 0; }
+    .heat-nav select { flex: 1; min-width: 0; background: #121418; color: var(--text); border: 1px solid var(--border); padding: 7px 6px; border-radius: 6px; font-size: 0.85rem; font-weight: 800; text-overflow: ellipsis; }
 
-    .gate-card { background: var(--card); border-radius: 12px; padding: 12px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden; }
-    .gate-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 10px; }
+    /* PANNELLO SCELTA CORSIE (GATE PICK) */
+    .gate-pick-card { background: #181c24; border: 1px solid var(--accent); border-radius: 12px; padding: 10px; margin-bottom: 12px; width: 100%; }
+    .gate-pick-header { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 8px; }
+    .gate-pick-title { font-size: 0.8rem; font-weight: 900; color: var(--accent); text-transform: uppercase; letter-spacing: 0.4px; }
+    .gate-pick-actions { display: flex; gap: 6px; }
+    .btn-mini { background: var(--accent); color: #000; border: none; padding: 5px 8px; border-radius: 6px; font-weight: 800; font-size: 0.7rem; cursor: pointer; }
+    .btn-mini.secondary { background: #2e3440; color: var(--text); }
+    .gate-pick-sub { font-size: 0.72rem; color: var(--muted); margin-bottom: 8px; }
+
+    .pick-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; background: var(--card); padding: 7px 8px; border-radius: 8px; margin-bottom: 6px; border: 1px solid var(--border); }
+    .pick-rider-info { display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1; }
+    .pick-order-badge { background: #2e3440; color: var(--accent); font-size: 0.68rem; font-weight: 900; padding: 3px 6px; border-radius: 5px; flex-shrink: 0; }
+    .pick-rider-name { font-size: 0.84rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pick-rider-pts { font-size: 0.7rem; color: var(--muted); flex-shrink: 0; }
+
+    .pick-gate-btns { display: flex; gap: 4px; flex-shrink: 0; }
+    .pick-gate-btn { width: 32px; height: 30px; border-radius: 6px; border: 2px solid transparent; font-weight: 900; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0.38; transition: transform 0.1s, opacity 0.1s; }
+    .pick-gate-btn.active-gate { opacity: 1; border-color: #ffffff; transform: scale(1.06); box-shadow: 0 0 8px rgba(255,255,255,0.35); }
+    .pg-red { background: var(--red); color: #fff; }
+    .pg-blue { background: var(--blue); color: #fff; }
+    .pg-white { background: var(--white); color: #111; }
+    .pg-yellow { background: var(--yellow); color: #111; }
+
+    /* Gate Card */
+    .gate-card { background: var(--card); border-radius: 12px; padding: 10px 10px 10px 16px; margin-bottom: 9px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden; width: 100%; }
+    .gate-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 8px; }
     .gate-red::before { background: var(--red); }
     .gate-blue::before { background: var(--blue); }
     .gate-white::before { background: var(--white); }
     .gate-yellow::before { background: var(--yellow); }
 
-    .rider-header { display: flex; justify-content: space-between; align-items: center; padding-left: 8px; }
-    .helmet-badge { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; }
+    .rider-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; }
+    .helmet-badge { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; padding: 3px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
     .badge-red { background: var(--red); color: #fff; }
     .badge-blue { background: var(--blue); color: #fff; }
     .badge-white { background: var(--white); color: #111; }
     .badge-yellow { background: var(--yellow); color: #111; }
 
-    .rider-name { font-size: 1.1rem; font-weight: 800; padding-left: 8px; }
-    .sub-select { background: #2e3440; color: var(--text); border: 1px solid #3b4252; border-radius: 6px; padding: 4px 6px; font-size: 0.75rem; }
+    .sub-select { flex: 1; max-width: 58%; min-width: 0; background: #2e3440; color: var(--text); border: 1px solid #3b4252; border-radius: 6px; padding: 4px 6px; font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .rider-name { font-size: 1.02rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    .score-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding-left: 8px; }
-    .score-btn { background: #2b303c; border: 1px solid #3b4252; color: var(--text); padding: 12px 0; border-radius: 8px; font-weight: 800; font-size: 1rem; cursor: pointer; }
+    .score-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; }
+    .score-btn { background: #2b303c; border: 1px solid #3b4252; color: var(--text); padding: 10px 0; border-radius: 8px; font-weight: 800; font-size: 0.95rem; cursor: pointer; min-width: 0; }
     .score-btn.selected-3 { background: #00c853; color: #000; border-color: #00e676; }
     .score-btn.selected-2 { background: #29b6f6; color: #000; border-color: #4fc3f7; }
     .score-btn.selected-1 { background: #ffa726; color: #000; border-color: #ffb74d; }
     .score-btn.selected-0 { background: #78909c; color: #000; border-color: #90a4ae; }
 
-    .special-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding-left: 8px; }
-    .spec-btn { background: #181b20; border: 1px solid #2e3440; color: var(--muted); padding: 8px 0; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+    .special-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; }
+    .spec-btn { background: #181b20; border: 1px solid #2e3440; color: var(--muted); padding: 6px 0; border-radius: 6px; font-size: 0.72rem; font-weight: 700; cursor: pointer; min-width: 0; }
     .spec-btn.selected-spec { background: #d32f2f; color: #fff; border-color: #f44336; }
 
-    table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; font-size: 0.85rem; }
-    th, td { padding: 9px 6px; text-align: center; border-bottom: 1px solid var(--border); }
-    th { background: #252a34; color: var(--muted); font-size: 0.72rem; }
-    td.name-col { text-align: left; font-weight: 700; padding-left: 10px; }
-    tr.qual-line td { border-bottom: 2px dashed var(--accent); }
-    .tot-col { font-weight: 900; color: var(--accent); font-size: 1rem; background: rgba(0, 230, 118, 0.08); }
+    /* Barra Esportazione Social / WhatsApp */
+    .share-bar { display: flex; gap: 8px; margin-bottom: 10px; }
+    .btn-share { flex: 1; background: linear-gradient(135deg, #00e676, #00b0ff); color: #000; border: none; padding: 11px 12px; border-radius: 10px; font-weight: 900; font-size: 0.84rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 3px 12px rgba(0, 230, 118, 0.2); }
+    .btn-share:active { transform: scale(0.98); }
 
-    .rider-input-row { display: flex; align-items: center; gap: 10px; background: var(--card); padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; border: 1px solid var(--border); }
-    .rider-input-row span { width: 28px; font-weight: 800; color: var(--muted); }
-    .rider-input-row input { flex: 1; background: #121418; border: 1px solid var(--border); color: var(--text); padding: 8px 10px; border-radius: 6px; font-size: 0.95rem; }
-    .btn-reset { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 700; background: #c62828; color: #fff; margin-top: 12px; cursor: pointer; }
+    /* Tabelle */
+    .table-wrap { width: 100%; overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 0.8rem; }
+    th, td { padding: 8px 4px; text-align: center; border-bottom: 1px solid var(--border); }
+    th { background: #252a34; color: var(--muted); font-size: 0.68rem; }
+    td.name-col { text-align: left; font-weight: 700; padding-left: 8px; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    tr.qual-line td { border-bottom: 2px dashed var(--accent); }
+    .tot-col { font-weight: 900; color: var(--accent); font-size: 0.92rem; background: rgba(0, 230, 118, 0.08); }
+    .sf-col { background: rgba(41, 182, 246, 0.08); font-weight: 700; }
+    .fin-col { background: rgba(253, 216, 53, 0.12); font-weight: 800; color: var(--yellow); }
+
+    /* Form Scheda Evento & Pista */
+    .card-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+    .card-box h2 { font-size: 0.95rem; margin-bottom: 10px; color: var(--accent); display: flex; align-items: center; gap: 6px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; }
+    .form-group input { background: #121418; border: 1px solid var(--border); color: var(--text); padding: 9px 10px; border-radius: 8px; font-size: 0.9rem; width: 100%; }
+
+    .photo-upload-zone { border: 2px dashed #3b4252; border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; background: #161920; position: relative; overflow: hidden; }
+    .photo-upload-zone img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-top: 8px; display: none; }
+    .photo-upload-zone img.show { display: block; }
+
+    .btn-primary { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 800; background: var(--accent); color: #000; font-size: 0.9rem; cursor: pointer; margin-top: 6px; }
+    .btn-secondary { width: 100%; padding: 11px; border-radius: 8px; border: 1px solid var(--accent); font-weight: 800; background: rgba(0,230,118,0.1); color: var(--accent); font-size: 0.85rem; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-reset { width: 100%; padding: 11px; border-radius: 8px; border: none; font-weight: 700; background: #c62828; color: #fff; margin-top: 10px; cursor: pointer; }
+
+    /* Backup JSON Grid */
+    .backup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+    .btn-backup { background: #252a34; border: 1px solid #3b4252; color: var(--text); padding: 10px 8px; border-radius: 8px; font-weight: 800; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; }
+    .btn-backup:active { background: #2e3440; }
+
+    .rider-input-row { display: flex; align-items: center; gap: 8px; background: var(--card); padding: 7px 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid var(--border); }
+    .rider-input-row span { width: 28px; font-weight: 800; color: var(--muted); font-size: 0.85rem; flex-shrink: 0; }
+    .rider-input-row input { flex: 1; min-width: 0; background: #121418; border: 1px solid var(--border); color: var(--text); padding: 7px 9px; border-radius: 6px; font-size: 0.9rem; }
+
+    /* Storico Gare */
+    .history-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .history-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .history-title { font-weight: 800; font-size: 0.95rem; color: var(--text); }
+    .history-meta { font-size: 0.75rem; color: var(--muted); }
+    .history-podium { font-size: 0.78rem; color: var(--accent); font-weight: 700; background: #15181e; padding: 6px 8px; border-radius: 6px; }
+    .history-actions { display: flex; gap: 6px; }
+    .history-actions button { flex: 1; padding: 7px; border-radius: 6px; border: 1px solid var(--border); background: #2e3440; color: var(--text); font-weight: 700; font-size: 0.75rem; cursor: pointer; }
+    .history-actions button.del { background: rgba(198,40,40,0.2); border-color: #c62828; color: #ff8a80; }
+
+    #ocr-status { font-size: 0.8rem; color: var(--yellow); margin-bottom: 10px; text-align: center; font-weight: 700; display: none; }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>🏁 SPEEDWAY LIVE</h1>
-  <span class="event-badge" id="progress-badge">0 / 20 Batterie</span>
+  <div class="header-title-box">
+    <h1 id="header-event-title">🏁 SPEEDWAY LIVE</h1>
+    <div class="header-sub" id="header-event-sub">Imposta i dati evento</div>
+  </div>
+  <span class="event-badge" id="progress-badge">0 / 23 Batterie</span>
 </header>
 
+<!-- Foto Orizzontale della Pista -->
+<div class="track-hero" id="track-hero">
+  <img id="track-hero-img" src="" alt="Foto Pista">
+  <div class="track-hero-overlay">
+    <div class="track-hero-title" id="hero-track-name"></div>
+    <div class="track-hero-meta" id="hero-track-meta"></div>
+  </div>
+</div>
+
 <div class="container">
+
+  <!-- TAB 1: DATI EVENTO & FOTO PISTA -->
+  <div id="tab-event" class="tab-content">
+    <div class="card-box">
+      <h2>🏟️ Dati Evento & Pista</h2>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Nome della Gara / Evento</label>
+          <input type="text" id="ev-name" placeholder="Es. FIM Speedway GP of Italy" oninput="updateEventMeta()">
+        </div>
+        <div class="form-group">
+          <label>Data</label>
+          <input type="date" id="ev-date" oninput="updateEventMeta()">
+        </div>
+        <div class="form-group">
+          <label>Nome Pista / Stadio</label>
+          <input type="text" id="ev-track" placeholder="Es. Olimpia Stadium" oninput="updateEventMeta()">
+        </div>
+        <div class="form-group">
+          <label>Luogo / Città</label>
+          <input type="text" id="ev-city" placeholder="Es. Terenzano" oninput="updateEventMeta()">
+        </div>
+        <div class="form-group">
+          <label>Stato / Nazione</label>
+          <input type="text" id="ev-country" placeholder="Es. Italia 🇮🇹" oninput="updateEventMeta()">
+        </div>
+        <div class="form-group">
+          <label>Lunghezza Pista (m)</label>
+          <input type="text" id="ev-length" placeholder="Es. 400m" oninput="updateEventMeta()">
+        </div>
+        <div class="form-group">
+          <label>Record / Note</label>
+          <input type="text" id="ev-notes" placeholder="Es. Fondo compatto" oninput="updateEventMeta()">
+        </div>
+        <div class="form-group full">
+          <label>Foto Orizzontale della Pista</label>
+          <label class="photo-upload-zone" for="track-photo-input">
+            <span>📷 Tocca per scattare o caricare la foto orizzontale della pista</span>
+            <input type="file" id="track-photo-input" accept="image/*" style="display:none" onchange="handleTrackPhoto(this)">
+            <img id="track-preview-img" alt="Anteprima Pista">
+          </label>
+        </div>
+      </div>
+      <button type="button" class="btn-primary" onclick="goToHeats()">Vai alle Batterie ▶</button>
+    </div>
+  </div>
+
+  <!-- TAB 2: BATTERIE -->
   <div id="tab-heats" class="tab-content active">
     <div class="heat-nav">
       <button type="button" onclick="changeHeat(-1)">◀ Prec</button>
       <select id="heat-select" onchange="selectHeat(this.value)"></select>
       <button type="button" onclick="changeHeat(1)">Succ ▶</button>
     </div>
+    <div id="auto-finals-box"></div>
     <div id="gates-container"></div>
   </div>
 
+  <!-- TAB 3: CLASSIFICA -->
   <div id="tab-standings" class="tab-content">
-    <div style="overflow-x:auto;">
+    <div class="share-bar">
+      <button type="button" class="btn-share" onclick="exportRacePoster('standings')">
+        📲 Condividi / Scarica Classifica (PNG)
+      </button>
+    </div>
+    <div class="table-wrap">
       <table id="standings-table">
         <thead>
-          <tr><th>Pos</th><th style="text-align:left;padding-left:10px;">Pilota</th><th>1°</th><th>2°</th><th>3°</th><th>0</th><th>Serie</th><th>TOT</th></tr>
+          <tr><th>Pos</th><th style="text-align:left;padding-left:8px;">Pilota</th><th>1°</th><th>2°</th><th>3°</th><th>0</th><th>Serie</th><th>TOT</th></tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
   </div>
 
+  <!-- TAB 4: TABELLONE COMPLETO (S1-S5 + SF + FIN) -->
   <div id="tab-card" class="tab-content">
-    <div style="overflow-x:auto;">
+    <div class="share-bar">
+      <button type="button" class="btn-share" onclick="exportRacePoster('card')">
+        📲 Condividi / Scarica Tabellone Gara (PNG)
+      </button>
+    </div>
+    <div class="table-wrap">
       <table id="scorecard-table">
         <thead>
-          <tr><th>#</th><th style="text-align:left;padding-left:10px;">Pilota</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>TOT</th></tr>
+          <tr><th>#</th><th style="text-align:left;padding-left:8px;">Pilota</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>TOT</th><th>SF</th><th>FIN</th></tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
   </div>
 
+  <!-- TAB 5: PILOTI + OCR FOTO -->
   <div id="tab-riders" class="tab-content">
+    <div class="card-box">
+      <h2>📷 Lettura Automatica Piloti (OCR)</h2>
+      <p style="font-size:0.76rem; color:var(--muted); margin-bottom:10px;">
+        Scatta o carica una foto dell'elenco iscritti (da 1 a 16 + riserve 17-18). L'app estrarrà i nomi in automatico.
+      </p>
+      <label class="btn-secondary" for="ocr-photo-input">
+        📸 Scatta / Carica Foto Elenco Piloti
+      </label>
+      <input type="file" id="ocr-photo-input" accept="image/*" style="display:none" onchange="processRiderListPhoto(this)">
+      <div id="ocr-status">⏳ Analisi immagine in corso...</div>
+    </div>
+
     <div id="riders-inputs"></div>
-    <button type="button" class="btn-reset" onclick="resetAllScores()">Azzera Punteggi</button>
+    <button type="button" class="btn-reset" onclick="resetAllScores()">Azzera Punteggi Batteria</button>
   </div>
+
+  <!-- TAB 6: STORICO GARE & BACKUP JSON -->
+  <div id="tab-history" class="tab-content">
+    <div class="card-box">
+      <h2>💾 Gestione & Archivio Gare</h2>
+      <button type="button" class="btn-primary" style="margin-bottom:8px;" onclick="saveCurrentToArchive()">📥 Salva Gara Corrente nello Storico</button>
+      <button type="button" class="btn-secondary" onclick="startNewRace()">➕ Inizia Nuova Gara Pulita</button>
+      <div class="backup-grid">
+        <button type="button" class="btn-backup" onclick="exportBackupJson()">⬇️ Esporta Backup (.json)</button>
+        <label class="btn-backup" for="import-json-input">
+          ⬆️ Importa Backup (.json)
+          <input type="file" id="import-json-input" accept=".json,application/json" style="display:none" onchange="importBackupJson(this)">
+        </label>
+      </div>
+    </div>
+    <div id="history-list"></div>
+  </div>
+
 </div>
 
 <nav>
-  <button type="button" class="active" onclick="switchTab('heats', this)">⏱️<span>Batterie</span></button>
-  <button type="button" onclick="switchTab('standings', this)">🏆<span>Classifica</span></button>
-  <button type="button" onclick="switchTab('card', this)">📋<span>Tabellone</span></button>
-  <button type="button" onclick="switchTab('riders', this)">⚙️<span>Piloti</span></button>
+  <button type="button" id="nav-event" onclick="switchTab('event', this)">🏟️<span>Evento</span></button>
+  <button type="button" id="nav-heats" class="active" onclick="switchTab('heats', this)">⏱️<span>Batterie</span></button>
+  <button type="button" id="nav-standings" onclick="switchTab('standings', this)">🏆<span>Classifica</span></button>
+  <button type="button" id="nav-card" onclick="switchTab('card', this)">📋<span>Tabellone</span></button>
+  <button type="button" id="nav-riders" onclick="switchTab('riders', this)">⚙️<span>Piloti</span></button>
+  <button type="button" id="nav-history" onclick="switchTab('history', this)">📚<span>Storico</span></button>
 </nav>
 
 <script>
@@ -201,54 +407,329 @@
   ];
 
   const GATE_INFO = [
-    { name: "Corsia 1 - Rosso", cls: "gate-red", badge: "badge-red" },
-    { name: "Corsia 2 - Blu", cls: "gate-blue", badge: "badge-blue" },
-    { name: "Corsia 3 - Bianco", cls: "gate-white", badge: "badge-white" },
-    { name: "Corsia 4 - Giallo", cls: "gate-yellow", badge: "badge-yellow" }
+    { name: "Corsia 1 - Rosso", short: "1", cls: "gate-red", badge: "badge-red", btnCls: "pg-red" },
+    { name: "Corsia 2 - Blu", short: "2", cls: "gate-blue", badge: "badge-blue", btnCls: "pg-blue" },
+    { name: "Corsia 3 - Bianco", short: "3", cls: "gate-white", badge: "badge-white", btnCls: "pg-white" },
+    { name: "Corsia 4 - Giallo", short: "4", cls: "gate-yellow", badge: "badge-yellow", btnCls: "pg-yellow" }
   ];
 
-  let state = { currentHeat: 0, riders: {}, heats: [] };
+  const STORAGE_KEY = 'speedway_fim_pwa_v2';
+  const ARCHIVE_KEY = 'speedway_fim_archive_v2';
+
+  let state = createDefaultState();
+  let showGatePickPanel = true;
+
+  function createDefaultState() {
+    const today = new Date().toISOString().split('T')[0];
+    const riders = {};
+    for (let i = 1; i <= 18; i++) {
+      riders[i] = i <= 16 ? "Pilota " + i : "Riserva " + i;
+    }
+    const heats = FIM_SCHEDULE.map((gates, idx) => ({
+      heatNumber: idx + 1,
+      label: "Batteria " + (idx + 1) + " (Serie " + (Math.floor(idx / 4) + 1) + ")",
+      slots: gates.map(rId => ({ riderId: rId, score: null }))
+    }));
+    [
+      "Batteria 21 (Semifinale 1)",
+      "Batteria 22 (Semifinale 2)",
+      "Batteria 23 (FINALE)"
+    ].forEach((lbl, i) => {
+      heats.push({
+        heatNumber: 21 + i,
+        label: lbl,
+        slots: [1, 2, 3, 4].map(rId => ({ riderId: rId, score: null }))
+      });
+    });
+
+    return {
+      id: Date.now(),
+      eventMeta: {
+        name: "",
+        date: today,
+        track: "",
+        city: "",
+        country: "",
+        length: "",
+        notes: "",
+        photoDataUrl: ""
+      },
+      currentHeat: 0,
+      riders: riders,
+      heats: heats
+    };
+  }
 
   function safeLoad() {
     try {
-      const s = localStorage.getItem('speedway_fim_pwa_v1');
+      const s = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('speedway_fim_pwa_v1');
       if (s && s.startsWith('{')) return JSON.parse(s);
     } catch (e) {}
     return null;
   }
 
   function saveState() {
-    try { localStorage.setItem('speedway_fim_pwa_v1', JSON.stringify(state)); } catch (e) {}
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+    updateHeaderAndHero();
     updateProgressBadge();
   }
 
   function initState() {
     const saved = safeLoad();
-    if (saved && saved.heats && saved.heats.length > 0) {
-      state = saved;
+    if (saved && saved.heats && saved.heats.length >= 23) {
+      state = Object.assign(createDefaultState(), saved);
+      state.eventMeta = Object.assign(createDefaultState().eventMeta, saved.eventMeta || {});
     } else {
-      for (let i = 1; i <= 18; i++) {
-        state.riders[i] = i <= 16 ? "Pilota " + i : "Riserva " + i;
-      }
-      state.heats = FIM_SCHEDULE.map((gates, idx) => ({
-        heatNumber: idx + 1,
-        label: "Batteria " + (idx + 1) + " (Serie " + (Math.floor(idx / 4) + 1) + ")",
-        slots: gates.map(rId => ({ riderId: rId, score: null }))
-      }));
-      ["Batteria 21 (Semifinale 1 / Spareggio)", "Batteria 22 (Semifinale 2)", "Batteria 23 (Finale)"].forEach((lbl, i) => {
-        state.heats.push({
-          heatNumber: 21 + i,
-          label: lbl,
-          slots: [1, 2, 3, 4].map(rId => ({ riderId: rId, score: null }))
-        });
-      });
+      state = createDefaultState();
       saveState();
+    }
+    populateEventForm();
+    updateHeaderAndHero();
+    updateProgressBadge();
+
+    if (!state.eventMeta.name && !state.eventMeta.track) {
+      switchTab('event', document.getElementById('nav-event'));
     }
   }
 
+  function populateEventForm() {
+    const m = state.eventMeta;
+    document.getElementById('ev-name').value = m.name || "";
+    document.getElementById('ev-date').value = m.date || "";
+    document.getElementById('ev-track').value = m.track || "";
+    document.getElementById('ev-city').value = m.city || "";
+    document.getElementById('ev-country').value = m.country || "";
+    document.getElementById('ev-length').value = m.length || "";
+    document.getElementById('ev-notes').value = m.notes || "";
+
+    const prev = document.getElementById('track-preview-img');
+    if (m.photoDataUrl) {
+      prev.src = m.photoDataUrl;
+      prev.classList.add('show');
+    } else {
+      prev.src = "";
+      prev.classList.remove('show');
+    }
+  }
+
+  function updateEventMeta() {
+    state.eventMeta.name = document.getElementById('ev-name').value.trim();
+    state.eventMeta.date = document.getElementById('ev-date').value;
+    state.eventMeta.track = document.getElementById('ev-track').value.trim();
+    state.eventMeta.city = document.getElementById('ev-city').value.trim();
+    state.eventMeta.country = document.getElementById('ev-country').value.trim();
+    state.eventMeta.length = document.getElementById('ev-length').value.trim();
+    state.eventMeta.notes = document.getElementById('ev-notes').value.trim();
+    saveState();
+  }
+
+  function updateHeaderAndHero() {
+    const m = state.eventMeta;
+    document.getElementById('header-event-title').textContent = "🏁 " + (m.name || "SPEEDWAY LIVE");
+    const locParts = [m.track, m.city, m.country, m.date].filter(Boolean);
+    document.getElementById('header-event-sub').textContent = locParts.length ? locParts.join(" • ") : "Tocca Evento per inserire pista e foto";
+
+    const hero = document.getElementById('track-hero');
+    if (m.photoDataUrl) {
+      hero.classList.add('visible');
+      document.getElementById('track-hero-img').src = m.photoDataUrl;
+      document.getElementById('hero-track-name').textContent = m.track || m.name || "Pista Speedway";
+      const details = [m.city, m.country, m.length ? m.length : null, m.notes].filter(Boolean).join(" • ");
+      document.getElementById('hero-track-meta').textContent = details;
+    } else {
+      hero.classList.remove('visible');
+    }
+  }
+
+  function handleTrackPhoto(input) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const maxW = 900;
+        const scale = Math.min(1, maxW / img.width);
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.78);
+        state.eventMeta.photoDataUrl = dataUrl;
+        populateEventForm();
+        saveState();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function goToHeats() {
+    switchTab('heats', document.getElementById('nav-heats'));
+  }
+
   function updateProgressBadge() {
-    const completed = state.heats.slice(0, 20).filter(h => h.slots.some(s => s.score !== null)).length;
-    document.getElementById('progress-badge').textContent = completed + " / 20 Batterie";
+    const completed = state.heats.filter(h => h.slots.some(s => s.score !== null)).length;
+    document.getElementById('progress-badge').textContent = completed + " / 23 Batterie";
+  }
+
+  /* CLASSIFICA E STATISTICHE */
+  function computeStats() {
+    const stats = [];
+    for (let r = 1; r <= 18; r++) {
+      stats.push({
+        id: r,
+        name: state.riders[r],
+        runs: [],
+        total: 0,
+        ones: 0, twos: 0, threes: 0, zeros: 0,
+        sfScore: '-',
+        finScore: '-'
+      });
+    }
+    state.heats.slice(0, 20).forEach(h => {
+      h.slots.forEach(s => {
+        const st = stats.find(x => x.id === s.riderId);
+        if (!st) return;
+        if (s.score !== null) {
+          st.runs.push(s.score);
+          if (typeof s.score === 'number') {
+            st.total += s.score;
+            if (s.score === 3) st.ones++;
+            else if (s.score === 2) st.twos++;
+            else if (s.score === 1) st.threes++;
+            else st.zeros++;
+          } else {
+            st.zeros++;
+          }
+        } else {
+          st.runs.push('-');
+        }
+      });
+    });
+
+    [20, 21].forEach(idx => {
+      state.heats[idx].slots.forEach(s => {
+        const st = stats.find(x => x.id === s.riderId);
+        if (st && s.score !== null) st.sfScore = s.score;
+      });
+    });
+
+    state.heats[22].slots.forEach(s => {
+      const st = stats.find(x => x.id === s.riderId);
+      if (st && s.score !== null) st.finScore = s.score;
+    });
+
+    return stats;
+  }
+
+  function getSortedQualifyingStandings() {
+    const stats = computeStats().filter(s => s.id <= 16 || s.runs.some(x => x !== '-'));
+    stats.sort((a, b) => b.total - a.total || b.ones - a.ones || b.twos - a.twos || b.threes - a.threes || a.id - b.id);
+    return stats;
+  }
+
+  /* AUTOMAZIONE SEMIFINALI, FINALE E SCELTA CORSIE (GATE PICK) */
+  function autoPopulateSemifinals(silent) {
+    const ranked = getSortedQualifyingStandings();
+    if (ranked.length < 8) return;
+    const sf1Riders = [ranked[0].id, ranked[3].id, ranked[4].id, ranked[7].id];
+    const sf2Riders = [ranked[1].id, ranked[2].id, ranked[5].id, ranked[6].id];
+
+    sf1Riders.forEach((rId, idx) => { state.heats[20].slots[idx].riderId = rId; });
+    sf2Riders.forEach((rId, idx) => { state.heats[21].slots[idx].riderId = rId; });
+    showGatePickPanel = true;
+    saveState();
+    renderCurrentHeat();
+    if (!silent) alert("Top 8 caricati! Ora puoi assegnare a ciascun pilota la corsia scelta (Gate Pick).");
+  }
+
+  function autoPopulateFinal(silent) {
+    const ranked = getSortedQualifyingStandings();
+    const rankMap = {};
+    ranked.forEach((st, i) => { rankMap[st.id] = i + 1; });
+
+    const sf1 = state.heats[20].slots;
+    const sf2 = state.heats[21].slots;
+
+    const sf1Top = sf1.filter(s => s.score === 3 || s.score === 2);
+    const sf2Top = sf2.filter(s => s.score === 3 || s.score === 2);
+
+    if (sf1Top.length < 2 || sf2Top.length < 2) {
+      if (!silent) alert("Completa prima i punteggi (3 pt e 2 pt) di entrambe le Semifinali (Batteria 21 e 22).");
+      return;
+    }
+
+    const allFinalists = [...sf1Top, ...sf2Top].sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return (rankMap[a.riderId] || 99) - (rankMap[b.riderId] || 99);
+    });
+
+    allFinalists.forEach((slotObj, idx) => {
+      state.heats[22].slots[idx].riderId = slotObj.riderId;
+    });
+    showGatePickPanel = true;
+    saveState();
+    renderCurrentHeat();
+    if (!silent) alert("Finalisti caricati in ordine di priorità! Ora assegna le corsie scelte.");
+  }
+
+  function getGatePickOrderedRiders(heatIdx) {
+    const ranked = getSortedQualifyingStandings();
+    const rankMap = {};
+    const ptsMap = {};
+    ranked.forEach((st, i) => {
+      rankMap[st.id] = i + 1;
+      ptsMap[st.id] = st.total;
+    });
+
+    const heat = state.heats[heatIdx];
+    const currentRiders = heat.slots.map((s, gateIdx) => ({
+      riderId: s.riderId,
+      gateIdx: gateIdx,
+      qualRank: rankMap[s.riderId] || 99,
+      qualPts: ptsMap[s.riderId] ?? 0
+    }));
+
+    if (heatIdx === 20 || heatIdx === 21) {
+      currentRiders.sort((a, b) => a.qualRank - b.qualRank);
+    } else if (heatIdx === 22) {
+      const sfScoreMap = {};
+      [20, 21].forEach(idx => {
+        state.heats[idx].slots.forEach(s => {
+          if (typeof s.score === 'number') sfScoreMap[s.riderId] = s.score;
+        });
+      });
+      currentRiders.sort((a, b) => {
+        const sfA = sfScoreMap[a.riderId] ?? -1;
+        const sfB = sfScoreMap[b.riderId] ?? -1;
+        if (sfB !== sfA) return sfB - sfA;
+        return a.qualRank - b.qualRank;
+      });
+    }
+    return currentRiders;
+  }
+
+  function assignRiderToGate(riderId, targetGateIdx) {
+    const heat = state.heats[state.currentHeat];
+    const currentGateIdx = heat.slots.findIndex(s => s.riderId === riderId);
+    if (currentGateIdx === targetGateIdx) return;
+
+    if (currentGateIdx !== -1) {
+      const temp = heat.slots[targetGateIdx];
+      heat.slots[targetGateIdx] = heat.slots[currentGateIdx];
+      heat.slots[currentGateIdx] = temp;
+    } else {
+      heat.slots[targetGateIdx].riderId = riderId;
+    }
+    saveState();
+    renderCurrentHeat();
+  }
+
+  function toggleGatePickPanel() {
+    showGatePickPanel = !showGatePickPanel;
+    renderCurrentHeat();
   }
 
   function renderHeatSelect() {
@@ -261,8 +742,49 @@
   function renderCurrentHeat() {
     renderHeatSelect();
     const heat = state.heats[state.currentHeat];
-    const container = document.getElementById('gates-container');
+    const autoBox = document.getElementById('auto-finals-box');
 
+    if (state.currentHeat >= 20) {
+      const isFinal = state.currentHeat === 22;
+      const pickList = getGatePickOrderedRiders(state.currentHeat);
+
+      let rowsHtml = '';
+      if (showGatePickPanel) {
+        rowsHtml = '<div class="gate-pick-sub">Tocca il colore della corsia scelta da ciascun pilota (in ordine di priorità 1° → 4°):</div>' +
+          pickList.map((item, idx) => {
+            const gateBtns = GATE_INFO.map((g, gIdx) =>
+              '<button type="button" class="pick-gate-btn ' + g.btnCls + ' ' + (item.gateIdx === gIdx ? 'active-gate' : '') + '" ' +
+                'onclick="assignRiderToGate(' + item.riderId + ', ' + gIdx + ')" title="' + g.name + '">' + g.short + '</button>'
+            ).join('');
+
+            return '<div class="pick-row">' +
+              '<div class="pick-rider-info">' +
+                '<span class="pick-order-badge">' + (idx + 1) + '° scelta</span>' +
+                '<span class="pick-rider-name">#' + item.riderId + ' ' + state.riders[item.riderId] + '</span>' +
+                '<span class="pick-rider-pts">(' + item.qualRank + '° • ' + item.qualPts + 'pt)</span>' +
+              '</div>' +
+              '<div class="pick-gate-btns">' + gateBtns + '</div>' +
+            '</div>';
+          }).join('');
+      }
+
+      autoBox.innerHTML = '<div class="gate-pick-card">' +
+        '<div class="gate-pick-header">' +
+          '<span class="gate-pick-title">🎯 Scelta Corsie (Gate Pick)</span>' +
+          '<div class="gate-pick-actions">' +
+            (isFinal
+              ? '<button type="button" class="btn-mini" onclick="autoPopulateFinal(false)">🔄 Carica Finalisti</button>'
+              : '<button type="button" class="btn-mini" onclick="autoPopulateSemifinals(false)">🔄 Carica Top 8</button>') +
+            '<button type="button" class="btn-mini secondary" onclick="toggleGatePickPanel()">' + (showGatePickPanel ? 'Nascondi ▲' : 'Scegli Corsie ▼') + '</button>' +
+          '</div>' +
+        '</div>' +
+        rowsHtml +
+      '</div>';
+    } else {
+      autoBox.innerHTML = '';
+    }
+
+    const container = document.getElementById('gates-container');
     container.innerHTML = heat.slots.map((slot, gIdx) => {
       const g = GATE_INFO[gIdx];
       const sc = slot.score;
@@ -300,12 +822,33 @@
       }
       heat.slots[gateIdx].score = val;
     }
+
+    const regularDone = state.heats.slice(0, 20).every(h => h.slots.some(s => s.score !== null));
+    const sfUntouched = state.heats[20].slots.every(s => s.score === null) && state.heats[21].slots.every(s => s.score === null);
+    if (state.currentHeat < 20 && regularDone && sfUntouched) {
+      autoPopulateSemifinals(true);
+    }
+
+    if (state.currentHeat === 20 || state.currentHeat === 21) {
+      const sf1Ready = state.heats[20].slots.some(s => s.score === 3) && state.heats[20].slots.some(s => s.score === 2);
+      const sf2Ready = state.heats[21].slots.some(s => s.score === 3) && state.heats[21].slots.some(s => s.score === 2);
+      const finUntouched = state.heats[22].slots.every(s => s.score === null);
+      if (sf1Ready && sf2Ready && finUntouched) {
+        autoPopulateFinal(true);
+      }
+    }
+
     saveState();
     renderCurrentHeat();
   }
 
   function changeSlotRider(gateIdx, newRiderId) {
-    state.heats[state.currentHeat].slots[gateIdx].riderId = parseInt(newRiderId, 10);
+    const parsedId = parseInt(newRiderId, 10);
+    if (state.currentHeat >= 20) {
+      assignRiderToGate(parsedId, gateIdx);
+      return;
+    }
+    state.heats[state.currentHeat].slots[gateIdx].riderId = parsedId;
     saveState();
     renderCurrentHeat();
   }
@@ -325,33 +868,8 @@
     renderCurrentHeat();
   }
 
-  function computeStats() {
-    const stats = [];
-    for (let r = 1; r <= 18; r++) {
-      stats.push({ id: r, name: state.riders[r], runs: [], total: 0, ones: 0, twos: 0, threes: 0, zeros: 0 });
-    }
-    state.heats.slice(0, 20).forEach(h => {
-      h.slots.forEach(s => {
-        const st = stats.find(x => x.id === s.riderId);
-        if (!st) return;
-        if (s.score !== null) {
-          st.runs.push(s.score);
-          if (typeof s.score === 'number') {
-            st.total += s.score;
-            if (s.score === 3) st.ones++;
-            else if (s.score === 2) st.twos++;
-            else if (s.score === 1) st.threes++;
-            else st.zeros++;
-          } else { st.zeros++; }
-        } else { st.runs.push('-'); }
-      });
-    });
-    return stats;
-  }
-
   function renderStandings() {
-    const stats = computeStats().filter(s => s.id <= 16 || s.runs.some(x => x !== '-'));
-    stats.sort((a, b) => b.total - a.total || b.ones - a.ones || b.twos - a.twos || b.threes - a.threes || a.id - b.id);
+    const stats = getSortedQualifyingStandings();
     document.querySelector('#standings-table tbody').innerHTML = stats.map((st, idx) =>
       '<tr class="' + (idx === 7 ? 'qual-line' : '') + '">' +
         '<td><strong>' + (idx + 1) + '</strong></td>' +
@@ -368,7 +886,9 @@
       const r = st.runs;
       return '<tr><td><strong>' + st.id + '</strong></td><td class="name-col">' + st.name + '</td>' +
         '<td>' + (r[0] ?? '-') + '</td><td>' + (r[1] ?? '-') + '</td><td>' + (r[2] ?? '-') + '</td><td>' + (r[3] ?? '-') + '</td><td>' + (r[4] ?? '-') + '</td>' +
-        '<td class="tot-col">' + st.total + '</td></tr>';
+        '<td class="tot-col">' + st.total + '</td>' +
+        '<td class="sf-col">' + st.sfScore + '</td>' +
+        '<td class="fin-col">' + st.finScore + '</td></tr>';
     }).join('');
   }
 
@@ -376,7 +896,7 @@
     let html = '';
     for (let r = 1; r <= 18; r++) {
       html += '<div class="rider-input-row"><span>#' + r + '</span>' +
-        '<input type="text" value="' + state.riders[r] + '" oninput="updateRiderName(' + r + ', this.value)"></div>';
+        '<input type="text" value="' + state.riders[r].replace(/"/g, '&quot;') + '" oninput="updateRiderName(' + r + ', this.value)"></div>';
     }
     document.getElementById('riders-inputs').innerHTML = html;
   }
@@ -386,8 +906,518 @@
     saveState();
   }
 
+  /* GENERATORE LOCANDINA PNG PER WHATSAPP / SOCIAL */
+  async function exportRacePoster(mode) {
+    const W = 1080;
+    const rows = mode === 'standings'
+      ? getSortedQualifyingStandings()
+      : computeStats().filter(s => s.id <= 16 || s.runs.some(x => x !== '-'));
+
+    const m = state.eventMeta || {};
+    const finalSlots = state.heats[22] ? state.heats[22].slots : [];
+    const hasFinalPodium = finalSlots.some(s => s.score === 3);
+
+    const headerH = 250;
+    const podiumH = hasFinalPodium ? 135 : 0;
+    const tableHeaderH = 62;
+    const rowH = 54;
+    const footerH = 70;
+    const H = headerH + podiumH + tableHeaderH + (rows.length * rowH) + footerH + 40;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#121418';
+    ctx.fillRect(0, 0, W, H);
+
+    if (m.photoDataUrl) {
+      await new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => {
+          const scale = Math.max(W / img.width, headerH / img.height);
+          const nw = img.width * scale;
+          const nh = img.height * scale;
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(0, 0, W, headerH);
+          ctx.clip();
+          ctx.globalAlpha = 0.55;
+          ctx.drawImage(img, (W - nw) / 2, (headerH - nh) / 2, nw, nh);
+          ctx.restore();
+          resolve();
+        };
+        img.onerror = resolve;
+        img.src = m.photoDataUrl;
+      });
+    }
+
+    const grad = ctx.createLinearGradient(0, 0, 0, headerH);
+    grad.addColorStop(0, 'rgba(18,20,24,0.45)');
+    grad.addColorStop(1, 'rgba(18,20,24,0.98)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, headerH);
+
+    const barColors = ['#e53935', '#1e88e5', '#f5f5f5', '#fdd835'];
+    barColors.forEach((c, i) => {
+      ctx.fillStyle = c;
+      ctx.fillRect(i * (W / 4), headerH - 6, W / 4, 6);
+    });
+
+    ctx.fillStyle = '#00e676';
+    ctx.font = '900 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText('🏁 SPEEDWAY SGP LIVE • ' + (mode === 'standings' ? 'CLASSIFICA UFFICIALE' : 'TABELLONE GARA'), 40, 62);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '900 46px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText((m.name || 'Speedway Grand Prix').slice(0, 38), 40, 125);
+
+    const subLine1 = [m.track, m.city, m.country].filter(Boolean).join(' • ');
+    const subLine2 = [m.date, m.length ? ('Pista: ' + m.length) : '', m.notes].filter(Boolean).join(' • ');
+
+    ctx.fillStyle = '#eceff4';
+    ctx.font = '700 26px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(subLine1 || 'Circuito Speedway', 40, 172);
+
+    ctx.fillStyle = '#8892b0';
+    ctx.font = '600 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(subLine2, 40, 212);
+
+    let y = headerH + 20;
+
+    if (hasFinalPodium) {
+      ctx.fillStyle = '#1e2229';
+      ctx.strokeStyle = '#fdd835';
+      ctx.lineWidth = 2;
+      ctx.fillRect(30, y, W - 60, 115);
+      ctx.strokeRect(30, y, W - 60, 115);
+
+      ctx.fillStyle = '#fdd835';
+      ctx.font = '900 22px sans-serif';
+      ctx.fillText('🏆 PODIO FINALE (BATTERIA 23)', 50, y + 36);
+
+      const p1 = finalSlots.find(s => s.score === 3);
+      const p2 = finalSlots.find(s => s.score === 2);
+      const p3 = finalSlots.find(s => s.score === 1);
+      const p4 = finalSlots.find(s => s.score === 0 || typeof s.score === 'string');
+
+      const podiumText = [
+        p1 ? ('🥇 1° ' + state.riders[p1.riderId]) : '',
+        p2 ? ('🥈 2° ' + state.riders[p2.riderId]) : '',
+        p3 ? ('🥉 3° ' + state.riders[p3.riderId]) : '',
+        p4 ? ('4° ' + state.riders[p4.riderId]) : ''
+      ].filter(Boolean).join('     ');
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '800 26px sans-serif';
+      ctx.fillText(podiumText.slice(0, 68), 50, y + 84);
+      y += podiumH;
+    }
+
+    ctx.fillStyle = '#252a34';
+    ctx.fillRect(30, y, W - 60, tableHeaderH);
+
+    ctx.fillStyle = '#8892b0';
+    ctx.font = '800 22px sans-serif';
+    ctx.textAlign = 'center';
+
+    if (mode === 'standings') {
+      const cols = [
+        { label: 'POS', x: 75 },
+        { label: 'PILOTA', x: 140, align: 'left' },
+        { label: '1°', x: 520 },
+        { label: '2°', x: 590 },
+        { label: '3°', x: 660 },
+        { label: '0', x: 730 },
+        { label: 'SERIE', x: 855 },
+        { label: 'TOT', x: 995 }
+      ];
+      cols.forEach(c => {
+        ctx.textAlign = c.align || 'center';
+        ctx.fillText(c.label, c.x, y + 40);
+      });
+    } else {
+      const cols = [
+        { label: '#', x: 70 },
+        { label: 'PILOTA', x: 125, align: 'left' },
+        { label: 'S1', x: 470 },
+        { label: 'S2', x: 540 },
+        { label: 'S3', x: 610 },
+        { label: 'S4', x: 680 },
+        { label: 'S5', x: 750 },
+        { label: 'TOT', x: 835 },
+        { label: 'SF', x: 920 },
+        { label: 'FIN', x: 1000 }
+      ];
+      cols.forEach(c => {
+        ctx.textAlign = c.align || 'center';
+        ctx.fillText(c.label, c.x, y + 40);
+      });
+    }
+
+    y += tableHeaderH;
+
+    rows.forEach((st, idx) => {
+      ctx.fillStyle = idx % 2 === 0 ? '#1e2229' : '#181b21';
+      ctx.fillRect(30, y, W - 60, rowH);
+
+      const totX = mode === 'standings' ? 950 : 795;
+      ctx.fillStyle = 'rgba(0, 230, 118, 0.1)';
+      ctx.fillRect(totX, y, mode === 'standings' ? 90 : 80, rowH);
+
+      ctx.font = '700 24px sans-serif';
+      ctx.fillStyle = '#eceff4';
+
+      if (mode === 'standings') {
+        ctx.textAlign = 'center';
+        ctx.fillStyle = idx < 8 ? '#00e676' : '#8892b0';
+        ctx.font = '900 24px sans-serif';
+        ctx.fillText(String(idx + 1), 75, y + 36);
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 24px sans-serif';
+        ctx.fillText(('#' + st.id + ' ' + st.name).slice(0, 24), 140, y + 36);
+
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#eceff4';
+        ctx.font = '600 23px sans-serif';
+        ctx.fillText(String(st.ones), 520, y + 36);
+        ctx.fillText(String(st.twos), 590, y + 36);
+        ctx.fillText(String(st.threes), 660, y + 36);
+        ctx.fillText(String(st.zeros), 730, y + 36);
+
+        const runsStr = '(' + (st.runs.filter(r => r !== '-').join(',') || '-') + ')';
+        ctx.fillStyle = '#8892b0';
+        ctx.font = '600 20px sans-serif';
+        ctx.fillText(runsStr, 855, y + 36);
+
+        ctx.fillStyle = '#00e676';
+        ctx.font = '900 27px sans-serif';
+        ctx.fillText(String(st.total), 995, y + 36);
+
+        if (idx === 7) {
+          ctx.save();
+          ctx.strokeStyle = '#00e676';
+          ctx.lineWidth = 3;
+          ctx.setLineDash([12, 8]);
+          ctx.beginPath();
+          ctx.moveTo(30, y + rowH);
+          ctx.lineTo(W - 30, y + rowH);
+          ctx.stroke();
+          ctx.restore();
+        }
+      } else {
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#8892b0';
+        ctx.font = '800 23px sans-serif';
+        ctx.fillText(String(st.id), 70, y + 36);
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 24px sans-serif';
+        ctx.fillText(st.name.slice(0, 21), 125, y + 36);
+
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#eceff4';
+        ctx.font = '600 23px sans-serif';
+        const r = st.runs;
+        [470, 540, 610, 680, 750].forEach((cx, sIdx) => {
+          ctx.fillText(String(r[sIdx] ?? '-'), cx, y + 36);
+        });
+
+        ctx.fillStyle = '#00e676';
+        ctx.font = '900 26px sans-serif';
+        ctx.fillText(String(st.total), 835, y + 36);
+
+        ctx.fillStyle = '#4fc3f7';
+        ctx.font = '800 23px sans-serif';
+        ctx.fillText(String(st.sfScore), 920, y + 36);
+
+        ctx.fillStyle = '#fdd835';
+        ctx.font = '900 25px sans-serif';
+        ctx.fillText(String(st.finScore), 1000, y + 36);
+      }
+
+      y += rowH;
+    });
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#8892b0';
+    ctx.font = '700 20px sans-serif';
+    ctx.fillText('Generato con Speedway SGP Live App', W / 2, H - 25);
+
+    canvas.toBlob(async function(blob) {
+      if (!blob) return;
+      const safeName = (m.name || 'speedway-sgp').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const fileName = safeName + '-' + mode + '.png';
+      const file = new File([blob], fileName, { type: 'image/png' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            title: m.name || 'Speedway SGP Live',
+            text: '🏁 Risultati ' + (m.name || 'Speedway GP') + (m.track ? ' (' + m.track + ')' : ''),
+            files: [file]
+          });
+          return;
+        } catch (err) {
+          if (err.name === 'AbortError') return;
+        }
+      }
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 3000);
+    }, 'image/png');
+  }
+
+  /* OCR: LETTURA ELENCO PILOTI DA FOTO */
+  async function processRiderListPhoto(input) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    const statusEl = document.getElementById('ocr-status');
+    statusEl.style.display = 'block';
+    statusEl.textContent = '⏳ Lettura nomi dalla foto in corso (attendi 5-10 secondi)...';
+
+    try {
+      const result = await Tesseract.recognize(file, 'eng+ita');
+      const rawText = result.data.text || "";
+      const lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+
+      let matchedCount = 0;
+      const sequentialNames = [];
+
+      lines.forEach(line => {
+        const numMatch = line.match(/^(?:#|\b)?(1[0-8]|[1-9])[\.\)\-\s:]+([A-Za-zÀ-ÿ\s'\-]{3,})$/);
+        if (numMatch) {
+          const num = parseInt(numMatch[1], 10);
+          const cleanName = numMatch[2].replace(/[^A-Za-zÀ-ÿ\s'\-]/g, '').trim();
+          if (num >= 1 && num <= 18 && cleanName.length >= 3) {
+            state.riders[num] = cleanName;
+            matchedCount++;
+          }
+        } else {
+          const cleaned = line.replace(/^[0-9\W]+/, '').replace(/[^A-Za-zÀ-ÿ\s'\-]/g, '').trim();
+          if (cleaned.length >= 4 && cleaned.includes(' ')) {
+            sequentialNames.push(cleaned);
+          }
+        }
+      });
+
+      if (matchedCount < 4 && sequentialNames.length > 0) {
+        sequentialNames.slice(0, 18).forEach((name, idx) => {
+          state.riders[idx + 1] = name;
+          matchedCount++;
+        });
+      }
+
+      saveState();
+      renderRidersInputs();
+      statusEl.textContent = matchedCount > 0
+        ? '✅ Letti automaticamente ' + matchedCount + ' piloti dalla foto! Verifica i nomi qui sotto.'
+        : '⚠️ Nessun nome nitido rilevato. Riprova con una foto più ravvicinata.';
+    } catch (err) {
+      statusEl.textContent = '⚠️ Impossibile eseguire la scansione (verifica la connessione per il motore OCR).';
+    }
+  }
+
+  /* STORICO, ARCHIVIO GARE E BACKUP JSON */
+  function getArchive() {
+    try {
+      const a = localStorage.getItem(ARCHIVE_KEY);
+      if (a) return JSON.parse(a);
+    } catch (e) {}
+    return [];
+  }
+
+  function saveArchive(list) {
+    try { localStorage.setItem(ARCHIVE_KEY, JSON.stringify(list)); } catch (e) {}
+  }
+
+  function getPodiumSummary(raceState) {
+    const finalSlots = raceState.heats[22] ? raceState.heats[22].slots : [];
+    const winner = finalSlots.find(s => s.score === 3);
+    const second = finalSlots.find(s => s.score === 2);
+    const third = finalSlots.find(s => s.score === 1);
+    if (winner) {
+      return "🥇 " + raceState.riders[winner.riderId] +
+        (second ? " • 🥈 " + raceState.riders[second.riderId] : "") +
+        (third ? " • 🥉 " + raceState.riders[third.riderId] : "");
+    }
+    return "Gara in corso / Finale non disputata";
+  }
+
+  function saveCurrentToArchive() {
+    const archive = getArchive();
+    const copy = JSON.parse(JSON.stringify(state));
+    if (!copy.eventMeta.name) {
+      copy.eventMeta.name = "Speedway GP (" + (copy.eventMeta.date || "Senza data") + ")";
+    }
+    const existingIdx = archive.findIndex(x => x.id === copy.id);
+    if (existingIdx >= 0) {
+      archive[existingIdx] = copy;
+    } else {
+      archive.unshift(copy);
+    }
+    saveArchive(archive);
+    renderHistory();
+    alert("Gara salvata correttamente nello Storico!");
+  }
+
+  function loadArchivedRace(id) {
+    const archive = getArchive();
+    const found = archive.find(x => x.id === id);
+    if (!found) return;
+    state = JSON.parse(JSON.stringify(found));
+    populateEventForm();
+    saveState();
+    renderCurrentHeat();
+    switchTab('heats', document.getElementById('nav-heats'));
+  }
+
+  function deleteArchivedRace(id) {
+    if (!confirm("Eliminare definitivamente questa gara dallo storico?")) return;
+    const archive = getArchive().filter(x => x.id !== id);
+    saveArchive(archive);
+    renderHistory();
+  }
+
+  function startNewRace() {
+    if (!confirm("Vuoi iniziare una nuova gara? (Ricordati di salvare quella attuale nello Storico se vuoi conservarla)")) return;
+    state = createDefaultState();
+    populateEventForm();
+    saveState();
+    renderCurrentHeat();
+    switchTab('event', document.getElementById('nav-event'));
+  }
+
+  /* ESPORTAZIONE E IMPORTAZIONE BACKUP (.JSON) */
+  function exportBackupJson() {
+    const archive = getArchive();
+    const backupPayload = {
+      app: "Speedway SGP Live",
+      version: 2,
+      exportedAt: new Date().toISOString(),
+      currentRace: state,
+      archive: archive
+    };
+
+    const jsonStr = JSON.stringify(backupPayload, null, 2);
+    const blob = new Blob([jsonStr], { type: "application/json" });
+    const dateTag = new Date().toISOString().split('T')[0];
+    const fileName = "speedway-sgp-backup-" + dateTag + ".json";
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
+  }
+
+  function importBackupJson(input) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const parsed = JSON.parse(e.target.result);
+        let importedArchive = [];
+        let importedCurrent = null;
+
+        if (Array.isArray(parsed)) {
+          importedArchive = parsed;
+        } else if (parsed && typeof parsed === 'object') {
+          if (Array.isArray(parsed.archive)) importedArchive = parsed.archive;
+          if (parsed.currentRace && parsed.currentRace.heats) importedCurrent = parsed.currentRace;
+          else if (parsed.heats && parsed.riders) importedArchive = [parsed];
+        }
+
+        if (importedArchive.length === 0 && !importedCurrent) {
+          alert("⚠️ File JSON non valido o privo di gare Speedway.");
+          input.value = "";
+          return;
+        }
+
+        const currentArchive = getArchive();
+        let addedOrUpdated = 0;
+
+        importedArchive.forEach(race => {
+          if (!race || !race.heats) return;
+          if (!race.id) race.id = Date.now() + Math.floor(Math.random() * 10000);
+          const idx = currentArchive.findIndex(x => x.id === race.id);
+          if (idx >= 0) {
+            currentArchive[idx] = race;
+          } else {
+            currentArchive.push(race);
+          }
+          addedOrUpdated++;
+        });
+
+        saveArchive(currentArchive);
+
+        if (importedCurrent && importedCurrent.heats) {
+          const loadActive = confirm(
+            "Archivio aggiornato (" + addedOrUpdated + " gare nello storico).\n" +
+            "Vuoi anche caricare la gara attiva presente nel backup?"
+          );
+          if (loadActive) {
+            state = Object.assign(createDefaultState(), importedCurrent);
+            populateEventForm();
+            saveState();
+            renderCurrentHeat();
+          }
+        } else {
+          alert("✅ Backup importato con successo! (" + addedOrUpdated + " gare aggiunte/aggiornate nello storico).");
+        }
+
+        renderHistory();
+      } catch (err) {
+        alert("⚠️ Errore nella lettura del file .json. Verifica che sia un backup valido.");
+      }
+      input.value = "";
+    };
+    reader.readAsText(file);
+  }
+
+  function renderHistory() {
+    const archive = getArchive();
+    const container = document.getElementById('history-list');
+    if (archive.length === 0) {
+      container.innerHTML = '<div class="card-box" style="text-align:center;color:var(--muted);font-size:0.85rem;">Nessuna gara salvata nello storico.</div>';
+      return;
+    }
+    container.innerHTML = archive.map(item => {
+      const m = item.eventMeta || {};
+      const loc = [m.track, m.city, m.country, m.date].filter(Boolean).join(" • ");
+      return '<div class="history-item">' +
+        '<div class="history-top">' +
+          '<div>' +
+            '<div class="history-title">' + (m.name || "Gara Speedway") + '</div>' +
+            '<div class="history-meta">' + (loc || "Nessun dettaglio località") + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="history-podium">' + getPodiumSummary(item) + '</div>' +
+        '<div class="history-actions">' +
+          '<button type="button" onclick="loadArchivedRace(' + item.id + ')">📂 Apri / Rivedi</button>' +
+          '<button type="button" class="del" onclick="deleteArchivedRace(' + item.id + ')">🗑️ Elimina</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
   function resetAllScores() {
-    if (confirm("Vuoi azzerare tutti i punteggi della gara?")) {
+    if (confirm("Vuoi azzerare tutti i punteggi delle batterie di questa gara?")) {
       state.heats.forEach(h => h.slots.forEach(s => s.score = null));
       state.currentHeat = 0;
       saveState();
@@ -399,16 +1429,16 @@
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
     document.getElementById('tab-' + tabId).classList.add('active');
-    btn.classList.add('active');
+    if (btn) btn.classList.add('active');
     if (tabId === 'heats') renderCurrentHeat();
     if (tabId === 'standings') renderStandings();
     if (tabId === 'card') renderScorecard();
     if (tabId === 'riders') renderRidersInputs();
+    if (tabId === 'history') renderHistory();
   }
 
   initState();
   renderCurrentHeat();
-  updateProgressBadge();
 </script>
 </body>
 </html>
