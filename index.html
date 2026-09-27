@@ -15,7 +15,8 @@
 
   <!-- Libreria OCR Tesseract.js per lettura foto elenco piloti -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<style>
+
+  <style>
     :root {
       --bg: #121418; --card: #1e2229; --border: #2e3440;
       --text: #eceff4; --muted: #8892b0; --accent: #00e676;
@@ -25,11 +26,27 @@
     html, body { width: 100%; max-width: 100vw; overflow-x: hidden; background: var(--bg); color: var(--text); user-select: none; }
     body { padding-bottom: 85px; }
 
-    header { background: var(--card); padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; gap: 8px; width: 100%; }
+    header { background: var(--card); padding: 10px 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; gap: 8px; width: 100%; }
     .header-title-box { min-width: 0; flex: 1; }
-    header h1 { font-size: 1rem; font-weight: 800; letter-spacing: 0.4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .header-sub { font-size: 0.72rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .event-badge { font-size: 0.72rem; background: #2e3440; padding: 5px 8px; border-radius: 6px; color: var(--accent); font-weight: 800; white-space: nowrap; flex-shrink: 0; }
+    header h1 { font-size: 0.98rem; font-weight: 800; letter-spacing: 0.4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .header-sub { font-size: 0.7rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .event-badge { font-size: 0.7rem; background: #2e3440; padding: 5px 8px; border-radius: 6px; color: var(--accent); font-weight: 800; white-space: nowrap; }
+    .btn-qr-top { background: #2e3440; border: 1px solid #3b4252; color: var(--text); padding: 5px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+
+    /* Modal QR Code Condivisione App */
+    .qr-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 999; display: none; align-items: center; justify-content: center; padding: 18px; }
+    .qr-modal-backdrop.open { display: flex; }
+    .qr-modal { background: var(--card); border: 1px solid var(--accent); border-radius: 16px; padding: 18px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 10px 35px rgba(0,0,0,0.6); }
+    .qr-modal h3 { font-size: 1.05rem; color: var(--accent); margin-bottom: 6px; font-weight: 900; }
+    .qr-modal p { font-size: 0.78rem; color: var(--muted); margin-bottom: 14px; line-height: 1.35; }
+    .qr-box { background: #ffffff; padding: 14px; border-radius: 12px; display: inline-block; margin-bottom: 12px; }
+    .qr-box img { width: 210px; height: 210px; display: block; }
+    .qr-url { font-size: 0.72rem; color: var(--text); background: #121418; padding: 8px; border-radius: 6px; margin-bottom: 12px; word-break: break-all; border: 1px solid var(--border); }
+    .qr-btn-row { display: flex; gap: 8px; }
+    .qr-btn-row button { flex: 1; padding: 10px; border-radius: 8px; border: none; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
+    .qr-btn-share { background: var(--accent); color: #000; }
+    .qr-btn-close { background: #2e3440; color: var(--text); }
 
     /* Banner Orizzontale Pista */
     .track-hero { width: 100%; height: 115px; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); display: none; background: #090b10; }
@@ -166,8 +183,27 @@
     <h1 id="header-event-title">🏁 SPEEDWAY LIVE</h1>
     <div class="header-sub" id="header-event-sub">Imposta i dati evento</div>
   </div>
-  <span class="event-badge" id="progress-badge">0 / 23 Batterie</span>
+  <div class="header-right">
+    <button type="button" class="btn-qr-top" onclick="openQrModal()" title="Condividi App con QR Code">📲 QR</button>
+    <span class="event-badge" id="progress-badge">0 / 23</span>
+  </div>
 </header>
+
+<!-- Finestra Popup QR Code per far installare l'app agli amici -->
+<div class="qr-modal-backdrop" id="qr-modal" onclick="if(event.target===this)closeQrModal()">
+  <div class="qr-modal">
+    <h3>📲 Condividi Speedway Live</h3>
+    <p>Fai inquadrare questo QR Code con la fotocamera per aprire e installare l'app sullo smartphone:</p>
+    <div class="qr-box">
+      <img id="qr-img" src="" alt="QR Code Speedway Live">
+    </div>
+    <div class="qr-url" id="qr-url-text">https://mluna01-speedway.github.io/speedway-live/</div>
+    <div class="qr-btn-row">
+      <button type="button" class="qr-btn-share" onclick="shareAppLink()">📤 Invia Link</button>
+      <button type="button" class="qr-btn-close" onclick="closeQrModal()">Chiudi</button>
+    </div>
+  </div>
+</div>
 
 <!-- Foto Orizzontale della Pista -->
 <div class="track-hero" id="track-hero">
@@ -318,6 +354,8 @@
 </nav>
 
 <script>
+  const APP_PUBLIC_URL = "https://mluna01-speedway.github.io/speedway-live/";
+
   const FIM_SCHEDULE = [
     [1, 2, 3, 4], [5, 7, 6, 8], [10, 11, 9, 12], [15, 14, 16, 13],
     [13, 1, 5, 9], [14, 10, 2, 6], [11, 15, 7, 3], [4, 8, 12, 16],
@@ -338,6 +376,38 @@
 
   let state = createDefaultState();
   let showGatePickPanel = true;
+
+  /* QR CODE CONDIVISIONE APP */
+  function openQrModal() {
+    const targetUrl = (window.location.href && window.location.href.startsWith('http')) ? window.location.href.split('#')[0] : APP_PUBLIC_URL;
+    document.getElementById('qr-url-text').textContent = targetUrl;
+    document.getElementById('qr-img').src = "https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=4&data=" + encodeURIComponent(targetUrl);
+    document.getElementById('qr-modal').classList.add('open');
+  }
+
+  function closeQrModal() {
+    document.getElementById('qr-modal').classList.remove('open');
+  }
+
+  async function shareAppLink() {
+    const targetUrl = (window.location.href && window.location.href.startsWith('http')) ? window.location.href.split('#')[0] : APP_PUBLIC_URL;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Speedway SGP Live",
+          text: "🏁 Installa l'app Speedway SGP Live per gestire i punteggi delle batterie in tempo reale:",
+          url: targetUrl
+        });
+        return;
+      } catch (e) {}
+    }
+    try {
+      await navigator.clipboard.writeText(targetUrl);
+      alert("✅ Link copiato negli appunti! Incollalo su WhatsApp.");
+    } catch (e) {
+      prompt("Copia questo link:", targetUrl);
+    }
+  }
 
   function createDefaultState() {
     const today = new Date().toISOString().split('T')[0];
@@ -491,7 +561,7 @@
 
   function updateProgressBadge() {
     const completed = state.heats.filter(h => h.slots.some(s => s.score !== null)).length;
-    document.getElementById('progress-badge').textContent = completed + " / 23 Batterie";
+    document.getElementById('progress-badge').textContent = completed + " / 23";
   }
 
   /* CLASSIFICA E STATISTICHE */
