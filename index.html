@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-title" content="Speedway Live">
   <link rel="icon" type="image/png" href="icon.png?v=2">
   <link rel="apple-touch-icon" href="icon.png?v=2">
-  <title>Speedway Live v4.0</title>
+  <title>Speedway Live v4.1</title>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
     :root {
@@ -153,6 +153,12 @@
     .standings-mode-switch button { flex: 1; padding: 7px 6px; border: none; border-radius: 6px; background: transparent; color: var(--muted); font-size: 0.74rem; font-weight: 800; cursor: pointer; }
     .standings-mode-switch button.active { background: #2e3440; color: var(--accent); }
 
+    /* Selettore squadra target per OCR in modalità squadre */
+    .ocr-team-target { display: none; gap: 5px; margin-bottom: 9px; background: #14171d; padding: 5px; border-radius: 8px; border: 1px solid var(--border); }
+    .ocr-team-target.visible { display: flex; }
+    .ocr-team-target button { flex: 1; padding: 6px 4px; border: none; border-radius: 6px; background: transparent; color: var(--muted); font-size: 0.7rem; font-weight: 800; cursor: pointer; }
+    .ocr-team-target button.active { background: #2e3440; color: var(--accent); }
+
     .legend-bar { display: flex; gap: 10px; font-size: 0.7rem; color: var(--muted); margin-bottom: 8px; padding: 0 4px; flex-wrap: wrap; }
     .legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
     .table-wrap { width: 100%; overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 10px; }
@@ -196,7 +202,7 @@
     .team-name-input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
     .team-name-input-row input { flex: 1; background: #121418; border: 1px solid var(--accent); color: #fff; font-weight: 900; font-size: 0.95rem; padding: 9px 10px; border-radius: 8px; }
     .rider-input-row { display: flex; align-items: center; gap: 8px; background: #161920; padding: 6px 9px; border-radius: 8px; margin-bottom: 6px; border: 1px solid var(--border); }
-    .rider-input-row span { width: 58px; font-weight: 800; color: var(--muted); font-size: 0.78rem; flex-shrink: 0; }
+    .rider-input-row span { width: 78px; font-weight: 800; color: var(--muted); font-size: 0.75rem; flex-shrink: 0; }
     .rider-input-row input { flex: 1; min-width: 0; background: #121418; border: 1px solid var(--border); color: var(--text); padding: 7px 9px; border-radius: 6px; font-size: 0.88rem; }
 
     .history-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -213,7 +219,7 @@
     .lang-btnLeft { display: flex; align-items: center; gap: 10px; }
     .lang-flag { font-size: 1.35rem; }
     .lang-btn.active { border-color: var(--accent); background: rgba(0, 230, 118, 0.1); color: var(--accent); }
-    #ocr-status { font-size: 0.8rem; color: var(--yellow); margin-top: 8px; text-align: center; font-weight: 700; display: none; }
+    #ocr-status { font-size: 0.8rem; color: var(--yellow); margin-top: 8px; text-align: center; font-weight: 700; display: none; line-height: 1.35; }
     #paste-box-wrap { display: none; margin-top: 10px; }
   </style>
 </head>
@@ -223,10 +229,10 @@
   <img src="icon.png?v=2" alt="Logo" class="app-logo-header" onerror="this.style.display='none'">
   <div class="header-title-box">
     <h1 id="header-event-title">SPEEDWAY LIVE</h1>
-    <div class="header-sub" id="header-event-sub">v4.0</div>
+    <div class="header-sub" id="header-event-sub">v4.1</div>
   </div>
   <div class="header-right">
-    <button type="button" class="btn-top mode-btn" onclick="openModeModal()">🏁 Formato</button>
+    <button type="button" class="btn-top mode-btn" onclick="openModeModal()">🏁 <span data-i18n="btnTopFormat">Formato</span></button>
     <button type="button" class="btn-top danger" onclick="fullResetApp()">🗑️</button>
     <button type="button" class="btn-top" onclick="openQrModal()">📲 QR</button>
     <span class="event-badge" id="progress-badge">0 / 23</span>
@@ -236,13 +242,13 @@
 <!-- Banner Punteggio Live Gara a Squadre / Coppie -->
 <div class="team-score-banner" id="team-score-banner">
   <div class="ts-side">
-    <div class="ts-dots"><i class="ts-dot" style="background:var(--red)"></i><i class="ts-dot" style="background:var(--blue)"></i> <span id="ts-role-a">CASA</span></div>
-    <div class="ts-name" id="ts-name-a">Squadra A</div>
+    <div class="ts-dots"><i class="ts-dot" style="background:var(--red)"></i><i class="ts-dot" style="background:var(--blue)"></i> <span id="ts-role-a" data-i18n="homeBadge">CASA</span></div>
+    <div class="ts-name" id="ts-name-a">Squadra Casa</div>
   </div>
   <div class="ts-center" id="ts-score-box">0 : 0</div>
   <div class="ts-side right">
-    <div class="ts-dots"><span id="ts-role-b">OSPITI</span> <i class="ts-dot" style="background:var(--white)"></i><i class="ts-dot" style="background:var(--yellow)"></i></div>
-    <div class="ts-name" id="ts-name-b">Squadra B</div>
+    <div class="ts-dots"><span id="ts-role-b" data-i18n="awayBadge">OSPITI</span> <i class="ts-dot" style="background:var(--white)"></i><i class="ts-dot" style="background:var(--yellow)"></i></div>
+    <div class="ts-name" id="ts-name-b">Squadra Ospiti</div>
   </div>
 </div>
 
@@ -250,14 +256,14 @@
 <div class="modal-backdrop" id="mode-modal">
   <div class="modal-box">
     <div id="mode-step-main">
-      <h3>🏁 Scegli il Tipo di Gara</h3>
-      <p>Seleziona se vuoi gestire una gara individuale oppure una gara a squadre / coppie:</p>
+      <h3 data-i18n="modalChooseTypeTitle">🏁 Scegli il Tipo di Gara</h3>
+      <p data-i18n="modalChooseTypeSub">Seleziona se vuoi gestire una gara individuale oppure una gara a squadre / coppie:</p>
       <button type="button" class="mode-choice-btn" onclick="selectAppMode('sgp')">
         <div class="mode-choice-left">
           <span class="mode-choice-ico">🏆</span>
           <div>
-            <div class="mode-choice-title">Gara Individuale (FIM SGP)</div>
-            <div class="mode-choice-sub">16 Piloti + 2 Riserve • 20 Batterie + LCQ 1&2 + Finale</div>
+            <div class="mode-choice-title" data-i18n="modeSgpTitle">Gara Individuale (FIM SGP)</div>
+            <div class="mode-choice-sub" data-i18n="modeSgpSub">16 Piloti + 2 Riserve • 20 Batterie + LCQ 1&2 + Finale</div>
           </div>
         </div>
         <span>▶</span>
@@ -266,24 +272,24 @@
         <div class="mode-choice-left">
           <span class="mode-choice-ico">👥</span>
           <div>
-            <div class="mode-choice-title">Gara a Squadre / Coppie</div>
-            <div class="mode-choice-sub">Leghe Inglese, Svedese, Danese, Polacca e Speedway of Nations</div>
+            <div class="mode-choice-title" data-i18n="modeTeamsTitle">Gara a Squadre / Coppie</div>
+            <div class="mode-choice-sub" data-i18n="modeTeamsSub">Leghe Inglese, Svedese, Danese, Polacca e Speedway of Nations</div>
           </div>
         </div>
         <span>▶</span>
       </button>
-      <button type="button" class="qr-btn-close" style="width:100%;padding:10px;border-radius:8px;border:none;font-weight:800;margin-top:6px;cursor:pointer;" onclick="closeModeModal()">Chiudi e resta nella gara attuale</button>
+      <button type="button" class="qr-btn-close" style="width:100%;padding:10px;border-radius:8px;border:none;font-weight:800;margin-top:6px;cursor:pointer;" onclick="closeModeModal()" data-i18n="modalStayCurrent">Chiudi e resta nella gara attuale</button>
     </div>
 
     <div id="mode-step-teams" style="display:none;">
-      <h3>👥 Scegli Campionato / Regolamento</h3>
-      <p>Ogni lega applica il proprio calendario batterie, numero piloti e regolamento punteggi:</p>
+      <h3 data-i18n="modalChooseLeagueTitle">👥 Scegli Campionato / Regolamento</h3>
+      <p data-i18n="modalChooseLeagueSub">Ogni lega applica il proprio calendario batterie, numero piloti e regolamento punteggi:</p>
       <button type="button" class="mode-choice-btn" onclick="selectAppMode('uk')">
         <div class="mode-choice-left">
           <span class="mode-choice-ico">🇬🇧</span>
           <div>
-            <div class="mode-choice-title">Lega Inglese (Premiership)</div>
-            <div class="mode-choice-sub">15 Batterie • 7 Piloti per squadra (#6-#7 Riserve) • Pt 3-2-1-0</div>
+            <div class="mode-choice-title" data-i18n="leagueUkTitle">Lega Inglese (Premiership)</div>
+            <div class="mode-choice-sub" data-i18n="leagueUkSub">15 Batterie • 7 Piloti per squadra (#6-#7 Riserve) • Pt 3-2-1-0</div>
           </div>
         </div>
         <span>▶</span>
@@ -292,8 +298,8 @@
         <div class="mode-choice-left">
           <span class="mode-choice-ico">🇸🇪</span>
           <div>
-            <div class="mode-choice-title">Lega Svedese (Bauhaus-Ligan)</div>
-            <div class="mode-choice-sub">15 Batterie • 7 Piloti per squadra (#6-#7 Riserve) • Pt 3-2-1-0</div>
+            <div class="mode-choice-title" data-i18n="leagueSeTitle">Lega Svedese (Bauhaus-Ligan)</div>
+            <div class="mode-choice-sub" data-i18n="leagueSeSub">15 Batterie • 7 Piloti per squadra (#6-#7 Riserve) • Pt 3-2-1-0</div>
           </div>
         </div>
         <span>▶</span>
@@ -302,8 +308,8 @@
         <div class="mode-choice-left">
           <span class="mode-choice-ico">🇩🇰</span>
           <div>
-            <div class="mode-choice-title">Lega Danese (Speedway Ligaen)</div>
-            <div class="mode-choice-sub">14 Batterie (12-14 Nominate) • 5 Piloti per squadra • Pt 3-2-1-0</div>
+            <div class="mode-choice-title" data-i18n="leagueDkTitle">Lega Danese (Speedway Ligaen)</div>
+            <div class="mode-choice-sub" data-i18n="leagueDkSub">14 Batterie (12-14 Nominate) • 5 Piloti per squadra • Pt 3-2-1-0</div>
           </div>
         </div>
         <span>▶</span>
@@ -312,8 +318,8 @@
         <div class="mode-choice-left">
           <span class="mode-choice-ico">🇵🇱</span>
           <div>
-            <div class="mode-choice-title">Lega Polacca (PGE Ekstraliga)</div>
-            <div class="mode-choice-sub">15 Batterie (H2 Junior, H14-15 Nom.) • 8 Piloti • Pt 3-2-1-0</div>
+            <div class="mode-choice-title" data-i18n="leaguePlTitle">Lega Polacca (PGE Ekstraliga)</div>
+            <div class="mode-choice-sub" data-i18n="leaguePlSub">15 Batterie (H2 Junior, H14-15 Nom.) • 8 Piloti • Pt 3-2-1-0</div>
           </div>
         </div>
         <span>▶</span>
@@ -322,13 +328,13 @@
         <div class="mode-choice-left">
           <span class="mode-choice-ico">🌍</span>
           <div>
-            <div class="mode-choice-title">Speedway of Nations (FIM SON)</div>
-            <div class="mode-choice-sub">Gara a Coppie • 3 Piloti per Nazione • Punteggio SON 4-3-2-0</div>
+            <div class="mode-choice-title" data-i18n="leagueSonTitle">Speedway of Nations (FIM SON)</div>
+            <div class="mode-choice-sub" data-i18n="leagueSonSub">Gara a Coppie • 3 Piloti per Nazione • Punteggio SON 4-3-2-0</div>
           </div>
         </div>
         <span>▶</span>
       </button>
-      <button type="button" class="qr-btn-close" style="width:100%;padding:10px;border-radius:8px;border:none;font-weight:800;margin-top:6px;cursor:pointer;" onclick="showTeamSubmenu(false)">◀ Torna Indietro</button>
+      <button type="button" class="qr-btn-close" style="width:100%;padding:10px;border-radius:8px;border:none;font-weight:800;margin-top:6px;cursor:pointer;" onclick="showTeamSubmenu(false)" data-i18n="btnBack">◀ Torna Indietro</button>
     </div>
   </div>
 </div>
@@ -365,7 +371,7 @@
     <div class="card-box">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
         <h2 data-i18n="evSectionTitle" style="margin-bottom:0;">🏟️ Dati Evento & Pista</h2>
-        <button type="button" class="btn-mini" onclick="openModeModal()" id="ev-current-mode-pill">🏁 Cambia Formato</button>
+        <button type="button" class="btn-mini" onclick="openModeModal()" id="ev-current-mode-pill">🏁 Formato</button>
       </div>
       <div class="form-grid">
         <div class="form-group full">
@@ -420,13 +426,21 @@
     </div>
   </div>
 
-  <!-- SEZIONE 2: PILOTI + OCR FOTO -->
+  <!-- SEZIONE 2: PILOTI + OCR FOTO AD ALTA PRECISIONE -->
   <div id="tab-riders" class="tab-content">
     <div class="card-box">
       <h2 data-i18n="ridersSectionTitle">🏍️ Inserimento Rapido Piloti (OCR / Testo)</h2>
       <p style="font-size:0.75rem; color:var(--muted); margin-bottom:10px; line-height:1.35;" data-i18n="ridersOcrDesc">
         Scatta una foto nitida all'elenco piloti, caricala dalla galleria oppure incolla il testo dell'elenco iscritti.
       </p>
+
+      <!-- Selettore squadra target per OCR/Testo (visibile nelle gare a squadre) -->
+      <div class="ocr-team-target" id="ocr-team-target-bar">
+        <button type="button" id="ocr-target-both" class="active" onclick="setOcrTarget('both')" data-i18n="ocrTargetBoth">Entrambe</button>
+        <button type="button" id="ocr-target-a" onclick="setOcrTarget('a')" data-i18n="ocrTargetHome">🔴🔵 Casa</button>
+        <button type="button" id="ocr-target-b" onclick="setOcrTarget('b')" data-i18n="ocrTargetAway">⚪🟡 Ospiti</button>
+      </div>
+
       <div class="photo-btn-grid">
         <label class="btn-secondary" for="ocr-camera-input">
           <span data-i18n="btnTakePhoto">📸 Scatta Foto</span>
@@ -473,7 +487,7 @@
       </div>
     </div>
 
-    <!-- Pulsanti Scambio Corsia tra Compagni di Squadra (visibili nelle gare a coppie/squadre) -->
+    <!-- Pulsanti Scambio Corsia tra Compagni di Squadra -->
     <div id="team-swap-lanes-box"></div>
 
     <div id="auto-finals-box"></div>
@@ -523,7 +537,7 @@
     <div class="card-box">
       <h2 data-i18n="histSectionTitle">💾 Gestione & Archivio Gare</h2>
       <button type="button" class="btn-primary" style="margin-bottom:8px;" onclick="saveCurrentToArchive()" data-i18n="btnSaveArchive">📥 Salva Gara Corrente nello Storico</button>
-      <button type="button" class="btn-secondary" style="margin-bottom:10px;" onclick="openModeModal()">➕ Inizia Nuova Gara (Scegli Formato)</button>
+      <button type="button" class="btn-secondary" style="margin-bottom:10px;" onclick="openModeModal()" data-i18n="btnNewCleanRace">➕ Inizia Nuova Gara (Scegli Formato)</button>
       <div class="backup-grid">
         <button type="button" class="btn-backup" onclick="exportBackupJson()" data-i18n="btnExportJson">⬇️ Esporta Backup (.json)</button>
         <label class="btn-backup" for="import-json-input">
@@ -599,9 +613,30 @@
     { code: 'sv', name: 'Svenska',  flag: '🇸🇪' }
   ];
 
+  /* DIZIONARIO COMPLETO AL 100% PER TUTTE LE 5 LINGUE (INCLUSE LEGHE E SQUADRE) */
   const I18N = {
     it: {
       navEvent: "Evento", navRiders: "Piloti", navHeats: "Batterie", navCard: "Tabellone", navStandings: "Classifica", navHistory: "Storico", navSettings: "Setting",
+      btnTopFormat: "Formato", homeBadge: "CASA", awayBadge: "OSPITI",
+      teamHomeDef: "Squadra Casa", teamAwayDef: "Squadra Ospiti", nationADef: "Nazione A", nationBDef: "Nazione B",
+      teamHomePh: "Nome Squadra Casa", teamAwayPh: "Nome Squadra Ospiti",
+      modalChooseTypeTitle: "🏁 Scegli il Tipo di Gara",
+      modalChooseTypeSub: "Seleziona se vuoi gestire una gara individuale oppure una gara a squadre / coppie:",
+      modeSgpTitle: "Gara Individuale (FIM SGP)", modeSgpSub: "16 Piloti + 2 Riserve • 20 Batterie + LCQ 1&2 + Finale",
+      modeTeamsTitle: "Gara a Squadre / Coppie", modeTeamsSub: "Leghe Inglese, Svedese, Danese, Polacca e Speedway of Nations",
+      modalStayCurrent: "Chiudi e resta nella gara attuale",
+      modalChooseLeagueTitle: "👥 Scegli Campionato / Regolamento",
+      modalChooseLeagueSub: "Ogni lega applica il proprio calendario batterie, numero piloti e regolamento punteggi:",
+      leagueUkTitle: "Lega Inglese (Premiership)", leagueUkSub: "15 Batterie • 7 Piloti per squadra (#6-#7 Riserve) • Pt 3-2-1-0",
+      leagueSeTitle: "Lega Svedese (Bauhaus-Ligan)", leagueSeSub: "15 Batterie • 7 Piloti per squadra (#6-#7 Riserve) • Pt 3-2-1-0",
+      leagueDkTitle: "Lega Danese (Speedway Ligaen)", leagueDkSub: "14 Batterie (12-14 Nominate) • 5 Piloti per squadra • Pt 3-2-1-0",
+      leaguePlTitle: "Lega Polacca (PGE Ekstraliga)", leaguePlSub: "15 Batterie (H2 Junior, H14-15 Nom.) • 8 Piloti • Pt 3-2-1-0",
+      leagueSonTitle: "Speedway of Nations (FIM SON)", leagueSonSub: "Gara a Coppie • 3 Piloti per Nazione • Punteggio SON 4-3-2-0",
+      btnBack: "◀ Torna Indietro",
+      confirmChangeMode: "Vuoi cambiare formato gara e iniziare una nuova competizione?",
+      ocrTargetBoth: "Entrambe le Squadre", ocrTargetHome: "🔴🔵 Solo Casa", ocrTargetAway: "⚪🟡 Solo Ospiti",
+      roleReserve: "Riserva", roleRisingStar: "Rising Star", roleJunior: "Junior U21", roleU24: "Riserva U24", roleCapt: "Capitano #1", roleMain: "Titolare #2", roleU21: "Under 21 #3",
+      swapRedBlue: "🔴 Rosso ↔ 🔵 Blu", swapWhiteYellow: "⚪ Bianco ↔ 🟡 Giallo", partialLbl: "Parziale:", totalLbl: "TOTALE:",
       evSectionTitle: "🏟️ Dati Evento & Pista", evNameLbl: "Nome della Gara / Evento", evNamePh: "Es. FIM Speedway GP / Finale Lega",
       evDateLbl: "Data", evTrackLbl: "Nome Pista / Stadio", evTrackPh: "Es. Motoarena", evCityLbl: "Luogo / Città", evCityPh: "Es. Torun",
       evCountryLbl: "Stato / Nazione", evCountryPh: "Es. Polonia 🇵🇱", evLenLbl: "Lunghezza Pista (m)", evLenPh: "Es. 318m",
@@ -633,21 +668,42 @@
       legFinalDirect: "1°-2°: Finale Diretta", legLcq: "3°-10°: LCQ 1 & 2", legPtsInfo: "TOT = Pt Batterie • SGP = Pt Mondiale GP",
       codeR: "Ritirato", codeF: "Caduto", codeX: "Escluso", codeT: "Nastro", codeNS: "Non partito",
       histSectionTitle: "💾 Gestione & Archivio Gare", btnSaveArchive: "📥 Salva Gara Corrente nello Storico",
+      btnNewCleanRace: "➕ Inizia Nuova Gara (Scegli Formato)",
       btnExportJson: "⬇️ Esporta Backup (.json)", btnImportJson: "⬆️ Importa Backup (.json)",
       emptyHistory: "Nessuna gara salvata nello storico.", btnOpenRace: "📂 Apri / Rivedi", btnDelRace: "🗑️ Elimina",
       raceInProgress: "Gara in corso", setSectionTitle: "⚙️ Impostazioni & Lingua",
       setLangDesc: "Seleziona la lingua dell'applicazione. Tutte le schermate, le tabelle e le locandine verranno tradotte automaticamente.",
       qrTitle: "📲 Condividi Speedway Live", qrDesc: "Fai inquadrare questo QR Code con la fotocamera per aprire e installare l'app:",
       qrShareBtn: "📤 Invia Link", qrCloseBtn: "Chiudi", riderDefault: "Pilota", reserveDefault: "Riserva",
-      posterStandings: "CLASSIFICA UFFICIALE", posterCard: "TABELLONE GARA", posterPodium: "🏆 ORDINE D'ARRIVO FINALE (BATTERIA 23)",
+      posterStandings: "CLASSIFICA UFFICIALE", posterCard: "TABELLONE GARA", posterPodium: "🏆 ORDINE D'ARRIVO FINALE (BATTERIA 23)", posterTeamRes: "🏆 RISULTATO SQUADRE",
       confirmFullReset: "Vuoi svuotare tutti i dati inseriti e ripartire da zero?",
       confirmClearEvent: "Vuoi svuotare tutti i campi della scheda Evento e la foto pista?",
-      confirmResetRiders: "Vuoi ripristinare i nomi predefiniti dei piloti?",
+      confirmResetRiders: "Vuoi ripristinare i nomi predefiniti dei piloti e delle squadre?",
       confirmResetScores: "Vuoi azzerare tutti i punteggi, i tempi e i piazzamenti mantenendo i piloti?",
       savedToHistoryMsg: "✅ Gara salvata correttamente nello Storico!", confirmDelHistory: "Eliminare definitivamente questa gara dallo storico?"
     },
     en: {
       navEvent: "Event", navRiders: "Riders", navHeats: "Heats", navCard: "Scorecard", navStandings: "Standings", navHistory: "History", navSettings: "Settings",
+      btnTopFormat: "Format", homeBadge: "HOME", awayBadge: "AWAY",
+      teamHomeDef: "Home Team", teamAwayDef: "Away Team", nationADef: "Nation A", nationBDef: "Nation B",
+      teamHomePh: "Home Team Name", teamAwayPh: "Away Team Name",
+      modalChooseTypeTitle: "🏁 Select Meeting Format",
+      modalChooseTypeSub: "Choose whether to manage an individual meeting or a team / pairs match:",
+      modeSgpTitle: "Individual Meeting (FIM SGP)", modeSgpSub: "16 Riders + 2 Reserves • 20 Heats + LCQ 1&2 + Final",
+      modeTeamsTitle: "Team / Pairs Meeting", modeTeamsSub: "British, Swedish, Danish, Polish Leagues & Speedway of Nations",
+      modalStayCurrent: "Close and stay in current meeting",
+      modalChooseLeagueTitle: "👥 Select League / Rules",
+      modalChooseLeagueSub: "Each league applies its official heat schedule, squad size and scoring system:",
+      leagueUkTitle: "British League (Premiership)", leagueUkSub: "15 Heats • 7 Riders per team (#6-#7 Reserves) • Pts 3-2-1-0",
+      leagueSeTitle: "Swedish League (Bauhaus-Ligan)", leagueSeSub: "15 Heats • 7 Riders per team (#6-#7 Reserves) • Pts 3-2-1-0",
+      leagueDkTitle: "Danish League (Speedway Ligaen)", leagueDkSub: "14 Heats (12-14 Nominated) • 5 Riders per team • Pts 3-2-1-0",
+      leaguePlTitle: "Polish League (PGE Ekstraliga)", leaguePlSub: "15 Heats (H2 Junior, H14-15 Nom.) • 8 Riders • Pts 3-2-1-0",
+      leagueSonTitle: "Speedway of Nations (FIM SON)", leagueSonSub: "Pairs Meeting • 3 Riders per Nation • SON Scoring 4-3-2-0",
+      btnBack: "◀ Back",
+      confirmChangeMode: "Do you want to change format and start a new competition?",
+      ocrTargetBoth: "Both Teams", ocrTargetHome: "🔴🔵 Home Only", ocrTargetAway: "⚪🟡 Away Only",
+      roleReserve: "Reserve", roleRisingStar: "Rising Star", roleJunior: "Junior U21", roleU24: "U24 Reserve", roleCapt: "Captain #1", roleMain: "Rider #2", roleU21: "Under 21 #3",
+      swapRedBlue: "🔴 Red ↔ 🔵 Blue", swapWhiteYellow: "⚪ White ↔ 🟡 Yellow", partialLbl: "Heat Score:", totalLbl: "TOTAL:",
       evSectionTitle: "🏟️ Event & Track Info", evNameLbl: "Event / Meeting Name", evNamePh: "E.g. FIM Speedway GP / League Match",
       evDateLbl: "Date", evTrackLbl: "Track / Stadium Name", evTrackPh: "E.g. Motoarena", evCityLbl: "City / Location", evCityPh: "E.g. Torun",
       evCountryLbl: "Country", evCountryPh: "E.g. Poland 🇵🇱", evLenLbl: "Track Length (m)", evLenPh: "E.g. 318m",
@@ -679,21 +735,42 @@
       legFinalDirect: "1st-2nd: Direct Final", legLcq: "3rd-10th: LCQ 1 & 2", legPtsInfo: "TOT = Heats Pts • SGP = World Champ. Pts",
       codeR: "Retired", codeF: "Fell", codeX: "Excluded", codeT: "Tapes", codeNS: "Not Started",
       histSectionTitle: "💾 Meeting Archive & Backup", btnSaveArchive: "📥 Save Current Meeting to History",
+      btnNewCleanRace: "➕ Start New Meeting (Select Format)",
       btnExportJson: "⬇️ Export Backup (.json)", btnImportJson: "⬆️ Import Backup (.json)",
       emptyHistory: "No meetings saved in history.", btnOpenRace: "📂 Open / View", btnDelRace: "🗑️ Delete",
       raceInProgress: "Meeting in progress", setSectionTitle: "⚙️ Settings & Language",
       setLangDesc: "Select application language. All screens, scorecards and exported posters will be translated automatically.",
       qrTitle: "📲 Share Speedway Live", qrDesc: "Scan this QR Code with a smartphone camera to open and install the app:",
       qrShareBtn: "📤 Share Link", qrCloseBtn: "Close", riderDefault: "Rider", reserveDefault: "Reserve",
-      posterStandings: "OFFICIAL STANDINGS", posterCard: "RACE SCORECARD", posterPodium: "🏆 FINAL RESULT (HEAT 23)",
+      posterStandings: "OFFICIAL STANDINGS", posterCard: "RACE SCORECARD", posterPodium: "🏆 FINAL RESULT (HEAT 23)", posterTeamRes: "🏆 TEAM MATCH RESULT",
       confirmFullReset: "Do you want to clear all data and start fresh?",
       confirmClearEvent: "Do you want to clear all Event & Track fields?",
-      confirmResetRiders: "Do you want to reset default rider names?",
+      confirmResetRiders: "Do you want to reset default rider and team names?",
       confirmResetScores: "Do you want to reset all heat scores and times keeping rider names?",
       savedToHistoryMsg: "✅ Meeting saved to History!", confirmDelHistory: "Permanently delete this meeting from history?"
     },
     pl: {
       navEvent: "Zawody", navRiders: "Zawodnicy", navHeats: "Biegi", navCard: "Tabela", navStandings: "Klasyfikacja", navHistory: "Historia", navSettings: "Ustawienia",
+      btnTopFormat: "Format", homeBadge: "GOSPODARZE", awayBadge: "GOŚCIE",
+      teamHomeDef: "Gospodarze", teamAwayDef: "Goście", nationADef: "Reprezentacja A", nationBDef: "Reprezentacja B",
+      teamHomePh: "Nazwa Drużyny Gospodarzy", teamAwayPh: "Nazwa Drużyny Gości",
+      modalChooseTypeTitle: "🏁 Wybierz Rodzaj Zawodów",
+      modalChooseTypeSub: "Wybierz turniej indywidualny lub mecz ligowy / parowy:",
+      modeSgpTitle: "Turniej Indywidualny (FIM SGP)", modeSgpSub: "16 Zawodników + 2 Rezerwy • 20 Biegów + LCQ 1&2 + Finał",
+      modeTeamsTitle: "Mecz Drużynowy / Parowy", modeTeamsSub: "Liga Polska, Angielska, Szwedzka, Duńska i Speedway of Nations",
+      modalStayCurrent: "Zamknij i pozostań w obecnych zawodach",
+      modalChooseLeagueTitle: "👥 Wybierz Ligę / Regulamin",
+      modalChooseLeagueSub: "Każda liga posiada własną tabelę biegową, składy i punktację:",
+      leagueUkTitle: "Liga Angielska (Premiership)", leagueUkSub: "15 Biegów • 7 Zawodników (#6-#7 Rezerwy) • Pkt 3-2-1-0",
+      leagueSeTitle: "Liga Szwedzka (Bauhaus-Ligan)", leagueSeSub: "15 Biegów • 7 Zawodników (#6-#7 Rezerwy) • Pkt 3-2-1-0",
+      leagueDkTitle: "Liga Duńska (Speedway Ligaen)", leagueDkSub: "14 Biegów (12-14 Nominowane) • 5 Zawodników • Pkt 3-2-1-0",
+      leaguePlTitle: "Liga Polska (PGE Ekstraliga)", leaguePlSub: "15 Biegów (Bieg 2 Juniorzy, 14-15 Nom.) • 8 Zawodników • Pkt 3-2-1-0",
+      leagueSonTitle: "Speedway of Nations (FIM SON)", leagueSonSub: "Zawody Parowe • 3 Zawodników • Punktacja SON 4-3-2-0",
+      btnBack: "◀ Wróć",
+      confirmChangeMode: "Czy chcesz zmienić format zawodów i rozpocząć nowy mecz?",
+      ocrTargetBoth: "Obie Drużyny", ocrTargetHome: "🔴🔵 Gospodarze", ocrTargetAway: "⚪🟡 Goście",
+      roleReserve: "Rezerwa", roleRisingStar: "Rising Star", roleJunior: "Junior U21", roleU24: "Rezerwa U24", roleCapt: "Kapitan #1", roleMain: "Zawodnik #2", roleU21: "Junior U21 #3",
+      swapRedBlue: "🔴 Czerwony ↔ 🔵 Niebieski", swapWhiteYellow: "⚪ Biały ↔ 🟡 Żółty", partialLbl: "Wynik biegu:", totalLbl: "RAZEM:",
       evSectionTitle: "🏟️ Dane Zawodów i Toru", evNameLbl: "Nazwa Zawodów / Meczu", evNamePh: "Np. PGE Ekstraliga / SGP",
       evDateLbl: "Data", evTrackLbl: "Nazwa Toru / Stadionu", evTrackPh: "Np. Motoarena", evCityLbl: "Miasto", evCityPh: "Np. Toruń",
       evCountryLbl: "Kraj", evCountryPh: "Np. Polska 🇵🇱", evLenLbl: "Długość Toru (m)", evLenPh: "Np. 318m",
@@ -722,18 +799,39 @@
       legFinalDirect: "1-2: Finał", legLcq: "3-10: LCQ 1 i 2", legPtsInfo: "PKT = Punkty biegowe",
       codeR: "Defekt", codeF: "Upadek", codeX: "Wykluczony", codeT: "Taśma", codeNS: "Nie stanął",
       histSectionTitle: "💾 Archiwum Zawodów", btnSaveArchive: "📥 Zapisz Zawody w Historii",
+      btnNewCleanRace: "➕ Nowe Zawody (Wybierz Format)",
       btnExportJson: "⬇️ Eksportuj (.json)", btnImportJson: "⬆️ Importuj (.json)",
       emptyHistory: "Brak zapisanych zawodów.", btnOpenRace: "📂 Otwórz", btnDelRace: "🗑️ Usuń",
       raceInProgress: "Zawody w trakcie", setSectionTitle: "⚙️ Ustawienia i Język",
       setLangDesc: "Wybierz język aplikacji.", qrTitle: "📲 Udostępnij Speedway Live", qrDesc: "Zeskanuj kod QR aparatem telefonu:",
       qrShareBtn: "📤 Wyślij Link", qrCloseBtn: "Zamknij", riderDefault: "Zawodnik", reserveDefault: "Rezerwa",
-      posterStandings: "OFICJALNA KLASYFIKACJA", posterCard: "TABELA BIEGOWA", posterPodium: "🏆 WYNIKI FINAŁU",
+      posterStandings: "OFICJALNA KLASYFIKACJA", posterCard: "TABELA BIEGOWA", posterPodium: "🏆 WYNIKI FINAŁU", posterTeamRes: "🏆 WYNIK MECZU DRUŻYNOWEGO",
       confirmFullReset: "Czy na pewno chcesz wyczyścić wszystkie dane?", confirmClearEvent: "Wyczyścić dane zawodów?",
-      confirmResetRiders: "Przywrócić domyślne nazwy zawodników?", confirmResetScores: "Wyzerować wszystkie punkty i czasy?",
+      confirmResetRiders: "Przywrócić domyślne nazwy zawodników i drużyn?", confirmResetScores: "Wyzerować wszystkie punkty i czasy?",
       savedToHistoryMsg: "✅ Zapisano w Historii!", confirmDelHistory: "Usunąć te zawody z historii?"
     },
     da: {
       navEvent: "Løb", navRiders: "Kørere", navHeats: "Heats", navCard: "Skema", navStandings: "Stilling", navHistory: "Historik", navSettings: "Setting",
+      btnTopFormat: "Format", homeBadge: "HJEMME", awayBadge: "UDE",
+      teamHomeDef: "Hjemmehold", teamAwayDef: "Udehold", nationADef: "Nation A", nationBDef: "Nation B",
+      teamHomePh: "Hjemmeholdets Navn", teamAwayPh: "Udeholdets Navn",
+      modalChooseTypeTitle: "🏁 Vælg Løbstype",
+      modalChooseTypeSub: "Vælg om du vil styre et individuelt løb eller en holdmatch / parløb:",
+      modeSgpTitle: "Individuelt Løb (FIM SGP)", modeSgpSub: "16 Kørere + 2 Reserver • 20 Heats + LCQ 1&2 + Finale",
+      modeTeamsTitle: "Holdmatch / Parløb", modeTeamsSub: "Dansk, Engelsk, Svensk, Polsk Liga & Speedway of Nations",
+      modalStayCurrent: "Luk og bliv i nuværende løb",
+      modalChooseLeagueTitle: "👥 Vælg Liga / Regler",
+      modalChooseLeagueSub: "Hver liga bruger sit eget heatprogram, holdstørrelse og pointsystem:",
+      leagueUkTitle: "Engelsk Liga (Premiership)", leagueUkSub: "15 Heats • 7 Kørere pr. hold (#6-#7 Reserver) • Pt 3-2-1-0",
+      leagueSeTitle: "Svensk Liga (Bauhaus-Ligan)", leagueSeSub: "15 Heats • 7 Kørere pr. hold (#6-#7 Reserver) • Pt 3-2-1-0",
+      leagueDkTitle: "Dansk Liga (Speedway Ligaen)", leagueDkSub: "14 Heats (12-14 Nominerede) • 5 Kørere pr. hold • Pt 3-2-1-0",
+      leaguePlTitle: "Polsk Liga (PGE Ekstraliga)", leaguePlSub: "15 Heats (H2 Junior, H14-15 Nom.) • 8 Kørere • Pt 3-2-1-0",
+      leagueSonTitle: "Speedway of Nations (FIM SON)", leagueSonSub: "Parløb • 3 Kørere pr. Nation • SON Point 4-3-2-0",
+      btnBack: "◀ Tilbage",
+      confirmChangeMode: "Vil du skifte format og starte en ny match?",
+      ocrTargetBoth: "Begge Hold", ocrTargetHome: "🔴🔵 Kun Hjemme", ocrTargetAway: "⚪🟡 Kun Ude",
+      roleReserve: "Reserve", roleRisingStar: "Rising Star", roleJunior: "Junior U21", roleU24: "U24 Reserve", roleCapt: "Kaptajn #1", roleMain: "Kører #2", roleU21: "Under 21 #3",
+      swapRedBlue: "🔴 Rød ↔ 🔵 Blå", swapWhiteYellow: "⚪ Hvid ↔ 🟡 Gul", partialLbl: "Heat:", totalLbl: "TOTAL:",
       evSectionTitle: "🏟️ Løbs- & Baneinfo", evNameLbl: "Løbsnavn / Match", evNamePh: "F.eks. Speedway Ligaen / SGP",
       evDateLbl: "Dato", evTrackLbl: "Bane / Stadion", evTrackPh: "F.eks. Vojens", evCityLbl: "By", evCityPh: "F.eks. Vojens",
       evCountryLbl: "Land", evCountryPh: "F.eks. Danmark 🇩🇰", evLenLbl: "Banelængde (m)", evLenPh: "F.eks. 300m",
@@ -741,7 +839,7 @@
       btnTakePhoto: "📸 Tag Foto", btnFromGallery: "🖼️ Fra Galleri", btnLoadPhoto: "🖼️ Indlæs Foto",
       btnGoToRiders: "Gå til Kørere ▶", btnGoToHeats: "Gå til Heats ▶",
       btnClearEvent: "🗑️ Ryd Løbsinfo", btnFullReset: "🗑️ Nulstil Alt",
-      ridersSectionTitle: "🏍️ Hurtig Indtastning af Kørere", ridersOcrDesc: "Tag et billede af startlisten eller indsæt som tekst.",
+      ridersSectionTitle: "🏍️ Hurtig Indtastning af Kørere", ridersOcrDesc: "Tag et skarpt billede af startlisten eller indsæt som tekst.",
       btnPasteList: "📋 Indsæt kørerliste", btnApplyPaste: "✅ Anvend Liste",
       btnResetRiders: "🗑️ Nulstil Kørernavne", btnResetScores: "🔄 Nulstil Point & Heattider",
       btnPrev: "◀ Forrige", btnNext: "Næste ▶", heatTimeLbl: "Tid:", bestTimeLbl: "⚡ Bedste:",
@@ -761,18 +859,39 @@
       legFinalDirect: "1.-2.: Direkte i Finale", legLcq: "3.-10.: LCQ 1 & 2", legPtsInfo: "TOT = Heatpoint",
       codeR: "Udgået", codeF: "Styrt", codeX: "Udelukket", codeT: "Bånd", codeNS: "Ikke startet",
       histSectionTitle: "💾 Løbsarkiv & Backup", btnSaveArchive: "📥 Gem Nuværende Løb",
+      btnNewCleanRace: "➕ Start Nyt Løb (Vælg Format)",
       btnExportJson: "⬇️ Eksporter (.json)", btnImportJson: "⬆️ Importer (.json)",
       emptyHistory: "Ingen gemte løb.", btnOpenRace: "📂 Åbn", btnDelRace: "🗑️ Slet",
       raceInProgress: "Løb i gang", setSectionTitle: "⚙️ Indstillinger & Sprog",
       setLangDesc: "Vælg sprog.", qrTitle: "📲 Del Speedway Live", qrDesc: "Scan denne QR-kode:",
       qrShareBtn: "📤 Del Link", qrCloseBtn: "Luk", riderDefault: "Kører", reserveDefault: "Reserve",
-      posterStandings: "OFFICIEL STILLING", posterCard: "LØBSSKEMA", posterPodium: "🏆 FINALERESULTAT",
+      posterStandings: "OFFICIEL STILLING", posterCard: "LØBSSKEMA", posterPodium: "🏆 FINALERESULTAT", posterTeamRes: "🏆 HOLDMATCH RESULTAT",
       confirmFullReset: "Vil du slette alle data?", confirmClearEvent: "Ryd Løbsinfo?",
-      confirmResetRiders: "Nulstil kørernavne?", confirmResetScores: "Nulstil alle point og tider?",
+      confirmResetRiders: "Nulstil kører- og holdnavne?", confirmResetScores: "Nulstil alle point og tider?",
       savedToHistoryMsg: "✅ Løbet er gemt!", confirmDelHistory: "Slet dette løb?"
     },
     sv: {
       navEvent: "Tävling", navRiders: "Förare", navHeats: "Heat", navCard: "Tabell", navStandings: "Ställning", navHistory: "Historik", navSettings: "Setting",
+      btnTopFormat: "Format", homeBadge: "HEMMA", awayBadge: "BORTA",
+      teamHomeDef: "Hemmalag", teamAwayDef: "Bortalag", nationADef: "Nation A", nationBDef: "Nation B",
+      teamHomePh: "Hemmalagets Namn", teamAwayPh: "Bortalagets Namn",
+      modalChooseTypeTitle: "🏁 Välj Tävlingsformat",
+      modalChooseTypeSub: "Välj om du vill hantera en individuell tävling eller en lag-/parmatch:",
+      modeSgpTitle: "Individuell Tävling (FIM SGP)", modeSgpSub: "16 Förare + 2 Reserver • 20 Heat + LCQ 1&2 + Final",
+      modeTeamsTitle: "Lag- / Parmatch", modeTeamsSub: "Svenska, Engelska, Danska, Polska Ligan & Speedway of Nations",
+      modalStayCurrent: "Stäng och stanna i aktuell tävling",
+      modalChooseLeagueTitle: "👥 Välj Liga / Regler",
+      modalChooseLeagueSub: "Varje liga använder sitt officiella körschema, lagstorlek och poängsystem:",
+      leagueUkTitle: "Engelska Ligan (Premiership)", leagueUkSub: "15 Heat • 7 Förare per lag (#6-#7 Reserver) • P 3-2-1-0",
+      leagueSeTitle: "Svenska Ligan (Bauhaus-Ligan)", leagueSeSub: "15 Heat • 7 Förare per lag (#6-#7 Reserver) • P 3-2-1-0",
+      leagueDkTitle: "Danska Ligan (Speedway Ligaen)", leagueDkSub: "14 Heat (12-14 Nominerade) • 5 Förare per lag • P 3-2-1-0",
+      leaguePlTitle: "Polska Ligan (PGE Ekstraliga)", leaguePlSub: "15 Heat (H2 Junior, H14-15 Nom.) • 8 Förare • P 3-2-1-0",
+      leagueSonTitle: "Speedway of Nations (FIM SON)", leagueSonSub: "Partävling • 3 Förare per Nation • SON Poäng 4-3-2-0",
+      btnBack: "◀ Tillbaka",
+      confirmChangeMode: "Vill du byta format och starta en ny tävling?",
+      ocrTargetBoth: "Båda Lagen", ocrTargetHome: "🔴🔵 Endast Hemma", ocrTargetAway: "⚪🟡 Endast Borta",
+      roleReserve: "Reserv", roleRisingStar: "Rising Star", roleJunior: "Junior U21", roleU24: "U24 Reserv", roleCapt: "Kapten #1", roleMain: "Förare #2", roleU21: "Under 21 #3",
+      swapRedBlue: "🔴 Röd ↔ 🔵 Blå", swapWhiteYellow: "⚪ Vit ↔ 🟡 Gul", partialLbl: "Heat:", totalLbl: "TOTALT:",
       evSectionTitle: "🏟️ Tävlings- & Baninfo", evNameLbl: "Tävlingsnamn / Match", evNamePh: "T.ex. Bauhaus-Ligan / SGP",
       evDateLbl: "Datum", evTrackLbl: "Bana / Arena", evTrackPh: "T.ex. Målilla", evCityLbl: "Stad / Ort", evCityPh: "T.ex. Målilla",
       evCountryLbl: "Land", evCountryPh: "T.ex. Sverige 🇸🇪", evLenLbl: "Banlängd (m)", evLenPh: "T.ex. 305m",
@@ -780,7 +899,7 @@
       btnTakePhoto: "📸 Ta Foto", btnFromGallery: "🖼️ Från Galleri", btnLoadPhoto: "🖼️ Ladda Foto",
       btnGoToRiders: "Gå till Förare ▶", btnGoToHeats: "Gå till Heat ▶",
       btnClearEvent: "🗑️ Rensa Tävlingsinfo", btnFullReset: "🗑️ Återställ Allt",
-      ridersSectionTitle: "🏍️ Snabbinmatning av Förare", ridersOcrDesc: "Ta ett foto av startlistan eller klistra in som text.",
+      ridersSectionTitle: "🏍️ Snabbinmatning av Förare", ridersOcrDesc: "Ta ett skarpt foto av startlistan eller klistra in som text.",
       btnPasteList: "📋 Klistra in förarlista", btnApplyPaste: "✅ Använd Lista",
       btnResetRiders: "🗑️ Återställ Förarnamn", btnResetScores: "🔄 Nollställ Poäng & Heattider",
       btnPrev: "◀ Föreg", btnNext: "Nästa ▶", heatTimeLbl: "Tid:", bestTimeLbl: "⚡ Bästa:",
@@ -800,14 +919,15 @@
       legFinalDirect: "1:a-2:a: Direkt till Final", legLcq: "3:a-10:a: LCQ 1 & 2", legPtsInfo: "TOT = Heatpoäng",
       codeR: "Bröt", codeF: "Omkull", codeX: "Utesluten", codeT: "Tejp", codeNS: "Ej startat",
       histSectionTitle: "💾 Tävlingsarkiv & Backup", btnSaveArchive: "📥 Spara Aktuell Tävling",
+      btnNewCleanRace: "➕ Starta Ny Tävling (Välj Format)",
       btnExportJson: "⬇️ Exportera (.json)", btnImportJson: "⬆️ Importera (.json)",
       emptyHistory: "Inga sparade tävlingar.", btnOpenRace: "📂 Öppna", btnDelRace: "🗑️ Radera",
       raceInProgress: "Tävling pågår", setSectionTitle: "⚙️ Inställningar & Språk",
       setLangDesc: "Välj språk.", qrTitle: "📲 Dela Speedway Live", qrDesc: "Skanna denna QR-kod:",
       qrShareBtn: "📤 Dela Länk", qrCloseBtn: "Stäng", riderDefault: "Förare", reserveDefault: "Reserv",
-      posterStandings: "OFFICIELL STÄLLNING", posterCard: "KÖRSCHEMA", posterPodium: "🏆 FINALRESULTAT",
+      posterStandings: "OFFICIELL STÄLLNING", posterCard: "KÖRSCHEMA", posterPodium: "🏆 FINALRESULTAT", posterTeamRes: "🏆 LAGMATCH RESULTAT",
       confirmFullReset: "Vill du rensa alla data?", confirmClearEvent: "Rensa Tävlingsinfo?",
-      confirmResetRiders: "Återställa förarnamnen?", confirmResetScores: "Nollställa alla poäng och tider?",
+      confirmResetRiders: "Återställa förar- och lagnamn?", confirmResetScores: "Nollställa alla poäng och tider?",
       savedToHistoryMsg: "✅ Tävlingen har sparats!", confirmDelHistory: "Ta bort denna tävling?"
     }
   };
@@ -817,7 +937,6 @@
   if (!I18N[currentLang]) currentLang = 'it';
   function t(key) { return (I18N[currentLang] && I18N[currentLang][key]) || I18N.it[key] || key; }
 
-  // Tabella 20 Batterie Individuale FIM SGP
   const FIM_SCHEDULE = [
     [1, 2, 3, 4], [5, 7, 6, 8], [10, 11, 9, 12], [15, 14, 16, 13],
     [13, 1, 5, 9], [14, 10, 2, 6], [11, 15, 7, 3], [4, 8, 12, 16],
@@ -826,15 +945,11 @@
     [1, 8, 15, 10], [9, 2, 7, 16], [3, 12, 13, 6], [5, 14, 11, 4]
   ];
 
-  // CONFIGURAZIONE E REGOLAMENTI DELLE 5 MODALITÀ A SQUADRE / COPPIE
-  // I piloti Casa sono ID 1..8 (Caschi Rosso 'R' e Blu 'B'), i piloti Ospiti sono ID 101..108 (Caschi Bianco 'W' e Giallo 'Y')
-  // Ogni slot batteria ha: [riderId, helmetColor] nelle 4 corsie (Corsia 1, Corsia 2, Corsia 3, Corsia 4)
   const LEAGUE_CONFIGS = {
-    sgp: { label: "🏁 Individuale FIM SGP", isTeam: false, totalHeats: 23, scores: [3,2,1,0] },
+    sgp: { titleKey: "modeSgpTitle", isTeam: false, totalHeats: 23, scores: [3,2,1,0] },
     uk: {
-      label: "🇬🇧 Lega Inglese (Premiership)", isTeam: true, ridersPerTeam: 7, totalHeats: 15, scores: [3,2,1,0],
-      roles: { 6: "Riserva", 7: "Rising Star" },
-      // 15 Heats British Premiership (H2 Reserves, H15 Nominated)
+      titleKey: "leagueUkTitle", isTeam: true, ridersPerTeam: 7, totalHeats: 15, scores: [3,2,1,0],
+      roles: { 6: "roleReserve", 7: "roleRisingStar" },
       schedule: [
         [[1,'R'], [101,'W'], [2,'B'], [102,'Y']],
         [[106,'W'], [6,'R'], [107,'Y'], [7,'B']],
@@ -850,12 +965,12 @@
         [[103,'W'], [3,'R'], [106,'Y'], [7,'B']],
         [[1,'R'], [101,'W'], [5,'B'], [105,'Y']],
         [[104,'W'], [4,'R'], [106,'Y'], [6,'B']],
-        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']] // H15 Nominated
+        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']]
       ]
     },
     se: {
-      label: "🇸🇪 Lega Svedese (Bauhaus-Ligan)", isTeam: true, ridersPerTeam: 7, totalHeats: 15, scores: [3,2,1,0],
-      roles: { 6: "Riserva", 7: "Riserva" },
+      titleKey: "leagueSeTitle", isTeam: true, ridersPerTeam: 7, totalHeats: 15, scores: [3,2,1,0],
+      roles: { 6: "roleReserve", 7: "roleReserve" },
       schedule: [
         [[1,'R'], [101,'W'], [2,'B'], [102,'Y']],
         [[106,'W'], [6,'R'], [107,'Y'], [7,'B']],
@@ -870,13 +985,13 @@
         [[4,'R'], [104,'W'], [5,'B'], [105,'Y']],
         [[102,'W'], [2,'R'], [103,'Y'], [3,'B']],
         [[1,'R'], [101,'W'], [4,'B'], [105,'Y']],
-        [[null,'W'], [null,'R'], [null,'Y'], [null,'B']], // H14 Nominated
-        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']]  // H15 Nominated
+        [[null,'W'], [null,'R'], [null,'Y'], [null,'B']],
+        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']]
       ]
     },
     dk: {
-      label: "🇩🇰 Lega Danese (Speedway Ligaen)", isTeam: true, ridersPerTeam: 5, totalHeats: 14, scores: [3,2,1,0],
-      roles: { 5: "U21 / E" },
+      titleKey: "leagueDkTitle", isTeam: true, ridersPerTeam: 5, totalHeats: 14, scores: [3,2,1,0],
+      roles: { 5: "roleJunior" },
       schedule: [
         [[1,'R'], [101,'W'], [2,'B'], [102,'Y']],
         [[103,'W'], [3,'R'], [104,'Y'], [4,'B']],
@@ -889,15 +1004,14 @@
         [[1,'R'], [102,'W'], [4,'B'], [105,'Y']],
         [[103,'W'], [2,'R'], [104,'Y'], [5,'B']],
         [[3,'R'], [101,'W'], [4,'B'], [102,'Y']],
-        [[null,'W'], [null,'R'], [null,'Y'], [null,'B']], // H12 Nominated
-        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']], // H13 Nominated
-        [[null,'W'], [null,'R'], [null,'Y'], [null,'B']]  // H14 Nominated
+        [[null,'W'], [null,'R'], [null,'Y'], [null,'B']],
+        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']],
+        [[null,'W'], [null,'R'], [null,'Y'], [null,'B']]
       ]
     },
     pl: {
-      label: "🇵🇱 Lega Polacca (PGE Ekstraliga)", isTeam: true, ridersPerTeam: 8, totalHeats: 15, scores: [3,2,1,0],
-      roles: { 6: "Junior U21", 7: "Junior U21", 8: "Riserva U24" },
-      // Tabella ufficiale 15 Batterie PGE Ekstraliga (H2 Junior, H14-15 Nominate)
+      titleKey: "leaguePlTitle", isTeam: true, ridersPerTeam: 8, totalHeats: 15, scores: [3,2,1,0],
+      roles: { 6: "roleJunior", 7: "roleJunior", 8: "roleU24" },
       schedule: [
         [[1,'R'], [101,'W'], [3,'B'], [103,'Y']],
         [[106,'W'], [6,'R'], [107,'Y'], [7,'B']],
@@ -912,14 +1026,13 @@
         [[1,'R'], [102,'W'], [4,'B'], [105,'Y']],
         [[101,'W'], [3,'R'], [107,'Y'], [7,'B']],
         [[2,'R'], [103,'W'], [5,'B'], [104,'Y']],
-        [[null,'W'], [null,'R'], [null,'Y'], [null,'B']], // H14 Nominated
-        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']]  // H15 Nominated
+        [[null,'W'], [null,'R'], [null,'Y'], [null,'B']],
+        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']]
       ]
     },
     son: {
-      label: "🌍 Speedway of Nations (FIM SON)", isTeam: true, ridersPerTeam: 3, totalHeats: 15, scores: [4,3,2,0],
-      roles: { 1: "Capitano #1", 2: "Titolare #2", 3: "Under 21 #3" },
-      // Sfida a Coppie FIM SON con Punteggio 4-3-2-0 + Grand Final Qualifier (H14) & Grand Final (H15)
+      titleKey: "leagueSonTitle", isTeam: true, ridersPerTeam: 3, totalHeats: 15, scores: [4,3,2,0],
+      roles: { 1: "roleCapt", 2: "roleMain", 3: "roleU21" },
       schedule: [
         [[1,'R'], [101,'W'], [2,'B'], [102,'Y']],
         [[101,'W'], [1,'R'], [102,'Y'], [2,'B']],
@@ -934,8 +1047,8 @@
         [[1,'R'], [101,'W'], [3,'B'], [103,'Y']],
         [[101,'W'], [1,'R'], [102,'Y'], [2,'B']],
         [[1,'R'], [101,'W'], [2,'B'], [102,'Y']],
-        [[101,'W'], [1,'R'], [102,'Y'], [2,'B']], // H14 Grand Final Qualifier
-        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']]  // H15 Grand Final
+        [[101,'W'], [1,'R'], [102,'Y'], [2,'B']],
+        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']]
       ]
     }
   };
@@ -959,6 +1072,7 @@
 
   let state = createDefaultState('sgp');
   let standingsMode = 'final';
+  let ocrTeamTarget = 'both'; // 'both', 'a', 'b'
 
   function isTeamMode(stObj) {
     const s = stObj || state;
@@ -968,6 +1082,11 @@
   function getModeConfig(stObj) {
     const s = stObj || state;
     return LEAGUE_CONFIGS[s.mode] || LEAGUE_CONFIGS.sgp;
+  }
+
+  function getModeTitle(stObj) {
+    const cfg = getModeConfig(stObj);
+    return t(cfg.titleKey);
   }
 
   function getSpecialCodes() {
@@ -1001,7 +1120,7 @@
       else if ((state.mode === 'pl' || state.mode === 'se') && hNum >= 14) base = t('heatLbl') + " " + hNum + " (" + t('nominatedLbl') + ")";
       else if (state.mode === 'uk' && hNum === 15) base = t('heatLbl') + " 15 (" + t('nominatedLbl') + ")";
       else if (state.mode === 'dk' && hNum >= 12) base = t('heatLbl') + " " + hNum + " (" + t('nominatedLbl') + ")";
-      else if (state.mode === 'pl' && hNum === 2) base = t('heatLbl') + " 2 (Junior U21)";
+      else if (state.mode === 'pl' && hNum === 2) base = t('heatLbl') + " 2 (" + t('roleJunior') + ")";
       else base = t('heatLbl') + " " + hNum;
     }
     if (includeTime && state.heats[idx] && state.heats[idx].time) {
@@ -1018,6 +1137,22 @@
       /^(Casa|Ospiti|Home|Away)\s+#?\d+$/i
     ];
     return patterns.some(rx => rx.test(name.trim()));
+  }
+
+  function isDefaultTeamName(name) {
+    if (!name) return true;
+    const allDefaults = [];
+    Object.keys(I18N).forEach(lang => {
+      ['teamHomeDef', 'teamAwayDef', 'nationADef', 'nationBDef'].forEach(k => {
+        if (I18N[lang][k]) allDefaults.push(I18N[lang][k].toLowerCase());
+      });
+    });
+    return allDefaults.includes(name.trim().toLowerCase());
+  }
+
+  function getDefaultTeamName(side, mode) {
+    if (mode === 'son') return side === 'a' ? t('nationADef') : t('nationBDef');
+    return side === 'a' ? t('teamHomeDef') : t('teamAwayDef');
   }
 
   function getDefaultRiderName(id, mode) {
@@ -1054,7 +1189,7 @@
   function selectAppMode(newMode) {
     const hasScores = state.heats && state.heats.some(h => h.slots.some(s => s.score !== null));
     if (hasScores && state.mode !== newMode) {
-      if (!confirm("Vuoi cambiare formato gara e iniziare una nuova competizione (" + LEAGUE_CONFIGS[newMode].label + ")?")) return;
+      if (!confirm(t('confirmChangeMode'))) return;
     }
     if (state.mode !== newMode || hasScores) {
       state = createDefaultState(newMode);
@@ -1067,6 +1202,7 @@
     switchTab('event', document.getElementById('nav-event'));
   }
 
+  /* TRADUZIONE AUTOMATICA COMPLETA (INCLUSI NOMI SQUADRE PREDEFINITI) */
   function setLanguage(langCode) {
     if (!I18N[langCode]) return;
     currentLang = langCode;
@@ -1079,6 +1215,11 @@
         state.riders[id] = getDefaultRiderName(id, state.mode);
       }
     });
+
+    if (state.teamNames) {
+      if (isDefaultTeamName(state.teamNames.a)) state.teamNames.a = getDefaultTeamName('a', state.mode);
+      if (isDefaultTeamName(state.teamNames.b)) state.teamNames.b = getDefaultTeamName('b', state.mode);
+    }
 
     applyTranslations();
     saveState();
@@ -1136,7 +1277,7 @@
     if (navigator.share) {
       try { await navigator.share({ title: "Speedway Live", text: "🏁 Speedway Live App:", url: targetUrl }); return; } catch (e) {}
     }
-    try { await navigator.clipboard.writeText(targetUrl); alert("✅ Link copiato!"); } catch (e) { prompt("Link:", targetUrl); }
+    try { await navigator.clipboard.writeText(targetUrl); alert("✅ Link!"); } catch (e) { prompt("Link:", targetUrl); }
   }
 
   function createDefaultState(modeKey) {
@@ -1176,8 +1317,8 @@
       id: Date.now(),
       mode: mKey,
       teamNames: {
-        a: mKey === 'son' ? "Nazione A" : "Squadra Casa",
-        b: mKey === 'son' ? "Nazione B" : "Squadra Ospiti"
+        a: getDefaultTeamName('a', mKey),
+        b: getDefaultTeamName('b', mKey)
       },
       eventMeta: { name: "", date: today, track: "", city: "", country: "", length: "", notes: "", photoDataUrl: "" },
       currentHeat: 0,
@@ -1236,14 +1377,13 @@
     updateHeaderAndHero();
     updateProgressBadge();
 
-    // Se la gara è appena iniziata (nessun punteggio), mostra la scelta formato all'apertura
     const hasAnyScore = state.heats.some(h => h.slots.some(s => s.score !== null));
     if (!hasAnyScore && !state.eventMeta.name) {
       openModeModal();
     }
   }
 
-  /* SCAMBIO CORSIA TRA COMPAGNI DI SQUADRA (GARE A COPPIE / SQUADRE) */
+  /* SCAMBIO CORSIA TRA COMPAGNI DI SQUADRA */
   function swapTeammatesGates(teamLetter) {
     if (!isTeamMode()) return;
     const heat = state.heats[state.currentHeat];
@@ -1253,8 +1393,7 @@
       if (targetHelmets.includes(s.helmet)) indices.push(idx);
     });
     if (indices.length === 2) {
-      const i1 = indices[0];
-      const i2 = indices[1];
+      const i1 = indices[0], i2 = indices[1];
       const temp = Object.assign({}, heat.slots[i1]);
       heat.slots[i1] = Object.assign({}, heat.slots[i2]);
       heat.slots[i2] = temp;
@@ -1263,7 +1402,6 @@
     }
   }
 
-  /* CALCOLO PUNTEGGI SQUADRA */
   function computeTeamTotals(raceObj) {
     const rState = raceObj || state;
     let totA = 0, totB = 0;
@@ -1350,22 +1488,21 @@
 
   function updateHeaderAndHero() {
     const m = state.eventMeta;
-    const cfg = getModeConfig();
+    const modeTitle = getModeTitle();
     const defaultTitle = isTeamMode() ? (state.teamNames.a + " vs " + state.teamNames.b) : "SPEEDWAY LIVE";
     document.getElementById('header-event-title').textContent = (m.name || defaultTitle);
-    const locParts = [cfg.label, m.track, m.city, m.date].filter(Boolean);
+    const locParts = [modeTitle, m.track, m.city, m.date].filter(Boolean);
     document.getElementById('header-event-sub').textContent = locParts.join(" • ");
 
     const pill = document.getElementById('ev-current-mode-pill');
-    if (pill) pill.textContent = cfg.label + " ▾";
+    if (pill) pill.textContent = "🏁 " + modeTitle + " ▾";
 
-    // Aggiorna Banner Punteggio Squadre
     const tsBanner = document.getElementById('team-score-banner');
     if (isTeamMode()) {
       tsBanner.classList.add('visible');
       const totals = computeTeamTotals();
-      document.getElementById('ts-name-a').textContent = state.teamNames.a || "Squadra A";
-      document.getElementById('ts-name-b').textContent = state.teamNames.b || "Squadra B";
+      document.getElementById('ts-name-a').textContent = state.teamNames.a || getDefaultTeamName('a', state.mode);
+      document.getElementById('ts-name-b').textContent = state.teamNames.b || getDefaultTeamName('b', state.mode);
       document.getElementById('ts-score-box').textContent = totals.a + " : " + totals.b;
     } else {
       tsBanner.classList.remove('visible');
@@ -1447,14 +1584,13 @@
     if (partEl) {
       if (isTeamMode()) {
         const part = computeHeatTeamPartial(state.heats[state.currentHeat]);
-        partEl.innerHTML = part ? '<span class="best-time-badge" style="color:var(--yellow);border-color:var(--yellow);">Parziale: ' + part + '</span>' : '';
+        partEl.innerHTML = part ? '<span class="best-time-badge" style="color:var(--yellow);border-color:var(--yellow);">' + t('partialLbl') + ' ' + part + '</span>' : '';
       } else {
         partEl.innerHTML = '';
       }
     }
   }
 
-  /* STATISTICHE E CLASSIFICHE */
   function computeStats() {
     const cfg = getModeConfig();
     const stats = [];
@@ -1484,9 +1620,9 @@
     });
 
     const mainHeatsCount = cfg.isTeam ? state.heats.length : 20;
-    const winVal = cfg.scores[0]; // 3 oppure 4 nel SON
-    const secVal = cfg.scores[1]; // 2 oppure 3 nel SON
-    const trdVal = cfg.scores[2]; // 1 oppure 2 nel SON
+    const winVal = cfg.scores[0];
+    const secVal = cfg.scores[1];
+    const trdVal = cfg.scores[2];
 
     state.heats.slice(0, mainHeatsCount).forEach(h => {
       h.slots.forEach(s => {
@@ -1709,18 +1845,17 @@
     if (timeInput) timeInput.value = heat.time || "";
     updateBestTimeBadge();
 
-    // Box Pulsanti Scambio Corsie per Gare a Coppie / Squadre
     const swapBox = document.getElementById('team-swap-lanes-box');
     if (cfg.isTeam) {
       swapBox.innerHTML =
         '<div class="swap-lanes-bar">' +
           '<button type="button" class="btn-swap-lane team-a" onclick="swapTeammatesGates(\'A\')">' +
-            '<span>' + t('swapTeamBtn') + ' ' + (state.teamNames.a || 'Casa') + '</span>' +
-            '<small>🔴 Rosso ↔ 🔵 Blu</small>' +
+            '<span>' + t('swapTeamBtn') + ' ' + (state.teamNames.a || getDefaultTeamName('a', state.mode)) + '</span>' +
+            '<small>' + t('swapRedBlue') + '</small>' +
           '</button>' +
           '<button type="button" class="btn-swap-lane team-b" onclick="swapTeammatesGates(\'B\')">' +
-            '<span>' + t('swapTeamBtn') + ' ' + (state.teamNames.b || 'Ospiti') + '</span>' +
-            '<small>⚪ Bianco ↔ 🟡 Giallo</small>' +
+            '<span>' + t('swapTeamBtn') + ' ' + (state.teamNames.b || getDefaultTeamName('b', state.mode)) + '</span>' +
+            '<small>' + t('swapWhiteYellow') + '</small>' +
           '</button>' +
         '</div>';
     } else {
@@ -1749,7 +1884,7 @@
       autoBox.innerHTML = '';
     }
 
-    const pts = cfg.scores; // [3,2,1,0] oppure [4,3,2,0] per SON
+    const pts = cfg.scores;
     const mainButtons = isSpecialHeat
       ? [{ val: 3, label: '1°' }, { val: 2, label: '2°' }, { val: 1, label: '3°' }, { val: 0, label: '4°' }]
       : pts.map(v => ({ val: v, label: v + ' pt' }));
@@ -1956,9 +2091,9 @@
       }
 
       tbody.innerHTML =
-        '<tr class="team-sep-row"><td colspan="9">🔴🔵 ' + state.teamNames.a + ' — TOTALE: ' + totals.a + ' pt</td></tr>' +
+        '<tr class="team-sep-row"><td colspan="9">🔴🔵 ' + state.teamNames.a + ' — ' + t('totalLbl') + ' ' + totals.a + ' pt</td></tr>' +
         renderTeamRows(teamAStats) +
-        '<tr class="team-sep-row"><td colspan="9">⚪🟡 ' + state.teamNames.b + ' — TOTALE: ' + totals.b + ' pt</td></tr>' +
+        '<tr class="team-sep-row"><td colspan="9">⚪🟡 ' + state.teamNames.b + ' — ' + t('totalLbl') + ' ' + totals.b + ' pt</td></tr>' +
         renderTeamRows(teamBStats);
       return;
     }
@@ -1978,12 +2113,14 @@
     }).join('');
   }
 
-  /* SEZIONE PILOTI: DIVISA IN DUE SQUADRE PER LE GARE A COPPIE / SQUADRE */
+  /* SEZIONE PILOTI DIVISA IN DUE SQUADRE CON ETICHETTE TRADOTTE */
   function renderRidersInputs() {
     const cfg = getModeConfig();
     const container = document.getElementById('riders-inputs');
+    const ocrTargetBar = document.getElementById('ocr-team-target-bar');
 
     if (!cfg.isTeam) {
+      if (ocrTargetBar) ocrTargetBar.classList.remove('visible');
       let html = '';
       for (let r = 1; r <= 18; r++) {
         html += '<div class="rider-input-row"><span>#' + r + '</span>' +
@@ -1993,21 +2130,25 @@
       return;
     }
 
+    if (ocrTargetBar) ocrTargetBar.classList.add('visible');
+
     let htmlA = '<div class="team-riders-card team-a">' +
-      '<div class="team-name-input-row"><span>🔴🔵</span><input type="text" value="' + (state.teamNames.a || '').replace(/"/g, '&quot;') + '" placeholder="Nome Squadra Casa" oninput="updateTeamName(\'a\', this.value)"></div>';
+      '<div class="team-name-input-row"><span>🔴🔵</span><input type="text" value="' + (state.teamNames.a || '').replace(/"/g, '&quot;') + '" placeholder="' + t('teamHomePh') + '" oninput="updateTeamName(\'a\', this.value)"></div>';
     for (let i = 1; i <= cfg.ridersPerTeam; i++) {
-      const role = cfg.roles && cfg.roles[i] ? ' (' + cfg.roles[i] + ')' : '';
-      htmlA += '<div class="rider-input-row"><span>#' + i + role + '</span>' +
+      const roleKey = cfg.roles && cfg.roles[i] ? cfg.roles[i] : null;
+      const roleTxt = roleKey ? ' (' + t(roleKey) + ')' : '';
+      htmlA += '<div class="rider-input-row"><span>#' + i + roleTxt + '</span>' +
         '<input type="text" value="' + (state.riders[i] || '').replace(/"/g, '&quot;') + '" oninput="updateRiderName(' + i + ', this.value)"></div>';
     }
     htmlA += '</div>';
 
     let htmlB = '<div class="team-riders-card team-b">' +
-      '<div class="team-name-input-row"><span>⚪🟡</span><input type="text" value="' + (state.teamNames.b || '').replace(/"/g, '&quot;') + '" placeholder="Nome Squadra Ospiti" oninput="updateTeamName(\'b\', this.value)"></div>';
+      '<div class="team-name-input-row"><span>⚪🟡</span><input type="text" value="' + (state.teamNames.b || '').replace(/"/g, '&quot;') + '" placeholder="' + t('teamAwayPh') + '" oninput="updateTeamName(\'b\', this.value)"></div>';
     for (let i = 1; i <= cfg.ridersPerTeam; i++) {
       const rId = 100 + i;
-      const role = cfg.roles && cfg.roles[i] ? ' (' + cfg.roles[i] + ')' : '';
-      htmlB += '<div class="rider-input-row"><span>#' + i + role + '</span>' +
+      const roleKey = cfg.roles && cfg.roles[i] ? cfg.roles[i] : null;
+      const roleTxt = roleKey ? ' (' + t(roleKey) + ')' : '';
+      htmlB += '<div class="rider-input-row"><span>#' + i + roleTxt + '</span>' +
         '<input type="text" value="' + (state.riders[rId] || '').replace(/"/g, '&quot;') + '" oninput="updateRiderName(' + rId + ', this.value)"></div>';
     }
     htmlB += '</div>';
@@ -2016,7 +2157,7 @@
   }
 
   function updateTeamName(side, val) {
-    state.teamNames[side] = val || (side === 'a' ? "Squadra Casa" : "Squadra Ospiti");
+    state.teamNames[side] = val || getDefaultTeamName(side, state.mode);
     saveState();
   }
 
@@ -2025,10 +2166,11 @@
     saveState();
   }
 
-  /* ESPORTAZIONE LOCANDINA PNG (INDIVIDUALE E SQUADRE) */
+  /* ESPORTAZIONE LOCANDINA PNG (TRADOTTA IN TUTTE LE LINGUE) */
   async function exportRacePoster(mode) {
     if (!isTeamMode()) syncSpecialHeatsWithQualifiers();
     const cfg = getModeConfig();
+    const modeTitle = getModeTitle();
     const W = 1080;
     const finalStandings = getFinalGpStandings();
     const sgpMap = {};
@@ -2086,7 +2228,7 @@
 
     ctx.fillStyle = '#00e676';
     ctx.font = '900 24px sans-serif';
-    ctx.fillText('🏁 SPEEDWAY LIVE • ' + cfg.label.toUpperCase(), 40, 62);
+    ctx.fillText('🏁 SPEEDWAY LIVE • ' + modeTitle.toUpperCase(), 40, 62);
 
     const mainTitle = m.name || (cfg.isTeam ? (state.teamNames.a + ' vs ' + state.teamNames.b) : 'Speedway Grand Prix');
     ctx.fillStyle = '#ffffff';
@@ -2110,7 +2252,7 @@
       if (cfg.isTeam) {
         const totals = computeTeamTotals();
         ctx.fillStyle = '#fdd835'; ctx.font = '900 22px sans-serif';
-        ctx.fillText('🏆 RISULTATO SQUADRE (' + cfg.label + ')', 50, y + 38);
+        ctx.fillText(t('posterTeamRes') + ' (' + modeTitle + ')', 50, y + 38);
         ctx.fillStyle = '#ffffff'; ctx.font = '900 34px sans-serif';
         ctx.fillText(state.teamNames.a + '  ' + totals.a + '  :  ' + totals.b + '  ' + state.teamNames.b, 50, y + 86);
       } else {
@@ -2153,7 +2295,7 @@
       ctx.textAlign = 'center'; ctx.fillStyle = '#00e676'; ctx.font = '900 23px sans-serif';
       ctx.fillText(String(idx + 1), 68, y + 36);
 
-      const prefix = cfg.isTeam ? ((st.team === 'A' ? '[C] ' : '[O] ') + formatRiderNum(st.id)) : ('#' + st.id);
+      const prefix = cfg.isTeam ? ((st.team === 'A' ? '🔴 ' : '🟡 ') + formatRiderNum(st.id)) : ('#' + st.id);
       ctx.textAlign = 'left'; ctx.fillStyle = '#ffffff'; ctx.font = '800 23px sans-serif';
       ctx.fillText((prefix + ' ' + st.name).slice(0, 24), 125, y + 36);
 
@@ -2173,7 +2315,7 @@
     });
 
     ctx.textAlign = 'center'; ctx.fillStyle = '#8892b0'; ctx.font = '700 20px sans-serif';
-    ctx.fillText('Speedway Live v4.0 App', W / 2, H - 25);
+    ctx.fillText('Speedway Live v4.1 App', W / 2, H - 25);
 
     canvas.toBlob(async function(blob) {
       if (!blob) return;
@@ -2191,18 +2333,173 @@
     }, 'image/png');
   }
 
-  /* OCR E INCOLLA TESTO PILOTI */
+  /* ============================================================================
+     PRE-ELABORAZIONE IMMAGINE E MOTORE OCR AD ALTA PRECISIONE (RIPRISTINATO E POTENZIATO)
+     ============================================================================ */
+  function setOcrTarget(target) {
+    ocrTeamTarget = target;
+    ['both', 'a', 'b'].forEach(k => {
+      const btn = document.getElementById('ocr-target-' + k);
+      if (btn) btn.classList.toggle('active', k === target);
+    });
+  }
+
+  function preprocessImageForOcr(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const targetW = Math.min(1800, Math.max(1100, img.width));
+          const scale = targetW / img.width;
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const d = imgData.data;
+          const contrast = 1.5;
+          for (let i = 0; i < d.length; i += 4) {
+            const gray = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+            let adj = ((gray - 128) * contrast) + 128;
+            adj = Math.max(0, Math.min(255, adj));
+            d[i] = d[i + 1] = d[i + 2] = adj;
+          }
+          ctx.putImageData(imgData, 0, 0);
+          resolve(canvas.toDataURL('image/png'));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
   function parseRidersFromText(rawText) {
-    const lines = (rawText || "").split(/\r?\n/).map(l => l.trim()).filter(l => l.length >= 3);
-    const riderKeys = Object.keys(state.riders).map(k => parseInt(k, 10)).sort((a, b) => a - b);
+    const lines = (rawText || "")
+      .split(/\r?\n/)
+      .map(l => l.trim())
+      .filter(l => l.length >= 3);
+
+    const ignoreWords = /^(speedway|starting|line-up|lineup|riders|piloti|elenco|iscritti|track|reserve|riserve|rezerwa|reserv|grand|prix|fim|dewalt|torun|poland|gara|heat|batteria|bieg|team|squadra|home|away|gospodarze|goscie|junior|captain|capitano|rising|star)$/i;
+    const extractedItems = [];
+
+    lines.forEach(line => {
+      let cleanLine = line
+        .replace(/[\(\[\{][A-Za-z0-9]{1,5}[\)\]\}]/g, ' ')
+        .replace(/\b(POL|GBR|AUS|DEN|SWE|SVK|CZE|LAT|USA|GER|ITA|FRA|SLO|NOR|FIN|UKR|U21|U24)\b/gi, ' ');
+
+      const leadMatch = cleanLine.match(/^\s*#?(1[0-8]|[1-9])(?:[\.\)\-\:\s]+)(.+)$/);
+      let candidate = leadMatch ? leadMatch[2] : cleanLine;
+
+      candidate = candidate
+        .replace(/#[0-9]{1,3}/g, ' ')
+        .replace(/\b[0-9]{1,3}\b/g, ' ')
+        .replace(/[^A-Za-zÀ-ÿĄąĆćĘęŁłŃńÓóŚśŹźŻżÆæØøÅåÄäÖö\s'\-]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      const words = candidate.split(' ').filter(w => w.length >= 2 && !ignoreWords.test(w));
+      if (words.length === 0) return;
+
+      const finalName = words.slice(0, 3).join(' ');
+      if (finalName.length < 3) return;
+
+      extractedItems.push({
+        num: leadMatch ? parseInt(leadMatch[1], 10) : null,
+        name: finalName
+      });
+    });
+
+    if (extractedItems.length === 0) return 0;
+
+    const cfg = getModeConfig();
     let applied = 0;
-    lines.slice(0, riderKeys.length).forEach((line, idx) => {
-      const clean = line.replace(/^\s*#?[0-9]{1,2}[\.\)\-\:\s]+/, '').trim();
-      if (clean.length >= 2 && riderKeys[idx]) {
-        state.riders[riderKeys[idx]] = clean.slice(0, 28);
+
+    // 1. MODALITÀ INDIVIDUALE (1..18)
+    if (!cfg.isTeam) {
+      const numberedMap = {};
+      extractedItems.forEach(item => {
+        if (item.num && item.num >= 1 && item.num <= 18 && !numberedMap[item.num]) {
+          numberedMap[item.num] = item.name;
+        }
+      });
+      const numberedKeys = Object.keys(numberedMap);
+      if (numberedKeys.length >= 4) {
+        numberedKeys.forEach(k => {
+          state.riders[parseInt(k, 10)] = numberedMap[k];
+          applied++;
+        });
+      } else {
+        extractedItems.slice(0, 18).forEach((item, idx) => {
+          state.riders[idx + 1] = item.name;
+          applied++;
+        });
+      }
+      return applied;
+    }
+
+    // 2. MODALITÀ SQUADRE / LEGHE (Squadra Casa 1..N e Squadra Ospiti 101..100+N)
+    const maxR = cfg.ridersPerTeam;
+    if (ocrTeamTarget === 'a') {
+      extractedItems.slice(0, maxR).forEach((item, idx) => {
+        const slot = (item.num && item.num >= 1 && item.num <= maxR) ? item.num : (idx + 1);
+        state.riders[slot] = item.name;
         applied++;
+      });
+      return applied;
+    }
+
+    if (ocrTeamTarget === 'b') {
+      extractedItems.slice(0, maxR).forEach((item, idx) => {
+        let slot = idx + 1;
+        if (item.num) {
+          if (item.num >= 1 && item.num <= maxR) slot = item.num;
+          else if (item.num > 8 && (item.num - 8) <= maxR) slot = item.num - 8;
+        }
+        state.riders[100 + slot] = item.name;
+        applied++;
+      });
+      return applied;
+    }
+
+    // Target 'both' (Entrambe le squadre): se il primo blocco riempie Casa, il secondo riempie Ospiti
+    const usedHome = {};
+    let currentSide = 'A';
+    extractedItems.forEach((item, idx) => {
+      if (item.num && item.num > maxR && item.num <= 16) {
+        // Es. in Ekstraliga Ospiti numerati 1..8 e Casa 9..16
+        const awayIdx = item.num - 8;
+        if (awayIdx >= 1 && awayIdx <= maxR) {
+          state.riders[100 + awayIdx] = item.name;
+          applied++;
+        }
+        return;
+      }
+      if (item.num && item.num >= 1 && item.num <= maxR) {
+        if (!usedHome[item.num] && currentSide === 'A') {
+          state.riders[item.num] = item.name;
+          usedHome[item.num] = true;
+          applied++;
+          if (Object.keys(usedHome).length >= maxR) currentSide = 'B';
+        } else {
+          state.riders[100 + item.num] = item.name;
+          applied++;
+        }
+      } else {
+        if (idx < maxR) {
+          state.riders[idx + 1] = item.name;
+          applied++;
+        } else if (idx < maxR * 2) {
+          state.riders[100 + (idx - maxR + 1)] = item.name;
+          applied++;
+        }
       }
     });
+
     return applied;
   }
 
@@ -2211,11 +2508,17 @@
     if (!file) return;
     const statusEl = document.getElementById('ocr-status');
     statusEl.style.display = 'block';
-    statusEl.textContent = '⏳ OCR (5-10 sec)...';
+    statusEl.textContent = '⏳ OCR HD (5-10 sec)...';
+
     try {
-      const result = await Tesseract.recognize(file, 'eng+ita+pol');
+      const processedDataUrl = await preprocessImageForOcr(file);
+      const result = await Tesseract.recognize(processedDataUrl, 'eng+ita+pol');
       const count = parseRidersFromText(result.data.text || "");
-      saveState(); renderRidersInputs(); renderCurrentHeat();
+
+      saveState();
+      renderRidersInputs();
+      renderCurrentHeat();
+
       statusEl.textContent = count > 0 ? '✅ OK (' + count + ')' : '⚠️ OCR: 0';
     } catch (err) {
       statusEl.textContent = '⚠️ OCR Error';
@@ -2255,7 +2558,7 @@
   function getPodiumSummary(raceState) {
     if (isTeamMode(raceState)) {
       const totals = computeTeamTotals(raceState);
-      return "👥 " + (raceState.teamNames ? raceState.teamNames.a : "Casa") + " " + totals.a + " : " + totals.b + " " + (raceState.teamNames ? raceState.teamNames.b : "Ospiti");
+      return "👥 " + (raceState.teamNames ? raceState.teamNames.a : t('teamHomeDef')) + " " + totals.a + " : " + totals.b + " " + (raceState.teamNames ? raceState.teamNames.b : t('teamAwayDef'));
     }
     const finalSlots = raceState.heats[22] ? raceState.heats[22].slots : [];
     const winner = finalSlots.find(s => s.score === 3 && s.riderId);
@@ -2299,7 +2602,7 @@
   }
 
   function exportBackupJson() {
-    const backupPayload = { app: "Speedway Live", version: 4.0, exportedAt: new Date().toISOString(), currentRace: state, archive: getArchive() };
+    const backupPayload = { app: "Speedway Live", version: 4.1, exportedAt: new Date().toISOString(), currentRace: state, archive: getArchive() };
     const blob = new Blob([JSON.stringify(backupPayload, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -2336,8 +2639,8 @@
     }
     container.innerHTML = archive.map(item => {
       const m = item.eventMeta || {};
-      const cfg = getModeConfig(item);
-      const loc = [cfg.label, m.track, m.city, m.date].filter(Boolean).join(" • ");
+      const modeTitle = getModeTitle(item);
+      const loc = [modeTitle, m.track, m.city, m.date].filter(Boolean).join(" • ");
       return '<div class="history-item">' +
         '<div class="history-top"><div><div class="history-title">' + (m.name || "Speedway") + '</div><div class="history-meta">' + loc + '</div></div></div>' +
         '<div class="history-podium">' + getPodiumSummary(item) + '</div>' +
