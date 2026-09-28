@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-title" content="Speedway Live">
   <link rel="icon" type="image/png" href="icon.png">
   <link rel="apple-touch-icon" href="icon.png">
-  <title>Speedway SGP Live v3.3</title>
+  <title>Speedway SGP Live v3.4</title>
 
   <!-- Libreria OCR Tesseract.js per lettura foto elenco piloti -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -24,7 +24,7 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     html, body { width: 100%; max-width: 100vw; overflow-x: hidden; background: var(--bg); color: var(--text); user-select: none; }
-    body { padding-bottom: 85px; }
+    body { padding-bottom: 88px; }
 
     header { background: var(--card); padding: 10px 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; gap: 8px; width: 100%; }
     .header-title-box { min-width: 0; flex: 1; }
@@ -57,18 +57,29 @@
     .track-hero-title { font-size: 1.05rem; font-weight: 900; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
     .track-hero-meta { font-size: 0.75rem; color: var(--accent); font-weight: 700; }
 
+    /* Barra Navigazione a 7 sezioni con icona moto di traverso */
     nav { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; background: var(--card); border-top: 1px solid var(--border); display: flex; z-index: 100; }
-    nav button { flex: 1; min-width: 0; background: none; border: none; color: var(--muted); padding: 9px 2px; font-size: 0.65rem; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    nav button { flex: 1; min-width: 0; background: none; border: none; color: var(--muted); padding: 8px 1px; font-size: 0.6rem; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
+    nav button .nav-ico { font-size: 1.05rem; line-height: 1; height: 18px; display: flex; align-items: center; justify-content: center; }
+    nav button span.nav-lbl { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
     nav button.active { color: var(--accent); border-top: 2px solid var(--accent); }
+    .drift-bike-svg { width: 22px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transform: rotate(-14deg); }
 
     .container { width: 100%; max-width: 600px; margin: 0 auto; padding: 10px; overflow-x: hidden; }
     .tab-content { display: none; width: 100%; }
     .tab-content.active { display: block; }
 
-    /* Navigazione Batterie */
-    .heat-nav { display: flex; align-items: center; justify-content: space-between; gap: 6px; background: var(--card); padding: 8px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); width: 100%; }
+    /* Navigazione Batterie + Barra Tempo Batteria */
+    .heat-nav { display: flex; align-items: center; justify-content: space-between; gap: 6px; background: var(--card); padding: 8px; border-radius: 10px; margin-bottom: 8px; border: 1px solid var(--border); width: 100%; }
     .heat-nav button { background: #2e3440; color: var(--text); border: none; padding: 9px 11px; border-radius: 8px; font-weight: 800; font-size: 0.82rem; cursor: pointer; flex-shrink: 0; }
     .heat-nav select { flex: 1; min-width: 0; background: #121418; color: var(--text); border: 1px solid var(--border); padding: 7px 6px; border-radius: 6px; font-size: 0.85rem; font-weight: 800; text-overflow: ellipsis; }
+
+    .heat-time-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: var(--card); padding: 7px 10px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); width: 100%; }
+    .heat-time-left { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 800; color: var(--text); }
+    .heat-time-input-wrap { display: flex; align-items: center; gap: 5px; }
+    .heat-time-input { width: 92px; background: #121418; border: 1px solid #3b4252; color: var(--accent); font-weight: 900; font-size: 0.88rem; padding: 5px 8px; border-radius: 6px; text-align: right; }
+    .heat-time-unit { font-size: 0.75rem; color: var(--muted); font-weight: 800; }
+    .best-time-badge { font-size: 0.68rem; background: rgba(0, 230, 118, 0.12); color: var(--accent); border: 1px solid rgba(0, 230, 118, 0.35); padding: 3px 7px; border-radius: 6px; font-weight: 800; white-space: nowrap; }
 
     /* Box Informativo Qualificati LCQ / Finale */
     .qual-info-card { background: #181c24; border: 1px solid var(--accent); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; width: 100%; }
@@ -107,7 +118,7 @@
     .score-btn.selected-1 { background: #ffa726; color: #000; border-color: #ffb74d; }
     .score-btn.selected-0 { background: #78909c; color: #000; border-color: #90a4ae; }
 
-    /* 5 Pulsanti Speciali (R, F, X, T, NS) con sottotitolo esplicativo */
+    /* 5 Pulsanti Speciali (R, F, X, T, NS) */
     .special-btns { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; width: 100%; }
     .spec-btn { background: #181b20; border: 1px solid #2e3440; color: var(--muted); padding: 5px 2px; border-radius: 6px; font-size: 0.74rem; font-weight: 800; cursor: pointer; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.15; }
     .spec-btn small { font-size: 0.56rem; font-weight: 600; opacity: 0.85; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
@@ -178,6 +189,14 @@
     .history-actions button { flex: 1; padding: 7px; border-radius: 6px; border: 1px solid var(--border); background: #2e3440; color: var(--text); font-weight: 700; font-size: 0.75rem; cursor: pointer; }
     .history-actions button.del { background: rgba(198,40,40,0.2); border-color: #c62828; color: #ff8a80; }
 
+    /* Sezione Setting - Lingue */
+    .lang-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+    .lang-btn { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); background: #161920; color: var(--text); font-size: 0.92rem; font-weight: 800; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+    .lang-btnLeft { display: flex; align-items: center; gap: 10px; }
+    .lang-flag { font-size: 1.35rem; }
+    .lang-btn.active { border-color: var(--accent); background: rgba(0, 230, 118, 0.1); color: var(--accent); }
+    .lang-check { font-size: 0.95rem; font-weight: 900; }
+
     #ocr-status { font-size: 0.8rem; color: var(--yellow); margin-top: 8px; text-align: center; font-weight: 700; display: none; line-height: 1.35; }
     #paste-box-wrap { display: none; margin-top: 10px; }
   </style>
@@ -187,11 +206,11 @@
 <header>
   <div class="header-title-box">
     <h1 id="header-event-title">🏁 SPEEDWAY LIVE</h1>
-    <div class="header-sub" id="header-event-sub">v3.3 • Imposta i dati evento</div>
+    <div class="header-sub" id="header-event-sub">v3.4</div>
   </div>
   <div class="header-right">
-    <button type="button" class="btn-top danger" onclick="fullResetApp()" title="Svuota tutti i dati inseriti">🗑️ Reset</button>
-    <button type="button" class="btn-top" onclick="openQrModal()" title="Condividi App con QR Code">📲 QR</button>
+    <button type="button" class="btn-top danger" onclick="fullResetApp()" id="btn-top-reset">🗑️ Reset</button>
+    <button type="button" class="btn-top" onclick="openQrModal()">📲 QR</button>
     <span class="event-badge" id="progress-badge">0 / 23</span>
   </div>
 </header>
@@ -199,15 +218,15 @@
 <!-- Finestra Popup QR Code -->
 <div class="qr-modal-backdrop" id="qr-modal" onclick="if(event.target===this)closeQrModal()">
   <div class="qr-modal">
-    <h3>📲 Condividi Speedway Live</h3>
-    <p>Fai inquadrare questo QR Code con la fotocamera per aprire e installare l'app sullo smartphone:</p>
+    <h3 data-i18n="qrTitle">📲 Condividi Speedway Live</h3>
+    <p data-i18n="qrDesc">Fai inquadrare questo QR Code con la fotocamera per aprire e installare l'app sullo smartphone:</p>
     <div class="qr-box">
       <img id="qr-img" src="" alt="QR Code Speedway Live">
     </div>
     <div class="qr-url" id="qr-url-text">https://mluna01-speedway.github.io/speedway-live/</div>
     <div class="qr-btn-row">
-      <button type="button" class="qr-btn-share" onclick="shareAppLink()">📤 Invia Link</button>
-      <button type="button" class="qr-btn-close" onclick="closeQrModal()">Chiudi</button>
+      <button type="button" class="qr-btn-share" onclick="shareAppLink()" data-i18n="qrShareBtn">📤 Invia Link</button>
+      <button type="button" class="qr-btn-close" onclick="closeQrModal()" data-i18n="qrCloseBtn">Chiudi</button>
     </div>
   </div>
 </div>
@@ -223,48 +242,48 @@
 
 <div class="container">
 
-  <!-- TAB 1: DATI EVENTO & FOTO PISTA -->
+  <!-- SEZIONE 1: EVENTO -->
   <div id="tab-event" class="tab-content">
     <div class="card-box">
-      <h2>🏟️ Dati Evento & Pista</h2>
+      <h2 data-i18n="evSectionTitle">🏟️ Dati Evento & Pista</h2>
       <div class="form-grid">
         <div class="form-group full">
-          <label>Nome della Gara / Evento</label>
-          <input type="text" id="ev-name" placeholder="Es. FIM Speedway GP of Poland - Torun" oninput="updateEventMeta()">
+          <label data-i18n="evNameLbl">Nome della Gara / Evento</label>
+          <input type="text" id="ev-name" data-i18n-placeholder="evNamePh" placeholder="Es. FIM Speedway GP of Poland - Torun" oninput="updateEventMeta()">
         </div>
         <div class="form-group">
-          <label>Data</label>
+          <label data-i18n="evDateLbl">Data</label>
           <input type="date" id="ev-date" oninput="updateEventMeta()">
         </div>
         <div class="form-group">
-          <label>Nome Pista / Stadio</label>
-          <input type="text" id="ev-track" placeholder="Es. Motoarena" oninput="updateEventMeta()">
+          <label data-i18n="evTrackLbl">Nome Pista / Stadio</label>
+          <input type="text" id="ev-track" data-i18n-placeholder="evTrackPh" placeholder="Es. Motoarena" oninput="updateEventMeta()">
         </div>
         <div class="form-group">
-          <label>Luogo / Città</label>
-          <input type="text" id="ev-city" placeholder="Es. Torun" oninput="updateEventMeta()">
+          <label data-i18n="evCityLbl">Luogo / Città</label>
+          <input type="text" id="ev-city" data-i18n-placeholder="evCityPh" placeholder="Es. Torun" oninput="updateEventMeta()">
         </div>
         <div class="form-group">
-          <label>Stato / Nazione</label>
-          <input type="text" id="ev-country" placeholder="Es. Polonia 🇵🇱" oninput="updateEventMeta()">
+          <label data-i18n="evCountryLbl">Stato / Nazione</label>
+          <input type="text" id="ev-country" data-i18n-placeholder="evCountryPh" placeholder="Es. Polonia 🇵🇱" oninput="updateEventMeta()">
         </div>
         <div class="form-group">
-          <label>Lunghezza Pista (m)</label>
-          <input type="text" id="ev-length" placeholder="Es. 318m" oninput="updateEventMeta()">
+          <label data-i18n="evLenLbl">Lunghezza Pista (m)</label>
+          <input type="text" id="ev-length" data-i18n-placeholder="evLenPh" placeholder="Es. 318m" oninput="updateEventMeta()">
         </div>
         <div class="form-group">
-          <label>Record / Note</label>
-          <input type="text" id="ev-notes" placeholder="Es. Fondo compatto" oninput="updateEventMeta()">
+          <label data-i18n="evNotesLbl">Record / Note</label>
+          <input type="text" id="ev-notes" data-i18n-placeholder="evNotesPh" placeholder="Es. Fondo compatto" oninput="updateEventMeta()">
         </div>
         <div class="form-group full">
-          <label>Foto Orizzontale della Pista</label>
+          <label data-i18n="evPhotoLbl">Foto Orizzontale della Pista</label>
           <div class="photo-btn-grid">
             <label class="photo-upload-zone" for="track-camera-input">
-              📸 Scatta Foto
+              <span data-i18n="btnTakePhoto">📸 Scatta Foto</span>
               <input type="file" id="track-camera-input" accept="image/*" capture="environment" style="display:none" onchange="handleTrackPhoto(this)">
             </label>
             <label class="photo-upload-zone" for="track-gallery-input">
-              🖼️ Da Galleria
+              <span data-i18n="btnFromGallery">🖼️ Da Galleria</span>
               <input type="file" id="track-gallery-input" accept="image/*" style="display:none" onchange="handleTrackPhoto(this)">
             </label>
           </div>
@@ -273,139 +292,140 @@
           </div>
         </div>
       </div>
-      <button type="button" class="btn-primary" onclick="goToHeats()">Vai alle Batterie ▶</button>
-      <button type="button" class="btn-outline-danger" onclick="clearEventMetaOnly()">🗑️ Svuota Dati Evento</button>
-      <button type="button" class="btn-reset" onclick="fullResetApp()">🗑️ Svuota Tutto (Nuova Gara Pulita)</button>
+      <button type="button" class="btn-primary" onclick="switchTab('riders', document.getElementById('nav-riders'))" data-i18n="btnGoToRiders">Vai ai Piloti ▶</button>
+      <button type="button" class="btn-secondary" style="margin-top:8px;" onclick="goToHeats()" data-i18n="btnGoToHeats">Vai alle Batterie ▶</button>
+      <button type="button" class="btn-outline-danger" onclick="clearEventMetaOnly()" data-i18n="btnClearEvent">🗑️ Svuota Dati Evento</button>
+      <button type="button" class="btn-reset" onclick="fullResetApp()" data-i18n="btnFullReset">🗑️ Svuota Tutto (Nuova Gara Pulita)</button>
     </div>
   </div>
 
-  <!-- TAB 2: BATTERIE -->
+  <!-- SEZIONE 2: PILOTI + OCR FOTO -->
+  <div id="tab-riders" class="tab-content">
+    <div class="card-box">
+      <h2 data-i18n="ridersSectionTitle">🏍️ Inserimento Rapido Piloti (OCR / Testo)</h2>
+      <p style="font-size:0.76rem; color:var(--muted); margin-bottom:10px; line-height:1.35;" data-i18n="ridersOcrDesc">
+        Scatta una foto nitida all'elenco piloti, caricala dalla galleria oppure incolla direttamente il testo dell'elenco iscritti.
+      </p>
+      <div class="photo-btn-grid">
+        <label class="btn-secondary" for="ocr-camera-input">
+          <span data-i18n="btnTakePhoto">📸 Scatta Foto</span>
+          <input type="file" id="ocr-camera-input" accept="image/*" capture="environment" style="display:none" onchange="processRiderListPhoto(this)">
+        </label>
+        <label class="btn-secondary" for="ocr-gallery-input">
+          <span data-i18n="btnLoadPhoto">🖼️ Carica Foto</span>
+          <input type="file" id="ocr-gallery-input" accept="image/*" style="display:none" onchange="processRiderListPhoto(this)">
+        </label>
+      </div>
+      <button type="button" class="btn-backup" style="width:100%;" onclick="togglePasteBox()" data-i18n="btnPasteList">📋 Incolla elenco piloti da testo</button>
+      <div id="paste-box-wrap">
+        <div class="form-group" style="margin-top:8px;">
+          <textarea id="paste-riders-area" rows="5" placeholder="1. Bartosz Zmarzlik&#10;2. Robert Lambert&#10;..."></textarea>
+        </div>
+        <button type="button" class="btn-primary" onclick="applyPastedRiders()" data-i18n="btnApplyPaste">✅ Applica Elenco Incollato</button>
+      </div>
+      <div id="ocr-status"></div>
+    </div>
+
+    <div id="riders-inputs"></div>
+    <button type="button" class="btn-primary" onclick="goToHeats()" data-i18n="btnGoToHeats">Vai alle Batterie ▶</button>
+    <button type="button" class="btn-outline-danger" onclick="resetRidersNames()" data-i18n="btnResetRiders">🗑️ Ripristina Nomi Piloti (1..18)</button>
+    <button type="button" class="btn-reset" onclick="resetAllScores()" data-i18n="btnResetScores">🔄 Azzera Punteggi e Piazzamenti Batteria</button>
+  </div>
+
+  <!-- SEZIONE 3: BATTERIE -->
   <div id="tab-heats" class="tab-content active">
     <div class="heat-nav">
-      <button type="button" onclick="changeHeat(-1)">◀ Prec</button>
+      <button type="button" onclick="changeHeat(-1)" data-i18n="btnPrev">◀ Prec</button>
       <select id="heat-select" onchange="selectHeat(this.value)"></select>
-      <button type="button" onclick="changeHeat(1)">Succ ▶</button>
+      <button type="button" onclick="changeHeat(1)" data-i18n="btnNext">Succ ▶</button>
     </div>
+
+    <!-- Barra Tempo della Batteria -->
+    <div class="heat-time-bar">
+      <div class="heat-time-left">
+        <span>⏱️ <span data-i18n="heatTimeLbl">Tempo Batteria:</span></span>
+        <span id="best-time-indicator"></span>
+      </div>
+      <div class="heat-time-input-wrap">
+        <input type="text" inputmode="decimal" id="heat-time-input" class="heat-time-input" placeholder="58.42" oninput="updateCurrentHeatTime(this.value)">
+        <span class="heat-time-unit">sec</span>
+      </div>
+    </div>
+
     <div id="auto-finals-box"></div>
     <div id="gates-container"></div>
-    <div class="codes-legend">
-      <span><strong>R</strong>: Retired (Ritirato)</span>
-      <span><strong>F</strong>: Fell (Caduto)</span>
-      <span><strong>X</strong>: Excluded (Escluso)</span>
-      <span><strong>T</strong>: Tapes (Nastro)</span>
-      <span><strong>NS</strong>: Not Started (Non partito)</span>
-    </div>
+    <div class="codes-legend" id="heats-codes-legend"></div>
   </div>
 
-  <!-- TAB 3: CLASSIFICA -->
-  <div id="tab-standings" class="tab-content">
-    <div class="share-bar">
-      <button type="button" class="btn-share" onclick="exportRacePoster('standings')">
-        📲 Condividi / Scarica Classifica (PNG)
-      </button>
-    </div>
-    <div class="standings-mode-switch">
-      <button type="button" id="btn-mode-final" class="active" onclick="setStandingsMode('final')">🏆 Classifica Finale GP (SGP)</button>
-      <button type="button" id="btn-mode-qual" onclick="setStandingsMode('qual')">⏱️ Classifica 20 Batterie</button>
-    </div>
-    <div class="legend-bar">
-      <span><i class="legend-dot" style="background:var(--yellow)"></i>1°-2°: Finale Diretta</span>
-      <span><i class="legend-dot" style="background:var(--accent)"></i>3°-10°: LCQ 1 & 2</span>
-      <span><strong>TOT</strong> = Pt 20 Batterie • <strong>SGP</strong> = Pt Mondiale GP</span>
-    </div>
-    <div class="table-wrap">
-      <table id="standings-table">
-        <thead>
-          <tr>
-            <th>Pos</th>
-            <th style="text-align:left;padding-left:7px;">Pilota</th>
-            <th>1°</th>
-            <th>2°</th>
-            <th>3°</th>
-            <th title="4° posti al traguardo (eventuali R/F/X/T/NS tra parentesi)">4°(R/X)</th>
-            <th>Serie</th>
-            <th>TOT</th>
-            <th>SGP</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <div class="codes-legend" style="margin-top:8px;">
-      <span><strong>R</strong>: Retired</span>
-      <span><strong>F</strong>: Fell</span>
-      <span><strong>X</strong>: Excluded</span>
-      <span><strong>T</strong>: Tapes</span>
-      <span><strong>NS</strong>: Not Started</span>
-    </div>
-  </div>
-
-  <!-- TAB 4: TABELLONE COMPLETO (S1-S5 + LCQ + FIN) -->
+  <!-- SEZIONE 4: TABELLONE COMPLETO (S1-S5 + LCQ + FIN) -->
   <div id="tab-card" class="tab-content">
     <div class="share-bar">
-      <button type="button" class="btn-share" onclick="exportRacePoster('card')">
+      <button type="button" class="btn-share" onclick="exportRacePoster('card')" data-i18n="btnShareCard">
         📲 Condividi / Scarica Tabellone Gara (PNG)
       </button>
     </div>
     <div class="table-wrap">
       <table id="scorecard-table">
         <thead>
-          <tr><th>#</th><th style="text-align:left;padding-left:7px;">Pilota</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>TOT</th><th>LCQ</th><th>FIN</th><th>SGP</th></tr>
+          <tr>
+            <th>#</th>
+            <th style="text-align:left;padding-left:7px;" data-i18n="thRider">Pilota</th>
+            <th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th>
+            <th data-i18n="thTot">TOT</th>
+            <th>LCQ</th>
+            <th data-i18n="thFin">FIN</th>
+            <th>SGP</th>
+          </tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
-    <div class="codes-legend" style="margin-top:8px;">
-      <span><strong>R</strong>: Retired</span>
-      <span><strong>F</strong>: Fell</span>
-      <span><strong>X</strong>: Excluded</span>
-      <span><strong>T</strong>: Tapes</span>
-      <span><strong>NS</strong>: Not Started</span>
-    </div>
+    <div class="codes-legend" style="margin-top:8px;" id="card-codes-legend"></div>
   </div>
 
-  <!-- TAB 5: PILOTI + OCR FOTO -->
-  <div id="tab-riders" class="tab-content">
-    <div class="card-box">
-      <h2>📷 Inserimento Rapido Piloti (OCR / Testo)</h2>
-      <p style="font-size:0.76rem; color:var(--muted); margin-bottom:10px; line-height:1.35;">
-        Scatta una foto nitida all'elenco piloti, caricala dalla galleria oppure incolla direttamente il testo dell'elenco iscritti.
-      </p>
-      <div class="photo-btn-grid">
-        <label class="btn-secondary" for="ocr-camera-input">
-          📸 Scatta Foto
-          <input type="file" id="ocr-camera-input" accept="image/*" capture="environment" style="display:none" onchange="processRiderListPhoto(this)">
-        </label>
-        <label class="btn-secondary" for="ocr-gallery-input">
-          🖼️ Carica Foto
-          <input type="file" id="ocr-gallery-input" accept="image/*" style="display:none" onchange="processRiderListPhoto(this)">
-        </label>
-      </div>
-      <button type="button" class="btn-backup" style="width:100%;" onclick="togglePasteBox()">📋 Incolla elenco piloti da testo</button>
-      <div id="paste-box-wrap">
-        <div class="form-group" style="margin-top:8px;">
-          <textarea id="paste-riders-area" rows="5" placeholder="Incolla qui i nomi (uno per riga, es.&#10;1. Bartosz Zmarzlik&#10;2. Robert Lambert&#10;...)"></textarea>
-        </div>
-        <button type="button" class="btn-primary" onclick="applyPastedRiders()">✅ Applica Elenco Incollato</button>
-      </div>
-      <div id="ocr-status">⏳ Analisi immagine in corso...</div>
+  <!-- SEZIONE 5: CLASSIFICA -->
+  <div id="tab-standings" class="tab-content">
+    <div class="share-bar">
+      <button type="button" class="btn-share" onclick="exportRacePoster('standings')" data-i18n="btnShareStandings">
+        📲 Condividi / Scarica Classifica (PNG)
+      </button>
     </div>
-
-    <div id="riders-inputs"></div>
-    <button type="button" class="btn-outline-danger" onclick="resetRidersNames()">🗑️ Ripristina Nomi Piloti (Pilota 1..18)</button>
-    <button type="button" class="btn-reset" onclick="resetAllScores()">🔄 Azzera Punteggi e Piazzamenti Batteria</button>
+    <div class="standings-mode-switch">
+      <button type="button" id="btn-mode-final" class="active" onclick="setStandingsMode('final')" data-i18n="btnModeFinal">🏆 Classifica Finale GP (SGP)</button>
+      <button type="button" id="btn-mode-qual" onclick="setStandingsMode('qual')" data-i18n="btnModeQual">⏱️ Classifica 20 Batterie</button>
+    </div>
+    <div class="legend-bar" id="standings-legend-bar"></div>
+    <div class="table-wrap">
+      <table id="standings-table">
+        <thead>
+          <tr>
+            <th data-i18n="thPos">Pos</th>
+            <th style="text-align:left;padding-left:7px;" data-i18n="thRider">Pilota</th>
+            <th>1°</th>
+            <th>2°</th>
+            <th>3°</th>
+            <th>4°(R/X)</th>
+            <th data-i18n="thRuns">Serie</th>
+            <th data-i18n="thTot">TOT</th>
+            <th>SGP</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="codes-legend" style="margin-top:8px;" id="standings-codes-legend"></div>
   </div>
 
-  <!-- TAB 6: STORICO GARE & BACKUP JSON -->
+  <!-- SEZIONE 6: STORICO GARE & BACKUP JSON -->
   <div id="tab-history" class="tab-content">
     <div class="card-box">
-      <h2>💾 Gestione & Archivio Gare</h2>
-      <button type="button" class="btn-primary" style="margin-bottom:8px;" onclick="saveCurrentToArchive()">📥 Salva Gara Corrente nello Storico</button>
-      <button type="button" class="btn-secondary" style="margin-bottom:10px;" onclick="fullResetApp()">➕ Inizia Nuova Gara Pulita</button>
+      <h2 data-i18n="histSectionTitle">💾 Gestione & Archivio Gare</h2>
+      <button type="button" class="btn-primary" style="margin-bottom:8px;" onclick="saveCurrentToArchive()" data-i18n="btnSaveArchive">📥 Salva Gara Corrente nello Storico</button>
+      <button type="button" class="btn-secondary" style="margin-bottom:10px;" onclick="fullResetApp()" data-i18n="btnNewCleanRace">➕ Inizia Nuova Gara Pulita</button>
       <div class="backup-grid">
-        <button type="button" class="btn-backup" onclick="exportBackupJson()">⬇️ Esporta Backup (.json)</button>
+        <button type="button" class="btn-backup" onclick="exportBackupJson()" data-i18n="btnExportJson">⬇️ Esporta Backup (.json)</button>
         <label class="btn-backup" for="import-json-input">
-          ⬆️ Importa Backup (.json)
+          <span data-i18n="btnImportJson">⬆️ Importa Backup (.json)</span>
           <input type="file" id="import-json-input" accept=".json,application/json" style="display:none" onchange="importBackupJson(this)">
         </label>
       </div>
@@ -413,19 +433,357 @@
     <div id="history-list"></div>
   </div>
 
+  <!-- SEZIONE 7: SETTING (LINGUA) -->
+  <div id="tab-settings" class="tab-content">
+    <div class="card-box">
+      <h2 data-i18n="setSectionTitle">⚙️ Impostazioni & Lingua</h2>
+      <p style="font-size:0.78rem; color:var(--muted); margin-bottom:10px; line-height:1.4;" data-i18n="setLangDesc">
+        Seleziona la lingua dell'applicazione. Tutte le schermate, le tabelle e le locandine verranno tradotte automaticamente.
+      </p>
+      <div class="lang-grid" id="lang-buttons-container"></div>
+    </div>
+  </div>
+
 </div>
 
+<!-- BARRA DI NAVIGAZIONE: Evento, Piloti (Moto di traverso), Batterie, Tabellone, Classifica, Storico, Setting -->
 <nav>
-  <button type="button" id="nav-event" onclick="switchTab('event', this)">🏟️<span>Evento</span></button>
-  <button type="button" id="nav-heats" class="active" onclick="switchTab('heats', this)">⏱️<span>Batterie</span></button>
-  <button type="button" id="nav-standings" onclick="switchTab('standings', this)">🏆<span>Classifica</span></button>
-  <button type="button" id="nav-card" onclick="switchTab('card', this)">📋<span>Tabellone</span></button>
-  <button type="button" id="nav-riders" onclick="switchTab('riders', this)">⚙️<span>Piloti</span></button>
-  <button type="button" id="nav-history" onclick="switchTab('history', this)">📚<span>Storico</span></button>
+  <button type="button" id="nav-event" onclick="switchTab('event', this)">
+    <div class="nav-ico">🏟️</div>
+    <span class="nav-lbl" data-i18n="navEvent">Evento</span>
+  </button>
+  <button type="button" id="nav-riders" onclick="switchTab('riders', this)">
+    <div class="nav-ico">
+      <!-- Icona SVG Moto da Speedway di traverso (Drifting) -->
+      <svg class="drift-bike-svg" viewBox="0 0 28 20" aria-hidden="true">
+        <!-- Scia di terra alzata dalla ruota posteriore -->
+        <path d="M1 16 L5 13 M1 12 L4 11" stroke-width="1.6" opacity="0.85"/>
+        <!-- Ruota posteriore e anteriore in derapata -->
+        <circle cx="7.5" cy="14.5" r="3.6"/>
+        <circle cx="21.5" cy="12.5" r="3.6"/>
+        <!-- Telaio speedway inclinato senza freni e manubrio -->
+        <path d="M7.5 14.5 L13.5 8.5 L20 8.5 L21.5 12.5 M13.5 8.5 L15.5 13.5 L7.5 14.5"/>
+        <!-- Pilota in piega col piede sinistro in appoggio -->
+        <circle cx="14.5" cy="4.2" r="2.1"/>
+        <path d="M14.5 6.5 L11.5 11 L9.5 16.5 M14.5 7.2 L19.5 6.5"/>
+      </svg>
+    </div>
+    <span class="nav-lbl" data-i18n="navRiders">Piloti</span>
+  </button>
+  <button type="button" id="nav-heats" class="active" onclick="switchTab('heats', this)">
+    <div class="nav-ico">⏱️</div>
+    <span class="nav-lbl" data-i18n="navHeats">Batterie</span>
+  </button>
+  <button type="button" id="nav-card" onclick="switchTab('card', this)">
+    <div class="nav-ico">📋</div>
+    <span class="nav-lbl" data-i18n="navCard">Tabellone</span>
+  </button>
+  <button type="button" id="nav-standings" onclick="switchTab('standings', this)">
+    <div class="nav-ico">🏆</div>
+    <span class="nav-lbl" data-i18n="navStandings">Classifica</span>
+  </button>
+  <button type="button" id="nav-history" onclick="switchTab('history', this)">
+    <div class="nav-ico">📚</div>
+    <span class="nav-lbl" data-i18n="navHistory">Storico</span>
+  </button>
+  <button type="button" id="nav-settings" onclick="switchTab('settings', this)">
+    <div class="nav-ico">⚙️</div>
+    <span class="nav-lbl" data-i18n="navSettings">Setting</span>
+  </button>
 </nav>
 
 <script>
   const APP_PUBLIC_URL = "https://mluna01-speedway.github.io/speedway-live/";
+
+  /* DIZIONARIO MULTILINGUA COMPLETO (IT, EN, PL, DA, SV) */
+  const LANGUAGES = [
+    { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+    { code: 'en', name: 'English',  flag: '🇬🇧' },
+    { code: 'pl', name: 'Polski',   flag: '🇵🇱' },
+    { code: 'da', name: 'Dansk',    flag: '🇩🇰' },
+    { code: 'sv', name: 'Svenska',  flag: '🇸🇪' }
+  ];
+
+  const I18N = {
+    it: {
+      navEvent: "Evento", navRiders: "Piloti", navHeats: "Batterie", navCard: "Tabellone", navStandings: "Classifica", navHistory: "Storico", navSettings: "Setting",
+      evSectionTitle: "🏟️ Dati Evento & Pista",
+      evNameLbl: "Nome della Gara / Evento", evNamePh: "Es. FIM Speedway GP of Poland - Torun",
+      evDateLbl: "Data", evTrackLbl: "Nome Pista / Stadio", evTrackPh: "Es. Motoarena",
+      evCityLbl: "Luogo / Città", evCityPh: "Es. Torun",
+      evCountryLbl: "Stato / Nazione", evCountryPh: "Es. Polonia 🇵🇱",
+      evLenLbl: "Lunghezza Pista (m)", evLenPh: "Es. 318m",
+      evNotesLbl: "Record / Note", evNotesPh: "Es. Fondo compatto",
+      evPhotoLbl: "Foto Orizzontale della Pista",
+      btnTakePhoto: "📸 Scatta Foto", btnFromGallery: "🖼️ Da Galleria", btnLoadPhoto: "🖼️ Carica Foto",
+      btnGoToRiders: "Vai ai Piloti ▶", btnGoToHeats: "Vai alle Batterie ▶",
+      btnClearEvent: "🗑️ Svuota Dati Evento", btnFullReset: "🗑️ Svuota Tutto (Nuova Gara Pulita)",
+      ridersSectionTitle: "🏍️ Inserimento Rapido Piloti (OCR / Testo)",
+      ridersOcrDesc: "Scatta una foto nitida all'elenco piloti, caricala dalla galleria oppure incolla direttamente il testo dell'elenco iscritti.",
+      btnPasteList: "📋 Incolla elenco piloti da testo", btnApplyPaste: "✅ Applica Elenco Incollato",
+      btnResetRiders: "🗑️ Ripristina Nomi Piloti (1..18)", btnResetScores: "🔄 Azzera Punteggi e Piazzamenti Batteria",
+      btnPrev: "◀ Prec", btnNext: "Succ ▶",
+      heatTimeLbl: "Tempo Batteria:", bestTimeLbl: "⚡ Record:",
+      heatLbl: "Batteria", seriesLbl: "Serie", finalLbl: "FINALE",
+      gate1: "Corsia 1 - Rosso", gate2: "Corsia 2 - Blu", gate3: "Corsia 3 - Bianco", gate4: "Corsia 4 - Giallo",
+      selectQualRider: "— Scegli pilota qualificato —", selectRiderUp: "Seleziona il pilota dal menu in alto ▲",
+      clearGatesBtn: "🔄 Svuota Corsie", waitingResults: "In attesa dei risultati precedenti",
+      lcq1Title: "🔥 Last Chance Qualifier 1 (3°, 6°, 8°, 9°)",
+      lcq1Sub: "Seleziona dal menu a tendina di ciascuna corsia il pilota in base alla scelta effettuata (priorità: 3° → 6° → 8° → 9°). Il 1° classificato accede alla Finale.",
+      lcq2Title: "🔥 Last Chance Qualifier 2 (4°, 5°, 7°, 10°)",
+      lcq2Sub: "Seleziona dal menu a tendina di ciascuna corsia il pilota in base alla scelta effettuata (priorità: 4° → 5° → 7° → 10°). Il 1° classificato accede alla Finale.",
+      finalTitle: "🏆 FINALE (1° e 2° Classifica + Vincitori LCQ 1 & 2)",
+      finalSub: "Seleziona dal menu a tendina di ciascuna corsia i 4 finalisti e indica l'ordine d'arrivo (1°, 2°, 3°, 4°).",
+      rankBadge: "° class.", standingsBadge: "° Classifica",
+      btnShareCard: "📲 Condividi / Scarica Tabellone Gara (PNG)",
+      btnShareStandings: "📲 Condividi / Scarica Classifica (PNG)",
+      btnModeFinal: "🏆 Classifica Finale GP (SGP)", btnModeQual: "⏱️ Classifica 20 Batterie",
+      thPos: "Pos", thRider: "Pilota", thRuns: "Serie", thTot: "TOT", thFin: "FIN",
+      legFinalDirect: "1°-2°: Finale Diretta", legLcq: "3°-10°: LCQ 1 & 2", legPtsInfo: "TOT = Pt 20 Batterie • SGP = Pt Mondiale GP",
+      codeR: "Ritirato", codeF: "Caduto", codeX: "Escluso", codeT: "Nastro", codeNS: "Non partito",
+      histSectionTitle: "💾 Gestione & Archivio Gare",
+      btnSaveArchive: "📥 Salva Gara Corrente nello Storico", btnNewCleanRace: "➕ Inizia Nuova Gara Pulita",
+      btnExportJson: "⬇️ Esporta Backup (.json)", btnImportJson: "⬆️ Importa Backup (.json)",
+      emptyHistory: "Nessuna gara salvata nello storico.", btnOpenRace: "📂 Apri / Rivedi", btnDelRace: "🗑️ Elimina",
+      raceInProgress: "Gara in corso / Finale non disputata",
+      setSectionTitle: "⚙️ Impostazioni & Lingua",
+      setLangDesc: "Seleziona la lingua dell'applicazione. Tutte le schermate, le tabelle e le locandine verranno tradotte automaticamente.",
+      qrTitle: "📲 Condividi Speedway Live", qrDesc: "Fai inquadrare questo QR Code con la fotocamera per aprire e installare l'app sullo smartphone:",
+      qrShareBtn: "📤 Invia Link", qrCloseBtn: "Chiudi",
+      riderDefault: "Pilota", reserveDefault: "Riserva",
+      posterStandings: "CLASSIFICA UFFICIALE", posterCard: "TABELLONE GARA", posterPodium: "🏆 ORDINE D'ARRIVO FINALE (BATTERIA 23)",
+      confirmFullReset: "Vuoi svuotare tutti i dati inseriti (Evento, Piloti e Punteggi) e ripartire da zero?",
+      confirmClearEvent: "Vuoi svuotare tutti i campi della scheda Evento e la foto pista?",
+      confirmResetRiders: "Vuoi ripristinare i nomi predefiniti (Pilota 1..16 e Riserve 17..18)?",
+      confirmResetScores: "Vuoi azzerare tutti i punteggi, i tempi e i piazzamenti delle batterie mantenendo i nomi dei piloti?",
+      savedToHistoryMsg: "✅ Gara salvata correttamente nello Storico!",
+      confirmDelHistory: "Eliminare definitivamente questa gara dallo storico?"
+    },
+    en: {
+      navEvent: "Event", navRiders: "Riders", navHeats: "Heats", navCard: "Scorecard", navStandings: "Standings", navHistory: "History", navSettings: "Settings",
+      evSectionTitle: "🏟️ Event & Track Info",
+      evNameLbl: "Event / Meeting Name", evNamePh: "E.g. FIM Speedway GP of Poland - Torun",
+      evDateLbl: "Date", evTrackLbl: "Track / Stadium Name", evTrackPh: "E.g. Motoarena",
+      evCityLbl: "City / Location", evCityPh: "E.g. Torun",
+      evCountryLbl: "Country", evCountryPh: "E.g. Poland 🇵🇱",
+      evLenLbl: "Track Length (m)", evLenPh: "E.g. 318m",
+      evNotesLbl: "Track Record / Notes", evNotesPh: "E.g. Slick track",
+      evPhotoLbl: "Horizontal Track Photo",
+      btnTakePhoto: "📸 Take Photo", btnFromGallery: "🖼️ From Gallery", btnLoadPhoto: "🖼️ Upload Photo",
+      btnGoToRiders: "Go to Riders ▶", btnGoToHeats: "Go to Heats ▶",
+      btnClearEvent: "🗑️ Clear Event Info", btnFullReset: "🗑️ Reset All (New Clean Meeting)",
+      ridersSectionTitle: "🏍️ Quick Rider Entry (OCR / Text)",
+      ridersOcrDesc: "Take a sharp photo of the rider list, upload from gallery, or paste the starting line-up text.",
+      btnPasteList: "📋 Paste rider list from text", btnApplyPaste: "✅ Apply Pasted List",
+      btnResetRiders: "🗑️ Reset Rider Names (1..18)", btnResetScores: "🔄 Reset Heat Scores & Times",
+      btnPrev: "◀ Prev", btnNext: "Next ▶",
+      heatTimeLbl: "Heat Time:", bestTimeLbl: "⚡ Best:",
+      heatLbl: "Heat", seriesLbl: "Series", finalLbl: "FINAL",
+      gate1: "Gate 1 - Red", gate2: "Gate 2 - Blue", gate3: "Gate 3 - White", gate4: "Gate 4 - Yellow",
+      selectQualRider: "— Select qualified rider —", selectRiderUp: "Select rider from the dropdown above ▲",
+      clearGatesBtn: "🔄 Clear Gates", waitingResults: "Waiting for previous heat results",
+      lcq1Title: "🔥 Last Chance Qualifier 1 (3rd, 6th, 8th, 9th)",
+      lcq1Sub: "Assign each qualified rider to their chosen gate (priority: 3rd → 6th → 8th → 9th). 1st place advances to the Final.",
+      lcq2Title: "🔥 Last Chance Qualifier 2 (4th, 5th, 7th, 10th)",
+      lcq2Sub: "Assign each qualified rider to their chosen gate (priority: 4th → 5th → 7th → 10th). 1st place advances to the Final.",
+      finalTitle: "🏆 FINAL (Top 2 Qualifying + LCQ 1 & 2 Winners)",
+      finalSub: "Assign the 4 finalists to their chosen gates and select finishing order (1°, 2°, 3°, 4°).",
+      rankBadge: "th pos.", standingsBadge: "° Standings",
+      btnShareCard: "📲 Share / Download Scorecard (PNG)",
+      btnShareStandings: "📲 Share / Download Standings (PNG)",
+      btnModeFinal: "🏆 Final GP Standings (SGP)", btnModeQual: "⏱️ 20 Heats Standings",
+      thPos: "Pos", thRider: "Rider", thRuns: "Runs", thTot: "TOT", thFin: "FIN",
+      legFinalDirect: "1st-2nd: Direct Final", legLcq: "3rd-10th: LCQ 1 & 2", legPtsInfo: "TOT = 20 Heats Pts • SGP = World Champ. Pts",
+      codeR: "Retired", codeF: "Fell", codeX: "Excluded", codeT: "Tapes", codeNS: "Not Started",
+      histSectionTitle: "💾 Meeting Archive & Backup",
+      btnSaveArchive: "📥 Save Current Meeting to History", btnNewCleanRace: "➕ Start New Clean Meeting",
+      btnExportJson: "⬇️ Export Backup (.json)", btnImportJson: "⬆️ Import Backup (.json)",
+      emptyHistory: "No meetings saved in history.", btnOpenRace: "📂 Open / View", btnDelRace: "🗑️ Delete",
+      raceInProgress: "Meeting in progress / Final not completed",
+      setSectionTitle: "⚙️ Settings & Language",
+      setLangDesc: "Select application language. All screens, scorecards and exported posters will be translated automatically.",
+      qrTitle: "📲 Share Speedway Live", qrDesc: "Scan this QR Code with a smartphone camera to open and install the app:",
+      qrShareBtn: "📤 Share Link", qrCloseBtn: "Close",
+      riderDefault: "Rider", reserveDefault: "Reserve",
+      posterStandings: "OFFICIAL STANDINGS", posterCard: "RACE SCORECARD", posterPodium: "🏆 FINAL RESULT (HEAT 23)",
+      confirmFullReset: "Do you want to clear all data (Event, Riders, Scores) and start fresh?",
+      confirmClearEvent: "Do you want to clear all Event & Track fields?",
+      confirmResetRiders: "Do you want to reset default rider names (Rider 1..16 & Reserves 17..18)?",
+      confirmResetScores: "Do you want to reset all heat scores, times and placements keeping rider names?",
+      savedToHistoryMsg: "✅ Meeting saved to History!",
+      confirmDelHistory: "Permanently delete this meeting from history?"
+    },
+    pl: {
+      navEvent: "Zawody", navRiders: "Zawodnicy", navHeats: "Biegi", navCard: "Tabela", navStandings: "Klasyfikacja", navHistory: "Historia", navSettings: "Ustawienia",
+      evSectionTitle: "🏟️ Dane Zawodów i Toru",
+      evNameLbl: "Nazwa Zawodów / Turnieju", evNamePh: "Np. FIM Speedway GP Polski - Toruń",
+      evDateLbl: "Data", evTrackLbl: "Nazwa Toru / Stadionu", evTrackPh: "Np. Motoarena",
+      evCityLbl: "Miasto", evCityPh: "Np. Toruń",
+      evCountryLbl: "Kraj", evCountryPh: "Np. Polska 🇵🇱",
+      evLenLbl: "Długość Toru (m)", evLenPh: "Np. 318m",
+      evNotesLbl: "Rekord Toru / Uwagi", evNotesPh: "Np. Twarda nawierzchnia",
+      evPhotoLbl: "Poziome Zdjęcie Toru",
+      btnTakePhoto: "📸 Zrób Zdjęcie", btnFromGallery: "🖼️ Z Galerii", btnLoadPhoto: "🖼️ Wczytaj Zdjęcie",
+      btnGoToRiders: "Przejdź do Zawodników ▶", btnGoToHeats: "Przejdź do Biegów ▶",
+      btnClearEvent: "🗑️ Wyczyść Dane Zawodów", btnFullReset: "🗑️ Wyczyść Wszystko (Nowe Zawody)",
+      ridersSectionTitle: "🏍️ Lista Startowa Zawodników (OCR / Tekst)",
+      ridersOcrDesc: "Zrób wyraźne zdjęcie listy startowej, wybierz z galerii lub wklej listę zawodników jako tekst.",
+      btnPasteList: "📋 Wklej listę zawodników z tekstu", btnApplyPaste: "✅ Zastosuj Wklejoną Listę",
+      btnResetRiders: "🗑️ Przywróć Domyślne Nazwiska (1..18)", btnResetScores: "🔄 Wyzeruj Punkty i Czasy Biegów",
+      btnPrev: "◀ Poprz.", btnNext: "Nast. ▶",
+      heatTimeLbl: "Czas Biegu:", bestTimeLbl: "⚡ Rekord:",
+      heatLbl: "Bieg", seriesLbl: "Seria", finalLbl: "FINAŁ",
+      gate1: "Tor 1 - Czerwony", gate2: "Tor 2 - Niebieski", gate3: "Tor 3 - Biały", gate4: "Tor 4 - Żółty",
+      selectQualRider: "— Wybierz zakwalifikowanego zawodnika —", selectRiderUp: "Wybierz zawodnika z listy powyżej ▲",
+      clearGatesBtn: "🔄 Wyczyść Tory", waitingResults: "Oczekiwanie na wyniki poprzednich biegów",
+      lcq1Title: "🔥 Last Chance Qualifier 1 (3., 6., 8., 9.)",
+      lcq1Sub: "Przypisz zawodników do wybranych pól startowych (priorytet: 3. → 6. → 8. → 9.). Zwycięzca (1°) awansuje do Finału.",
+      lcq2Title: "🔥 Last Chance Qualifier 2 (4., 5., 7., 10.)",
+      lcq2Sub: "Przypisz zawodników do wybranych pól startowych (priorytet: 4. → 5. → 7. → 10.). Zwycięzca (1°) awansuje do Finału.",
+      finalTitle: "🏆 FINAŁ (1. i 2. po 20 biegach + Zwycięzcy LCQ 1 i 2)",
+      finalSub: "Przypisz 4 finalistów do wybranych pól startowych i zaznacz kolejność na mecie (1°, 2°, 3°, 4°).",
+      rankBadge: ". msc.", standingsBadge: ". msc.",
+      btnShareCard: "📲 Udostępnij / Pobierz Tabelę Biegową (PNG)",
+      btnShareStandings: "📲 Udostępnij / Pobierz Klasyfikację (PNG)",
+      btnModeFinal: "🏆 Klasyfikacja Końcowa GP (SGP)", btnModeQual: "⏱️ Po 20 Biegach",
+      thPos: "Msc", thRider: "Zawodnik", thRuns: "Biegi", thTot: "PKT", thFin: "FIN",
+      legFinalDirect: "1-2: Finał bezpośrednio", legLcq: "3-10: LCQ 1 i 2", legPtsInfo: "PKT = 20 Biegów • SGP = Pkt MŚ GP",
+      codeR: "Defekt", codeF: "Upadek", codeX: "Wykluczony", codeT: "Taśma", codeNS: "Nie stanął",
+      histSectionTitle: "💾 Archiwum Zawodów i Kopia Zapasowa",
+      btnSaveArchive: "📥 Zapisz Zawody w Historii", btnNewCleanRace: "➕ Nowe Czyste Zawody",
+      btnExportJson: "⬇️ Eksportuj Kopię (.json)", btnImportJson: "⬆️ Importuj Kopię (.json)",
+      emptyHistory: "Brak zapisanych zawodów w historii.", btnOpenRace: "📂 Otwórz", btnDelRace: "🗑️ Usuń",
+      raceInProgress: "Zawody w trakcie / Finał",
+      setSectionTitle: "⚙️ Ustawienia i Język",
+      setLangDesc: "Wybierz język aplikacji. Wszystkie ekrany, tabele i grafiki PNG zostaną przetłumaczone automatycznie.",
+      qrTitle: "📲 Udostępnij Speedway Live", qrDesc: "Zeskanuj kod QR aparatem telefonu, aby otworzyć i zainstalować aplikację:",
+      qrShareBtn: "📤 Wyślij Link", qrCloseBtn: "Zamknij",
+      riderDefault: "Zawodnik", reserveDefault: "Rezerwa",
+      posterStandings: "OFICJALNA KLASYFIKACJA", posterCard: "TABELA BIEGOWA", posterPodium: "🏆 WYNIKI FINAŁU (BIEG 23)",
+      confirmFullReset: "Czy na pewno chcesz wyczyścić wszystkie dane (Zawody, Zawodnicy, Punkty) i zacząć od nowa?",
+      confirmClearEvent: "Czy chcesz wyczyścić wszystkie dane zawodów i zdjęcie toru?",
+      confirmResetRiders: "Czy chcesz przywrócić domyślne nazwy zawodników (1..18)?",
+      confirmResetScores: "Czy chcesz wyzerować wszystkie punkty i czasy biegów zachowując nazwiska zawodników?",
+      savedToHistoryMsg: "✅ Zawody zostały zapisane w Historii!",
+      confirmDelHistory: "Czy na pewno usunąć te zawody z historii?"
+    },
+    da: {
+      navEvent: "Løb", navRiders: "Kørere", navHeats: "Heats", navCard: "Skema", navStandings: "Stilling", navHistory: "Historik", navSettings: "Setting",
+      evSectionTitle: "🏟️ Løbs- & Baneinfo",
+      evNameLbl: "Løbsnavn / Event", evNamePh: "F.eks. FIM Speedway GP of Denmark - Vojens",
+      evDateLbl: "Dato", evTrackLbl: "Bane / Stadion", evTrackPh: "F.eks. Vojens Speedway Center",
+      evCityLbl: "By", evCityPh: "F.eks. Vojens",
+      evCountryLbl: "Land", evCountryPh: "F.eks. Danmark 🇩🇰",
+      evLenLbl: "Banelængde (m)", evLenPh: "F.eks. 300m",
+      evNotesLbl: "Banerekord / Noter", evNotesPh: "F.eks. Fast underlag",
+      evPhotoLbl: "Vandret Banefoto",
+      btnTakePhoto: "📸 Tag Foto", btnFromGallery: "🖼️ Fra Galleri", btnLoadPhoto: "🖼️ Indlæs Foto",
+      btnGoToRiders: "Gå til Kørere ▶", btnGoToHeats: "Gå til Heats ▶",
+      btnClearEvent: "🗑️ Ryd Løbsinfo", btnFullReset: "🗑️ Nulstil Alt (Nyt Løb)",
+      ridersSectionTitle: "🏍️ Hurtig Indtastning af Kørere (OCR / Tekst)",
+      ridersOcrDesc: "Tag et skarpt billede af startlisten, vælg fra galleri eller indsæt kørerlisten som tekst.",
+      btnPasteList: "📋 Indsæt kørerliste fra tekst", btnApplyPaste: "✅ Anvend Indsat Liste",
+      btnResetRiders: "🗑️ Nulstil Kørernavne (1..18)", btnResetScores: "🔄 Nulstil Point & Heattider",
+      btnPrev: "◀ Forrige", btnNext: "Næste ▶",
+      heatTimeLbl: "Heattid:", bestTimeLbl: "⚡ Bedste:",
+      heatLbl: "Heat", seriesLbl: "Serie", finalLbl: "FINALE",
+      gate1: "Bane 1 - Rød", gate2: "Bane 2 - Blå", gate3: "Bane 3 - Hvid", gate4: "Bane 4 - Gul",
+      selectQualRider: "— Vælg kvalificeret kører —", selectRiderUp: "Vælg kører i menuen ovenfor ▲",
+      clearGatesBtn: "🔄 Ryd Baner", waitingResults: "Afventer resultater fra tidligere heats",
+      lcq1Title: "🔥 Last Chance Qualifier 1 (3., 6., 8., 9.)",
+      lcq1Sub: "Vælg kører til hver startbane efter banevalg (prioritet: 3. → 6. → 8. → 9.). Vinderen (1°) går i Finalen.",
+      lcq2Title: "🔥 Last Chance Qualifier 2 (4., 5., 7., 10.)",
+      lcq2Sub: "Vælg kører til hver startbane efter banevalg (prioritet: 4. → 5. → 7. → 10.). Vinderen (1°) går i Finalen.",
+      finalTitle: "🏆 FINALE (Top 2 efter 20 Heats + LCQ 1 & 2 Vindere)",
+      finalSub: "Vælg de 4 finalister på deres valgte startbaner og angiv placering (1°, 2°, 3°, 4°).",
+      rankBadge: ". pl.", standingsBadge: ". pl.",
+      btnShareCard: "📲 Del / Download Løbsskema (PNG)",
+      btnShareStandings: "📲 Del / Download Stilling (PNG)",
+      btnModeFinal: "🏆 Slutstilling GP (SGP)", btnModeQual: "⏱️ Stilling 20 Heats",
+      thPos: "Pos", thRider: "Kører", thRuns: "Heats", thTot: "TOT", thFin: "FIN",
+      legFinalDirect: "1.-2.: Direkte i Finale", legLcq: "3.-10.: LCQ 1 & 2", legPtsInfo: "TOT = 20 Heats Pt • SGP = VM GP Pt",
+      codeR: "Udgået", codeF: "Styrt", codeX: "Udelukket", codeT: "Bånd", codeNS: "Ikke startet",
+      histSectionTitle: "💾 Løbsarkiv & Backup",
+      btnSaveArchive: "📥 Gem Nuværende Løb i Historik", btnNewCleanRace: "➕ Start Nyt Løb",
+      btnExportJson: "⬇️ Eksporter Backup (.json)", btnImportJson: "⬆️ Importer Backup (.json)",
+      emptyHistory: "Ingen gemte løb i historikken.", btnOpenRace: "📂 Åbn / Se", btnDelRace: "🗑️ Slet",
+      raceInProgress: "Løb i gang / Finale ikke kørt",
+      setSectionTitle: "⚙️ Indstillinger & Sprog",
+      setLangDesc: "Vælg applikationens sprog. Alle skærme, skemaer og PNG-billeder oversættes automatisk.",
+      qrTitle: "📲 Del Speedway Live", qrDesc: "Scan denne QR-kode med kameraet for at åbne og installere appen:",
+      qrShareBtn: "📤 Del Link", qrCloseBtn: "Luk",
+      riderDefault: "Kører", reserveDefault: "Reserve",
+      posterStandings: "OFFICIEL STILLING", posterCard: "LØBSSKEMA", posterPodium: "🏆 FINALERESULTAT (HEAT 23)",
+      confirmFullReset: "Vil du slette alle indtastede data (Løb, Kørere og Point) og starte forfra?",
+      confirmClearEvent: "Vil du rydde alle felter under Løbsinfo?",
+      confirmResetRiders: "Vil du nulstille kørernavne (Kører 1..16 & Reserver 17..18)?",
+      confirmResetScores: "Vil du nulstille alle point, tider og placeringer men beholde kørernavnene?",
+      savedToHistoryMsg: "✅ Løbet er gemt i Historik!",
+      confirmDelHistory: "Slet dette løb permanent fra historikken?"
+    },
+    sv: {
+      navEvent: "Tävling", navRiders: "Förare", navHeats: "Heat", navCard: "Tabell", navStandings: "Ställning", navHistory: "Historik", navSettings: "Setting",
+      evSectionTitle: "🏟️ Tävlings- & Baninfo",
+      evNameLbl: "Tävlingsnamn / Event", evNamePh: "T.ex. FIM Speedway GP of Sweden - Målilla",
+      evDateLbl: "Datum", evTrackLbl: "Bana / Arena", evTrackPh: "T.ex. Skrotfrag Arena",
+      evCityLbl: "Stad / Ort", evCityPh: "T.ex. Målilla",
+      evCountryLbl: "Land", evCountryPh: "T.ex. Sverige 🇸🇪",
+      evLenLbl: "Banlängd (m)", evLenPh: "T.ex. 305m",
+      evNotesLbl: "Banrekord / Notering", evNotesPh: "T.ex. Fast bana",
+      evPhotoLbl: "Horisontellt Banfoto",
+      btnTakePhoto: "📸 Ta Foto", btnFromGallery: "🖼️ Från Galleri", btnLoadPhoto: "🖼️ Ladda Foto",
+      btnGoToRiders: "Gå till Förare ▶", btnGoToHeats: "Gå till Heat ▶",
+      btnClearEvent: "🗑️ Rensa Tävlingsinfo", btnFullReset: "🗑️ Återställ Allt (Ny Tävling)",
+      ridersSectionTitle: "🏍️ Snabbinmatning av Förare (OCR / Text)",
+      ridersOcrDesc: "Ta ett skarpt foto av startlistan, välj från galleriet eller klistra in förarlistan som text.",
+      btnPasteList: "📋 Klistra in förarlista från text", btnApplyPaste: "✅ Använd Inklistrad Lista",
+      btnResetRiders: "🗑️ Återställ Förarnamn (1..18)", btnResetScores: "🔄 Nollställ Poäng & Heattider",
+      btnPrev: "◀ Föreg", btnNext: "Nästa ▶",
+      heatTimeLbl: "Heattid:", bestTimeLbl: "⚡ Bästa:",
+      heatLbl: "Heat", seriesLbl: "Omgång", finalLbl: "FINAL",
+      gate1: "Bana 1 - Röd", gate2: "Bana 2 - Blå", gate3: "Bana 3 - Vit", gate4: "Bana 4 - Gul",
+      selectQualRider: "— Välj kvalificerad förare —", selectRiderUp: "Välj förare i menyn ovan ▲",
+      clearGatesBtn: "🔄 Rensa Banor", waitingResults: "Väntar på resultat från tidigare heat",
+      lcq1Title: "🔥 Last Chance Qualifier 1 (3:a, 6:a, 8:a, 9:a)",
+      lcq1Sub: "Välj förare för varje startspår enligt spårval (prioritet: 3:a → 6:a → 8:a → 9:a). Vinnaren (1°) går till Final.",
+      lcq2Title: "🔥 Last Chance Qualifier 2 (4:a, 5:a, 7:a, 10:a)",
+      lcq2Sub: "Välj förare för varje startspår enligt spårval (prioritet: 4:a → 5:a → 7:a → 10:a). Vinnaren (1°) går till Final.",
+      finalTitle: "🏆 FINAL (1:a & 2:a efter 20 Heat + Vinnare LCQ 1 & 2)",
+      finalSub: "Välj de 4 finalisterna på sina valda startspår och ange placering i mål (1°, 2°, 3°, 4°).",
+      rankBadge: ":a", standingsBadge: ":a",
+      btnShareCard: "📲 Dela / Ladda ner Körschema (PNG)",
+      btnShareStandings: "📲 Dela / Ladda ner Ställning (PNG)",
+      btnModeFinal: "🏆 Slutställning GP (SGP)", btnModeQual: "⏱️ Ställning 20 Heat",
+      thPos: "Pos", thRider: "Förare", thRuns: "Heat", thTot: "TOT", thFin: "FIN",
+      legFinalDirect: "1:a-2:a: Direkt till Final", legLcq: "3:a-10:a: LCQ 1 & 2", legPtsInfo: "TOT = 20 Heat P • SGP = VM GP P",
+      codeR: "Bröt", codeF: "Omkull", codeX: "Utesluten", codeT: "Tejp", codeNS: "Ej startat",
+      histSectionTitle: "💾 Tävlingsarkiv & Backup",
+      btnSaveArchive: "📥 Spara Aktuell Tävling i Historik", btnNewCleanRace: "➕ Starta Ny Ren Tävling",
+      btnExportJson: "⬇️ Exportera Backup (.json)", btnImportJson: "⬆️ Importera Backup (.json)",
+      emptyHistory: "Inga sparade tävlingar i historiken.", btnOpenRace: "📂 Öppna / Visa", btnDelRace: "🗑️ Radera",
+      raceInProgress: "Tävling pågår / Final ej körd",
+      setSectionTitle: "⚙️ Inställningar & Språk",
+      setLangDesc: "Välj språk för applikationen. Alla vyer, tabeller och PNG-bilder översätts automatiskt.",
+      qrTitle: "📲 Dela Speedway Live", qrDesc: "Skanna denna QR-kod med mobilkameran för att öppna och installera appen:",
+      qrShareBtn: "📤 Dela Länk", qrCloseBtn: "Stäng",
+      riderDefault: "Förare", reserveDefault: "Reserv",
+      posterStandings: "OFFICIELL STÄLLNING", posterCard: "KÖRSCHEMA", posterPodium: "🏆 FINALRESULTAT (HEAT 23)",
+      confirmFullReset: "Vill du rensa alla inmatade data (Tävling, Förare och Poäng) och börja om?",
+      confirmClearEvent: "Vill du rensa alla fält under Tävlingsinfo?",
+      confirmResetRiders: "Vill du återställa förarnamnen (Förare 1..16 & Reserver 17..18)?",
+      confirmResetScores: "Vill du nollställa alla poäng, tider och placeringar men behålla förarnamnen?",
+      savedToHistoryMsg: "✅ Tävlingen har sparats i Historik!",
+      confirmDelHistory: "Ta bort denna tävling permanent från historiken?"
+    }
+  };
+
+  const LANG_KEY = 'speedway_fim_lang_v1';
+  let currentLang = localStorage.getItem(LANG_KEY) || 'it';
+  if (!I18N[currentLang]) currentLang = 'it';
+
+  function t(key) {
+    return (I18N[currentLang] && I18N[currentLang][key]) || I18N.it[key] || key;
+  }
 
   // Tabella FIM SGP 20 Batterie (Batteria 12 corretta: [13, 4, 10, 7])
   const FIM_SCHEDULE = [
@@ -451,30 +809,61 @@
     [5, 14, 11, 4]    // Batteria 20
   ];
 
-  // Sigle ufficiali di non-classificato / esclusione FIM
-  const SPECIAL_CODES = [
-    { code: 'R',  short: 'Retired',   full: 'Retired (Ritirato)' },
-    { code: 'F',  short: 'Fell',      full: 'Fell (Caduto)' },
-    { code: 'X',  short: 'Excluded',  full: 'Excluded (Escluso)' },
-    { code: 'T',  short: 'Tapes',     full: 'Tapes (Tocco nastro)' },
-    { code: 'NS', short: 'Not Start', full: 'Not Started (Non partito)' }
-  ];
-
   // Tabella ufficiale Punti Campionato del Mondo FIM SGP (dal 1° al 16° classificato finale)
   const SGP_WORLD_POINTS = [20, 18, 16, 14, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
-  const GATE_INFO = [
-    { name: "Corsia 1 - Rosso", short: "1", cls: "gate-red", badge: "badge-red" },
-    { name: "Corsia 2 - Blu", short: "2", cls: "gate-blue", badge: "badge-blue" },
-    { name: "Corsia 3 - Bianco", short: "3", cls: "gate-white", badge: "badge-white" },
-    { name: "Corsia 4 - Giallo", short: "4", cls: "gate-yellow", badge: "badge-yellow" }
+  const GATE_STYLE = [
+    { key: "gate1", short: "1", cls: "gate-red", badge: "badge-red" },
+    { key: "gate2", short: "2", cls: "gate-blue", badge: "badge-blue" },
+    { key: "gate3", short: "3", cls: "gate-white", badge: "badge-white" },
+    { key: "gate4", short: "4", cls: "gate-yellow", badge: "badge-yellow" }
   ];
 
   const STORAGE_KEY = 'speedway_fim_pwa_v3';
   const ARCHIVE_KEY = 'speedway_fim_archive_v2';
 
   let state = createDefaultState();
-  let standingsMode = 'final'; // 'final' oppure 'qual'
+  let standingsMode = 'final';
+
+  function getSpecialCodes() {
+    return [
+      { code: 'R',  short: t('codeR'),  full: 'R: ' + t('codeR') },
+      { code: 'F',  short: t('codeF'),  full: 'F: ' + t('codeF') },
+      { code: 'X',  short: t('codeX'),  full: 'X: ' + t('codeX') },
+      { code: 'T',  short: t('codeT'),  full: 'T: ' + t('codeT') },
+      { code: 'NS', short: t('codeNS'), full: 'NS: ' + t('codeNS') }
+    ];
+  }
+
+  function getHeatLabel(idx, includeTime) {
+    let base = "";
+    if (idx < 20) {
+      base = t('heatLbl') + " " + (idx + 1) + " (" + t('seriesLbl') + " " + (Math.floor(idx / 4) + 1) + ")";
+    } else if (idx === 20) {
+      base = t('heatLbl') + " 21 (LCQ 1)";
+    } else if (idx === 21) {
+      base = t('heatLbl') + " 22 (LCQ 2)";
+    } else {
+      base = t('heatLbl') + " 23 (" + t('finalLbl') + ")";
+    }
+    if (includeTime && state.heats[idx] && state.heats[idx].time) {
+      base += " • ⏱️ " + state.heats[idx].time + "s";
+    }
+    return base;
+  }
+
+  function isDefaultRiderName(name, id) {
+    if (!name) return true;
+    const patterns = [
+      /^(Pilota|Rider|Zawodnik|Kører|Förare)\s+\d+$/i,
+      /^(Riserva|Reserve|Rezerwa|Reserv)\s+\d+$/i
+    ];
+    return patterns.some(rx => rx.test(name.trim()));
+  }
+
+  function getDefaultRiderName(id) {
+    return (id <= 16 ? t('riderDefault') : t('reserveDefault')) + " " + id;
+  }
 
   function formatPlacement(score) {
     if (score === 3) return '1°';
@@ -482,6 +871,72 @@
     if (score === 1) return '3°';
     if (score === 0) return '4°';
     return score !== null && score !== undefined ? String(score) : '-';
+  }
+
+  /* GESTIONE LINGUA E TRADUZIONE AUTOMATICA */
+  function setLanguage(langCode) {
+    if (!I18N[langCode]) return;
+    currentLang = langCode;
+    try { localStorage.setItem(LANG_KEY, langCode); } catch (e) {}
+    document.documentElement.lang = langCode;
+
+    // Aggiorna i nomi predefiniti (Pilota 1..18) se non sono stati personalizzati
+    for (let i = 1; i <= 18; i++) {
+      if (isDefaultRiderName(state.riders[i], i)) {
+        state.riders[i] = getDefaultRiderName(i);
+      }
+    }
+
+    applyTranslations();
+    saveState();
+    renderRidersInputs();
+    renderCurrentHeat();
+    renderStandings();
+    renderScorecard();
+    renderHistory();
+    renderLanguageButtons();
+  }
+
+  function applyTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (key) el.textContent = t(key);
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if (key) el.setAttribute('placeholder', t(key));
+    });
+
+    // Legenda sigle nelle varie viste
+    const codesHtml = getSpecialCodes().map(c => '<span><strong>' + c.code + '</strong>: ' + c.short + '</span>').join('');
+    ['heats-codes-legend', 'card-codes-legend', 'standings-codes-legend'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = codesHtml;
+    });
+
+    const stLeg = document.getElementById('standings-legend-bar');
+    if (stLeg) {
+      stLeg.innerHTML =
+        '<span><i class="legend-dot" style="background:var(--yellow)"></i>' + t('legFinalDirect') + '</span>' +
+        '<span><i class="legend-dot" style="background:var(--accent)"></i>' + t('legLcq') + '</span>' +
+        '<span><strong>' + t('legPtsInfo') + '</strong></span>';
+    }
+
+    updateHeaderAndHero();
+  }
+
+  function renderLanguageButtons() {
+    const container = document.getElementById('lang-buttons-container');
+    if (!container) return;
+    container.innerHTML = LANGUAGES.map(l =>
+      '<button type="button" class="lang-btn ' + (l.code === currentLang ? 'active' : '') + '" onclick="setLanguage(\'' + l.code + '\')">' +
+        '<div class="lang-btnLeft">' +
+          '<span class="lang-flag">' + l.flag + '</span>' +
+          '<span>' + l.name + '</span>' +
+        '</div>' +
+        '<span class="lang-check">' + (l.code === currentLang ? '✓' : '') + '</span>' +
+      '</button>'
+    ).join('');
   }
 
   /* QR CODE CONDIVISIONE APP */
@@ -502,7 +957,7 @@
       try {
         await navigator.share({
           title: "Speedway SGP Live",
-          text: "🏁 Installa l'app Speedway SGP Live per gestire i punteggi delle batterie in tempo reale:",
+          text: "🏁 Speedway SGP Live App:",
           url: targetUrl
         });
         return;
@@ -510,9 +965,9 @@
     }
     try {
       await navigator.clipboard.writeText(targetUrl);
-      alert("✅ Link copiato negli appunti! Incollalo su WhatsApp.");
+      alert("✅ Link copiato!");
     } catch (e) {
-      prompt("Copia questo link:", targetUrl);
+      prompt("Link:", targetUrl);
     }
   }
 
@@ -520,25 +975,21 @@
     const today = new Date().toISOString().split('T')[0];
     const riders = {};
     for (let i = 1; i <= 18; i++) {
-      riders[i] = i <= 16 ? "Pilota " + i : "Riserva " + i;
+      riders[i] = getDefaultRiderName(i);
     }
     const heats = FIM_SCHEDULE.map((gates, idx) => ({
       heatNumber: idx + 1,
-      label: "Batteria " + (idx + 1) + " (Serie " + (Math.floor(idx / 4) + 1) + ")",
+      time: "",
       slots: gates.map(rId => ({ riderId: rId, score: null }))
     }));
 
-    [
-      "Batteria 21 (LCQ 1)",
-      "Batteria 22 (LCQ 2)",
-      "Batteria 23 (FINALE)"
-    ].forEach((lbl, i) => {
+    for (let i = 0; i < 3; i++) {
       heats.push({
         heatNumber: 21 + i,
-        label: lbl,
+        time: "",
         slots: [0, 1, 2, 3].map(() => ({ riderId: null, score: null }))
       });
-    });
+    }
 
     return {
       id: Date.now(),
@@ -574,9 +1025,9 @@
     if (!Array.isArray(merged.tieOrder)) merged.tieOrder = [];
 
     if (merged.heats && merged.heats.length >= 23) {
-      merged.heats[20].label = "Batteria 21 (LCQ 1)";
-      merged.heats[21].label = "Batteria 22 (LCQ 2)";
-      merged.heats[22].label = "Batteria 23 (FINALE)";
+      merged.heats.forEach(h => {
+        if (typeof h.time !== 'string') h.time = "";
+      });
 
       const h12 = merged.heats[11];
       if (h12 && h12.slots && h12.slots.map(s => s.riderId).join(',') === '7,4,13,10') {
@@ -607,6 +1058,8 @@
       state = createDefaultState();
       saveState();
     }
+    applyTranslations();
+    renderLanguageButtons();
     populateEventForm();
     updateHeaderAndHero();
     updateProgressBadge();
@@ -618,7 +1071,7 @@
 
   /* RESET E SVUOTAMENTO DATI */
   function fullResetApp() {
-    if (!confirm("Vuoi svuotare tutti i dati inseriti (Evento, Piloti e Punteggi) e ripartire da zero?")) return;
+    if (!confirm(t('confirmFullReset'))) return;
     try {
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem('speedway_fim_pwa_v2');
@@ -633,14 +1086,14 @@
   }
 
   function clearEventMetaOnly() {
-    if (!confirm("Vuoi svuotare tutti i campi della scheda Evento e la foto pista?")) return;
+    if (!confirm(t('confirmClearEvent'))) return;
     state.eventMeta = createDefaultState().eventMeta;
     populateEventForm();
     saveState();
   }
 
   function resetRidersNames() {
-    if (!confirm("Vuoi ripristinare i nomi predefiniti (Pilota 1..16 e Riserve 17..18)?")) return;
+    if (!confirm(t('confirmResetRiders'))) return;
     state.riders = createDefaultState().riders;
     saveState();
     renderRidersInputs();
@@ -681,14 +1134,14 @@
   function updateHeaderAndHero() {
     const m = state.eventMeta;
     document.getElementById('header-event-title').textContent = "🏁 " + (m.name || "SPEEDWAY LIVE");
-    const locParts = ["v3.3", m.track, m.city, m.country, m.date].filter(Boolean);
+    const locParts = ["v3.4", m.track, m.city, m.country, m.date].filter(Boolean);
     document.getElementById('header-event-sub').textContent = locParts.join(" • ");
 
     const hero = document.getElementById('track-hero');
     if (m.photoDataUrl) {
       hero.classList.add('visible');
       document.getElementById('track-hero-img').src = m.photoDataUrl;
-      document.getElementById('hero-track-name').textContent = m.track || m.name || "Pista Speedway";
+      document.getElementById('hero-track-name').textContent = m.track || m.name || "Speedway";
       const details = [m.city, m.country, m.length ? m.length : null, m.notes].filter(Boolean).join(" • ");
       document.getElementById('hero-track-meta').textContent = details;
     } else {
@@ -730,6 +1183,43 @@
     document.getElementById('progress-badge').textContent = completed + " / 23";
   }
 
+  /* GESTIONE TEMPO DELLA BATTERIA E CALCOLO MIGLIOR TEMPO */
+  function updateCurrentHeatTime(val) {
+    const clean = val.replace(',', '.').replace(/[^0-9.]/g, '');
+    state.heats[state.currentHeat].time = clean;
+    saveState();
+    renderHeatSelect();
+    updateBestTimeBadge();
+  }
+
+  function getBestHeatTimeInfo() {
+    let bestVal = Infinity;
+    let bestHeatNum = null;
+    let bestStr = "";
+    state.heats.forEach((h, idx) => {
+      if (h.time) {
+        const num = parseFloat(h.time);
+        if (!isNaN(num) && num > 20 && num < bestVal) {
+          bestVal = num;
+          bestHeatNum = idx + 1;
+          bestStr = h.time;
+        }
+      }
+    });
+    return bestHeatNum ? { time: bestStr, heatNumber: bestHeatNum } : null;
+  }
+
+  function updateBestTimeBadge() {
+    const el = document.getElementById('best-time-indicator');
+    if (!el) return;
+    const best = getBestHeatTimeInfo();
+    if (best) {
+      el.innerHTML = '<span class="best-time-badge">' + t('bestTimeLbl') + ' ' + best.time + 's (H' + best.heatNumber + ')</span>';
+    } else {
+      el.innerHTML = '';
+    }
+  }
+
   /* CLASSIFICA, SPAREGGI FIM (TIE-BREAK) E PUNTI MONDIALI SGP */
   function computeStats() {
     const stats = [];
@@ -739,12 +1229,12 @@
         name: state.riders[r],
         runs: [],
         total: 0,
-        ones: 0,           // 1° posti (3 pt)
-        twos: 0,           // 2° posti (2 pt)
-        threes: 0,         // 3° posti (1 pt)
-        finishedZeros: 0,  // 4° posti tagliando il traguardo (0 pt effettivi, battono R/F/X/T/NS)
-        nonFinished: [],   // Codici R, F, X, T, NS subiti nelle 20 batterie
-        zeros: 0,          // Totale 0 + R/F/X/T/NS
+        ones: 0,
+        twos: 0,
+        threes: 0,
+        finishedZeros: 0,
+        nonFinished: [],
+        zeros: 0,
         lcqRaw: null,
         finRaw: null,
         sfScore: '-',
@@ -787,7 +1277,6 @@
       });
     });
 
-    // Batterie 21 e 22 (LCQ 1 e LCQ 2)
     [20, 21].forEach(idx => {
       state.heats[idx].slots.forEach(s => {
         if (!s.riderId) return;
@@ -799,7 +1288,6 @@
       });
     });
 
-    // Batteria 23 (Finale)
     state.heats[22].slots.forEach(s => {
       if (!s.riderId) return;
       const st = stats.find(x => x.id === s.riderId);
@@ -812,7 +1300,6 @@
     return stats;
   }
 
-  // Confronto scontro diretto nelle 20 batterie tra due piloti a pari merito
   function compareHeadToHead(riderA, riderB) {
     let diffSum = 0;
     for (let i = 0; i < 20; i++) {
@@ -828,7 +1315,6 @@
     return diffSum;
   }
 
-  // Classifica delle 20 batterie con Tie-Break ufficiale FIM (0 pt al traguardo batte R/F/X/T/NS)
   function getSortedQualifyingStandings() {
     const allStats = computeStats().filter(s => s.id <= 16 || s.runs.some(x => x !== '-'));
     const tieOrder = Array.isArray(state.tieOrder) ? state.tieOrder : [];
@@ -867,7 +1353,6 @@
     renderStandings();
   }
 
-  // Sincronizza automaticamente LCQ 1, LCQ 2 e Finale se cambiano i qualificati dopo una correzione nelle 20 batterie
   function syncSpecialHeatsWithQualifiers() {
     const regularCompletedCount = state.heats.slice(0, 20).filter(h => h.slots.some(s => s.score !== null)).length;
     if (regularCompletedCount < 20) return;
@@ -906,17 +1391,16 @@
     });
   }
 
-  // Classifica Finale del GP (include ordine d'arrivo Finale, piazzamenti LCQ e assegna i Punti SGP 20..1)
   function getFinalGpStandings() {
     const qualList = getSortedQualifyingStandings();
     const eligibleFinalIds = getEligibleRidersForSpecialHeat(22).map(x => x.id);
 
     function placementWeight(raw) {
-      if (raw === 3) return 4; // 1°
-      if (raw === 2) return 3; // 2°
-      if (raw === 1) return 2; // 3°
-      if (raw === 0) return 1; // 4° al traguardo
-      if (typeof raw === 'string') return 0; // R, F, X, T, NS
+      if (raw === 3) return 4;
+      if (raw === 2) return 3;
+      if (raw === 1) return 2;
+      if (raw === 0) return 1;
+      if (typeof raw === 'string') return 0;
       return -1;
     }
 
@@ -967,43 +1451,40 @@
       rankMap[st.id] = i + 1;
     });
 
-    // Batteria 21 (LCQ 1): 3°, 6°, 8° e 9° classificato (indici 2, 5, 7, 8)
     if (heatIdx === 20) {
       return [2, 5, 7, 8]
         .filter(idx => ranked[idx])
         .map(idx => ({
           id: ranked[idx].id,
           name: state.riders[ranked[idx].id],
-          badge: (idx + 1) + "° class. (" + ranked[idx].total + " pt)"
+          badge: (idx + 1) + t('rankBadge') + " (" + ranked[idx].total + " pt)"
         }));
     }
 
-    // Batteria 22 (LCQ 2): 4°, 5°, 7° e 10° classificato (indici 3, 4, 6, 9)
     if (heatIdx === 21) {
       return [3, 4, 6, 9]
         .filter(idx => ranked[idx])
         .map(idx => ({
           id: ranked[idx].id,
           name: state.riders[ranked[idx].id],
-          badge: (idx + 1) + "° class. (" + ranked[idx].total + " pt)"
+          badge: (idx + 1) + t('rankBadge') + " (" + ranked[idx].total + " pt)"
         }));
     }
 
-    // Batteria 23 (FINALE): 1° e 2° delle prime 20 batterie + 1° classificato di LCQ 1 e LCQ 2
     if (heatIdx === 22) {
       const list = [];
       if (ranked[0]) {
         list.push({
           id: ranked[0].id,
           name: state.riders[ranked[0].id],
-          badge: "1° Classifica (" + ranked[0].total + " pt)"
+          badge: "1" + t('standingsBadge') + " (" + ranked[0].total + " pt)"
         });
       }
       if (ranked[1]) {
         list.push({
           id: ranked[1].id,
           name: state.riders[ranked[1].id],
-          badge: "2° Classifica (" + ranked[1].total + " pt)"
+          badge: "2" + t('standingsBadge') + " (" + ranked[1].total + " pt)"
         });
       }
 
@@ -1013,7 +1494,7 @@
         list.push({
           id: rId,
           name: state.riders[rId],
-          badge: "1° LCQ 1 (" + (rankMap[rId] ? rankMap[rId] + "° class." : "") + ")"
+          badge: "1° LCQ 1 (" + (rankMap[rId] ? rankMap[rId] + t('rankBadge') : "") + ")"
         });
       }
 
@@ -1023,7 +1504,7 @@
         list.push({
           id: rId,
           name: state.riders[rId],
-          badge: "1° LCQ 2 (" + (rankMap[rId] ? rankMap[rId] + "° class." : "") + ")"
+          badge: "1° LCQ 2 (" + (rankMap[rId] ? rankMap[rId] + t('rankBadge') : "") + ")"
         });
       }
 
@@ -1046,13 +1527,19 @@
   function renderHeatSelect() {
     const sel = document.getElementById('heat-select');
     sel.innerHTML = state.heats.map((h, i) =>
-      '<option value="' + i + '" ' + (i === state.currentHeat ? 'selected' : '') + '>' + h.label + '</option>'
+      '<option value="' + i + '" ' + (i === state.currentHeat ? 'selected' : '') + '>' + getHeatLabel(i, true) + '</option>'
     ).join('');
   }
 
   function renderCurrentHeat() {
     renderHeatSelect();
     const heat = state.heats[state.currentHeat];
+
+    // Popola il campo Tempo della Batteria
+    const timeInput = document.getElementById('heat-time-input');
+    if (timeInput) timeInput.value = heat.time || "";
+    updateBestTimeBadge();
+
     const autoBox = document.getElementById('auto-finals-box');
     const isSpecialHeat = state.currentHeat >= 20;
 
@@ -1064,26 +1551,26 @@
       let ruleSub = "";
 
       if (state.currentHeat === 20) {
-        titleText = "🔥 Last Chance Qualifier 1 (3°, 6°, 8°, 9°)";
-        ruleSub = "Seleziona dal menu a tendina di ciascuna corsia il pilota in base alla scelta effettuata (priorità: 3° → 6° → 8° → 9°). Il 1° classificato accede alla Finale.";
+        titleText = t('lcq1Title');
+        ruleSub = t('lcq1Sub');
       } else if (state.currentHeat === 21) {
-        titleText = "🔥 Last Chance Qualifier 2 (4°, 5°, 7°, 10°)";
-        ruleSub = "Seleziona dal menu a tendina di ciascuna corsia il pilota in base alla scelta effettuata (priorità: 4° → 5° → 7° → 10°). Il 1° classificato accede alla Finale.";
+        titleText = t('lcq2Title');
+        ruleSub = t('lcq2Sub');
       } else {
-        titleText = "🏆 FINALE (1° e 2° Classifica + Vincitori LCQ 1 & 2)";
-        ruleSub = "Seleziona dal menu a tendina di ciascuna corsia i 4 finalisti e indica l'ordine d'arrivo (1°, 2°, 3°, 4°).";
+        titleText = t('finalTitle');
+        ruleSub = t('finalSub');
       }
 
       const pillsHtml = eligibleList.length > 0
         ? eligibleList.map(item =>
             '<div class="qual-pill"><span>' + item.badge + ':</span>#' + item.id + ' ' + item.name + '</div>'
           ).join('')
-        : '<div class="qual-pill">In attesa dei risultati precedenti</div>';
+        : '<div class="qual-pill">' + t('waitingResults') + '</div>';
 
       autoBox.innerHTML = '<div class="qual-info-card">' +
         '<div class="qual-info-header">' +
           '<span class="qual-info-title">' + titleText + '</span>' +
-          '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">🔄 Svuota Corsie</button>' +
+          '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button>' +
         '</div>' +
         '<div class="qual-info-sub">' + ruleSub + '</div>' +
         '<div class="qual-badges-list">' + pillsHtml + '</div>' +
@@ -1106,14 +1593,15 @@
           { val: 0, label: '0 pt' }
         ];
 
+    const specialCodes = getSpecialCodes();
     const container = document.getElementById('gates-container');
     container.innerHTML = heat.slots.map((slot, gIdx) => {
-      const g = GATE_INFO[gIdx];
+      const g = GATE_STYLE[gIdx];
       const sc = slot.score;
       let opts = '';
 
       if (isSpecialHeat) {
-        opts += '<option value="" ' + (!slot.riderId ? 'selected' : '') + '>— Scegli pilota qualificato —</option>';
+        opts += '<option value="" ' + (!slot.riderId ? 'selected' : '') + '>' + t('selectQualRider') + '</option>';
         eligibleList.forEach(item => {
           opts += '<option value="' + item.id + '" ' + (slot.riderId === item.id ? 'selected' : '') + '>#' + item.id + ' ' + item.name + ' — ' + item.badge + '</option>';
         });
@@ -1126,11 +1614,11 @@
       const hasRider = Boolean(slot.riderId);
       const riderLabel = hasRider
         ? ('#' + slot.riderId + ' ' + state.riders[slot.riderId])
-        : 'Seleziona il pilota dal menu in alto ▲';
+        : t('selectRiderUp');
 
       return '<div class="gate-card ' + g.cls + '">' +
         '<div class="rider-header">' +
-          '<span class="helmet-badge ' + g.badge + '">' + g.name + '</span>' +
+          '<span class="helmet-badge ' + g.badge + '">' + t(g.key) + '</span>' +
           '<select class="sub-select" onchange="changeSlotRider(' + gIdx + ', this.value)">' + opts + '</select>' +
         '</div>' +
         '<div class="rider-name ' + (!hasRider ? 'unassigned' : '') + '">' + riderLabel + '</div>' +
@@ -1140,7 +1628,7 @@
           ).join('') +
         '</div>' +
         '<div class="special-btns">' +
-          SPECIAL_CODES.map(item =>
+          specialCodes.map(item =>
             '<button type="button" ' + (!hasRider ? 'disabled' : '') + ' title="' + item.full + '" class="spec-btn ' + (sc === item.code ? 'selected-spec' : '') + '" onclick="setScore(' + gIdx + ', \'' + item.code + '\')">' +
               '<span>' + item.code + '</span><small>' + item.short + '</small>' +
             '</button>'
@@ -1242,7 +1730,7 @@
         st.finishedZeros === nextSt.finishedZeros;
 
       const swapBtn = canSwap
-        ? '<button type="button" class="btn-tie-swap" title="Inverti ordine di spareggio col pilota successivo" onclick="swapTiedRiders(' + st.id + ', ' + nextSt.id + ')">⇅</button>'
+        ? '<button type="button" class="btn-tie-swap" onclick="swapTiedRiders(' + st.id + ', ' + nextSt.id + ')">⇅</button>'
         : '';
 
       return '<tr class="' + rowCls + '">' +
@@ -1287,11 +1775,11 @@
   }
 
   function updateRiderName(id, val) {
-    state.riders[id] = val || ("Pilota " + id);
+    state.riders[id] = val || getDefaultRiderName(id);
     saveState();
   }
 
-  /* GENERATORE LOCANDINA PNG PER WHATSAPP / SOCIAL */
+  /* GENERATORE LOCANDINA PNG PER WHATSAPP / SOCIAL (TRADOTTA AUTOMATICAMENTE) */
   async function exportRacePoster(mode) {
     syncSpecialHeatsWithQualifiers();
     const W = 1080;
@@ -1306,6 +1794,7 @@
     const m = state.eventMeta || {};
     const finalSlots = state.heats[22] ? state.heats[22].slots : [];
     const hasFinalPodium = finalSlots.some(s => s.score === 3 && s.riderId);
+    const bestTimeInfo = getBestHeatTimeInfo();
 
     const headerH = 250;
     const podiumH = hasFinalPodium ? 135 : 0;
@@ -1357,18 +1846,23 @@
 
     ctx.fillStyle = '#00e676';
     ctx.font = '900 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText('🏁 SPEEDWAY SGP LIVE • ' + (mode === 'standings' ? 'CLASSIFICA UFFICIALE' : 'TABELLONE GARA'), 40, 62);
+    ctx.fillText('🏁 SPEEDWAY SGP LIVE • ' + (mode === 'standings' ? t('posterStandings') : t('posterCard')), 40, 62);
 
     ctx.fillStyle = '#ffffff';
     ctx.font = '900 46px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText((m.name || 'Speedway Grand Prix').slice(0, 38), 40, 125);
 
     const subLine1 = [m.track, m.city, m.country].filter(Boolean).join(' • ');
-    const subLine2 = [m.date, m.length ? ('Pista: ' + m.length) : '', m.notes].filter(Boolean).join(' • ');
+    const subLine2 = [
+      m.date,
+      m.length ? m.length : '',
+      bestTimeInfo ? (t('bestTimeLbl') + ' ' + bestTimeInfo.time + 's (H' + bestTimeInfo.heatNumber + ')') : '',
+      m.notes
+    ].filter(Boolean).join(' • ');
 
     ctx.fillStyle = '#eceff4';
     ctx.font = '700 26px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText(subLine1 || 'Circuito Speedway', 40, 172);
+    ctx.fillText(subLine1 || 'Speedway Circuit', 40, 172);
 
     ctx.fillStyle = '#8892b0';
     ctx.font = '600 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -1385,7 +1879,8 @@
 
       ctx.fillStyle = '#fdd835';
       ctx.font = '900 22px sans-serif';
-      ctx.fillText('🏆 ORDINE D\'ARRIVO FINALE (BATTERIA 23)', 50, y + 36);
+      const finTime = state.heats[22] && state.heats[22].time ? (' • ⏱️ ' + state.heats[22].time + 's') : '';
+      ctx.fillText(t('posterPodium') + finTime, 50, y + 36);
 
       const p1 = finalSlots.find(s => s.score === 3 && s.riderId);
       const p2 = finalSlots.find(s => s.score === 2 && s.riderId);
@@ -1414,14 +1909,14 @@
 
     if (mode === 'standings') {
       const cols = [
-        { label: 'POS', x: 68 },
-        { label: 'PILOTA', x: 125, align: 'left' },
+        { label: t('thPos').toUpperCase(), x: 68 },
+        { label: t('thRider').toUpperCase(), x: 125, align: 'left' },
         { label: '1°', x: 470 },
         { label: '2°', x: 530 },
         { label: '3°', x: 590 },
         { label: '4°(R/X)', x: 665 },
-        { label: 'SERIE', x: 790 },
-        { label: 'TOT', x: 915 },
+        { label: t('thRuns').toUpperCase(), x: 790 },
+        { label: t('thTot').toUpperCase(), x: 915 },
         { label: 'SGP', x: 1000 }
       ];
       cols.forEach(c => {
@@ -1431,15 +1926,15 @@
     } else {
       const cols = [
         { label: '#', x: 65 },
-        { label: 'PILOTA', x: 115, align: 'left' },
+        { label: t('thRider').toUpperCase(), x: 115, align: 'left' },
         { label: 'S1', x: 430 },
         { label: 'S2', x: 495 },
         { label: 'S3', x: 560 },
         { label: 'S4', x: 625 },
         { label: 'S5', x: 690 },
-        { label: 'TOT', x: 770 },
+        { label: t('thTot').toUpperCase(), x: 770 },
         { label: 'LCQ', x: 850 },
-        { label: 'FIN', x: 925 },
+        { label: t('thFin').toUpperCase(), x: 925 },
         { label: 'SGP', x: 1000 }
       ];
       cols.forEach(c => {
@@ -1551,11 +2046,12 @@
     ctx.textAlign = 'center';
     ctx.fillStyle = '#eceff4';
     ctx.font = '700 18px sans-serif';
-    ctx.fillText('Legenda sigle: R = Retired (Ritirato) • F = Fell (Caduto) • X = Excluded (Escluso) • T = Tapes (Nastro) • NS = Not Started (Non partito)', W / 2, H - 56);
+    const codesLegendText = getSpecialCodes().map(c => c.code + ' = ' + c.short).join(' • ');
+    ctx.fillText(codesLegendText, W / 2, H - 56);
 
     ctx.fillStyle = '#8892b0';
     ctx.font = '700 20px sans-serif';
-    ctx.fillText('Generato con Speedway SGP Live App', W / 2, H - 22);
+    ctx.fillText('Speedway SGP Live App', W / 2, H - 22);
 
     canvas.toBlob(async function(blob) {
       if (!blob) return;
@@ -1567,7 +2063,7 @@
         try {
           await navigator.share({
             title: m.name || 'Speedway SGP Live',
-            text: '🏁 Risultati ' + (m.name || 'Speedway GP') + (m.track ? ' (' + m.track + ')' : ''),
+            text: '🏁 ' + (m.name || 'Speedway GP') + (m.track ? ' (' + m.track + ')' : ''),
             files: [file]
           });
           return;
@@ -1587,7 +2083,7 @@
     }, 'image/png');
   }
 
-  /* PRE-ELABORAZIONE IMMAGINE E OCR PILOTI MIGLIORATO */
+  /* PRE-ELABORAZIONE IMMAGINE E OCR PILOTI */
   function preprocessImageForOcr(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -1643,7 +2139,7 @@
       candidate = candidate
         .replace(/#[0-9]{1,3}/g, ' ')
         .replace(/\b[0-9]{1,3}\b/g, ' ')
-        .replace(/[^A-Za-zÀ-ÿ\s'\-]/g, ' ')
+        .replace(/[^A-Za-zÀ-ÿĄąĆćĘęŁłŃńÓóŚśŹźŻżÆæØøÅåÄäÖö\s'\-]/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
 
@@ -1685,11 +2181,11 @@
     if (!file) return;
     const statusEl = document.getElementById('ocr-status');
     statusEl.style.display = 'block';
-    statusEl.textContent = '⏳ Ottimizzazione immagine e lettura nomi in corso (5-10 sec)...';
+    statusEl.textContent = '⏳ OCR (5-10 sec)...';
 
     try {
       const processedDataUrl = await preprocessImageForOcr(file);
-      const result = await Tesseract.recognize(processedDataUrl, 'eng+ita');
+      const result = await Tesseract.recognize(processedDataUrl, 'eng+ita+pol');
       const count = parseRidersFromText(result.data.text || "");
 
       saveState();
@@ -1697,10 +2193,10 @@
       renderCurrentHeat();
 
       statusEl.textContent = count > 0
-        ? '✅ Estratti ' + count + ' piloti dalla foto! Verifica ed eventualmente correggi i nomi qui sotto.'
-        : '⚠️ Non sono stati trovati nomi leggibili. Ritaglia la foto solo sulla colonna dei nomi oppure usa "Incolla elenco da testo".';
+        ? '✅ OK (' + count + ')'
+        : '⚠️ OCR: 0';
     } catch (err) {
-      statusEl.textContent = '⚠️ Errore durante la lettura OCR. Verifica la connessione internet o usa "Incolla elenco da testo".';
+      statusEl.textContent = '⚠️ OCR Error';
     }
     input.value = "";
   }
@@ -1721,9 +2217,9 @@
       renderRidersInputs();
       renderCurrentHeat();
       document.getElementById('paste-box-wrap').style.display = 'none';
-      statusEl.textContent = '✅ Caricati ' + count + ' piloti dall\'elenco incollato!';
+      statusEl.textContent = '✅ OK (' + count + ')';
     } else {
-      statusEl.textContent = '⚠️ Inserisci almeno un nome valido per riga.';
+      statusEl.textContent = '⚠️ 0';
     }
   }
 
@@ -1752,14 +2248,14 @@
         (third ? " • 🥉 3° " + raceState.riders[third.riderId] : "") +
         (fourth ? " • 4° " + raceState.riders[fourth.riderId] : "");
     }
-    return "Gara in corso / Finale non disputata";
+    return t('raceInProgress');
   }
 
   function saveCurrentToArchive() {
     const archive = getArchive();
     const copy = JSON.parse(JSON.stringify(state));
     if (!copy.eventMeta.name) {
-      copy.eventMeta.name = "Speedway GP (" + (copy.eventMeta.date || "Senza data") + ")";
+      copy.eventMeta.name = "Speedway GP (" + (copy.eventMeta.date || "") + ")";
     }
     const existingIdx = archive.findIndex(x => x.id === copy.id);
     if (existingIdx >= 0) {
@@ -1769,7 +2265,7 @@
     }
     saveArchive(archive);
     renderHistory();
-    alert("Gara salvata correttamente nello Storico!");
+    alert(t('savedToHistoryMsg'));
   }
 
   function loadArchivedRace(id) {
@@ -1785,18 +2281,17 @@
   }
 
   function deleteArchivedRace(id) {
-    if (!confirm("Eliminare definitivamente questa gara dallo storico?")) return;
+    if (!confirm(t('confirmDelHistory'))) return;
     const archive = getArchive().filter(x => x.id !== id);
     saveArchive(archive);
     renderHistory();
   }
 
-  /* ESPORTAZIONE E IMPORTAZIONE BACKUP (.JSON) */
   function exportBackupJson() {
     const archive = getArchive();
     const backupPayload = {
       app: "Speedway SGP Live",
-      version: 3.3,
+      version: 3.4,
       exportedAt: new Date().toISOString(),
       currentRace: state,
       archive: archive
@@ -1837,48 +2332,31 @@
         }
 
         if (importedArchive.length === 0 && !importedCurrent) {
-          alert("⚠️ File JSON non valido o privo di gare Speedway.");
           input.value = "";
           return;
         }
 
         const currentArchive = getArchive();
-        let addedOrUpdated = 0;
-
         importedArchive.forEach(race => {
           if (!race || !race.heats) return;
           if (!race.id) race.id = Date.now() + Math.floor(Math.random() * 10000);
           const idx = currentArchive.findIndex(x => x.id === race.id);
-          if (idx >= 0) {
-            currentArchive[idx] = race;
-          } else {
-            currentArchive.push(race);
-          }
-          addedOrUpdated++;
+          if (idx >= 0) currentArchive[idx] = race;
+          else currentArchive.push(race);
         });
 
         saveArchive(currentArchive);
 
         if (importedCurrent && importedCurrent.heats) {
-          const loadActive = confirm(
-            "Archivio aggiornato (" + addedOrUpdated + " gare nello storico).\n" +
-            "Vuoi anche caricare la gara attiva presente nel backup?"
-          );
-          if (loadActive) {
-            state = normalizeLoadedState(importedCurrent);
-            syncSpecialHeatsWithQualifiers();
-            populateEventForm();
-            saveState();
-            renderCurrentHeat();
-          }
-        } else {
-          alert("✅ Backup importato con successo! (" + addedOrUpdated + " gare aggiunte/aggiornate nello storico).");
+          state = normalizeLoadedState(importedCurrent);
+          syncSpecialHeatsWithQualifiers();
+          populateEventForm();
+          saveState();
+          renderCurrentHeat();
         }
 
         renderHistory();
-      } catch (err) {
-        alert("⚠️ Errore nella lettura del file .json. Verifica che sia un backup valido.");
-      }
+      } catch (err) {}
       input.value = "";
     };
     reader.readAsText(file);
@@ -1888,7 +2366,7 @@
     const archive = getArchive();
     const container = document.getElementById('history-list');
     if (archive.length === 0) {
-      container.innerHTML = '<div class="card-box" style="text-align:center;color:var(--muted);font-size:0.85rem;">Nessuna gara salvata nello storico.</div>';
+      container.innerHTML = '<div class="card-box" style="text-align:center;color:var(--muted);font-size:0.85rem;">' + t('emptyHistory') + '</div>';
       return;
     }
     container.innerHTML = archive.map(item => {
@@ -1897,22 +2375,23 @@
       return '<div class="history-item">' +
         '<div class="history-top">' +
           '<div>' +
-            '<div class="history-title">' + (m.name || "Gara Speedway") + '</div>' +
-            '<div class="history-meta">' + (loc || "Nessun dettaglio località") + '</div>' +
+            '<div class="history-title">' + (m.name || "Speedway GP") + '</div>' +
+            '<div class="history-meta">' + loc + '</div>' +
           '</div>' +
         '</div>' +
         '<div class="history-podium">' + getPodiumSummary(item) + '</div>' +
         '<div class="history-actions">' +
-          '<button type="button" onclick="loadArchivedRace(' + item.id + ')">📂 Apri / Rivedi</button>' +
-          '<button type="button" class="del" onclick="deleteArchivedRace(' + item.id + ')">🗑️ Elimina</button>' +
+          '<button type="button" onclick="loadArchivedRace(' + item.id + ')">' + t('btnOpenRace') + '</button>' +
+          '<button type="button" class="del" onclick="deleteArchivedRace(' + item.id + ')">' + t('btnDelRace') + '</button>' +
         '</div>' +
       '</div>';
     }).join('');
   }
 
   function resetAllScores() {
-    if (confirm("Vuoi azzerare tutti i punteggi e i piazzamenti delle batterie mantenendo i nomi dei piloti?")) {
+    if (confirm(t('confirmResetScores'))) {
       state.heats.forEach((h, idx) => {
+        h.time = "";
         h.slots.forEach(s => {
           s.score = null;
           if (idx >= 20) s.riderId = null;
@@ -1935,6 +2414,7 @@
     if (tabId === 'card') renderScorecard();
     if (tabId === 'riders') renderRidersInputs();
     if (tabId === 'history') renderHistory();
+    if (tabId === 'settings') renderLanguageButtons();
   }
 
   if ('serviceWorker' in navigator) {
