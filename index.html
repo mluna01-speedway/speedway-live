@@ -111,22 +111,27 @@
     .spec-btn { background: #181b20; border: 1px solid #2e3440; color: var(--muted); padding: 6px 0; border-radius: 6px; font-size: 0.72rem; font-weight: 700; cursor: pointer; min-width: 0; }
     .spec-btn.selected-spec { background: #d32f2f; color: #fff; border-color: #f44336; }
 
-    /* Barra Esportazione Social / WhatsApp */
-    .share-bar { display: flex; gap: 8px; margin-bottom: 10px; }
+    /* Barra Esportazione Social / WhatsApp e Selettore Modalità Classifica */
+    .share-bar { display: flex; gap: 8px; margin-bottom: 8px; }
     .btn-share { flex: 1; background: linear-gradient(135deg, #00e676, #00b0ff); color: #000; border: none; padding: 11px 12px; border-radius: 10px; font-weight: 900; font-size: 0.84rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 3px 12px rgba(0, 230, 118, 0.2); }
     .btn-share:active { transform: scale(0.98); }
 
+    .standings-mode-switch { display: flex; gap: 6px; margin-bottom: 8px; background: var(--card); padding: 5px; border-radius: 9px; border: 1px solid var(--border); }
+    .standings-mode-switch button { flex: 1; padding: 7px 6px; border: none; border-radius: 6px; background: transparent; color: var(--muted); font-size: 0.74rem; font-weight: 800; cursor: pointer; }
+    .standings-mode-switch button.active { background: #2e3440; color: var(--accent); }
+
     /* Tabelle */
-    .legend-bar { display: flex; gap: 12px; font-size: 0.72rem; color: var(--muted); margin-bottom: 8px; padding: 0 4px; flex-wrap: wrap; }
-    .legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+    .legend-bar { display: flex; gap: 12px; font-size: 0.71rem; color: var(--muted); margin-bottom: 8px; padding: 0 4px; flex-wrap: wrap; }
+    .legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
     .table-wrap { width: 100%; overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
-    table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 0.8rem; }
-    th, td { padding: 8px 4px; text-align: center; border-bottom: 1px solid var(--border); }
-    th { background: #252a34; color: var(--muted); font-size: 0.68rem; }
-    td.name-col { text-align: left; font-weight: 700; padding-left: 8px; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 0.78rem; }
+    th, td { padding: 8px 3px; text-align: center; border-bottom: 1px solid var(--border); }
+    th { background: #252a34; color: var(--muted); font-size: 0.66rem; }
+    td.name-col { text-align: left; font-weight: 700; padding-left: 7px; max-width: 112px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     tr.final-line td { border-bottom: 2px dashed var(--yellow); }
     tr.qual-line td { border-bottom: 2px dashed var(--accent); }
-    .tot-col { font-weight: 900; color: var(--accent); font-size: 0.92rem; background: rgba(0, 230, 118, 0.08); }
+    .tot-col { font-weight: 900; color: var(--accent); font-size: 0.88rem; background: rgba(0, 230, 118, 0.08); }
+    .sgp-col { font-weight: 900; color: var(--yellow); font-size: 0.88rem; background: rgba(253, 216, 53, 0.12); }
     .sf-col { background: rgba(41, 182, 246, 0.08); font-weight: 700; }
     .fin-col { background: rgba(253, 216, 53, 0.12); font-weight: 800; color: var(--yellow); }
 
@@ -286,14 +291,29 @@
         📲 Condividi / Scarica Classifica (PNG)
       </button>
     </div>
+    <div class="standings-mode-switch">
+      <button type="button" id="btn-mode-final" class="active" onclick="setStandingsMode('final')">🏆 Classifica Finale GP (SGP)</button>
+      <button type="button" id="btn-mode-qual" onclick="setStandingsMode('qual')">⏱️ Classifica 20 Batterie</button>
+    </div>
     <div class="legend-bar">
-      <span><i class="legend-dot" style="background:var(--yellow)"></i>1°-2°: Finale Diretta</span>
-      <span><i class="legend-dot" style="background:var(--accent)"></i>3°-10°: Last Chance Qualifier (LCQ 1 & 2)</span>
+      <span><i class="legend-dot" style="background:var(--yellow)"></i>1°-2° (20 B.): Finale Diretta</span>
+      <span><i class="legend-dot" style="background:var(--accent)"></i>3°-10° (20 B.): LCQ 1 & 2</span>
+      <span><strong>TOT</strong> = Pt 20 Batterie • <strong>SGP</strong> = Pt Mondiale GP</span>
     </div>
     <div class="table-wrap">
       <table id="standings-table">
         <thead>
-          <tr><th>Pos</th><th style="text-align:left;padding-left:8px;">Pilota</th><th>1°</th><th>2°</th><th>3°</th><th>0</th><th>Serie</th><th>TOT</th></tr>
+          <tr>
+            <th>Pos</th>
+            <th style="text-align:left;padding-left:7px;">Pilota</th>
+            <th>1°</th>
+            <th>2°</th>
+            <th>3°</th>
+            <th title="4° posti al traguardo (eventuali R/F/X/T tra parentesi)">4°(R/X)</th>
+            <th>Serie</th>
+            <th>TOT</th>
+            <th>SGP</th>
+          </tr>
         </thead>
         <tbody></tbody>
       </table>
@@ -310,7 +330,7 @@
     <div class="table-wrap">
       <table id="scorecard-table">
         <thead>
-          <tr><th>#</th><th style="text-align:left;padding-left:8px;">Pilota</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>TOT</th><th>LCQ</th><th>FIN</th></tr>
+          <tr><th>#</th><th style="text-align:left;padding-left:7px;">Pilota</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>TOT</th><th>LCQ</th><th>FIN</th><th>SGP</th></tr>
         </thead>
         <tbody></tbody>
       </table>
@@ -404,6 +424,9 @@
     [5, 14, 11, 4]    // Batteria 20
   ];
 
+  // Tabella ufficiale Punti Campionato del Mondo FIM SGP (dal 1° al 16° classificato finale)
+  const SGP_WORLD_POINTS = [20, 18, 16, 14, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+
   const GATE_INFO = [
     { name: "Corsia 1 - Rosso", short: "1", cls: "gate-red", badge: "badge-red" },
     { name: "Corsia 2 - Blu", short: "2", cls: "gate-blue", badge: "badge-blue" },
@@ -415,6 +438,7 @@
   const ARCHIVE_KEY = 'speedway_fim_archive_v2';
 
   let state = createDefaultState();
+  let standingsMode = 'final'; // 'final' oppure 'qual'
 
   // Converte il valore interno (3, 2, 1, 0) in piazzamento (1°, 2°, 3°, 4°) per Batterie 21, 22 e 23
   function formatPlacement(score) {
@@ -668,7 +692,7 @@
     document.getElementById('progress-badge').textContent = completed + " / 23";
   }
 
-  /* CLASSIFICA E STATISTICHE */
+  /* CLASSIFICA, SPAREGGI FIM (TIE-BREAK) E PUNTI MONDIALI SGP */
   function computeStats() {
     const stats = [];
     for (let r = 1; r <= 18; r++) {
@@ -677,11 +701,22 @@
         name: state.riders[r],
         runs: [],
         total: 0,
-        ones: 0, twos: 0, threes: 0, zeros: 0,
+        ones: 0,           // 1° posti (3 pt)
+        twos: 0,           // 2° posti (2 pt)
+        threes: 0,         // 3° posti (1 pt)
+        finishedZeros: 0,  // 4° posti tagliando il traguardo (0 pt effettivi, battono R/F/X/T)
+        nonFinished: [],   // Codici R, F, X, T subiti nelle 20 batterie
+        zeros: 0,          // Totale 0 + R/F/X/T
+        lcqRaw: null,
+        finRaw: null,
         sfScore: '-',
-        finScore: '-'
+        finScore: '-',
+        qualRank: 99,
+        finalRank: 99,
+        sgpPts: 0
       });
     }
+
     state.heats.slice(0, 20).forEach(h => {
       h.slots.forEach(s => {
         if (!s.riderId) return;
@@ -694,8 +729,12 @@
             if (s.score === 3) st.ones++;
             else if (s.score === 2) st.twos++;
             else if (s.score === 1) st.threes++;
-            else st.zeros++;
+            else {
+              st.finishedZeros++;
+              st.zeros++;
+            }
           } else {
+            st.nonFinished.push(s.score);
             st.zeros++;
           }
         } else {
@@ -704,29 +743,116 @@
       });
     });
 
-    // Batterie 21 e 22 (LCQ 1 e LCQ 2): mostra piazzamento 1°, 2°, 3°, 4° (o R, F, X, T)
+    // Batterie 21 e 22 (LCQ 1 e LCQ 2)
     [20, 21].forEach(idx => {
       state.heats[idx].slots.forEach(s => {
         if (!s.riderId) return;
         const st = stats.find(x => x.id === s.riderId);
-        if (st && s.score !== null) st.sfScore = formatPlacement(s.score);
+        if (st && s.score !== null) {
+          st.lcqRaw = s.score;
+          st.sfScore = formatPlacement(s.score);
+        }
       });
     });
 
-    // Batteria 23 (Finale): mostra piazzamento 1°, 2°, 3°, 4° (o R, F, X, T)
+    // Batteria 23 (Finale)
     state.heats[22].slots.forEach(s => {
       if (!s.riderId) return;
       const st = stats.find(x => x.id === s.riderId);
-      if (st && s.score !== null) st.finScore = formatPlacement(s.score);
+      if (st && s.score !== null) {
+        st.finRaw = s.score;
+        st.finScore = formatPlacement(s.score);
+      }
     });
 
     return stats;
   }
 
+  // Confronto scontro diretto nelle 20 batterie tra due piloti a pari merito
+  function compareHeadToHead(riderA, riderB) {
+    let diffSum = 0;
+    for (let i = 0; i < 20; i++) {
+      const slots = state.heats[i].slots;
+      const slotA = slots.find(s => s.riderId === riderA);
+      const slotB = slots.find(s => s.riderId === riderB);
+      if (slotA && slotB && slotA.score !== null && slotB.score !== null) {
+        const valA = typeof slotA.score === 'number' ? slotA.score : -1;
+        const valB = typeof slotB.score === 'number' ? slotB.score : -1;
+        if (valA !== valB) diffSum += (valB - valA);
+      }
+    }
+    return diffSum;
+  }
+
+  // Classifica strettamente basata sulle prime 20 batterie con Tie-Break ufficiale FIM
   function getSortedQualifyingStandings() {
-    const stats = computeStats().filter(s => s.id <= 16 || s.runs.some(x => x !== '-'));
-    stats.sort((a, b) => b.total - a.total || b.ones - a.ones || b.twos - a.twos || b.threes - a.threes || a.id - b.id);
-    return stats;
+    const allStats = computeStats().filter(s => s.id <= 16 || s.runs.some(x => x !== '-'));
+    allStats.sort((a, b) =>
+      b.total - a.total ||
+      b.ones - a.ones ||
+      b.twos - a.twos ||
+      b.threes - a.threes ||
+      b.finishedZeros - a.finishedZeros ||
+      compareHeadToHead(a.id, b.id) ||
+      a.id - b.id
+    );
+    allStats.forEach((st, idx) => { st.qualRank = idx + 1; });
+    return allStats;
+  }
+
+  // Classifica Finale del GP (include ordine d'arrivo Finale, piazzamenti LCQ e assegna i Punti Mondiali SGP 20..1)
+  function getFinalGpStandings() {
+    const qualList = getSortedQualifyingStandings();
+
+    function placementWeight(raw) {
+      if (raw === 3) return 4; // 1°
+      if (raw === 2) return 3; // 2°
+      if (raw === 1) return 2; // 3°
+      if (raw === 0) return 1; // 4° al traguardo
+      if (typeof raw === 'string') return 0; // R, F, X, T
+      return -1;
+    }
+
+    const finalCompleted = state.heats[22].slots.some(s => s.score !== null && s.riderId);
+    const lcqCompleted = state.heats[20].slots.some(s => s.score !== null && s.riderId) ||
+                         state.heats[21].slots.some(s => s.score !== null && s.riderId);
+
+    const sortedFinal = [...qualList].sort((a, b) => {
+      // 1. I finalisti con risultato in Finale occupano le posizioni 1° - 4°
+      const aInFin = finalCompleted && a.finRaw !== null;
+      const bInFin = finalCompleted && b.finRaw !== null;
+      if (aInFin && bInFin) {
+        const wDiff = placementWeight(b.finRaw) - placementWeight(a.finRaw);
+        if (wDiff !== 0) return wDiff;
+        return a.qualRank - b.qualRank;
+      }
+      if (aInFin !== bInFin) return aInFin ? -1 : 1;
+
+      // 2. I non vincitori delle LCQ (2°, 3°, 4° posto in LCQ 1 e 2) occupano le posizioni 5° - 10°
+      const aInLcq = lcqCompleted && a.lcqRaw !== null && a.lcqRaw !== 3;
+      const bInLcq = lcqCompleted && b.lcqRaw !== null && b.lcqRaw !== 3;
+      if (aInLcq && bInLcq) {
+        const wDiff = placementWeight(b.lcqRaw) - placementWeight(a.lcqRaw);
+        if (wDiff !== 0) return wDiff;
+        return a.qualRank - b.qualRank;
+      }
+      if (aInLcq !== bInLcq) return aInLcq ? -1 : 1;
+
+      // 3. Dal 11° posto in giù (o se LCQ/Finale non ancora disputate) vale la classifica delle 20 batterie
+      return a.qualRank - b.qualRank;
+    });
+
+    sortedFinal.forEach((st, idx) => {
+      st.finalRank = idx + 1;
+      st.sgpPts = SGP_WORLD_POINTS[idx] || 0;
+    });
+
+    return sortedFinal;
+  }
+
+  function formatZerosCell(st) {
+    if (st.nonFinished.length === 0) return String(st.finishedZeros);
+    return st.finishedZeros + ' (' + st.nonFinished.join(',') + ')';
   }
 
   /* CALCOLO PILOTI QUALIFICATI PER LCQ 1, LCQ 2 E FINALE */
@@ -861,7 +987,6 @@
       autoBox.innerHTML = '';
     }
 
-    // Nelle batterie 1..20 mostra i punti (3 pt, 2 pt, 1 pt, 0 pt); nelle batterie 21..23 mostra i piazzamenti (1°, 2°, 3°, 4°)
     const mainButtons = isSpecialHeat
       ? [
           { val: 3, label: '1°' },
@@ -928,7 +1053,6 @@
     if (heat.slots[gateIdx].score === val) {
       heat.slots[gateIdx].score = null;
     } else {
-      // Evita doppi piazzamenti (incluso il 4° posto nelle batterie 21, 22 e 23)
       if (typeof val === 'number' && (val > 0 || state.currentHeat >= 20)) {
         heat.slots.forEach(s => { if (s.score === val) s.score = null; });
       }
@@ -982,28 +1106,51 @@
     renderCurrentHeat();
   }
 
+  function setStandingsMode(mode) {
+    standingsMode = mode;
+    document.getElementById('btn-mode-final').classList.toggle('active', mode === 'final');
+    document.getElementById('btn-mode-qual').classList.toggle('active', mode === 'qual');
+    renderStandings();
+  }
+
   function renderStandings() {
-    const stats = getSortedQualifyingStandings();
-    document.querySelector('#standings-table tbody').innerHTML = stats.map((st, idx) => {
+    const finalStandings = getFinalGpStandings();
+    const sgpMap = {};
+    finalStandings.forEach(st => { sgpMap[st.id] = st.sgpPts; });
+
+    const list = standingsMode === 'final' ? finalStandings : getSortedQualifyingStandings();
+
+    document.querySelector('#standings-table tbody').innerHTML = list.map((st, idx) => {
       const rowCls = idx === 1 ? 'final-line' : (idx === 9 ? 'qual-line' : '');
+      const sgpVal = sgpMap[st.id] ?? 0;
       return '<tr class="' + rowCls + '">' +
         '<td><strong>' + (idx + 1) + '</strong></td>' +
         '<td class="name-col">#' + st.id + ' ' + st.name + '</td>' +
-        '<td>' + st.ones + '</td><td>' + st.twos + '</td><td>' + st.threes + '</td><td>' + st.zeros + '</td>' +
+        '<td>' + st.ones + '</td>' +
+        '<td>' + st.twos + '</td>' +
+        '<td>' + st.threes + '</td>' +
+        '<td>' + formatZerosCell(st) + '</td>' +
         '<td>(' + (st.runs.filter(r => r !== '-').join(',') || '-') + ')</td>' +
         '<td class="tot-col">' + st.total + '</td>' +
+        '<td class="sgp-col">' + sgpVal + '</td>' +
       '</tr>';
     }).join('');
   }
 
   function renderScorecard() {
+    const finalStandings = getFinalGpStandings();
+    const sgpMap = {};
+    finalStandings.forEach(st => { sgpMap[st.id] = st.sgpPts; });
+
     document.querySelector('#scorecard-table tbody').innerHTML = computeStats().map(st => {
       const r = st.runs;
+      const sgpVal = sgpMap[st.id] ?? '-';
       return '<tr><td><strong>' + st.id + '</strong></td><td class="name-col">' + st.name + '</td>' +
         '<td>' + (r[0] ?? '-') + '</td><td>' + (r[1] ?? '-') + '</td><td>' + (r[2] ?? '-') + '</td><td>' + (r[3] ?? '-') + '</td><td>' + (r[4] ?? '-') + '</td>' +
         '<td class="tot-col">' + st.total + '</td>' +
         '<td class="sf-col">' + st.sfScore + '</td>' +
-        '<td class="fin-col">' + st.finScore + '</td></tr>';
+        '<td class="fin-col">' + st.finScore + '</td>' +
+        '<td class="sgp-col">' + sgpVal + '</td></tr>';
     }).join('');
   }
 
@@ -1024,8 +1171,12 @@
   /* GENERATORE LOCANDINA PNG PER WHATSAPP / SOCIAL */
   async function exportRacePoster(mode) {
     const W = 1080;
+    const finalStandings = getFinalGpStandings();
+    const sgpMap = {};
+    finalStandings.forEach(st => { sgpMap[st.id] = st.sgpPts; });
+
     const rows = mode === 'standings'
-      ? getSortedQualifyingStandings()
+      ? (standingsMode === 'final' ? finalStandings : getSortedQualifyingStandings())
       : computeStats().filter(s => s.id <= 16 || s.runs.some(x => x !== '-'));
 
     const m = state.eventMeta || {};
@@ -1134,19 +1285,20 @@
     ctx.fillRect(30, y, W - 60, tableHeaderH);
 
     ctx.fillStyle = '#8892b0';
-    ctx.font = '800 22px sans-serif';
+    ctx.font = '800 21px sans-serif';
     ctx.textAlign = 'center';
 
     if (mode === 'standings') {
       const cols = [
-        { label: 'POS', x: 75 },
-        { label: 'PILOTA', x: 140, align: 'left' },
-        { label: '1°', x: 520 },
-        { label: '2°', x: 590 },
-        { label: '3°', x: 660 },
-        { label: '0', x: 730 },
-        { label: 'SERIE', x: 855 },
-        { label: 'TOT', x: 995 }
+        { label: 'POS', x: 68 },
+        { label: 'PILOTA', x: 125, align: 'left' },
+        { label: '1°', x: 470 },
+        { label: '2°', x: 530 },
+        { label: '3°', x: 590 },
+        { label: '4°(R/X)', x: 665 },
+        { label: 'SERIE', x: 790 },
+        { label: 'TOT', x: 915 },
+        { label: 'SGP', x: 1000 }
       ];
       cols.forEach(c => {
         ctx.textAlign = c.align || 'center';
@@ -1154,16 +1306,17 @@
       });
     } else {
       const cols = [
-        { label: '#', x: 70 },
-        { label: 'PILOTA', x: 125, align: 'left' },
-        { label: 'S1', x: 470 },
-        { label: 'S2', x: 540 },
-        { label: 'S3', x: 610 },
-        { label: 'S4', x: 680 },
-        { label: 'S5', x: 750 },
-        { label: 'TOT', x: 835 },
-        { label: 'LCQ', x: 920 },
-        { label: 'FIN', x: 1000 }
+        { label: '#', x: 65 },
+        { label: 'PILOTA', x: 115, align: 'left' },
+        { label: 'S1', x: 430 },
+        { label: 'S2', x: 495 },
+        { label: 'S3', x: 560 },
+        { label: 'S4', x: 625 },
+        { label: 'S5', x: 690 },
+        { label: 'TOT', x: 770 },
+        { label: 'LCQ', x: 850 },
+        { label: 'FIN', x: 925 },
+        { label: 'SGP', x: 1000 }
       ];
       cols.forEach(c => {
         ctx.textAlign = c.align || 'center';
@@ -1177,40 +1330,44 @@
       ctx.fillStyle = idx % 2 === 0 ? '#1e2229' : '#181b21';
       ctx.fillRect(30, y, W - 60, rowH);
 
-      const totX = mode === 'standings' ? 950 : 795;
-      ctx.fillStyle = 'rgba(0, 230, 118, 0.1)';
-      ctx.fillRect(totX, y, mode === 'standings' ? 90 : 80, rowH);
-
-      ctx.font = '700 24px sans-serif';
-      ctx.fillStyle = '#eceff4';
+      const sgpVal = sgpMap[st.id] ?? 0;
 
       if (mode === 'standings') {
+        ctx.fillStyle = 'rgba(0, 230, 118, 0.1)';
+        ctx.fillRect(875, y, 80, rowH);
+        ctx.fillStyle = 'rgba(253, 216, 53, 0.12)';
+        ctx.fillRect(955, y, 95, rowH);
+
         ctx.textAlign = 'center';
         ctx.fillStyle = idx < 2 ? '#fdd835' : (idx < 10 ? '#00e676' : '#8892b0');
         ctx.font = '900 24px sans-serif';
-        ctx.fillText(String(idx + 1), 75, y + 36);
+        ctx.fillText(String(idx + 1), 68, y + 36);
 
         ctx.textAlign = 'left';
         ctx.fillStyle = '#ffffff';
-        ctx.font = '800 24px sans-serif';
-        ctx.fillText(('#' + st.id + ' ' + st.name).slice(0, 24), 140, y + 36);
+        ctx.font = '800 23px sans-serif';
+        ctx.fillText(('#' + st.id + ' ' + st.name).slice(0, 22), 125, y + 36);
 
         ctx.textAlign = 'center';
         ctx.fillStyle = '#eceff4';
-        ctx.font = '600 23px sans-serif';
-        ctx.fillText(String(st.ones), 520, y + 36);
-        ctx.fillText(String(st.twos), 590, y + 36);
-        ctx.fillText(String(st.threes), 660, y + 36);
-        ctx.fillText(String(st.zeros), 730, y + 36);
+        ctx.font = '600 22px sans-serif';
+        ctx.fillText(String(st.ones), 470, y + 36);
+        ctx.fillText(String(st.twos), 530, y + 36);
+        ctx.fillText(String(st.threes), 590, y + 36);
+        ctx.fillText(formatZerosCell(st), 665, y + 36);
 
         const runsStr = '(' + (st.runs.filter(r => r !== '-').join(',') || '-') + ')';
         ctx.fillStyle = '#8892b0';
-        ctx.font = '600 20px sans-serif';
-        ctx.fillText(runsStr, 855, y + 36);
+        ctx.font = '600 19px sans-serif';
+        ctx.fillText(runsStr, 790, y + 36);
 
         ctx.fillStyle = '#00e676';
-        ctx.font = '900 27px sans-serif';
-        ctx.fillText(String(st.total), 995, y + 36);
+        ctx.font = '900 26px sans-serif';
+        ctx.fillText(String(st.total), 915, y + 36);
+
+        ctx.fillStyle = '#fdd835';
+        ctx.font = '900 26px sans-serif';
+        ctx.fillText(String(sgpVal), 1000, y + 36);
 
         if (idx === 1 || idx === 9) {
           ctx.save();
@@ -1224,35 +1381,44 @@
           ctx.restore();
         }
       } else {
+        ctx.fillStyle = 'rgba(0, 230, 118, 0.1)';
+        ctx.fillRect(730, y, 80, rowH);
+        ctx.fillStyle = 'rgba(253, 216, 53, 0.12)';
+        ctx.fillRect(960, y, 90, rowH);
+
         ctx.textAlign = 'center';
         ctx.fillStyle = '#8892b0';
-        ctx.font = '800 23px sans-serif';
-        ctx.fillText(String(st.id), 70, y + 36);
+        ctx.font = '800 22px sans-serif';
+        ctx.fillText(String(st.id), 65, y + 36);
 
         ctx.textAlign = 'left';
         ctx.fillStyle = '#ffffff';
-        ctx.font = '800 24px sans-serif';
-        ctx.fillText(st.name.slice(0, 21), 125, y + 36);
+        ctx.font = '800 23px sans-serif';
+        ctx.fillText(st.name.slice(0, 20), 115, y + 36);
 
         ctx.textAlign = 'center';
         ctx.fillStyle = '#eceff4';
-        ctx.font = '600 23px sans-serif';
+        ctx.font = '600 22px sans-serif';
         const r = st.runs;
-        [470, 540, 610, 680, 750].forEach((cx, sIdx) => {
+        [430, 495, 560, 625, 690].forEach((cx, sIdx) => {
           ctx.fillText(String(r[sIdx] ?? '-'), cx, y + 36);
         });
 
         ctx.fillStyle = '#00e676';
-        ctx.font = '900 26px sans-serif';
-        ctx.fillText(String(st.total), 835, y + 36);
+        ctx.font = '900 25px sans-serif';
+        ctx.fillText(String(st.total), 770, y + 36);
 
         ctx.fillStyle = '#4fc3f7';
-        ctx.font = '800 23px sans-serif';
-        ctx.fillText(String(st.sfScore), 920, y + 36);
+        ctx.font = '800 22px sans-serif';
+        ctx.fillText(String(st.sfScore), 850, y + 36);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 23px sans-serif';
+        ctx.fillText(String(st.finScore), 925, y + 36);
 
         ctx.fillStyle = '#fdd835';
         ctx.font = '900 25px sans-serif';
-        ctx.fillText(String(st.finScore), 1000, y + 36);
+        ctx.fillText(String(sgpVal), 1000, y + 36);
       }
 
       y += rowH;
