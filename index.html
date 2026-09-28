@@ -32,7 +32,8 @@
     .header-sub { font-size: 0.7rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
     .event-badge { font-size: 0.7rem; background: #2e3440; padding: 5px 8px; border-radius: 6px; color: var(--accent); font-weight: 800; white-space: nowrap; }
-    .btn-qr-top { background: #2e3440; border: 1px solid #3b4252; color: var(--text); padding: 5px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+    .btn-top { background: #2e3440; border: 1px solid #3b4252; color: var(--text); padding: 5px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+    .btn-top.danger { background: rgba(198, 40, 40, 0.25); border-color: #c62828; color: #ff8a80; }
 
     /* Modal QR Code Condivisione App */
     .qr-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 999; display: none; align-items: center; justify-content: center; padding: 18px; }
@@ -69,28 +70,15 @@
     .heat-nav button { background: #2e3440; color: var(--text); border: none; padding: 9px 11px; border-radius: 8px; font-weight: 800; font-size: 0.82rem; cursor: pointer; flex-shrink: 0; }
     .heat-nav select { flex: 1; min-width: 0; background: #121418; color: var(--text); border: 1px solid var(--border); padding: 7px 6px; border-radius: 6px; font-size: 0.85rem; font-weight: 800; text-overflow: ellipsis; }
 
-    /* PANNELLO SCELTA CORSIE (GATE PICK) */
-    .gate-pick-card { background: #181c24; border: 1px solid var(--accent); border-radius: 12px; padding: 10px; margin-bottom: 12px; width: 100%; }
-    .gate-pick-header { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 8px; }
-    .gate-pick-title { font-size: 0.8rem; font-weight: 900; color: var(--accent); text-transform: uppercase; letter-spacing: 0.4px; }
-    .gate-pick-actions { display: flex; gap: 6px; }
-    .btn-mini { background: var(--accent); color: #000; border: none; padding: 5px 8px; border-radius: 6px; font-weight: 800; font-size: 0.7rem; cursor: pointer; }
-    .btn-mini.secondary { background: #2e3440; color: var(--text); }
-    .gate-pick-sub { font-size: 0.72rem; color: var(--muted); margin-bottom: 8px; }
-
-    .pick-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; background: var(--card); padding: 7px 8px; border-radius: 8px; margin-bottom: 6px; border: 1px solid var(--border); }
-    .pick-rider-info { display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1; }
-    .pick-order-badge { background: #2e3440; color: var(--accent); font-size: 0.68rem; font-weight: 900; padding: 3px 6px; border-radius: 5px; flex-shrink: 0; }
-    .pick-rider-name { font-size: 0.84rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .pick-rider-pts { font-size: 0.7rem; color: var(--muted); flex-shrink: 0; }
-
-    .pick-gate-btns { display: flex; gap: 4px; flex-shrink: 0; }
-    .pick-gate-btn { width: 32px; height: 30px; border-radius: 6px; border: 2px solid transparent; font-weight: 900; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0.38; transition: transform 0.1s, opacity 0.1s; }
-    .pick-gate-btn.active-gate { opacity: 1; border-color: #ffffff; transform: scale(1.06); box-shadow: 0 0 8px rgba(255,255,255,0.35); }
-    .pg-red { background: var(--red); color: #fff; }
-    .pg-blue { background: var(--blue); color: #fff; }
-    .pg-white { background: var(--white); color: #111; }
-    .pg-yellow { background: var(--yellow); color: #111; }
+    /* Box Informativo Qualificati LCQ / Finale */
+    .qual-info-card { background: #181c24; border: 1px solid var(--accent); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; width: 100%; }
+    .qual-info-header { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 6px; }
+    .qual-info-title { font-size: 0.78rem; font-weight: 900; color: var(--accent); text-transform: uppercase; letter-spacing: 0.4px; }
+    .qual-info-sub { font-size: 0.74rem; color: var(--muted); line-height: 1.4; }
+    .qual-badges-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
+    .qual-pill { background: var(--card); border: 1px solid var(--border); padding: 4px 8px; border-radius: 6px; font-size: 0.74rem; font-weight: 800; color: var(--text); }
+    .qual-pill span { color: var(--accent); margin-right: 4px; }
+    .btn-mini { background: #2e3440; color: var(--text); border: 1px solid #3b4252; padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 0.68rem; cursor: pointer; }
 
     /* Gate Card */
     .gate-card { background: var(--card); border-radius: 12px; padding: 10px 10px 10px 16px; margin-bottom: 9px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden; width: 100%; }
@@ -107,11 +95,13 @@
     .badge-white { background: var(--white); color: #111; }
     .badge-yellow { background: var(--yellow); color: #111; }
 
-    .sub-select { flex: 1; max-width: 58%; min-width: 0; background: #2e3440; color: var(--text); border: 1px solid #3b4252; border-radius: 6px; padding: 4px 6px; font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sub-select { flex: 1; max-width: 64%; min-width: 0; background: #2e3440; color: var(--text); border: 1px solid #3b4252; border-radius: 6px; padding: 5px 6px; font-size: 0.76rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .rider-name { font-size: 1.02rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rider-name.unassigned { color: var(--muted); font-style: italic; font-size: 0.9rem; }
 
     .score-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; }
     .score-btn { background: #2b303c; border: 1px solid #3b4252; color: var(--text); padding: 10px 0; border-radius: 8px; font-weight: 800; font-size: 0.95rem; cursor: pointer; min-width: 0; }
+    .score-btn:disabled, .spec-btn:disabled { opacity: 0.35; cursor: not-allowed; }
     .score-btn.selected-3 { background: #00c853; color: #000; border-color: #00e676; }
     .score-btn.selected-2 { background: #29b6f6; color: #000; border-color: #4fc3f7; }
     .score-btn.selected-1 { background: #ffa726; color: #000; border-color: #ffb74d; }
@@ -127,11 +117,14 @@
     .btn-share:active { transform: scale(0.98); }
 
     /* Tabelle */
+    .legend-bar { display: flex; gap: 12px; font-size: 0.72rem; color: var(--muted); margin-bottom: 8px; padding: 0 4px; flex-wrap: wrap; }
+    .legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
     .table-wrap { width: 100%; overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
     table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 0.8rem; }
     th, td { padding: 8px 4px; text-align: center; border-bottom: 1px solid var(--border); }
     th { background: #252a34; color: var(--muted); font-size: 0.68rem; }
     td.name-col { text-align: left; font-weight: 700; padding-left: 8px; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    tr.final-line td { border-bottom: 2px dashed var(--yellow); }
     tr.qual-line td { border-bottom: 2px dashed var(--accent); }
     .tot-col { font-weight: 900; color: var(--accent); font-size: 0.92rem; background: rgba(0, 230, 118, 0.08); }
     .sf-col { background: rgba(41, 182, 246, 0.08); font-weight: 700; }
@@ -144,20 +137,21 @@
     .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
     .form-group.full { grid-column: 1 / -1; }
     .form-group label { font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; }
-    .form-group input { background: #121418; border: 1px solid var(--border); color: var(--text); padding: 9px 10px; border-radius: 8px; font-size: 0.9rem; width: 100%; }
+    .form-group input, .form-group textarea { background: #121418; border: 1px solid var(--border); color: var(--text); padding: 9px 10px; border-radius: 8px; font-size: 0.9rem; width: 100%; }
 
-    .photo-upload-zone { border: 2px dashed #3b4252; border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; background: #161920; position: relative; overflow: hidden; }
-    .photo-upload-zone img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-top: 8px; display: none; }
-    .photo-upload-zone img.show { display: block; }
+    .photo-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+    .photo-upload-zone { border: 2px dashed #3b4252; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; background: #161920; font-size: 0.78rem; font-weight: 700; color: var(--text); display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .track-preview-wrap img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-top: 6px; display: none; border: 1px solid var(--border); }
+    .track-preview-wrap img.show { display: block; }
 
     .btn-primary { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 800; background: var(--accent); color: #000; font-size: 0.9rem; cursor: pointer; margin-top: 6px; }
-    .btn-secondary { width: 100%; padding: 11px; border-radius: 8px; border: 1px solid var(--accent); font-weight: 800; background: rgba(0,230,118,0.1); color: var(--accent); font-size: 0.85rem; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .btn-reset { width: 100%; padding: 11px; border-radius: 8px; border: none; font-weight: 700; background: #c62828; color: #fff; margin-top: 10px; cursor: pointer; }
+    .btn-secondary { width: 100%; padding: 11px 8px; border-radius: 8px; border: 1px solid var(--accent); font-weight: 800; background: rgba(0,230,118,0.1); color: var(--accent); font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; }
+    .btn-reset { width: 100%; padding: 11px; border-radius: 8px; border: none; font-weight: 700; background: #c62828; color: #fff; margin-top: 8px; cursor: pointer; font-size: 0.84rem; }
+    .btn-outline-danger { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #c62828; font-weight: 700; background: rgba(198, 40, 40, 0.15); color: #ff8a80; margin-top: 8px; cursor: pointer; font-size: 0.82rem; }
 
     /* Backup JSON Grid */
     .backup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
     .btn-backup { background: #252a34; border: 1px solid #3b4252; color: var(--text); padding: 10px 8px; border-radius: 8px; font-weight: 800; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; }
-    .btn-backup:active { background: #2e3440; }
 
     .rider-input-row { display: flex; align-items: center; gap: 8px; background: var(--card); padding: 7px 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid var(--border); }
     .rider-input-row span { width: 28px; font-weight: 800; color: var(--muted); font-size: 0.85rem; flex-shrink: 0; }
@@ -173,7 +167,8 @@
     .history-actions button { flex: 1; padding: 7px; border-radius: 6px; border: 1px solid var(--border); background: #2e3440; color: var(--text); font-weight: 700; font-size: 0.75rem; cursor: pointer; }
     .history-actions button.del { background: rgba(198,40,40,0.2); border-color: #c62828; color: #ff8a80; }
 
-    #ocr-status { font-size: 0.8rem; color: var(--yellow); margin-bottom: 10px; text-align: center; font-weight: 700; display: none; }
+    #ocr-status { font-size: 0.8rem; color: var(--yellow); margin-top: 8px; text-align: center; font-weight: 700; display: none; line-height: 1.35; }
+    #paste-box-wrap { display: none; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -184,12 +179,13 @@
     <div class="header-sub" id="header-event-sub">Imposta i dati evento</div>
   </div>
   <div class="header-right">
-    <button type="button" class="btn-qr-top" onclick="openQrModal()" title="Condividi App con QR Code">📲 QR</button>
+    <button type="button" class="btn-top danger" onclick="fullResetApp()" title="Svuota tutti i dati inseriti">🗑️ Reset</button>
+    <button type="button" class="btn-top" onclick="openQrModal()" title="Condividi App con QR Code">📲 QR</button>
     <span class="event-badge" id="progress-badge">0 / 23</span>
   </div>
 </header>
 
-<!-- Finestra Popup QR Code per far installare l'app agli amici -->
+<!-- Finestra Popup QR Code -->
 <div class="qr-modal-backdrop" id="qr-modal" onclick="if(event.target===this)closeQrModal()">
   <div class="qr-modal">
     <h3>📲 Condividi Speedway Live</h3>
@@ -223,7 +219,7 @@
       <div class="form-grid">
         <div class="form-group full">
           <label>Nome della Gara / Evento</label>
-          <input type="text" id="ev-name" placeholder="Es. FIM Speedway GP of Italy" oninput="updateEventMeta()">
+          <input type="text" id="ev-name" placeholder="Es. FIM Speedway GP of Poland - Torun" oninput="updateEventMeta()">
         </div>
         <div class="form-group">
           <label>Data</label>
@@ -231,19 +227,19 @@
         </div>
         <div class="form-group">
           <label>Nome Pista / Stadio</label>
-          <input type="text" id="ev-track" placeholder="Es. Olimpia Stadium" oninput="updateEventMeta()">
+          <input type="text" id="ev-track" placeholder="Es. Motoarena" oninput="updateEventMeta()">
         </div>
         <div class="form-group">
           <label>Luogo / Città</label>
-          <input type="text" id="ev-city" placeholder="Es. Terenzano" oninput="updateEventMeta()">
+          <input type="text" id="ev-city" placeholder="Es. Torun" oninput="updateEventMeta()">
         </div>
         <div class="form-group">
           <label>Stato / Nazione</label>
-          <input type="text" id="ev-country" placeholder="Es. Italia 🇮🇹" oninput="updateEventMeta()">
+          <input type="text" id="ev-country" placeholder="Es. Polonia 🇵🇱" oninput="updateEventMeta()">
         </div>
         <div class="form-group">
           <label>Lunghezza Pista (m)</label>
-          <input type="text" id="ev-length" placeholder="Es. 400m" oninput="updateEventMeta()">
+          <input type="text" id="ev-length" placeholder="Es. 318m" oninput="updateEventMeta()">
         </div>
         <div class="form-group">
           <label>Record / Note</label>
@@ -251,14 +247,24 @@
         </div>
         <div class="form-group full">
           <label>Foto Orizzontale della Pista</label>
-          <label class="photo-upload-zone" for="track-photo-input">
-            <span>📷 Tocca per scattare o caricare la foto orizzontale della pista</span>
-            <input type="file" id="track-photo-input" accept="image/*" style="display:none" onchange="handleTrackPhoto(this)">
+          <div class="photo-btn-grid">
+            <label class="photo-upload-zone" for="track-camera-input">
+              📸 Scatta Foto
+              <input type="file" id="track-camera-input" accept="image/*" capture="environment" style="display:none" onchange="handleTrackPhoto(this)">
+            </label>
+            <label class="photo-upload-zone" for="track-gallery-input">
+              🖼️ Da Galleria
+              <input type="file" id="track-gallery-input" accept="image/*" style="display:none" onchange="handleTrackPhoto(this)">
+            </label>
+          </div>
+          <div class="track-preview-wrap">
             <img id="track-preview-img" alt="Anteprima Pista">
-          </label>
+          </div>
         </div>
       </div>
       <button type="button" class="btn-primary" onclick="goToHeats()">Vai alle Batterie ▶</button>
+      <button type="button" class="btn-outline-danger" onclick="clearEventMetaOnly()">🗑️ Svuota Dati Evento</button>
+      <button type="button" class="btn-reset" onclick="fullResetApp()">🗑️ Svuota Tutto (Nuova Gara Pulita)</button>
     </div>
   </div>
 
@@ -280,6 +286,10 @@
         📲 Condividi / Scarica Classifica (PNG)
       </button>
     </div>
+    <div class="legend-bar">
+      <span><i class="legend-dot" style="background:var(--yellow)"></i>1°-2°: Finale Diretta</span>
+      <span><i class="legend-dot" style="background:var(--accent)"></i>3°-10°: Last Chance Qualifier (LCQ 1 & 2)</span>
+    </div>
     <div class="table-wrap">
       <table id="standings-table">
         <thead>
@@ -290,7 +300,7 @@
     </div>
   </div>
 
-  <!-- TAB 4: TABELLONE COMPLETO (S1-S5 + SF + FIN) -->
+  <!-- TAB 4: TABELLONE COMPLETO (S1-S5 + LCQ + FIN) -->
   <div id="tab-card" class="tab-content">
     <div class="share-bar">
       <button type="button" class="btn-share" onclick="exportRacePoster('card')">
@@ -300,7 +310,7 @@
     <div class="table-wrap">
       <table id="scorecard-table">
         <thead>
-          <tr><th>#</th><th style="text-align:left;padding-left:8px;">Pilota</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>TOT</th><th>SF</th><th>FIN</th></tr>
+          <tr><th>#</th><th style="text-align:left;padding-left:8px;">Pilota</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>TOT</th><th>LCQ</th><th>FIN</th></tr>
         </thead>
         <tbody></tbody>
       </table>
@@ -310,19 +320,33 @@
   <!-- TAB 5: PILOTI + OCR FOTO -->
   <div id="tab-riders" class="tab-content">
     <div class="card-box">
-      <h2>📷 Lettura Automatica Piloti (OCR)</h2>
-      <p style="font-size:0.76rem; color:var(--muted); margin-bottom:10px;">
-        Scatta o carica una foto dell'elenco iscritti (da 1 a 16 + riserve 17-18). L'app estrarrà i nomi in automatico.
+      <h2>📷 Inserimento Rapido Piloti (OCR / Testo)</h2>
+      <p style="font-size:0.76rem; color:var(--muted); margin-bottom:10px; line-height:1.35;">
+        Scatta una foto nitida all'elenco piloti, caricala dalla galleria oppure incolla direttamente il testo dell'elenco iscritti.
       </p>
-      <label class="btn-secondary" for="ocr-photo-input">
-        📸 Scatta / Carica Foto Elenco Piloti
-      </label>
-      <input type="file" id="ocr-photo-input" accept="image/*" style="display:none" onchange="processRiderListPhoto(this)">
+      <div class="photo-btn-grid">
+        <label class="btn-secondary" for="ocr-camera-input">
+          📸 Scatta Foto
+          <input type="file" id="ocr-camera-input" accept="image/*" capture="environment" style="display:none" onchange="processRiderListPhoto(this)">
+        </label>
+        <label class="btn-secondary" for="ocr-gallery-input">
+          🖼️ Carica Foto
+          <input type="file" id="ocr-gallery-input" accept="image/*" style="display:none" onchange="processRiderListPhoto(this)">
+        </label>
+      </div>
+      <button type="button" class="btn-backup" style="width:100%;" onclick="togglePasteBox()">📋 Incolla elenco piloti da testo</button>
+      <div id="paste-box-wrap">
+        <div class="form-group" style="margin-top:8px;">
+          <textarea id="paste-riders-area" rows="5" placeholder="Incolla qui i nomi (uno per riga, es.&#10;1. Bartosz Zmarzlik&#10;2. Robert Lambert&#10;...)"></textarea>
+        </div>
+        <button type="button" class="btn-primary" onclick="applyPastedRiders()">✅ Applica Elenco Incollato</button>
+      </div>
       <div id="ocr-status">⏳ Analisi immagine in corso...</div>
     </div>
 
     <div id="riders-inputs"></div>
-    <button type="button" class="btn-reset" onclick="resetAllScores()">Azzera Punteggi Batteria</button>
+    <button type="button" class="btn-outline-danger" onclick="resetRidersNames()">🗑️ Ripristina Nomi Piloti (Pilota 1..18)</button>
+    <button type="button" class="btn-reset" onclick="resetAllScores()">🔄 Azzera Solo i Punteggi Batteria</button>
   </div>
 
   <!-- TAB 6: STORICO GARE & BACKUP JSON -->
@@ -330,7 +354,7 @@
     <div class="card-box">
       <h2>💾 Gestione & Archivio Gare</h2>
       <button type="button" class="btn-primary" style="margin-bottom:8px;" onclick="saveCurrentToArchive()">📥 Salva Gara Corrente nello Storico</button>
-      <button type="button" class="btn-secondary" onclick="startNewRace()">➕ Inizia Nuova Gara Pulita</button>
+      <button type="button" class="btn-secondary" style="margin-bottom:10px;" onclick="fullResetApp()">➕ Inizia Nuova Gara Pulita</button>
       <div class="backup-grid">
         <button type="button" class="btn-backup" onclick="exportBackupJson()">⬇️ Esporta Backup (.json)</button>
         <label class="btn-backup" for="import-json-input">
@@ -356,26 +380,41 @@
 <script>
   const APP_PUBLIC_URL = "https://mluna01-speedway.github.io/speedway-live/";
 
+  // Tabella FIM SGP 20 Batterie (Batteria 12 corretta: [13, 4, 10, 7])
   const FIM_SCHEDULE = [
-    [1, 2, 3, 4], [5, 7, 6, 8], [10, 11, 9, 12], [15, 14, 16, 13],
-    [13, 1, 5, 9], [14, 10, 2, 6], [11, 15, 7, 3], [4, 8, 12, 16],
-    [6, 16, 1, 11], [12, 5, 15, 2], [8, 9, 3, 14], [7, 4, 13, 10],
-    [7, 12, 14, 1], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 4, 15],
-    [1, 8, 15, 10], [9, 2, 7, 16], [3, 12, 13, 6], [5, 14, 11, 4]
+    [1, 2, 3, 4],     // Batteria 1
+    [5, 7, 6, 8],     // Batteria 2
+    [10, 11, 9, 12],  // Batteria 3
+    [15, 14, 16, 13], // Batteria 4
+    [13, 1, 5, 9],    // Batteria 5
+    [14, 10, 2, 6],   // Batteria 6
+    [11, 15, 7, 3],   // Batteria 7
+    [4, 8, 12, 16],   // Batteria 8
+    [6, 16, 1, 11],   // Batteria 9
+    [12, 5, 15, 2],   // Batteria 10
+    [8, 9, 3, 14],    // Batteria 11
+    [13, 4, 10, 7],   // Batteria 12 (Corretta: Rosso 13, Blu 4, Bianco 10, Giallo 7)
+    [7, 12, 14, 1],   // Batteria 13
+    [2, 13, 8, 11],   // Batteria 14
+    [16, 3, 10, 5],   // Batteria 15
+    [9, 6, 4, 15],    // Batteria 16
+    [1, 8, 15, 10],   // Batteria 17
+    [9, 2, 7, 16],    // Batteria 18
+    [3, 12, 13, 6],   // Batteria 19
+    [5, 14, 11, 4]    // Batteria 20
   ];
 
   const GATE_INFO = [
-    { name: "Corsia 1 - Rosso", short: "1", cls: "gate-red", badge: "badge-red", btnCls: "pg-red" },
-    { name: "Corsia 2 - Blu", short: "2", cls: "gate-blue", badge: "badge-blue", btnCls: "pg-blue" },
-    { name: "Corsia 3 - Bianco", short: "3", cls: "gate-white", badge: "badge-white", btnCls: "pg-white" },
-    { name: "Corsia 4 - Giallo", short: "4", cls: "gate-yellow", badge: "badge-yellow", btnCls: "pg-yellow" }
+    { name: "Corsia 1 - Rosso", short: "1", cls: "gate-red", badge: "badge-red" },
+    { name: "Corsia 2 - Blu", short: "2", cls: "gate-blue", badge: "badge-blue" },
+    { name: "Corsia 3 - Bianco", short: "3", cls: "gate-white", badge: "badge-white" },
+    { name: "Corsia 4 - Giallo", short: "4", cls: "gate-yellow", badge: "badge-yellow" }
   ];
 
-  const STORAGE_KEY = 'speedway_fim_pwa_v2';
+  const STORAGE_KEY = 'speedway_fim_pwa_v3';
   const ARCHIVE_KEY = 'speedway_fim_archive_v2';
 
   let state = createDefaultState();
-  let showGatePickPanel = true;
 
   /* QR CODE CONDIVISIONE APP */
   function openQrModal() {
@@ -420,15 +459,16 @@
       label: "Batteria " + (idx + 1) + " (Serie " + (Math.floor(idx / 4) + 1) + ")",
       slots: gates.map(rId => ({ riderId: rId, score: null }))
     }));
+
     [
-      "Batteria 21 (Semifinale 1)",
-      "Batteria 22 (Semifinale 2)",
+      "Batteria 21 (LCQ 1)",
+      "Batteria 22 (LCQ 2)",
       "Batteria 23 (FINALE)"
     ].forEach((lbl, i) => {
       heats.push({
         heatNumber: 21 + i,
         label: lbl,
-        slots: [1, 2, 3, 4].map(rId => ({ riderId: rId, score: null }))
+        slots: [0, 1, 2, 3].map(() => ({ riderId: null, score: null }))
       });
     });
 
@@ -452,10 +492,35 @@
 
   function safeLoad() {
     try {
-      const s = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('speedway_fim_pwa_v1');
+      const s = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('speedway_fim_pwa_v2');
       if (s && s.startsWith('{')) return JSON.parse(s);
     } catch (e) {}
     return null;
+  }
+
+  function normalizeLoadedState(saved) {
+    const def = createDefaultState();
+    const merged = Object.assign(def, saved);
+    merged.eventMeta = Object.assign(def.eventMeta, saved.eventMeta || {});
+
+    // Forza la correzione delle etichette 21-23 e della Batteria 12 anche su salvataggi precedenti
+    if (merged.heats && merged.heats.length >= 23) {
+      merged.heats[20].label = "Batteria 21 (LCQ 1)";
+      merged.heats[21].label = "Batteria 22 (LCQ 2)";
+      merged.heats[22].label = "Batteria 23 (FINALE)";
+
+      // Corregge Batteria 12 se era rimasta col vecchio schema [7, 4, 13, 10]
+      const h12 = merged.heats[11];
+      if (h12 && h12.slots && h12.slots.map(s => s.riderId).join(',') === '7,4,13,10') {
+        const oldScores = {};
+        h12.slots.forEach(s => { oldScores[s.riderId] = s.score; });
+        h12.slots = [13, 4, 10, 7].map(rId => ({
+          riderId: rId,
+          score: oldScores[rId] ?? null
+        }));
+      }
+    }
+    return merged;
   }
 
   function saveState() {
@@ -467,8 +532,8 @@
   function initState() {
     const saved = safeLoad();
     if (saved && saved.heats && saved.heats.length >= 23) {
-      state = Object.assign(createDefaultState(), saved);
-      state.eventMeta = Object.assign(createDefaultState().eventMeta, saved.eventMeta || {});
+      state = normalizeLoadedState(saved);
+      saveState();
     } else {
       state = createDefaultState();
       saveState();
@@ -480,6 +545,37 @@
     if (!state.eventMeta.name && !state.eventMeta.track) {
       switchTab('event', document.getElementById('nav-event'));
     }
+  }
+
+  /* RESET E SVUOTAMENTO DATI */
+  function fullResetApp() {
+    if (!confirm("Vuoi svuotare tutti i dati inseriti (Evento, Piloti e Punteggi) e ripartire da zero?")) return;
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem('speedway_fim_pwa_v2');
+      localStorage.removeItem('speedway_fim_pwa_v1');
+    } catch (e) {}
+    state = createDefaultState();
+    populateEventForm();
+    saveState();
+    renderRidersInputs();
+    renderCurrentHeat();
+    switchTab('event', document.getElementById('nav-event'));
+  }
+
+  function clearEventMetaOnly() {
+    if (!confirm("Vuoi svuotare tutti i campi della scheda Evento e la foto pista?")) return;
+    state.eventMeta = createDefaultState().eventMeta;
+    populateEventForm();
+    saveState();
+  }
+
+  function resetRidersNames() {
+    if (!confirm("Vuoi ripristinare i nomi predefiniti (Pilota 1..16 e Riserve 17..18)?")) return;
+    state.riders = createDefaultState().riders;
+    saveState();
+    renderRidersInputs();
+    renderCurrentHeat();
   }
 
   function populateEventForm() {
@@ -553,6 +649,7 @@
       img.src = e.target.result;
     };
     reader.readAsDataURL(file);
+    input.value = "";
   }
 
   function goToHeats() {
@@ -580,6 +677,7 @@
     }
     state.heats.slice(0, 20).forEach(h => {
       h.slots.forEach(s => {
+        if (!s.riderId) return;
         const st = stats.find(x => x.id === s.riderId);
         if (!st) return;
         if (s.score !== null) {
@@ -601,12 +699,14 @@
 
     [20, 21].forEach(idx => {
       state.heats[idx].slots.forEach(s => {
+        if (!s.riderId) return;
         const st = stats.find(x => x.id === s.riderId);
         if (st && s.score !== null) st.sfScore = s.score;
       });
     });
 
     state.heats[22].slots.forEach(s => {
+      if (!s.riderId) return;
       const st = stats.find(x => x.id === s.riderId);
       if (st && s.score !== null) st.finScore = s.score;
     });
@@ -620,52 +720,8 @@
     return stats;
   }
 
-  /* AUTOMAZIONE SEMIFINALI, FINALE E SCELTA CORSIE (GATE PICK) */
-  function autoPopulateSemifinals(silent) {
-    const ranked = getSortedQualifyingStandings();
-    if (ranked.length < 8) return;
-    const sf1Riders = [ranked[0].id, ranked[3].id, ranked[4].id, ranked[7].id];
-    const sf2Riders = [ranked[1].id, ranked[2].id, ranked[5].id, ranked[6].id];
-
-    sf1Riders.forEach((rId, idx) => { state.heats[20].slots[idx].riderId = rId; });
-    sf2Riders.forEach((rId, idx) => { state.heats[21].slots[idx].riderId = rId; });
-    showGatePickPanel = true;
-    saveState();
-    renderCurrentHeat();
-    if (!silent) alert("Top 8 caricati! Ora puoi assegnare a ciascun pilota la corsia scelta (Gate Pick).");
-  }
-
-  function autoPopulateFinal(silent) {
-    const ranked = getSortedQualifyingStandings();
-    const rankMap = {};
-    ranked.forEach((st, i) => { rankMap[st.id] = i + 1; });
-
-    const sf1 = state.heats[20].slots;
-    const sf2 = state.heats[21].slots;
-
-    const sf1Top = sf1.filter(s => s.score === 3 || s.score === 2);
-    const sf2Top = sf2.filter(s => s.score === 3 || s.score === 2);
-
-    if (sf1Top.length < 2 || sf2Top.length < 2) {
-      if (!silent) alert("Completa prima i punteggi (3 pt e 2 pt) di entrambe le Semifinali (Batteria 21 e 22).");
-      return;
-    }
-
-    const allFinalists = [...sf1Top, ...sf2Top].sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
-      return (rankMap[a.riderId] || 99) - (rankMap[b.riderId] || 99);
-    });
-
-    allFinalists.forEach((slotObj, idx) => {
-      state.heats[22].slots[idx].riderId = slotObj.riderId;
-    });
-    showGatePickPanel = true;
-    saveState();
-    renderCurrentHeat();
-    if (!silent) alert("Finalisti caricati in ordine di priorità! Ora assegna le corsie scelte.");
-  }
-
-  function getGatePickOrderedRiders(heatIdx) {
+  /* CALCOLO PILOTI QUALIFICATI PER LCQ 1, LCQ 2 E FINALE */
+  function getEligibleRidersForSpecialHeat(heatIdx) {
     const ranked = getSortedQualifyingStandings();
     const rankMap = {};
     const ptsMap = {};
@@ -674,51 +730,79 @@
       ptsMap[st.id] = st.total;
     });
 
-    const heat = state.heats[heatIdx];
-    const currentRiders = heat.slots.map((s, gateIdx) => ({
-      riderId: s.riderId,
-      gateIdx: gateIdx,
-      qualRank: rankMap[s.riderId] || 99,
-      qualPts: ptsMap[s.riderId] ?? 0
-    }));
+    // Batteria 21 (LCQ 1): 3°, 6°, 8° e 9° classificato (indici 2, 5, 7, 8)
+    if (heatIdx === 20) {
+      return [2, 5, 7, 8]
+        .filter(idx => ranked[idx])
+        .map(idx => ({
+          id: ranked[idx].id,
+          name: state.riders[ranked[idx].id],
+          badge: (idx + 1) + "° class. (" + ranked[idx].total + " pt)"
+        }));
+    }
 
-    if (heatIdx === 20 || heatIdx === 21) {
-      currentRiders.sort((a, b) => a.qualRank - b.qualRank);
-    } else if (heatIdx === 22) {
-      const sfScoreMap = {};
-      [20, 21].forEach(idx => {
-        state.heats[idx].slots.forEach(s => {
-          if (typeof s.score === 'number') sfScoreMap[s.riderId] = s.score;
+    // Batteria 22 (LCQ 2): 4°, 5°, 7° e 10° classificato (indici 3, 4, 6, 9)
+    if (heatIdx === 21) {
+      return [3, 4, 6, 9]
+        .filter(idx => ranked[idx])
+        .map(idx => ({
+          id: ranked[idx].id,
+          name: state.riders[ranked[idx].id],
+          badge: (idx + 1) + "° class. (" + ranked[idx].total + " pt)"
+        }));
+    }
+
+    // Batteria 23 (FINALE): 1° e 2° delle prime 20 batterie + Vincitori (3 pt) di LCQ 1 e LCQ 2
+    if (heatIdx === 22) {
+      const list = [];
+      if (ranked[0]) {
+        list.push({
+          id: ranked[0].id,
+          name: state.riders[ranked[0].id],
+          badge: "1° Classifica (" + ranked[0].total + " pt)"
         });
-      });
-      currentRiders.sort((a, b) => {
-        const sfA = sfScoreMap[a.riderId] ?? -1;
-        const sfB = sfScoreMap[b.riderId] ?? -1;
-        if (sfB !== sfA) return sfB - sfA;
-        return a.qualRank - b.qualRank;
-      });
+      }
+      if (ranked[1]) {
+        list.push({
+          id: ranked[1].id,
+          name: state.riders[ranked[1].id],
+          badge: "2° Classifica (" + ranked[1].total + " pt)"
+        });
+      }
+
+      const lcq1Winner = state.heats[20].slots.find(s => s.score === 3 && s.riderId);
+      if (lcq1Winner && !list.some(x => x.id === lcq1Winner.riderId)) {
+        const rId = lcq1Winner.riderId;
+        list.push({
+          id: rId,
+          name: state.riders[rId],
+          badge: "1° LCQ 1 (" + (rankMap[rId] ? rankMap[rId] + "° class." : "") + ")"
+        });
+      }
+
+      const lcq2Winner = state.heats[21].slots.find(s => s.score === 3 && s.riderId);
+      if (lcq2Winner && !list.some(x => x.id === lcq2Winner.riderId)) {
+        const rId = lcq2Winner.riderId;
+        list.push({
+          id: rId,
+          name: state.riders[rId],
+          badge: "1° LCQ 2 (" + (rankMap[rId] ? rankMap[rId] + "° class." : "") + ")"
+        });
+      }
+
+      return list;
     }
-    return currentRiders;
+
+    return [];
   }
 
-  function assignRiderToGate(riderId, targetGateIdx) {
+  function clearCurrentHeatGates() {
     const heat = state.heats[state.currentHeat];
-    const currentGateIdx = heat.slots.findIndex(s => s.riderId === riderId);
-    if (currentGateIdx === targetGateIdx) return;
-
-    if (currentGateIdx !== -1) {
-      const temp = heat.slots[targetGateIdx];
-      heat.slots[targetGateIdx] = heat.slots[currentGateIdx];
-      heat.slots[currentGateIdx] = temp;
-    } else {
-      heat.slots[targetGateIdx].riderId = riderId;
-    }
+    heat.slots.forEach(s => {
+      s.riderId = null;
+      s.score = null;
+    });
     saveState();
-    renderCurrentHeat();
-  }
-
-  function toggleGatePickPanel() {
-    showGatePickPanel = !showGatePickPanel;
     renderCurrentHeat();
   }
 
@@ -733,42 +817,38 @@
     renderHeatSelect();
     const heat = state.heats[state.currentHeat];
     const autoBox = document.getElementById('auto-finals-box');
+    const isSpecialHeat = state.currentHeat >= 20;
 
-    if (state.currentHeat >= 20) {
-      const isFinal = state.currentHeat === 22;
-      const pickList = getGatePickOrderedRiders(state.currentHeat);
+    let eligibleList = [];
+    if (isSpecialHeat) {
+      eligibleList = getEligibleRidersForSpecialHeat(state.currentHeat);
+      let titleText = "";
+      let ruleSub = "";
 
-      let rowsHtml = '';
-      if (showGatePickPanel) {
-        rowsHtml = '<div class="gate-pick-sub">Tocca il colore della corsia scelta da ciascun pilota (in ordine di priorità 1° → 4°):</div>' +
-          pickList.map((item, idx) => {
-            const gateBtns = GATE_INFO.map((g, gIdx) =>
-              '<button type="button" class="pick-gate-btn ' + g.btnCls + ' ' + (item.gateIdx === gIdx ? 'active-gate' : '') + '" ' +
-                'onclick="assignRiderToGate(' + item.riderId + ', ' + gIdx + ')" title="' + g.name + '">' + g.short + '</button>'
-            ).join('');
-
-            return '<div class="pick-row">' +
-              '<div class="pick-rider-info">' +
-                '<span class="pick-order-badge">' + (idx + 1) + '° scelta</span>' +
-                '<span class="pick-rider-name">#' + item.riderId + ' ' + state.riders[item.riderId] + '</span>' +
-                '<span class="pick-rider-pts">(' + item.qualRank + '° • ' + item.qualPts + 'pt)</span>' +
-              '</div>' +
-              '<div class="pick-gate-btns">' + gateBtns + '</div>' +
-            '</div>';
-          }).join('');
+      if (state.currentHeat === 20) {
+        titleText = "🔥 Last Chance Qualifier 1 (3°, 6°, 8°, 9°)";
+        ruleSub = "Seleziona dal menu a tendina di ciascuna corsia il pilota in base alla scelta effettuata (priorità: 3° → 6° → 8° → 9°). Il vincitore (3 pt) va in Finale.";
+      } else if (state.currentHeat === 21) {
+        titleText = "🔥 Last Chance Qualifier 2 (4°, 5°, 7°, 10°)";
+        ruleSub = "Seleziona dal menu a tendina di ciascuna corsia il pilota in base alla scelta effettuata (priorità: 4° → 5° → 7° → 10°). Il vincitore (3 pt) va in Finale.";
+      } else {
+        titleText = "🏆 FINALE (1° e 2° Classifica + Vincitori LCQ 1 & 2)";
+        ruleSub = "Seleziona dal menu a tendina di ciascuna corsia i 4 finalisti qualificati.";
       }
 
-      autoBox.innerHTML = '<div class="gate-pick-card">' +
-        '<div class="gate-pick-header">' +
-          '<span class="gate-pick-title">🎯 Scelta Corsie (Gate Pick)</span>' +
-          '<div class="gate-pick-actions">' +
-            (isFinal
-              ? '<button type="button" class="btn-mini" onclick="autoPopulateFinal(false)">🔄 Carica Finalisti</button>'
-              : '<button type="button" class="btn-mini" onclick="autoPopulateSemifinals(false)">🔄 Carica Top 8</button>') +
-            '<button type="button" class="btn-mini secondary" onclick="toggleGatePickPanel()">' + (showGatePickPanel ? 'Nascondi ▲' : 'Scegli Corsie ▼') + '</button>' +
-          '</div>' +
+      const pillsHtml = eligibleList.length > 0
+        ? eligibleList.map(item =>
+            '<div class="qual-pill"><span>' + item.badge + ':</span>#' + item.id + ' ' + item.name + '</div>'
+          ).join('')
+        : '<div class="qual-pill">In attesa dei risultati precedenti</div>';
+
+      autoBox.innerHTML = '<div class="qual-info-card">' +
+        '<div class="qual-info-header">' +
+          '<span class="qual-info-title">' + titleText + '</span>' +
+          '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">🔄 Svuota Corsie</button>' +
         '</div>' +
-        rowsHtml +
+        '<div class="qual-info-sub">' + ruleSub + '</div>' +
+        '<div class="qual-badges-list">' + pillsHtml + '</div>' +
       '</div>';
     } else {
       autoBox.innerHTML = '';
@@ -779,23 +859,41 @@
       const g = GATE_INFO[gIdx];
       const sc = slot.score;
       let opts = '';
-      for (let r = 1; r <= 18; r++) {
-        opts += '<option value="' + r + '" ' + (slot.riderId == r ? 'selected' : '') + '>#' + r + ' ' + state.riders[r] + '</option>';
+
+      if (isSpecialHeat) {
+        opts += '<option value="" ' + (!slot.riderId ? 'selected' : '') + '>— Scegli pilota qualificato —</option>';
+        eligibleList.forEach(item => {
+          opts += '<option value="' + item.id + '" ' + (slot.riderId === item.id ? 'selected' : '') + '>#' + item.id + ' ' + item.name + ' — ' + item.badge + '</option>';
+        });
+        // Se era già stato selezionato un pilota non più in lista, lo mostra comunque per poterlo cambiare
+        if (slot.riderId && !eligibleList.some(x => x.id === slot.riderId)) {
+          opts += '<option value="' + slot.riderId + '" selected>#' + slot.riderId + ' ' + state.riders[slot.riderId] + '</option>';
+        }
+      } else {
+        for (let r = 1; r <= 18; r++) {
+          opts += '<option value="' + r + '" ' + (slot.riderId == r ? 'selected' : '') + '>#' + r + ' ' + state.riders[r] + '</option>';
+        }
       }
+
+      const hasRider = Boolean(slot.riderId);
+      const riderLabel = hasRider
+        ? ('#' + slot.riderId + ' ' + state.riders[slot.riderId])
+        : 'Seleziona il pilota dal menu in alto ▲';
+
       return '<div class="gate-card ' + g.cls + '">' +
         '<div class="rider-header">' +
           '<span class="helmet-badge ' + g.badge + '">' + g.name + '</span>' +
           '<select class="sub-select" onchange="changeSlotRider(' + gIdx + ', this.value)">' + opts + '</select>' +
         '</div>' +
-        '<div class="rider-name">#' + slot.riderId + ' ' + state.riders[slot.riderId] + '</div>' +
+        '<div class="rider-name ' + (!hasRider ? 'unassigned' : '') + '">' + riderLabel + '</div>' +
         '<div class="score-btns">' +
           [3, 2, 1, 0].map(pt =>
-            '<button type="button" class="score-btn ' + (sc === pt ? 'selected-' + pt : '') + '" onclick="setScore(' + gIdx + ', ' + pt + ')">' + pt + ' pt</button>'
+            '<button type="button" ' + (!hasRider ? 'disabled' : '') + ' class="score-btn ' + (sc === pt ? 'selected-' + pt : '') + '" onclick="setScore(' + gIdx + ', ' + pt + ')">' + pt + ' pt</button>'
           ).join('') +
         '</div>' +
         '<div class="special-btns">' +
           ['R', 'F', 'X', 'T'].map(code =>
-            '<button type="button" class="spec-btn ' + (sc === code ? 'selected-spec' : '') + '" onclick="setScore(' + gIdx + ', \'' + code + '\')">' + code + '</button>'
+            '<button type="button" ' + (!hasRider ? 'disabled' : '') + ' class="spec-btn ' + (sc === code ? 'selected-spec' : '') + '" onclick="setScore(' + gIdx + ', \'' + code + '\')">' + code + '</button>'
           ).join('') +
         '</div>' +
       '</div>';
@@ -804,6 +902,8 @@
 
   function setScore(gateIdx, val) {
     const heat = state.heats[state.currentHeat];
+    if (!heat.slots[gateIdx].riderId) return;
+
     if (heat.slots[gateIdx].score === val) {
       heat.slots[gateIdx].score = null;
     } else {
@@ -813,32 +913,35 @@
       heat.slots[gateIdx].score = val;
     }
 
-    const regularDone = state.heats.slice(0, 20).every(h => h.slots.some(s => s.score !== null));
-    const sfUntouched = state.heats[20].slots.every(s => s.score === null) && state.heats[21].slots.every(s => s.score === null);
-    if (state.currentHeat < 20 && regularDone && sfUntouched) {
-      autoPopulateSemifinals(true);
-    }
-
-    if (state.currentHeat === 20 || state.currentHeat === 21) {
-      const sf1Ready = state.heats[20].slots.some(s => s.score === 3) && state.heats[20].slots.some(s => s.score === 2);
-      const sf2Ready = state.heats[21].slots.some(s => s.score === 3) && state.heats[21].slots.some(s => s.score === 2);
-      const finUntouched = state.heats[22].slots.every(s => s.score === null);
-      if (sf1Ready && sf2Ready && finUntouched) {
-        autoPopulateFinal(true);
-      }
-    }
-
     saveState();
     renderCurrentHeat();
   }
 
-  function changeSlotRider(gateIdx, newRiderId) {
-    const parsedId = parseInt(newRiderId, 10);
-    if (state.currentHeat >= 20) {
-      assignRiderToGate(parsedId, gateIdx);
+  function changeSlotRider(gateIdx, newRiderVal) {
+    const heat = state.heats[state.currentHeat];
+    if (!newRiderVal) {
+      heat.slots[gateIdx].riderId = null;
+      heat.slots[gateIdx].score = null;
+      saveState();
+      renderCurrentHeat();
       return;
     }
-    state.heats[state.currentHeat].slots[gateIdx].riderId = parsedId;
+
+    const parsedId = parseInt(newRiderVal, 10);
+
+    // Evita duplicati nella stessa batteria: se il pilota era già su un'altra corsia, scambia le due corsie
+    const existingIdx = heat.slots.findIndex((s, idx) => idx !== gateIdx && s.riderId === parsedId);
+    if (existingIdx !== -1) {
+      const prevRider = heat.slots[gateIdx].riderId;
+      const prevScore = heat.slots[gateIdx].score;
+      heat.slots[gateIdx].riderId = parsedId;
+      heat.slots[gateIdx].score = heat.slots[existingIdx].score;
+      heat.slots[existingIdx].riderId = prevRider;
+      heat.slots[existingIdx].score = prevScore;
+    } else {
+      heat.slots[gateIdx].riderId = parsedId;
+    }
+
     saveState();
     renderCurrentHeat();
   }
@@ -860,15 +963,16 @@
 
   function renderStandings() {
     const stats = getSortedQualifyingStandings();
-    document.querySelector('#standings-table tbody').innerHTML = stats.map((st, idx) =>
-      '<tr class="' + (idx === 7 ? 'qual-line' : '') + '">' +
+    document.querySelector('#standings-table tbody').innerHTML = stats.map((st, idx) => {
+      const rowCls = idx === 1 ? 'final-line' : (idx === 9 ? 'qual-line' : '');
+      return '<tr class="' + rowCls + '">' +
         '<td><strong>' + (idx + 1) + '</strong></td>' +
         '<td class="name-col">#' + st.id + ' ' + st.name + '</td>' +
         '<td>' + st.ones + '</td><td>' + st.twos + '</td><td>' + st.threes + '</td><td>' + st.zeros + '</td>' +
         '<td>(' + (st.runs.filter(r => r !== '-').join(',') || '-') + ')</td>' +
         '<td class="tot-col">' + st.total + '</td>' +
-      '</tr>'
-    ).join('');
+      '</tr>';
+    }).join('');
   }
 
   function renderScorecard() {
@@ -905,7 +1009,7 @@
 
     const m = state.eventMeta || {};
     const finalSlots = state.heats[22] ? state.heats[22].slots : [];
-    const hasFinalPodium = finalSlots.some(s => s.score === 3);
+    const hasFinalPodium = finalSlots.some(s => s.score === 3 && s.riderId);
 
     const headerH = 250;
     const podiumH = hasFinalPodium ? 135 : 0;
@@ -987,10 +1091,10 @@
       ctx.font = '900 22px sans-serif';
       ctx.fillText('🏆 PODIO FINALE (BATTERIA 23)', 50, y + 36);
 
-      const p1 = finalSlots.find(s => s.score === 3);
-      const p2 = finalSlots.find(s => s.score === 2);
-      const p3 = finalSlots.find(s => s.score === 1);
-      const p4 = finalSlots.find(s => s.score === 0 || typeof s.score === 'string');
+      const p1 = finalSlots.find(s => s.score === 3 && s.riderId);
+      const p2 = finalSlots.find(s => s.score === 2 && s.riderId);
+      const p3 = finalSlots.find(s => s.score === 1 && s.riderId);
+      const p4 = finalSlots.find(s => (s.score === 0 || typeof s.score === 'string') && s.riderId);
 
       const podiumText = [
         p1 ? ('🥇 1° ' + state.riders[p1.riderId]) : '',
@@ -1037,7 +1141,7 @@
         { label: 'S4', x: 680 },
         { label: 'S5', x: 750 },
         { label: 'TOT', x: 835 },
-        { label: 'SF', x: 920 },
+        { label: 'LCQ', x: 920 },
         { label: 'FIN', x: 1000 }
       ];
       cols.forEach(c => {
@@ -1061,7 +1165,7 @@
 
       if (mode === 'standings') {
         ctx.textAlign = 'center';
-        ctx.fillStyle = idx < 8 ? '#00e676' : '#8892b0';
+        ctx.fillStyle = idx < 2 ? '#fdd835' : (idx < 10 ? '#00e676' : '#8892b0');
         ctx.font = '900 24px sans-serif';
         ctx.fillText(String(idx + 1), 75, y + 36);
 
@@ -1087,9 +1191,9 @@
         ctx.font = '900 27px sans-serif';
         ctx.fillText(String(st.total), 995, y + 36);
 
-        if (idx === 7) {
+        if (idx === 1 || idx === 9) {
           ctx.save();
-          ctx.strokeStyle = '#00e676';
+          ctx.strokeStyle = idx === 1 ? '#fdd835' : '#00e676';
           ctx.lineWidth = 3;
           ctx.setLineDash([12, 8]);
           ctx.beginPath();
@@ -1168,53 +1272,147 @@
     }, 'image/png');
   }
 
-  /* OCR: LETTURA ELENCO PILOTI DA FOTO */
+  /* PRE-ELABORAZIONE IMMAGINE E OCR PILOTI MIGLIORATO */
+  function preprocessImageForOcr(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const targetW = Math.min(1600, Math.max(1000, img.width));
+          const scale = targetW / img.width;
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          // Aumenta contrasto in scala di grigi per facilitare Tesseract
+          const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const d = imgData.data;
+          const contrast = 1.45;
+          for (let i = 0; i < d.length; i += 4) {
+            const gray = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+            let adj = ((gray - 128) * contrast) + 128;
+            adj = Math.max(0, Math.min(255, adj));
+            d[i] = d[i + 1] = d[i + 2] = adj;
+          }
+          ctx.putImageData(imgData, 0, 0);
+          resolve(canvas.toDataURL('image/png'));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function parseRidersFromText(rawText) {
+    const lines = (rawText || "")
+      .split(/\r?\n/)
+      .map(l => l.trim())
+      .filter(l => l.length >= 3);
+
+    const ignoreWords = /^(speedway|starting|line-up|lineup|riders|piloti|elenco|iscritti|track|reserve|riserve|grand|prix|fim|dewalt|torun|poland|gara|heat|batteria)$/i;
+    const numberedMap = {};
+    const sequentialList = [];
+
+    lines.forEach(line => {
+      // Rimuove codici nazionalità tra parentesi es. (POL), (GBR), [AUS]
+      let cleanLine = line
+        .replace(/[\(\[\{][A-Za-z]{2,4}[\)\]\}]/g, ' ')
+        .replace(/\b(POL|GBR|AUS|DEN|SWE|SVK|CZE|LAT|USA|GER|ITA|FRA|SLO|NOR|FIN|UKR)\b/g, ' ');
+
+      // Cerca un numero d'ordine iniziale da 1 a 18 (es. "1. (#95) Bartosz Zmarzlik" o "1 - Bartosz Zmarzlik")
+      const leadMatch = cleanLine.match(/^\s*#?(1[0-8]|[1-9])(?:[\.\)\-\:\s]+)(.+)$/);
+
+      let candidate = leadMatch ? leadMatch[2] : cleanLine;
+      // Rimuove eventuali numeri di casacca tipo #95 o 95 all'inizio o fine del nome
+      candidate = candidate
+        .replace(/#[0-9]{1,3}/g, ' ')
+        .replace(/\b[0-9]{1,3}\b/g, ' ')
+        .replace(/[^A-Za-zÀ-ÿ\s'\-]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      const words = candidate.split(' ').filter(w => w.length >= 2 && !ignoreWords.test(w));
+      if (words.length === 0) return;
+
+      const finalName = words.slice(0, 3).join(' ');
+      if (finalName.length < 3) return;
+
+      if (leadMatch) {
+        const idx = parseInt(leadMatch[1], 10);
+        if (idx >= 1 && idx <= 18 && !numberedMap[idx]) {
+          numberedMap[idx] = finalName;
+        }
+      }
+      sequentialList.push(finalName);
+    });
+
+    const numberedKeys = Object.keys(numberedMap);
+    let applied = 0;
+
+    if (numberedKeys.length >= 4) {
+      numberedKeys.forEach(k => {
+        state.riders[parseInt(k, 10)] = numberedMap[k];
+        applied++;
+      });
+    } else if (sequentialList.length > 0) {
+      sequentialList.slice(0, 18).forEach((name, idx) => {
+        state.riders[idx + 1] = name;
+        applied++;
+      });
+    }
+
+    return applied;
+  }
+
   async function processRiderListPhoto(input) {
     const file = input.files && input.files[0];
     if (!file) return;
     const statusEl = document.getElementById('ocr-status');
     statusEl.style.display = 'block';
-    statusEl.textContent = '⏳ Lettura nomi dalla foto in corso (attendi 5-10 secondi)...';
+    statusEl.textContent = '⏳ Ottimizzazione immagine e lettura nomi in corso (5-10 sec)...';
 
     try {
-      const result = await Tesseract.recognize(file, 'eng+ita');
-      const rawText = result.data.text || "";
-      const lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-
-      let matchedCount = 0;
-      const sequentialNames = [];
-
-      lines.forEach(line => {
-        const numMatch = line.match(/^(?:#|\b)?(1[0-8]|[1-9])[\.\)\-\s:]+([A-Za-zÀ-ÿ\s'\-]{3,})$/);
-        if (numMatch) {
-          const num = parseInt(numMatch[1], 10);
-          const cleanName = numMatch[2].replace(/[^A-Za-zÀ-ÿ\s'\-]/g, '').trim();
-          if (num >= 1 && num <= 18 && cleanName.length >= 3) {
-            state.riders[num] = cleanName;
-            matchedCount++;
-          }
-        } else {
-          const cleaned = line.replace(/^[0-9\W]+/, '').replace(/[^A-Za-zÀ-ÿ\s'\-]/g, '').trim();
-          if (cleaned.length >= 4 && cleaned.includes(' ')) {
-            sequentialNames.push(cleaned);
-          }
-        }
-      });
-
-      if (matchedCount < 4 && sequentialNames.length > 0) {
-        sequentialNames.slice(0, 18).forEach((name, idx) => {
-          state.riders[idx + 1] = name;
-          matchedCount++;
-        });
-      }
+      const processedDataUrl = await preprocessImageForOcr(file);
+      const result = await Tesseract.recognize(processedDataUrl, 'eng+ita');
+      const count = parseRidersFromText(result.data.text || "");
 
       saveState();
       renderRidersInputs();
-      statusEl.textContent = matchedCount > 0
-        ? '✅ Letti automaticamente ' + matchedCount + ' piloti dalla foto! Verifica i nomi qui sotto.'
-        : '⚠️ Nessun nome nitido rilevato. Riprova con una foto più ravvicinata.';
+      renderCurrentHeat();
+
+      statusEl.textContent = count > 0
+        ? '✅ Estratti ' + count + ' piloti dalla foto! Verifica ed eventualmente correggi i nomi qui sotto.'
+        : '⚠️ Non sono stati trovati nomi leggibili. Ritaglia la foto solo sulla colonna dei nomi oppure usa "Incolla elenco da testo".';
     } catch (err) {
-      statusEl.textContent = '⚠️ Impossibile eseguire la scansione (verifica la connessione per il motore OCR).';
+      statusEl.textContent = '⚠️ Errore durante la lettura OCR. Verifica la connessione internet o usa "Incolla elenco da testo".';
+    }
+    input.value = "";
+  }
+
+  function togglePasteBox() {
+    const box = document.getElementById('paste-box-wrap');
+    box.style.display = box.style.display === 'block' ? 'none' : 'block';
+  }
+
+  function applyPastedRiders() {
+    const raw = document.getElementById('paste-riders-area').value;
+    const count = parseRidersFromText(raw);
+    const statusEl = document.getElementById('ocr-status');
+    statusEl.style.display = 'block';
+
+    if (count > 0) {
+      saveState();
+      renderRidersInputs();
+      renderCurrentHeat();
+      document.getElementById('paste-box-wrap').style.display = 'none';
+      statusEl.textContent = '✅ Caricati ' + count + ' piloti dall\'elenco incollato!';
+    } else {
+      statusEl.textContent = '⚠️ Inserisci almeno un nome valido per riga.';
     }
   }
 
@@ -1233,9 +1431,9 @@
 
   function getPodiumSummary(raceState) {
     const finalSlots = raceState.heats[22] ? raceState.heats[22].slots : [];
-    const winner = finalSlots.find(s => s.score === 3);
-    const second = finalSlots.find(s => s.score === 2);
-    const third = finalSlots.find(s => s.score === 1);
+    const winner = finalSlots.find(s => s.score === 3 && s.riderId);
+    const second = finalSlots.find(s => s.score === 2 && s.riderId);
+    const third = finalSlots.find(s => s.score === 1 && s.riderId);
     if (winner) {
       return "🥇 " + raceState.riders[winner.riderId] +
         (second ? " • 🥈 " + raceState.riders[second.riderId] : "") +
@@ -1265,7 +1463,7 @@
     const archive = getArchive();
     const found = archive.find(x => x.id === id);
     if (!found) return;
-    state = JSON.parse(JSON.stringify(found));
+    state = normalizeLoadedState(JSON.parse(JSON.stringify(found)));
     populateEventForm();
     saveState();
     renderCurrentHeat();
@@ -1279,21 +1477,12 @@
     renderHistory();
   }
 
-  function startNewRace() {
-    if (!confirm("Vuoi iniziare una nuova gara? (Ricordati di salvare quella attuale nello Storico se vuoi conservarla)")) return;
-    state = createDefaultState();
-    populateEventForm();
-    saveState();
-    renderCurrentHeat();
-    switchTab('event', document.getElementById('nav-event'));
-  }
-
   /* ESPORTAZIONE E IMPORTAZIONE BACKUP (.JSON) */
   function exportBackupJson() {
     const archive = getArchive();
     const backupPayload = {
       app: "Speedway SGP Live",
-      version: 2,
+      version: 3,
       exportedAt: new Date().toISOString(),
       currentRace: state,
       archive: archive
@@ -1362,7 +1551,7 @@
             "Vuoi anche caricare la gara attiva presente nel backup?"
           );
           if (loadActive) {
-            state = Object.assign(createDefaultState(), importedCurrent);
+            state = normalizeLoadedState(importedCurrent);
             populateEventForm();
             saveState();
             renderCurrentHeat();
@@ -1407,8 +1596,13 @@
   }
 
   function resetAllScores() {
-    if (confirm("Vuoi azzerare tutti i punteggi delle batterie di questa gara?")) {
-      state.heats.forEach(h => h.slots.forEach(s => s.score = null));
+    if (confirm("Vuoi azzerare tutti i punteggi delle batterie di questa gara mantenendo i nomi dei piloti?")) {
+      state.heats.forEach((h, idx) => {
+        h.slots.forEach(s => {
+          s.score = null;
+          if (idx >= 20) s.riderId = null;
+        });
+      });
       state.currentHeat = 0;
       saveState();
       renderCurrentHeat();
