@@ -346,7 +346,7 @@
 
     <div id="riders-inputs"></div>
     <button type="button" class="btn-outline-danger" onclick="resetRidersNames()">🗑️ Ripristina Nomi Piloti (Pilota 1..18)</button>
-    <button type="button" class="btn-reset" onclick="resetAllScores()">🔄 Azzera Solo i Punteggi Batteria</button>
+    <button type="button" class="btn-reset" onclick="resetAllScores()">🔄 Azzera Punteggi e Piazzamenti Batteria</button>
   </div>
 
   <!-- TAB 6: STORICO GARE & BACKUP JSON -->
@@ -415,6 +415,15 @@
   const ARCHIVE_KEY = 'speedway_fim_archive_v2';
 
   let state = createDefaultState();
+
+  // Converte il valore interno (3, 2, 1, 0) in piazzamento (1°, 2°, 3°, 4°) per Batterie 21, 22 e 23
+  function formatPlacement(score) {
+    if (score === 3) return '1°';
+    if (score === 2) return '2°';
+    if (score === 1) return '3°';
+    if (score === 0) return '4°';
+    return score !== null && score !== undefined ? String(score) : '-';
+  }
 
   /* QR CODE CONDIVISIONE APP */
   function openQrModal() {
@@ -503,13 +512,11 @@
     const merged = Object.assign(def, saved);
     merged.eventMeta = Object.assign(def.eventMeta, saved.eventMeta || {});
 
-    // Forza la correzione delle etichette 21-23 e della Batteria 12 anche su salvataggi precedenti
     if (merged.heats && merged.heats.length >= 23) {
       merged.heats[20].label = "Batteria 21 (LCQ 1)";
       merged.heats[21].label = "Batteria 22 (LCQ 2)";
       merged.heats[22].label = "Batteria 23 (FINALE)";
 
-      // Corregge Batteria 12 se era rimasta col vecchio schema [7, 4, 13, 10]
       const h12 = merged.heats[11];
       if (h12 && h12.slots && h12.slots.map(s => s.riderId).join(',') === '7,4,13,10') {
         const oldScores = {};
@@ -697,18 +704,20 @@
       });
     });
 
+    // Batterie 21 e 22 (LCQ 1 e LCQ 2): mostra piazzamento 1°, 2°, 3°, 4° (o R, F, X, T)
     [20, 21].forEach(idx => {
       state.heats[idx].slots.forEach(s => {
         if (!s.riderId) return;
         const st = stats.find(x => x.id === s.riderId);
-        if (st && s.score !== null) st.sfScore = s.score;
+        if (st && s.score !== null) st.sfScore = formatPlacement(s.score);
       });
     });
 
+    // Batteria 23 (Finale): mostra piazzamento 1°, 2°, 3°, 4° (o R, F, X, T)
     state.heats[22].slots.forEach(s => {
       if (!s.riderId) return;
       const st = stats.find(x => x.id === s.riderId);
-      if (st && s.score !== null) st.finScore = s.score;
+      if (st && s.score !== null) st.finScore = formatPlacement(s.score);
     });
 
     return stats;
@@ -724,10 +733,8 @@
   function getEligibleRidersForSpecialHeat(heatIdx) {
     const ranked = getSortedQualifyingStandings();
     const rankMap = {};
-    const ptsMap = {};
     ranked.forEach((st, i) => {
       rankMap[st.id] = i + 1;
-      ptsMap[st.id] = st.total;
     });
 
     // Batteria 21 (LCQ 1): 3°, 6°, 8° e 9° classificato (indici 2, 5, 7, 8)
@@ -752,7 +759,7 @@
         }));
     }
 
-    // Batteria 23 (FINALE): 1° e 2° delle prime 20 batterie + Vincitori (3 pt) di LCQ 1 e LCQ 2
+    // Batteria 23 (FINALE): 1° e 2° delle prime 20 batterie + 1° classificato di LCQ 1 e LCQ 2
     if (heatIdx === 22) {
       const list = [];
       if (ranked[0]) {
@@ -827,13 +834,13 @@
 
       if (state.currentHeat === 20) {
         titleText = "🔥 Last Chance Qualifier 1 (3°, 6°, 8°, 9°)";
-        ruleSub = "Seleziona dal menu a tendina di ciascuna corsia il pilota in base alla scelta effettuata (priorità: 3° → 6° → 8° → 9°). Il vincitore (3 pt) va in Finale.";
+        ruleSub = "Seleziona dal menu a tendina di ciascuna corsia il pilota in base alla scelta effettuata (priorità: 3° → 6° → 8° → 9°). Il 1° classificato accede alla Finale.";
       } else if (state.currentHeat === 21) {
         titleText = "🔥 Last Chance Qualifier 2 (4°, 5°, 7°, 10°)";
-        ruleSub = "Seleziona dal menu a tendina di ciascuna corsia il pilota in base alla scelta effettuata (priorità: 4° → 5° → 7° → 10°). Il vincitore (3 pt) va in Finale.";
+        ruleSub = "Seleziona dal menu a tendina di ciascuna corsia il pilota in base alla scelta effettuata (priorità: 4° → 5° → 7° → 10°). Il 1° classificato accede alla Finale.";
       } else {
         titleText = "🏆 FINALE (1° e 2° Classifica + Vincitori LCQ 1 & 2)";
-        ruleSub = "Seleziona dal menu a tendina di ciascuna corsia i 4 finalisti qualificati.";
+        ruleSub = "Seleziona dal menu a tendina di ciascuna corsia i 4 finalisti e indica l'ordine d'arrivo (1°, 2°, 3°, 4°).";
       }
 
       const pillsHtml = eligibleList.length > 0
@@ -854,6 +861,21 @@
       autoBox.innerHTML = '';
     }
 
+    // Nelle batterie 1..20 mostra i punti (3 pt, 2 pt, 1 pt, 0 pt); nelle batterie 21..23 mostra i piazzamenti (1°, 2°, 3°, 4°)
+    const mainButtons = isSpecialHeat
+      ? [
+          { val: 3, label: '1°' },
+          { val: 2, label: '2°' },
+          { val: 1, label: '3°' },
+          { val: 0, label: '4°' }
+        ]
+      : [
+          { val: 3, label: '3 pt' },
+          { val: 2, label: '2 pt' },
+          { val: 1, label: '1 pt' },
+          { val: 0, label: '0 pt' }
+        ];
+
     const container = document.getElementById('gates-container');
     container.innerHTML = heat.slots.map((slot, gIdx) => {
       const g = GATE_INFO[gIdx];
@@ -865,7 +887,6 @@
         eligibleList.forEach(item => {
           opts += '<option value="' + item.id + '" ' + (slot.riderId === item.id ? 'selected' : '') + '>#' + item.id + ' ' + item.name + ' — ' + item.badge + '</option>';
         });
-        // Se era già stato selezionato un pilota non più in lista, lo mostra comunque per poterlo cambiare
         if (slot.riderId && !eligibleList.some(x => x.id === slot.riderId)) {
           opts += '<option value="' + slot.riderId + '" selected>#' + slot.riderId + ' ' + state.riders[slot.riderId] + '</option>';
         }
@@ -887,8 +908,8 @@
         '</div>' +
         '<div class="rider-name ' + (!hasRider ? 'unassigned' : '') + '">' + riderLabel + '</div>' +
         '<div class="score-btns">' +
-          [3, 2, 1, 0].map(pt =>
-            '<button type="button" ' + (!hasRider ? 'disabled' : '') + ' class="score-btn ' + (sc === pt ? 'selected-' + pt : '') + '" onclick="setScore(' + gIdx + ', ' + pt + ')">' + pt + ' pt</button>'
+          mainButtons.map(btn =>
+            '<button type="button" ' + (!hasRider ? 'disabled' : '') + ' class="score-btn ' + (sc === btn.val ? 'selected-' + btn.val : '') + '" onclick="setScore(' + gIdx + ', ' + btn.val + ')">' + btn.label + '</button>'
           ).join('') +
         '</div>' +
         '<div class="special-btns">' +
@@ -907,7 +928,8 @@
     if (heat.slots[gateIdx].score === val) {
       heat.slots[gateIdx].score = null;
     } else {
-      if (typeof val === 'number' && val > 0) {
+      // Evita doppi piazzamenti (incluso il 4° posto nelle batterie 21, 22 e 23)
+      if (typeof val === 'number' && (val > 0 || state.currentHeat >= 20)) {
         heat.slots.forEach(s => { if (s.score === val) s.score = null; });
       }
       heat.slots[gateIdx].score = val;
@@ -929,7 +951,6 @@
 
     const parsedId = parseInt(newRiderVal, 10);
 
-    // Evita duplicati nella stessa batteria: se il pilota era già su un'altra corsia, scambia le due corsie
     const existingIdx = heat.slots.findIndex((s, idx) => idx !== gateIdx && s.riderId === parsedId);
     if (existingIdx !== -1) {
       const prevRider = heat.slots[gateIdx].riderId;
@@ -1089,7 +1110,7 @@
 
       ctx.fillStyle = '#fdd835';
       ctx.font = '900 22px sans-serif';
-      ctx.fillText('🏆 PODIO FINALE (BATTERIA 23)', 50, y + 36);
+      ctx.fillText('🏆 ORDINE D\'ARRIVO FINALE (BATTERIA 23)', 50, y + 36);
 
       const p1 = finalSlots.find(s => s.score === 3 && s.riderId);
       const p2 = finalSlots.find(s => s.score === 2 && s.riderId);
@@ -1287,7 +1308,6 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-          // Aumenta contrasto in scala di grigi per facilitare Tesseract
           const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const d = imgData.data;
           const contrast = 1.45;
@@ -1319,16 +1339,13 @@
     const sequentialList = [];
 
     lines.forEach(line => {
-      // Rimuove codici nazionalità tra parentesi es. (POL), (GBR), [AUS]
       let cleanLine = line
         .replace(/[\(\[\{][A-Za-z]{2,4}[\)\]\}]/g, ' ')
         .replace(/\b(POL|GBR|AUS|DEN|SWE|SVK|CZE|LAT|USA|GER|ITA|FRA|SLO|NOR|FIN|UKR)\b/g, ' ');
 
-      // Cerca un numero d'ordine iniziale da 1 a 18 (es. "1. (#95) Bartosz Zmarzlik" o "1 - Bartosz Zmarzlik")
       const leadMatch = cleanLine.match(/^\s*#?(1[0-8]|[1-9])(?:[\.\)\-\:\s]+)(.+)$/);
 
       let candidate = leadMatch ? leadMatch[2] : cleanLine;
-      // Rimuove eventuali numeri di casacca tipo #95 o 95 all'inizio o fine del nome
       candidate = candidate
         .replace(/#[0-9]{1,3}/g, ' ')
         .replace(/\b[0-9]{1,3}\b/g, ' ')
@@ -1434,10 +1451,12 @@
     const winner = finalSlots.find(s => s.score === 3 && s.riderId);
     const second = finalSlots.find(s => s.score === 2 && s.riderId);
     const third = finalSlots.find(s => s.score === 1 && s.riderId);
+    const fourth = finalSlots.find(s => s.score === 0 && s.riderId);
     if (winner) {
-      return "🥇 " + raceState.riders[winner.riderId] +
-        (second ? " • 🥈 " + raceState.riders[second.riderId] : "") +
-        (third ? " • 🥉 " + raceState.riders[third.riderId] : "");
+      return "🥇 1° " + raceState.riders[winner.riderId] +
+        (second ? " • 🥈 2° " + raceState.riders[second.riderId] : "") +
+        (third ? " • 🥉 3° " + raceState.riders[third.riderId] : "") +
+        (fourth ? " • 4° " + raceState.riders[fourth.riderId] : "");
     }
     return "Gara in corso / Finale non disputata";
   }
@@ -1596,7 +1615,7 @@
   }
 
   function resetAllScores() {
-    if (confirm("Vuoi azzerare tutti i punteggi delle batterie di questa gara mantenendo i nomi dei piloti?")) {
+    if (confirm("Vuoi azzerare tutti i punteggi e i piazzamenti delle batterie mantenendo i nomi dei piloti?")) {
       state.heats.forEach((h, idx) => {
         h.slots.forEach(s => {
           s.score = null;
