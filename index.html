@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-title" content="Speedway Live">
   <link rel="icon" type="image/png" href="icon.png">
   <link rel="apple-touch-icon" href="icon.png">
-  <title>Speedway SGP Live</title>
+  <title>Speedway SGP Live v3.2</title>
 
   <!-- Libreria OCR Tesseract.js per lettura foto elenco piloti -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -134,6 +134,7 @@
     .sgp-col { font-weight: 900; color: var(--yellow); font-size: 0.88rem; background: rgba(253, 216, 53, 0.12); }
     .sf-col { background: rgba(41, 182, 246, 0.08); font-weight: 700; }
     .fin-col { background: rgba(253, 216, 53, 0.12); font-weight: 800; color: var(--yellow); }
+    .btn-tie-swap { background: #2e3440; border: 1px solid var(--accent); color: var(--accent); border-radius: 4px; padding: 1px 5px; font-size: 0.68rem; font-weight: 900; cursor: pointer; margin-left: 4px; vertical-align: middle; }
 
     /* Form Scheda Evento & Pista */
     .card-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
@@ -181,7 +182,7 @@
 <header>
   <div class="header-title-box">
     <h1 id="header-event-title">🏁 SPEEDWAY LIVE</h1>
-    <div class="header-sub" id="header-event-sub">Imposta i dati evento</div>
+    <div class="header-sub" id="header-event-sub">v3.2 • Imposta i dati evento</div>
   </div>
   <div class="header-right">
     <button type="button" class="btn-top danger" onclick="fullResetApp()" title="Svuota tutti i dati inseriti">🗑️ Reset</button>
@@ -296,8 +297,8 @@
       <button type="button" id="btn-mode-qual" onclick="setStandingsMode('qual')">⏱️ Classifica 20 Batterie</button>
     </div>
     <div class="legend-bar">
-      <span><i class="legend-dot" style="background:var(--yellow)"></i>1°-2° (20 B.): Finale Diretta</span>
-      <span><i class="legend-dot" style="background:var(--accent)"></i>3°-10° (20 B.): LCQ 1 & 2</span>
+      <span><i class="legend-dot" style="background:var(--yellow)"></i>1°-2°: Finale Diretta</span>
+      <span><i class="legend-dot" style="background:var(--accent)"></i>3°-10°: LCQ 1 & 2</span>
       <span><strong>TOT</strong> = Pt 20 Batterie • <strong>SGP</strong> = Pt Mondiale GP</span>
     </div>
     <div class="table-wrap">
@@ -440,7 +441,6 @@
   let state = createDefaultState();
   let standingsMode = 'final'; // 'final' oppure 'qual'
 
-  // Converte il valore interno (3, 2, 1, 0) in piazzamento (1°, 2°, 3°, 4°) per Batterie 21, 22 e 23
   function formatPlacement(score) {
     if (score === 3) return '1°';
     if (score === 2) return '2°';
@@ -519,7 +519,8 @@
       },
       currentHeat: 0,
       riders: riders,
-      heats: heats
+      heats: heats,
+      tieOrder: [] // Permette eventuale scambio manuale tra piloti in parità
     };
   }
 
@@ -535,6 +536,7 @@
     const def = createDefaultState();
     const merged = Object.assign(def, saved);
     merged.eventMeta = Object.assign(def.eventMeta, saved.eventMeta || {});
+    if (!Array.isArray(merged.tieOrder)) merged.tieOrder = [];
 
     if (merged.heats && merged.heats.length >= 23) {
       merged.heats[20].label = "Batteria 21 (LCQ 1)";
@@ -564,6 +566,7 @@
     const saved = safeLoad();
     if (saved && saved.heats && saved.heats.length >= 23) {
       state = normalizeLoadedState(saved);
+      syncSpecialHeatsWithQualifiers();
       saveState();
     } else {
       state = createDefaultState();
@@ -643,8 +646,8 @@
   function updateHeaderAndHero() {
     const m = state.eventMeta;
     document.getElementById('header-event-title').textContent = "🏁 " + (m.name || "SPEEDWAY LIVE");
-    const locParts = [m.track, m.city, m.country, m.date].filter(Boolean);
-    document.getElementById('header-event-sub').textContent = locParts.length ? locParts.join(" • ") : "Tocca Evento per inserire pista e foto";
+    const locParts = ["v3.2", m.track, m.city, m.country, m.date].filter(Boolean);
+    document.getElementById('header-event-sub').textContent = locParts.join(" • ");
 
     const hero = document.getElementById('track-hero');
     if (m.photoDataUrl) {
@@ -723,18 +726,24 @@
         const st = stats.find(x => x.id === s.riderId);
         if (!st) return;
         if (s.score !== null) {
-          st.runs.push(s.score);
-          if (typeof s.score === 'number') {
-            st.total += s.score;
-            if (s.score === 3) st.ones++;
-            else if (s.score === 2) st.twos++;
-            else if (s.score === 1) st.threes++;
+          const numScore = (s.score === 0 || s.score === 1 || s.score === 2 || s.score === 3)
+            ? s.score
+            : (String(s.score).trim() === '0' ? 0 : (String(s.score).trim() === '1' ? 1 : (String(s.score).trim() === '2' ? 2 : (String(s.score).trim() === '3' ? 3 : null))));
+
+          if (numScore !== null) {
+            st.runs.push(numScore);
+            st.total += numScore;
+            if (numScore === 3) st.ones++;
+            else if (numScore === 2) st.twos++;
+            else if (numScore === 1) st.threes++;
             else {
               st.finishedZeros++;
               st.zeros++;
             }
           } else {
-            st.nonFinished.push(s.score);
+            const code = String(s.score).toUpperCase();
+            st.runs.push(code);
+            st.nonFinished.push(code);
             st.zeros++;
           }
         } else {
@@ -784,25 +793,94 @@
     return diffSum;
   }
 
-  // Classifica strettamente basata sulle prime 20 batterie con Tie-Break ufficiale FIM
+  // Classifica delle 20 batterie con Tie-Break ufficiale FIM (0 pt al traguardo batte R/F/X/T)
   function getSortedQualifyingStandings() {
     const allStats = computeStats().filter(s => s.id <= 16 || s.runs.some(x => x !== '-'));
-    allStats.sort((a, b) =>
-      b.total - a.total ||
-      b.ones - a.ones ||
-      b.twos - a.twos ||
-      b.threes - a.threes ||
-      b.finishedZeros - a.finishedZeros ||
-      compareHeadToHead(a.id, b.id) ||
-      a.id - b.id
-    );
+    const tieOrder = Array.isArray(state.tieOrder) ? state.tieOrder : [];
+
+    allStats.sort((a, b) => {
+      if (b.total !== a.total) return b.total - a.total;
+      if (b.ones !== a.ones) return b.ones - a.ones;
+      if (b.twos !== a.twos) return b.twos - a.twos;
+      if (b.threes !== a.threes) return b.threes - a.threes;
+      if (b.finishedZeros !== a.finishedZeros) return b.finishedZeros - a.finishedZeros;
+
+      // Se l'utente ha impostato uno spareggio manuale col pulsante ⇅
+      const idxA = tieOrder.indexOf(a.id);
+      const idxB = tieOrder.indexOf(b.id);
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+
+      const h2h = compareHeadToHead(a.id, b.id);
+      if (h2h !== 0) return h2h;
+
+      return a.id - b.id;
+    });
+
     allStats.forEach((st, idx) => { st.qualRank = idx + 1; });
     return allStats;
   }
 
-  // Classifica Finale del GP (include ordine d'arrivo Finale, piazzamenti LCQ e assegna i Punti Mondiali SGP 20..1)
+  // Scambia manualmente due piloti a pari punti nelle 20 batterie
+  function swapTiedRiders(riderIdA, riderIdB) {
+    const currentQual = getSortedQualifyingStandings().map(s => s.id);
+    const idxA = currentQual.indexOf(riderIdA);
+    const idxB = currentQual.indexOf(riderIdB);
+    if (idxA === -1 || idxB === -1) return;
+    currentQual[idxA] = riderIdB;
+    currentQual[idxB] = riderIdA;
+    state.tieOrder = currentQual;
+    syncSpecialHeatsWithQualifiers();
+    saveState();
+    renderStandings();
+  }
+
+  // Sincronizza automaticamente LCQ 1, LCQ 2 e Finale se cambiano i qualificati dopo una correzione nelle 20 batterie
+  function syncSpecialHeatsWithQualifiers() {
+    const regularCompletedCount = state.heats.slice(0, 20).filter(h => h.slots.some(s => s.score !== null)).length;
+    if (regularCompletedCount < 20) return;
+
+    // Sincronizza Batteria 21 (LCQ 1: 3°, 6°, 8°, 9°) e Batteria 22 (LCQ 2: 4°, 5°, 7°, 10°)
+    [20, 21].forEach(heatIdx => {
+      const eligibleIds = getEligibleRidersForSpecialHeat(heatIdx).map(x => x.id);
+      const slots = state.heats[heatIdx].slots;
+
+      slots.forEach(slot => {
+        if (slot.riderId && !eligibleIds.includes(slot.riderId)) {
+          // Trova i qualificati di questa LCQ non ancora assegnati a una corsia
+          const currentlyUsed = slots.map(s => s.riderId).filter(id => id && eligibleIds.includes(id));
+          const missingEligible = eligibleIds.filter(id => !currentlyUsed.includes(id));
+          if (missingEligible.length === 1) {
+            // Sostituisce automaticamente il pilota sceso in classifica (es. Woryna) col nuovo qualificato (es. Doyle)
+            slot.riderId = missingEligible[0];
+          } else {
+            slot.riderId = null;
+            slot.score = null;
+          }
+        }
+      });
+    });
+
+    // Sincronizza Batteria 23 (Finale)
+    const finalEligibleIds = getEligibleRidersForSpecialHeat(22).map(x => x.id);
+    const finSlots = state.heats[22].slots;
+    finSlots.forEach(slot => {
+      if (slot.riderId && !finalEligibleIds.includes(slot.riderId)) {
+        const currentlyUsed = finSlots.map(s => s.riderId).filter(id => id && finalEligibleIds.includes(id));
+        const missingEligible = finalEligibleIds.filter(id => !currentlyUsed.includes(id));
+        if (missingEligible.length === 1) {
+          slot.riderId = missingEligible[0];
+        } else {
+          slot.riderId = null;
+          slot.score = null;
+        }
+      }
+    });
+  }
+
+  // Classifica Finale del GP (include ordine d'arrivo Finale, piazzamenti LCQ solo per i qualificati 3°-10° e assegna i Punti SGP 20..1)
   function getFinalGpStandings() {
     const qualList = getSortedQualifyingStandings();
+    const eligibleFinalIds = getEligibleRidersForSpecialHeat(22).map(x => x.id);
 
     function placementWeight(raw) {
       if (raw === 3) return 4; // 1°
@@ -818,9 +896,9 @@
                          state.heats[21].slots.some(s => s.score !== null && s.riderId);
 
     const sortedFinal = [...qualList].sort((a, b) => {
-      // 1. I finalisti con risultato in Finale occupano le posizioni 1° - 4°
-      const aInFin = finalCompleted && a.finRaw !== null;
-      const bInFin = finalCompleted && b.finRaw !== null;
+      // 1. I 4 finalisti qualificati (1°-4° posto finale)
+      const aInFin = finalCompleted && a.finRaw !== null && eligibleFinalIds.includes(a.id);
+      const bInFin = finalCompleted && b.finRaw !== null && eligibleFinalIds.includes(b.id);
       if (aInFin && bInFin) {
         const wDiff = placementWeight(b.finRaw) - placementWeight(a.finRaw);
         if (wDiff !== 0) return wDiff;
@@ -828,17 +906,17 @@
       }
       if (aInFin !== bInFin) return aInFin ? -1 : 1;
 
-      // 2. I non vincitori delle LCQ (2°, 3°, 4° posto in LCQ 1 e 2) occupano le posizioni 5° - 10°
-      const aInLcq = lcqCompleted && a.lcqRaw !== null && a.lcqRaw !== 3;
-      const bInLcq = lcqCompleted && b.lcqRaw !== null && b.lcqRaw !== 3;
-      if (aInLcq && bInLcq) {
+      // 2. I qualificati alle LCQ (solo chi è tra il 3° e il 10° posto delle 20 batterie e non ha vinto la LCQ)
+      const aValidLcq = lcqCompleted && a.qualRank >= 3 && a.qualRank <= 10 && a.lcqRaw !== null && a.lcqRaw !== 3;
+      const bValidLcq = lcqCompleted && b.qualRank >= 3 && b.qualRank <= 10 && b.lcqRaw !== null && b.lcqRaw !== 3;
+      if (aValidLcq && bValidLcq) {
         const wDiff = placementWeight(b.lcqRaw) - placementWeight(a.lcqRaw);
         if (wDiff !== 0) return wDiff;
         return a.qualRank - b.qualRank;
       }
-      if (aInLcq !== bInLcq) return aInLcq ? -1 : 1;
+      if (aValidLcq !== bValidLcq) return aValidLcq ? -1 : 1;
 
-      // 3. Dal 11° posto in giù (o se LCQ/Finale non ancora disputate) vale la classifica delle 20 batterie
+      // 3. Dal 11° al 16° posto (o a gara in corso) vale rigorosamente la classifica delle 20 batterie
       return a.qualRank - b.qualRank;
     });
 
@@ -954,6 +1032,7 @@
 
     let eligibleList = [];
     if (isSpecialHeat) {
+      syncSpecialHeatsWithQualifiers();
       eligibleList = getEligibleRidersForSpecialHeat(state.currentHeat);
       let titleText = "";
       let ruleSub = "";
@@ -1012,9 +1091,6 @@
         eligibleList.forEach(item => {
           opts += '<option value="' + item.id + '" ' + (slot.riderId === item.id ? 'selected' : '') + '>#' + item.id + ' ' + item.name + ' — ' + item.badge + '</option>';
         });
-        if (slot.riderId && !eligibleList.some(x => x.id === slot.riderId)) {
-          opts += '<option value="' + slot.riderId + '" selected>#' + slot.riderId + ' ' + state.riders[slot.riderId] + '</option>';
-        }
       } else {
         for (let r = 1; r <= 18; r++) {
           opts += '<option value="' + r + '" ' + (slot.riderId == r ? 'selected' : '') + '>#' + r + ' ' + state.riders[r] + '</option>';
@@ -1057,6 +1133,10 @@
         heat.slots.forEach(s => { if (s.score === val) s.score = null; });
       }
       heat.slots[gateIdx].score = val;
+    }
+
+    if (state.currentHeat < 20) {
+      syncSpecialHeatsWithQualifiers();
     }
 
     saveState();
@@ -1114,6 +1194,7 @@
   }
 
   function renderStandings() {
+    syncSpecialHeatsWithQualifiers();
     const finalStandings = getFinalGpStandings();
     const sgpMap = {};
     finalStandings.forEach(st => { sgpMap[st.id] = st.sgpPts; });
@@ -1123,8 +1204,22 @@
     document.querySelector('#standings-table tbody').innerHTML = list.map((st, idx) => {
       const rowCls = idx === 1 ? 'final-line' : (idx === 9 ? 'qual-line' : '');
       const sgpVal = sgpMap[st.id] ?? 0;
+
+      // Mostra il pulsante ⇅ se il pilota successivo ha lo stesso identico punteggio e gli stessi piazzamenti (3, 2, 1, 0)
+      const nextSt = list[idx + 1];
+      const canSwap = nextSt &&
+        st.total === nextSt.total &&
+        st.ones === nextSt.ones &&
+        st.twos === nextSt.twos &&
+        st.threes === nextSt.threes &&
+        st.finishedZeros === nextSt.finishedZeros;
+
+      const swapBtn = canSwap
+        ? '<button type="button" class="btn-tie-swap" title="Inverti ordine di spareggio col pilota successivo" onclick="swapTiedRiders(' + st.id + ', ' + nextSt.id + ')">⇅</button>'
+        : '';
+
       return '<tr class="' + rowCls + '">' +
-        '<td><strong>' + (idx + 1) + '</strong></td>' +
+        '<td><strong>' + (idx + 1) + '</strong>' + swapBtn + '</td>' +
         '<td class="name-col">#' + st.id + ' ' + st.name + '</td>' +
         '<td>' + st.ones + '</td>' +
         '<td>' + st.twos + '</td>' +
@@ -1138,6 +1233,7 @@
   }
 
   function renderScorecard() {
+    syncSpecialHeatsWithQualifiers();
     const finalStandings = getFinalGpStandings();
     const sgpMap = {};
     finalStandings.forEach(st => { sgpMap[st.id] = st.sgpPts; });
@@ -1170,6 +1266,7 @@
 
   /* GENERATORE LOCANDINA PNG PER WHATSAPP / SOCIAL */
   async function exportRacePoster(mode) {
+    syncSpecialHeatsWithQualifiers();
     const W = 1080;
     const finalStandings = getFinalGpStandings();
     const sgpMap = {};
@@ -1649,6 +1746,7 @@
     const found = archive.find(x => x.id === id);
     if (!found) return;
     state = normalizeLoadedState(JSON.parse(JSON.stringify(found)));
+    syncSpecialHeatsWithQualifiers();
     populateEventForm();
     saveState();
     renderCurrentHeat();
@@ -1667,7 +1765,7 @@
     const archive = getArchive();
     const backupPayload = {
       app: "Speedway SGP Live",
-      version: 3,
+      version: 3.2,
       exportedAt: new Date().toISOString(),
       currentRace: state,
       archive: archive
@@ -1737,6 +1835,7 @@
           );
           if (loadActive) {
             state = normalizeLoadedState(importedCurrent);
+            syncSpecialHeatsWithQualifiers();
             populateEventForm();
             saveState();
             renderCurrentHeat();
@@ -1788,6 +1887,7 @@
           if (idx >= 20) s.riderId = null;
         });
       });
+      state.tieOrder = [];
       state.currentHeat = 0;
       saveState();
       renderCurrentHeat();
@@ -1806,9 +1906,15 @@
     if (tabId === 'history') renderHistory();
   }
 
+  // Forza l'aggiornamento di eventuali vecchie cache del Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      regs.forEach(r => r.update());
+    });
+  }
+
   initState();
   renderCurrentHeat();
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
 </script>
 </body>
 </html>
