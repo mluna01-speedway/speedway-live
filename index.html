@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-title" content="Speedway Live">
   <link rel="icon" type="image/png" href="icon.png">
   <link rel="apple-touch-icon" href="icon.png">
-  <title>Speedway SGP Live v3.2</title>
+  <title>Speedway SGP Live v3.3</title>
 
   <!-- Libreria OCR Tesseract.js per lettura foto elenco piloti -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -107,9 +107,14 @@
     .score-btn.selected-1 { background: #ffa726; color: #000; border-color: #ffb74d; }
     .score-btn.selected-0 { background: #78909c; color: #000; border-color: #90a4ae; }
 
-    .special-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; }
-    .spec-btn { background: #181b20; border: 1px solid #2e3440; color: var(--muted); padding: 6px 0; border-radius: 6px; font-size: 0.72rem; font-weight: 700; cursor: pointer; min-width: 0; }
+    /* 5 Pulsanti Speciali (R, F, X, T, NS) con sottotitolo esplicativo */
+    .special-btns { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; width: 100%; }
+    .spec-btn { background: #181b20; border: 1px solid #2e3440; color: var(--muted); padding: 5px 2px; border-radius: 6px; font-size: 0.74rem; font-weight: 800; cursor: pointer; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.15; }
+    .spec-btn small { font-size: 0.56rem; font-weight: 600; opacity: 0.85; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
     .spec-btn.selected-spec { background: #d32f2f; color: #fff; border-color: #f44336; }
+
+    .codes-legend { background: var(--card); border: 1px solid var(--border); border-radius: 9px; padding: 7px 10px; font-size: 0.69rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 12px; justify-content: center; margin-top: 4px; }
+    .codes-legend strong { color: var(--text); }
 
     /* Barra Esportazione Social / WhatsApp e Selettore Modalità Classifica */
     .share-bar { display: flex; gap: 8px; margin-bottom: 8px; }
@@ -121,7 +126,7 @@
     .standings-mode-switch button.active { background: #2e3440; color: var(--accent); }
 
     /* Tabelle */
-    .legend-bar { display: flex; gap: 12px; font-size: 0.71rem; color: var(--muted); margin-bottom: 8px; padding: 0 4px; flex-wrap: wrap; }
+    .legend-bar { display: flex; gap: 10px; font-size: 0.7rem; color: var(--muted); margin-bottom: 8px; padding: 0 4px; flex-wrap: wrap; }
     .legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
     .table-wrap { width: 100%; overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
     table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 0.78rem; }
@@ -182,7 +187,7 @@
 <header>
   <div class="header-title-box">
     <h1 id="header-event-title">🏁 SPEEDWAY LIVE</h1>
-    <div class="header-sub" id="header-event-sub">v3.2 • Imposta i dati evento</div>
+    <div class="header-sub" id="header-event-sub">v3.3 • Imposta i dati evento</div>
   </div>
   <div class="header-right">
     <button type="button" class="btn-top danger" onclick="fullResetApp()" title="Svuota tutti i dati inseriti">🗑️ Reset</button>
@@ -283,6 +288,13 @@
     </div>
     <div id="auto-finals-box"></div>
     <div id="gates-container"></div>
+    <div class="codes-legend">
+      <span><strong>R</strong>: Retired (Ritirato)</span>
+      <span><strong>F</strong>: Fell (Caduto)</span>
+      <span><strong>X</strong>: Excluded (Escluso)</span>
+      <span><strong>T</strong>: Tapes (Nastro)</span>
+      <span><strong>NS</strong>: Not Started (Non partito)</span>
+    </div>
   </div>
 
   <!-- TAB 3: CLASSIFICA -->
@@ -310,7 +322,7 @@
             <th>1°</th>
             <th>2°</th>
             <th>3°</th>
-            <th title="4° posti al traguardo (eventuali R/F/X/T tra parentesi)">4°(R/X)</th>
+            <th title="4° posti al traguardo (eventuali R/F/X/T/NS tra parentesi)">4°(R/X)</th>
             <th>Serie</th>
             <th>TOT</th>
             <th>SGP</th>
@@ -318,6 +330,13 @@
         </thead>
         <tbody></tbody>
       </table>
+    </div>
+    <div class="codes-legend" style="margin-top:8px;">
+      <span><strong>R</strong>: Retired</span>
+      <span><strong>F</strong>: Fell</span>
+      <span><strong>X</strong>: Excluded</span>
+      <span><strong>T</strong>: Tapes</span>
+      <span><strong>NS</strong>: Not Started</span>
     </div>
   </div>
 
@@ -335,6 +354,13 @@
         </thead>
         <tbody></tbody>
       </table>
+    </div>
+    <div class="codes-legend" style="margin-top:8px;">
+      <span><strong>R</strong>: Retired</span>
+      <span><strong>F</strong>: Fell</span>
+      <span><strong>X</strong>: Excluded</span>
+      <span><strong>T</strong>: Tapes</span>
+      <span><strong>NS</strong>: Not Started</span>
     </div>
   </div>
 
@@ -423,6 +449,15 @@
     [9, 2, 7, 16],    // Batteria 18
     [3, 12, 13, 6],   // Batteria 19
     [5, 14, 11, 4]    // Batteria 20
+  ];
+
+  // Sigle ufficiali di non-classificato / esclusione FIM
+  const SPECIAL_CODES = [
+    { code: 'R',  short: 'Retired',   full: 'Retired (Ritirato)' },
+    { code: 'F',  short: 'Fell',      full: 'Fell (Caduto)' },
+    { code: 'X',  short: 'Excluded',  full: 'Excluded (Escluso)' },
+    { code: 'T',  short: 'Tapes',     full: 'Tapes (Tocco nastro)' },
+    { code: 'NS', short: 'Not Start', full: 'Not Started (Non partito)' }
   ];
 
   // Tabella ufficiale Punti Campionato del Mondo FIM SGP (dal 1° al 16° classificato finale)
@@ -520,7 +555,7 @@
       currentHeat: 0,
       riders: riders,
       heats: heats,
-      tieOrder: [] // Permette eventuale scambio manuale tra piloti in parità
+      tieOrder: []
     };
   }
 
@@ -646,7 +681,7 @@
   function updateHeaderAndHero() {
     const m = state.eventMeta;
     document.getElementById('header-event-title').textContent = "🏁 " + (m.name || "SPEEDWAY LIVE");
-    const locParts = ["v3.2", m.track, m.city, m.country, m.date].filter(Boolean);
+    const locParts = ["v3.3", m.track, m.city, m.country, m.date].filter(Boolean);
     document.getElementById('header-event-sub').textContent = locParts.join(" • ");
 
     const hero = document.getElementById('track-hero');
@@ -707,9 +742,9 @@
         ones: 0,           // 1° posti (3 pt)
         twos: 0,           // 2° posti (2 pt)
         threes: 0,         // 3° posti (1 pt)
-        finishedZeros: 0,  // 4° posti tagliando il traguardo (0 pt effettivi, battono R/F/X/T)
-        nonFinished: [],   // Codici R, F, X, T subiti nelle 20 batterie
-        zeros: 0,          // Totale 0 + R/F/X/T
+        finishedZeros: 0,  // 4° posti tagliando il traguardo (0 pt effettivi, battono R/F/X/T/NS)
+        nonFinished: [],   // Codici R, F, X, T, NS subiti nelle 20 batterie
+        zeros: 0,          // Totale 0 + R/F/X/T/NS
         lcqRaw: null,
         finRaw: null,
         sfScore: '-',
@@ -793,7 +828,7 @@
     return diffSum;
   }
 
-  // Classifica delle 20 batterie con Tie-Break ufficiale FIM (0 pt al traguardo batte R/F/X/T)
+  // Classifica delle 20 batterie con Tie-Break ufficiale FIM (0 pt al traguardo batte R/F/X/T/NS)
   function getSortedQualifyingStandings() {
     const allStats = computeStats().filter(s => s.id <= 16 || s.runs.some(x => x !== '-'));
     const tieOrder = Array.isArray(state.tieOrder) ? state.tieOrder : [];
@@ -805,7 +840,6 @@
       if (b.threes !== a.threes) return b.threes - a.threes;
       if (b.finishedZeros !== a.finishedZeros) return b.finishedZeros - a.finishedZeros;
 
-      // Se l'utente ha impostato uno spareggio manuale col pulsante ⇅
       const idxA = tieOrder.indexOf(a.id);
       const idxB = tieOrder.indexOf(b.id);
       if (idxA !== -1 && idxB !== -1) return idxA - idxB;
@@ -820,7 +854,6 @@
     return allStats;
   }
 
-  // Scambia manualmente due piloti a pari punti nelle 20 batterie
   function swapTiedRiders(riderIdA, riderIdB) {
     const currentQual = getSortedQualifyingStandings().map(s => s.id);
     const idxA = currentQual.indexOf(riderIdA);
@@ -839,18 +872,15 @@
     const regularCompletedCount = state.heats.slice(0, 20).filter(h => h.slots.some(s => s.score !== null)).length;
     if (regularCompletedCount < 20) return;
 
-    // Sincronizza Batteria 21 (LCQ 1: 3°, 6°, 8°, 9°) e Batteria 22 (LCQ 2: 4°, 5°, 7°, 10°)
     [20, 21].forEach(heatIdx => {
       const eligibleIds = getEligibleRidersForSpecialHeat(heatIdx).map(x => x.id);
       const slots = state.heats[heatIdx].slots;
 
       slots.forEach(slot => {
         if (slot.riderId && !eligibleIds.includes(slot.riderId)) {
-          // Trova i qualificati di questa LCQ non ancora assegnati a una corsia
           const currentlyUsed = slots.map(s => s.riderId).filter(id => id && eligibleIds.includes(id));
           const missingEligible = eligibleIds.filter(id => !currentlyUsed.includes(id));
           if (missingEligible.length === 1) {
-            // Sostituisce automaticamente il pilota sceso in classifica (es. Woryna) col nuovo qualificato (es. Doyle)
             slot.riderId = missingEligible[0];
           } else {
             slot.riderId = null;
@@ -860,7 +890,6 @@
       });
     });
 
-    // Sincronizza Batteria 23 (Finale)
     const finalEligibleIds = getEligibleRidersForSpecialHeat(22).map(x => x.id);
     const finSlots = state.heats[22].slots;
     finSlots.forEach(slot => {
@@ -877,7 +906,7 @@
     });
   }
 
-  // Classifica Finale del GP (include ordine d'arrivo Finale, piazzamenti LCQ solo per i qualificati 3°-10° e assegna i Punti SGP 20..1)
+  // Classifica Finale del GP (include ordine d'arrivo Finale, piazzamenti LCQ e assegna i Punti SGP 20..1)
   function getFinalGpStandings() {
     const qualList = getSortedQualifyingStandings();
     const eligibleFinalIds = getEligibleRidersForSpecialHeat(22).map(x => x.id);
@@ -887,7 +916,7 @@
       if (raw === 2) return 3; // 2°
       if (raw === 1) return 2; // 3°
       if (raw === 0) return 1; // 4° al traguardo
-      if (typeof raw === 'string') return 0; // R, F, X, T
+      if (typeof raw === 'string') return 0; // R, F, X, T, NS
       return -1;
     }
 
@@ -896,7 +925,6 @@
                          state.heats[21].slots.some(s => s.score !== null && s.riderId);
 
     const sortedFinal = [...qualList].sort((a, b) => {
-      // 1. I 4 finalisti qualificati (1°-4° posto finale)
       const aInFin = finalCompleted && a.finRaw !== null && eligibleFinalIds.includes(a.id);
       const bInFin = finalCompleted && b.finRaw !== null && eligibleFinalIds.includes(b.id);
       if (aInFin && bInFin) {
@@ -906,7 +934,6 @@
       }
       if (aInFin !== bInFin) return aInFin ? -1 : 1;
 
-      // 2. I qualificati alle LCQ (solo chi è tra il 3° e il 10° posto delle 20 batterie e non ha vinto la LCQ)
       const aValidLcq = lcqCompleted && a.qualRank >= 3 && a.qualRank <= 10 && a.lcqRaw !== null && a.lcqRaw !== 3;
       const bValidLcq = lcqCompleted && b.qualRank >= 3 && b.qualRank <= 10 && b.lcqRaw !== null && b.lcqRaw !== 3;
       if (aValidLcq && bValidLcq) {
@@ -916,7 +943,6 @@
       }
       if (aValidLcq !== bValidLcq) return aValidLcq ? -1 : 1;
 
-      // 3. Dal 11° al 16° posto (o a gara in corso) vale rigorosamente la classifica delle 20 batterie
       return a.qualRank - b.qualRank;
     });
 
@@ -1114,8 +1140,10 @@
           ).join('') +
         '</div>' +
         '<div class="special-btns">' +
-          ['R', 'F', 'X', 'T'].map(code =>
-            '<button type="button" ' + (!hasRider ? 'disabled' : '') + ' class="spec-btn ' + (sc === code ? 'selected-spec' : '') + '" onclick="setScore(' + gIdx + ', \'' + code + '\')">' + code + '</button>'
+          SPECIAL_CODES.map(item =>
+            '<button type="button" ' + (!hasRider ? 'disabled' : '') + ' title="' + item.full + '" class="spec-btn ' + (sc === item.code ? 'selected-spec' : '') + '" onclick="setScore(' + gIdx + ', \'' + item.code + '\')">' +
+              '<span>' + item.code + '</span><small>' + item.short + '</small>' +
+            '</button>'
           ).join('') +
         '</div>' +
       '</div>';
@@ -1205,7 +1233,6 @@
       const rowCls = idx === 1 ? 'final-line' : (idx === 9 ? 'qual-line' : '');
       const sgpVal = sgpMap[st.id] ?? 0;
 
-      // Mostra il pulsante ⇅ se il pilota successivo ha lo stesso identico punteggio e gli stessi piazzamenti (3, 2, 1, 0)
       const nextSt = list[idx + 1];
       const canSwap = nextSt &&
         st.total === nextSt.total &&
@@ -1284,7 +1311,7 @@
     const podiumH = hasFinalPodium ? 135 : 0;
     const tableHeaderH = 62;
     const rowH = 54;
-    const footerH = 70;
+    const footerH = 95;
     const H = headerH + podiumH + tableHeaderH + (rows.length * rowH) + footerH + 40;
 
     const canvas = document.createElement('canvas');
@@ -1522,9 +1549,13 @@
     });
 
     ctx.textAlign = 'center';
+    ctx.fillStyle = '#eceff4';
+    ctx.font = '700 18px sans-serif';
+    ctx.fillText('Legenda sigle: R = Retired (Ritirato) • F = Fell (Caduto) • X = Excluded (Escluso) • T = Tapes (Nastro) • NS = Not Started (Non partito)', W / 2, H - 56);
+
     ctx.fillStyle = '#8892b0';
     ctx.font = '700 20px sans-serif';
-    ctx.fillText('Generato con Speedway SGP Live App', W / 2, H - 25);
+    ctx.fillText('Generato con Speedway SGP Live App', W / 2, H - 22);
 
     canvas.toBlob(async function(blob) {
       if (!blob) return;
@@ -1765,7 +1796,7 @@
     const archive = getArchive();
     const backupPayload = {
       app: "Speedway SGP Live",
-      version: 3.2,
+      version: 3.3,
       exportedAt: new Date().toISOString(),
       currentRace: state,
       archive: archive
@@ -1906,7 +1937,6 @@
     if (tabId === 'history') renderHistory();
   }
 
-  // Forza l'aggiornamento di eventuali vecchie cache del Service Worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(regs => {
       regs.forEach(r => r.update());
