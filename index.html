@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-title" content="Speedway Live">
   <link rel="icon" type="image/png" href="icon.png?v=2">
   <link rel="apple-touch-icon" href="icon.png?v=2">
-  <title>Speedway Live v4.3</title>
+  <title>Speedway Live v4.4</title>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
     :root {
@@ -94,14 +94,15 @@
     .heat-time-unit { font-size: 0.74rem; color: var(--muted); font-weight: 800; }
     .best-time-badge { font-size: 0.66rem; background: rgba(0, 230, 118, 0.12); color: var(--accent); border: 1px solid rgba(0, 230, 118, 0.35); padding: 3px 6px; border-radius: 6px; font-weight: 800; white-space: nowrap; }
 
-    /* Barra Scambio Corsie Compagni di Squadra */
+    /* Barra Scambio Corsie Compagni di Squadra (modificata per due righe) */
     .swap-lanes-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 9px; }
-    .btn-swap-lane { background: #1c2028; border: 1px solid #3b4252; color: var(--text); padding: 8px 6px; border-radius: 9px; font-size: 0.72rem; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center; }
+    .btn-swap-lane { background: #1c2028; border: 1px solid #3b4252; color: var(--text); padding: 8px 6px; border-radius: 9px; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
     .btn-swap-lane:active { transform: scale(0.98); border-color: var(--accent); }
     .btn-swap-lane.team-a { border-left: 4px solid var(--red); border-right: 4px solid var(--blue); }
     .btn-swap-lane.team-b { border-left: 4px solid var(--white); border-right: 4px solid var(--yellow); }
-    .btn-swap-lane span { display: block; line-height: 1.2; }
-    .btn-swap-lane small { font-size: 0.63rem; color: var(--accent); margin-top: 2px; }
+    .btn-swap-lane span:first-child { font-size: 0.68rem; color: var(--muted); font-weight: 700; margin-bottom: 2px; }
+    .btn-swap-lane span:nth-child(2) { font-size: 0.86rem; font-weight: 900; color: #fff; margin-bottom: 3px; }
+    .btn-swap-lane small { font-size: 0.62rem; color: var(--accent); }
 
     .qual-info-card { background: #181c24; border: 1px solid var(--accent); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; width: 100%; }
     .qual-info-header { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 5px; }
@@ -127,7 +128,10 @@
     .badge-yellow { background: var(--yellow); color: #111; }
 
     .sub-select { flex: 1; max-width: 58%; min-width: 0; background: #2e3440; color: var(--text); border: 1px solid #3b4252; border-radius: 6px; padding: 5px 6px; font-size: 0.75rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .helmet-select { background: #121418; color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 3px; font-size: 0.65rem; font-weight: bold; width: 28px; text-align: center; }
+    
+    /* Menu Colore Casco Modificato */
+    .helmet-select { background: #121418; color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 3px 2px; font-size: 0.65rem; font-weight: bold; width: auto; max-width: 65px; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+    
     .rider-name { font-size: 0.98rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; justify-content: space-between; align-items: center; }
     .rider-name.unassigned { color: var(--muted); font-style: italic; font-size: 0.88rem; }
     .rider-team-tag { font-size: 0.68rem; color: var(--muted); font-weight: 700; }
@@ -140,10 +144,12 @@
     .score-btn.selected-1 { background: #ffa726; color: #000; border-color: #ffb74d; }
     .score-btn.selected-0 { background: #78909c; color: #000; border-color: #90a4ae; }
 
-    .special-btns { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; width: 100%; }
+    /* Modifica Pulsanti Speciali: ora sono 6 (+ Warning) */
+    .special-btns { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; width: 100%; }
     .spec-btn { background: #181b20; border: 1px solid #2e3440; color: var(--muted); padding: 5px 2px; border-radius: 6px; font-size: 0.74rem; font-weight: 800; cursor: pointer; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.15; }
     .spec-btn small { font-size: 0.55rem; font-weight: 600; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
     .spec-btn.selected-spec { background: #d32f2f; color: #fff; border-color: #f44336; }
+    .spec-btn.warning-active { background: #fdd835; color: #000; border-color: #fbc02d; }
 
     .codes-legend { background: var(--card); border: 1px solid var(--border); border-radius: 9px; padding: 7px 10px; font-size: 0.68rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 12px; justify-content: center; margin-top: 4px; }
     .codes-legend strong { color: var(--text); }
@@ -232,7 +238,7 @@
   <img src="icon.png?v=2" alt="Logo" class="app-logo-header" onerror="this.style.display='none'">
   <div class="header-title-box">
     <h1 id="header-event-title">SPEEDWAY LIVE</h1>
-    <div class="header-sub" id="header-event-sub">v4.3</div>
+    <div class="header-sub" id="header-event-sub">v4.4</div>
   </div>
   <div class="header-right">
     <button type="button" class="btn-top mode-btn" onclick="openModeModal()">🏁 <span data-i18n="btnTopFormat">Formato</span></button>
@@ -242,7 +248,6 @@
   </div>
 </header>
 
-<!-- Banner Punteggio Live Gara a Squadre / Coppie -->
 <div class="team-score-banner" id="team-score-banner">
   <div class="ts-side">
     <div class="ts-dots"><i class="ts-dot" style="background:var(--red)"></i><i class="ts-dot" style="background:var(--blue)"></i> <span id="ts-role-a" data-i18n="homeBadge">CASA</span></div>
@@ -255,7 +260,6 @@
   </div>
 </div>
 
-<!-- Finestra Scelta Formato Gara (Store-Safe Nominative Fair Use) -->
 <div class="modal-backdrop" id="mode-modal">
   <div class="modal-box">
     <div id="mode-step-main">
@@ -342,7 +346,6 @@
   </div>
 </div>
 
-<!-- Finestra Popup QR Code -->
 <div class="modal-backdrop" id="qr-modal" onclick="if(event.target===this)closeQrModal()">
   <div class="modal-box">
     <h3 data-i18n="qrTitle">📲 Condividi Speedway Live</h3>
@@ -358,7 +361,6 @@
   </div>
 </div>
 
-<!-- Foto Orizzontale della Pista -->
 <div class="track-hero" id="track-hero">
   <img id="track-hero-img" src="" alt="Foto Pista">
   <div class="track-hero-overlay">
@@ -369,7 +371,6 @@
 
 <div class="container">
 
-  <!-- SEZIONE 1: EVENTO -->
   <div id="tab-event" class="tab-content">
     <div class="card-box">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
@@ -429,7 +430,6 @@
     </div>
   </div>
 
-  <!-- SEZIONE 2: PILOTI + OCR PRO MULTI-PASS -->
   <div id="tab-riders" class="tab-content">
     <div class="card-box">
       <h2 data-i18n="ridersSectionTitle">🏍️ Inserimento Rapido Piloti (OCR Pro / Testo)</h2>
@@ -469,7 +469,6 @@
     <button type="button" class="btn-reset" onclick="resetAllScores()" data-i18n="btnResetScores">🔄 Azzera Punteggi e Piazzamenti Batteria</button>
   </div>
 
-  <!-- SEZIONE 3: BATTERIE -->
   <div id="tab-heats" class="tab-content active">
     <div class="heat-nav">
       <button type="button" onclick="changeHeat(-1)" data-i18n="btnPrev">◀ Prec</button>
@@ -489,15 +488,12 @@
       </div>
     </div>
 
-    <!-- Pulsanti Scambio Corsia tra Compagni di Squadra -->
     <div id="team-swap-lanes-box"></div>
-
     <div id="auto-finals-box"></div>
     <div id="gates-container"></div>
     <div class="codes-legend" id="heats-codes-legend"></div>
   </div>
 
-  <!-- SEZIONE 4: TABELLONE COMPLETO -->
   <div id="tab-card" class="tab-content">
     <div class="share-bar">
       <button type="button" class="btn-share" onclick="exportRacePoster('card')" data-i18n="btnShareCard">
@@ -513,7 +509,6 @@
     <div class="codes-legend" style="margin-top:8px;" id="card-codes-legend"></div>
   </div>
 
-  <!-- SEZIONE 5: CLASSIFICA -->
   <div id="tab-standings" class="tab-content">
     <div class="share-bar">
       <button type="button" class="btn-share" onclick="exportRacePoster('standings')" data-i18n="btnShareStandings">
@@ -534,7 +529,6 @@
     <div class="codes-legend" style="margin-top:8px;" id="standings-codes-legend"></div>
   </div>
 
-  <!-- SEZIONE 6: STORICO GARE & BACKUP JSON -->
   <div id="tab-history" class="tab-content">
     <div class="card-box">
       <h2 data-i18n="histSectionTitle">💾 Gestione & Archivio Gare</h2>
@@ -551,7 +545,6 @@
     <div id="history-list"></div>
   </div>
 
-  <!-- SEZIONE 7: SETTING (LINGUA & DISCLAIMER LEGALE) -->
   <div id="tab-settings" class="tab-content">
     <div class="card-box">
       <h2 data-i18n="setSectionTitle">⚙️ Impostazioni & Lingua</h2>
@@ -658,8 +651,8 @@
       btnResetRiders: "🗑️ Ripristina Nomi Piloti", btnResetScores: "🔄 Azzera Punteggi e Piazzamenti Batteria",
       btnPrev: "◀ Prec", btnNext: "Succ ▶", heatTimeLbl: "Tempo:", bestTimeLbl: "⚡ Record:",
       heatLbl: "Batteria", seriesLbl: "Serie", finalLbl: "FINALE", nominatedLbl: "Nominata",
-      gate1: "Corsia 1 - Rosso", gate2: "Corsia 2 - Blu", gate3: "Corsia 3 - Bianco", gate4: "Corsia 4 - Giallo",
-      laneLbl: "Corsia", helmetRed: "Casco Rosso", helmetBlue: "Casco Blu", helmetWhite: "Casco Bianco", helmetYellow: "Casco Giallo",
+      gate1: "Corsia 1", gate2: "Corsia 2", gate3: "Corsia 3", gate4: "Corsia 4",
+      laneLbl: "Corsia", helmetRed: "Rosso", helmetBlue: "Blu", helmetWhite: "Bianco", helmetYellow: "Giallo",
       swapTeamBtn: "⇄ Scambia Corsie",
       selectQualRider: "— Scegli pilota —", selectRiderUp: "Seleziona il pilota dal menu in alto ▲",
       clearGatesBtn: "🔄 Svuota Corsie", waitingResults: "In attesa dei risultati precedenti",
@@ -674,7 +667,7 @@
       btnModeFinal: "🏆 Classifica Finale GP", btnModeQual: "⏱️ Classifica 20 Batterie",
       thPos: "Pos", thRider: "Pilota", thRuns: "Serie", thTot: "TOT", thFin: "FIN",
       legFinalDirect: "1°-2°: Finale Diretta", legLcq: "3°-10°: LCQ 1 & 2", legPtsInfo: "TOT = Pt Batterie • GP = Pt Campionato",
-      codeR: "Ritirato", codeF: "Caduto", codeX: "Escluso", codeT: "Nastro", codeNS: "Non partito",
+      codeR: "Ritirato", codeF: "Caduto", codeX: "Escluso", codeT: "Nastro", codeNS: "Non partito", codeW: "Warning (Avvertimento)",
       histSectionTitle: "💾 Gestione & Archivio Gare", btnSaveArchive: "📥 Salva Gara Corrente nello Storico",
       btnNewCleanRace: "➕ Inizia Nuova Gara (Scegli Formato)",
       btnExportJson: "⬇️ Esporta Backup (.json)", btnImportJson: "⬆️ Importa Backup (.json)",
@@ -727,8 +720,8 @@
       btnResetRiders: "🗑️ Reset Rider Names", btnResetScores: "🔄 Reset Heat Scores & Times",
       btnPrev: "◀ Prev", btnNext: "Next ▶", heatTimeLbl: "Time:", bestTimeLbl: "⚡ Best:",
       heatLbl: "Heat", seriesLbl: "Series", finalLbl: "FINAL", nominatedLbl: "Nominated",
-      gate1: "Gate 1 - Red", gate2: "Gate 2 - Blue", gate3: "Gate 3 - White", gate4: "Gate 4 - Yellow",
-      laneLbl: "Gate", helmetRed: "Red Helmet", helmetBlue: "Blue Helmet", helmetWhite: "White Helmet", helmetYellow: "Yellow Helmet",
+      gate1: "Gate 1", gate2: "Gate 2", gate3: "Gate 3", gate4: "Gate 4",
+      laneLbl: "Gate", helmetRed: "Red", helmetBlue: "Blue", helmetWhite: "White", helmetYellow: "Yellow",
       swapTeamBtn: "⇄ Swap Gates",
       selectQualRider: "— Select rider —", selectRiderUp: "Select rider from the dropdown above ▲",
       clearGatesBtn: "🔄 Clear Gates", waitingResults: "Waiting for previous heat results",
@@ -743,7 +736,7 @@
       btnModeFinal: "🏆 Final GP Standings", btnModeQual: "⏱️ 20 Heats Standings",
       thPos: "Pos", thRider: "Rider", thRuns: "Runs", thTot: "TOT", thFin: "FIN",
       legFinalDirect: "1st-2nd: Direct Final", legLcq: "3rd-10th: LCQ 1 & 2", legPtsInfo: "TOT = Heats Pts • GP = Champ. Pts",
-      codeR: "Retired", codeF: "Fell", codeX: "Excluded", codeT: "Tapes", codeNS: "Not Started",
+      codeR: "Retired", codeF: "Fell", codeX: "Excluded", codeT: "Tapes", codeNS: "Not Started", codeW: "Warning",
       histSectionTitle: "💾 Meeting Archive & Backup", btnSaveArchive: "📥 Save Current Meeting to History",
       btnNewCleanRace: "➕ Start New Meeting (Select Format)",
       btnExportJson: "⬇️ Export Backup (.json)", btnImportJson: "⬆️ Import Backup (.json)",
@@ -796,8 +789,8 @@
       btnResetRiders: "🗑️ Przywróć Domyślne Nazwiska", btnResetScores: "🔄 Wyzeruj Punkty i Czasy Biegów",
       btnPrev: "◀ Poprz.", btnNext: "Nast. ▶", heatTimeLbl: "Czas:", bestTimeLbl: "⚡ Rekord:",
       heatLbl: "Bieg", seriesLbl: "Seria", finalLbl: "FINAŁ", nominatedLbl: "Nominowany",
-      gate1: "Tor 1 - Czerwony", gate2: "Tor 2 - Niebieski", gate3: "Tor 3 - Biały", gate4: "Tor 4 - Żółty",
-      laneLbl: "Tor", helmetRed: "Kask Czerwony", helmetBlue: "Kask Niebieski", helmetWhite: "Kask Biały", helmetYellow: "Kask Żółty",
+      gate1: "Tor 1", gate2: "Tor 2", gate3: "Tor 3", gate4: "Tor 4",
+      laneLbl: "Tor", helmetRed: "Czerwony", helmetBlue: "Niebieski", helmetWhite: "Biały", helmetYellow: "Żółty",
       swapTeamBtn: "⇄ Zamień Tory",
       selectQualRider: "— Wybierz zawodnika —", selectRiderUp: "Wybierz zawodnika z listy powyżej ▲",
       clearGatesBtn: "🔄 Wyczyść Tory", waitingResults: "Oczekiwanie na wyniki poprzednich biegów",
@@ -809,7 +802,7 @@
       btnModeFinal: "🏆 Klasyfikacja Końcowa GP", btnModeQual: "⏱️ Po 20 Biegach",
       thPos: "Msc", thRider: "Zawodnik", thRuns: "Biegi", thTot: "PKT", thFin: "FIN",
       legFinalDirect: "1-2: Finał", legLcq: "3-10: LCQ 1 i 2", legPtsInfo: "PKT = Punkty biegowe • GP = Pkt MŚ",
-      codeR: "Defekt", codeF: "Upadek", codeX: "Wykluczony", codeT: "Taśma", codeNS: "Nie stanął",
+      codeR: "Defekt", codeF: "Upadek", codeX: "Wykluczony", codeT: "Taśma", codeNS: "Nie stanął", codeW: "Warning",
       histSectionTitle: "💾 Archiwum Zawodów", btnSaveArchive: "📥 Zapisz Zawody w Historii",
       btnNewCleanRace: "➕ Nowe Zawody (Wybierz Format)",
       btnExportJson: "⬇️ Eksportuj (.json)", btnImportJson: "⬆️ Importuj (.json)",
@@ -859,8 +852,8 @@
       btnResetRiders: "🗑️ Nulstil Kørernavne", btnResetScores: "🔄 Nulstil Point & Heattider",
       btnPrev: "◀ Forrige", btnNext: "Næste ▶", heatTimeLbl: "Tid:", bestTimeLbl: "⚡ Bedste:",
       heatLbl: "Heat", seriesLbl: "Serie", finalLbl: "FINALE", nominatedLbl: "Nomineret",
-      gate1: "Bane 1 - Rød", gate2: "Bane 2 - Blå", gate3: "Bane 3 - Hvid", gate4: "Bane 4 - Gul",
-      laneLbl: "Bane", helmetRed: "Rød Hjelm", helmetBlue: "Blå Hjelm", helmetWhite: "Hvid Hjelm", helmetYellow: "Gul Hjelm",
+      gate1: "Bane 1", gate2: "Bane 2", gate3: "Bane 3", gate4: "Bane 4",
+      laneLbl: "Bane", helmetRed: "Rød", helmetBlue: "Blå", helmetWhite: "Hvid", helmetYellow: "Gul",
       swapTeamBtn: "⇄ Byt Baner",
       selectQualRider: "— Vælg kører —", selectRiderUp: "Vælg kører i menuen ovenfor ▲",
       clearGatesBtn: "🔄 Ryd Baner", waitingResults: "Afventer resultater",
@@ -872,7 +865,7 @@
       btnModeFinal: "🏆 Slutstilling GP", btnModeQual: "⏱️ Stilling 20 Heats",
       thPos: "Pos", thRider: "Kører", thRuns: "Heats", thTot: "TOT", thFin: "FIN",
       legFinalDirect: "1.-2.: Direkte i Finale", legLcq: "3.-10.: LCQ 1 & 2", legPtsInfo: "TOT = Heatpoint • GP = VM Pt",
-      codeR: "Udgået", codeF: "Styrt", codeX: "Udelukket", codeT: "Bånd", codeNS: "Ikke startet",
+      codeR: "Udgået", codeF: "Styrt", codeX: "Udelukket", codeT: "Bånd", codeNS: "Ikke startet", codeW: "Warning",
       histSectionTitle: "💾 Løbsarkiv & Backup", btnSaveArchive: "📥 Gem Nuværende Løb",
       btnNewCleanRace: "➕ Start Nyt Løb (Vælg Format)",
       btnExportJson: "⬇️ Eksporter (.json)", btnImportJson: "⬆️ Importer (.json)",
@@ -922,8 +915,8 @@
       btnResetRiders: "🗑️ Återställ Förarnamn", btnResetScores: "🔄 Nollställ Poäng & Heattider",
       btnPrev: "◀ Föreg", btnNext: "Nästa ▶", heatTimeLbl: "Tid:", bestTimeLbl: "⚡ Bästa:",
       heatLbl: "Heat", seriesLbl: "Omgång", finalLbl: "FINAL", nominatedLbl: "Nominerat",
-      gate1: "Bana 1 - Röd", gate2: "Bana 2 - Blå", gate3: "Bana 3 - Vit", gate4: "Bana 4 - Gul",
-      laneLbl: "Bana", helmetRed: "Röd Hjälm", helmetBlue: "Blå Hjälm", helmetWhite: "Vit Hjälm", helmetYellow: "Gul Hjälm",
+      gate1: "Bana 1", gate2: "Bana 2", gate3: "Bana 3", gate4: "Bana 4",
+      laneLbl: "Bana", helmetRed: "Röd", helmetBlue: "Blå", helmetWhite: "Vit", helmetYellow: "Gul",
       swapTeamBtn: "⇄ Byt Banor",
       selectQualRider: "— Välj förare —", selectRiderUp: "Välj förare i menyn ovan ▲",
       clearGatesBtn: "🔄 Rensa Banor", waitingResults: "Väntar på resultat",
@@ -935,7 +928,7 @@
       btnModeFinal: "🏆 Slutställning GP", btnModeQual: "⏱️ Ställning 20 Heat",
       thPos: "Pos", thRider: "Förare", thRuns: "Heat", thTot: "TOT", thFin: "FIN",
       legFinalDirect: "1:a-2:a: Direkt till Final", legLcq: "3:a-10:a: LCQ 1 & 2", legPtsInfo: "TOT = Heatpoäng • GP = VM P",
-      codeR: "Bröt", codeF: "Omkull", codeX: "Utesluten", codeT: "Tejp", codeNS: "Ej startat",
+      codeR: "Bröt", codeF: "Omkull", codeX: "Utesluten", codeT: "Tejp", codeNS: "Ej startat", codeW: "Warning",
       histSectionTitle: "💾 Tävlingsarkiv & Backup", btnSaveArchive: "📥 Spara Aktuell Tävling",
       btnNewCleanRace: "➕ Starta Ny Tävling (Välj Format)",
       btnExportJson: "⬇️ Exportera (.json)", btnImportJson: "⬆️ Importera (.json)",
@@ -1116,7 +1109,8 @@
       { code: 'F',  short: t('codeF'),  full: 'F: ' + t('codeF') },
       { code: 'X',  short: t('codeX'),  full: 'X: ' + t('codeX') },
       { code: 'T',  short: t('codeT'),  full: 'T: ' + t('codeT') },
-      { code: 'NS', short: t('codeNS'), full: 'NS: ' + t('codeNS') }
+      { code: 'NS', short: t('codeNS'), full: 'NS: ' + t('codeNS') },
+      { code: 'W',  short: t('codeW'),  full: 'W: ' + t('codeW') }
     ];
   }
 
@@ -1262,10 +1256,10 @@
       if (key) el.setAttribute('placeholder', t(key));
     });
 
-    const codesHtml = getSpecialCodes().map(c => '<span><strong>' + c.code + '</strong>: ' + c.short + '</span>').join('');
+    const codesHtml = getSpecialCodes().filter(c => c.code !== 'W').map(c => '<span><strong>' + c.code + '</strong>: ' + c.short + '</span>').join('');
     ['heats-codes-legend', 'card-codes-legend', 'standings-codes-legend'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.innerHTML = codesHtml;
+      if (el) el.innerHTML = codesHtml + '<span><strong>W</strong>: ' + t('codeW') + '</span>';
     });
 
     updateHeaderAndHero();
@@ -1313,13 +1307,13 @@
       heats = FIM_SCHEDULE.map((gates, idx) => ({
         heatNumber: idx + 1,
         time: "",
-        slots: gates.map((rId, gIdx) => ({ riderId: rId, score: null, helmet: GATE_STYLE[gIdx].helmet }))
+        slots: gates.map((rId, gIdx) => ({ riderId: rId, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false }))
       }));
       for (let i = 0; i < 3; i++) {
         heats.push({
           heatNumber: 21 + i,
           time: "",
-          slots: [0, 1, 2, 3].map(gIdx => ({ riderId: null, score: null, helmet: GATE_STYLE[gIdx].helmet }))
+          slots: [0, 1, 2, 3].map(gIdx => ({ riderId: null, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false }))
         });
       }
     } else {
@@ -1330,7 +1324,7 @@
       heats = cfg.schedule.map((row, idx) => ({
         heatNumber: idx + 1,
         time: "",
-        slots: row.map(pair => ({ riderId: pair[0], helmet: pair[1], score: null }))
+        slots: row.map(pair => ({ riderId: pair[0], helmet: pair[1], score: null, warning: false }))
       }));
     }
 
@@ -1369,6 +1363,7 @@
         if (typeof h.time !== 'string') h.time = "";
         h.slots.forEach((s, idx) => {
           if (!s.helmet) s.helmet = GATE_STYLE[idx].helmet;
+          if (s.warning === undefined) s.warning = false;
         });
       });
     }
@@ -1431,6 +1426,15 @@
       saveState();
       renderCurrentHeat();
     }
+  }
+
+  /* TOGGLE WARNING */
+  function toggleWarning(gateIdx) {
+    const heat = state.heats[state.currentHeat];
+    if (!heat.slots[gateIdx].riderId) return;
+    heat.slots[gateIdx].warning = !heat.slots[gateIdx].warning;
+    saveState();
+    renderCurrentHeat();
   }
 
   function computeTeamTotals(raceObj) {
@@ -1629,24 +1633,9 @@
 
     riderIds.forEach(r => {
       stats.push({
-        id: r,
-        team: r > 100 ? 'B' : 'A',
-        name: state.riders[r],
-        runs: [],
-        total: 0,
-        ones: 0,
-        twos: 0,
-        threes: 0,
-        finishedZeros: 0,
-        nonFinished: [],
-        zeros: 0,
-        lcqRaw: null,
-        finRaw: null,
-        sfScore: '-',
-        finScore: '-',
-        qualRank: 99,
-        finalRank: 99,
-        sgpPts: 0
+        id: r, team: r > 100 ? 'B' : 'A', name: state.riders[r], runs: [], total: 0,
+        ones: 0, twos: 0, threes: 0, finishedZeros: 0, nonFinished: [], zeros: 0,
+        lcqRaw: null, finRaw: null, sfScore: '-', finScore: '-', qualRank: 99, finalRank: 99, sgpPts: 0
       });
     });
 
@@ -1660,10 +1649,11 @@
         if (!s.riderId) return;
         const st = stats.find(x => x.id === s.riderId);
         if (!st) return;
+        
         if (s.score !== null) {
           const numScore = typeof s.score === 'number' ? s.score : null;
           if (numScore !== null) {
-            st.runs.push(numScore);
+            st.runs.push(numScore + (s.warning ? 'W' : ''));
             st.total += numScore;
             if (numScore === winVal) st.ones++;
             else if (numScore === secVal) st.twos++;
@@ -1671,12 +1661,12 @@
             else { st.finishedZeros++; st.zeros++; }
           } else {
             const code = String(s.score).toUpperCase();
-            st.runs.push(code);
+            st.runs.push(code + (s.warning ? 'W' : ''));
             st.nonFinished.push(code);
             st.zeros++;
           }
         } else {
-          st.runs.push('-');
+          st.runs.push(s.warning ? 'W' : '-');
         }
       });
     });
@@ -1854,7 +1844,7 @@
 
   function clearCurrentHeatGates() {
     const heat = state.heats[state.currentHeat];
-    heat.slots.forEach(s => { s.riderId = null; s.score = null; });
+    heat.slots.forEach(s => { s.riderId = null; s.score = null; s.warning = false; });
     saveState();
     renderCurrentHeat();
   }
@@ -1920,20 +1910,21 @@
       ? [{ val: 3, label: '1°' }, { val: 2, label: '2°' }, { val: 1, label: '3°' }, { val: 0, label: '4°' }]
       : pts.map(v => ({ val: v, label: v + ' pt' }));
 
-    const specialCodes = getSpecialCodes();
+    // Prende i bottoni speciali escluso la W (Warning), che gestisco come toggle
+    const specialCodes = getSpecialCodes().filter(c => c.code !== 'W');
     const container = document.getElementById('gates-container');
+    
     container.innerHTML = heat.slots.map((slot, gIdx) => {
       const hColor = slot.helmet || GATE_STYLE[gIdx].helmet;
       const hm = HELMET_META[hColor] || HELMET_META.R;
       const sc = slot.score;
 
-      // Select per assegnare liberamente il colore del casco alla corsia
       const helmetOpts = [
-        { val: 'R', clr: '#e53935' },
-        { val: 'B', clr: '#1e88e5' },
-        { val: 'W', clr: '#f5f5f5' },
-        { val: 'Y', clr: '#fdd835' }
-      ].map(o => '<option value="' + o.val + '" ' + (hColor === o.val ? 'selected' : '') + ' style="background:' + o.clr + '"></option>').join('');
+        { val: 'R', clr: '#e53935', label: '🔴 ' + t('helmetRed') },
+        { val: 'B', clr: '#1e88e5', label: '🔵 ' + t('helmetBlue') },
+        { val: 'W', clr: '#f5f5f5', label: '⚪ ' + t('helmetWhite') },
+        { val: 'Y', clr: '#fdd835', label: '🟡 ' + t('helmetYellow') }
+      ].map(o => '<option value="' + o.val + '" ' + (hColor === o.val ? 'selected' : '') + ' style="background:' + o.clr + '; color:' + (o.val === 'W' || o.val === 'Y' ? '#000' : '#fff') + '">' + o.label + '</option>').join('');
 
       let opts = '';
       if (isSpecialHeat) {
@@ -1950,8 +1941,6 @@
         teamIds.forEach(r => {
           opts += '<option value="' + r + '" ' + (slot.riderId == r ? 'selected' : '') + '>' + formatRiderNum(r) + ' ' + state.riders[r] + '</option>';
         });
-        
-        // Aggiunge la possibilità di scegliere anche i piloti dell'altra squadra (Tactical Substitute/Joker)
         opts += '<optgroup label="Sostituti Altra Squadra">';
         const otherIds = isHome
           ? Array.from({length: cfg.ridersPerTeam}, (_, i) => 101 + i)
@@ -1969,6 +1958,10 @@
       const hasRider = Boolean(slot.riderId);
       const teamLabel = cfg.isTeam ? (hm.team === 'A' ? state.teamNames.a : state.teamNames.b) : '';
       const riderLabel = hasRider ? (formatRiderNum(slot.riderId) + ' ' + state.riders[slot.riderId]) : t('selectRiderUp');
+
+      const wBtn = '<button type="button" ' + (!hasRider ? 'disabled' : '') + ' class="spec-btn ' + (slot.warning ? 'warning-active' : '') + '" onclick="toggleWarning(' + gIdx + ')">' +
+            '<span>W</span><small>Warning</small>' +
+          '</button>';
 
       return '<div class="gate-card ' + hm.cls + '">' +
         '<div class="rider-header">' +
@@ -1992,7 +1985,7 @@
             '<button type="button" ' + (!hasRider ? 'disabled' : '') + ' title="' + item.full + '" class="spec-btn ' + (sc === item.code ? 'selected-spec' : '') + '" onclick="setScore(' + gIdx + ', \'' + item.code + '\')">' +
               '<span>' + item.code + '</span><small>' + item.short + '</small>' +
             '</button>'
-          ).join('') +
+          ).join('') + wBtn +
         '</div>' +
       '</div>';
     }).join('');
@@ -2021,6 +2014,7 @@
     if (!newRiderVal) {
       heat.slots[gateIdx].riderId = null;
       heat.slots[gateIdx].score = null;
+      heat.slots[gateIdx].warning = false;
       saveState();
       renderCurrentHeat();
       return;
@@ -2030,10 +2024,13 @@
     if (existingIdx !== -1) {
       const prevRider = heat.slots[gateIdx].riderId;
       const prevScore = heat.slots[gateIdx].score;
+      const prevWarn = heat.slots[gateIdx].warning;
       heat.slots[gateIdx].riderId = parsedId;
       heat.slots[gateIdx].score = heat.slots[existingIdx].score;
+      heat.slots[gateIdx].warning = heat.slots[existingIdx].warning;
       heat.slots[existingIdx].riderId = prevRider;
       heat.slots[existingIdx].score = prevScore;
+      heat.slots[existingIdx].warning = prevWarn;
     } else {
       heat.slots[gateIdx].riderId = parsedId;
     }
@@ -2162,7 +2159,6 @@
     }).join('');
   }
 
-  /* SEZIONE PILOTI DIVISA IN DUE SQUADRE */
   function renderRidersInputs() {
     const cfg = getModeConfig();
     const container = document.getElementById('riders-inputs');
@@ -2215,7 +2211,6 @@
     saveState();
   }
 
-  /* ESPORTAZIONE LOCANDINA PNG */
   async function exportRacePoster(mode) {
     if (!isTeamMode()) syncSpecialHeatsWithQualifiers();
     const cfg = getModeConfig();
@@ -2364,7 +2359,7 @@
     });
 
     ctx.textAlign = 'center'; ctx.fillStyle = '#8892b0'; ctx.font = '700 20px sans-serif';
-    ctx.fillText('Speedway Live v4.3 App', W / 2, H - 25);
+    ctx.fillText('Speedway Live v4.4 App', W / 2, H - 25);
 
     canvas.toBlob(async function(blob) {
       if (!blob) return;
@@ -2382,274 +2377,6 @@
     }, 'image/png');
   }
 
-  /* ============================================================================
-     MOTORE OCR PRO A TRIPLO FILTRO (AUTO-INVERSIONE SFONDO SCURO + NORMALIZZAZIONE)
-     ============================================================================ */
-  function setOcrTarget(target) {
-    ocrTeamTarget = target;
-    ['both', 'a', 'b'].forEach(k => {
-      const btn = document.getElementById('ocr-target-' + k);
-      if (btn) btn.classList.toggle('active', k === target);
-    });
-  }
-
-  function preprocessImageForOcr(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const targetW = Math.min(2000, Math.max(1250, img.width));
-          const scale = targetW / img.width;
-          canvas.width = Math.round(img.width * scale);
-          canvas.height = Math.round(img.height * scale);
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-          const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const d = imgData.data;
-          const totalPixels = d.length / 4;
-
-          let sumGray = 0;
-          let minG = 255, maxG = 0;
-          const grays = new Uint8Array(totalPixels);
-
-          for (let i = 0, p = 0; i < d.length; i += 4, p++) {
-            const g = Math.round(0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]);
-            grays[p] = g;
-            sumGray += g;
-            if (g < minG) minG = g;
-            if (g > maxG) maxG = g;
-          }
-
-          const avgGray = sumGray / totalPixels;
-          const isDarkBackground = avgGray < 118;
-          const range = Math.max(40, maxG - minG);
-
-          const contrast = 1.65;
-          for (let i = 0, p = 0; i < d.length; i += 4, p++) {
-            let norm = ((grays[p] - minG) / range) * 255;
-            if (isDarkBackground) {
-              norm = 255 - norm;
-            }
-            let adj = ((norm - 128) * contrast) + 128;
-            if (adj > 205) adj = 255;
-            else if (adj < 55) adj = 0;
-            adj = Math.max(0, Math.min(255, adj));
-            d[i] = d[i + 1] = d[i + 2] = adj;
-          }
-
-          ctx.putImageData(imgData, 0, 0);
-          resolve(canvas.toDataURL('image/png'));
-        };
-        img.onerror = reject;
-        img.src = e.target.result;
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-
-  function cleanRiderNameToken(word) {
-    if (!word) return "";
-    if (word.length > 2 && word === word.toUpperCase()) {
-      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    }
-    return word.charAt(0).toUpperCase() + word.slice(1);
-  }
-
-  function parseRidersFromText(rawText) {
-    const rawLines = (rawText || "")
-      .replace(/\t+/g, '  ')
-      .split(/\r?\n/)
-      .map(l => l.trim())
-      .filter(l => l.length >= 3);
-
-    const lines = [];
-    rawLines.forEach(l => {
-      const splitCols = l.split(/\s{2,}(?=#?(?:1[0-8]|[1-9])[\.\)\-\:\s])/);
-      splitCols.forEach(part => {
-        if (part && part.trim().length >= 3) lines.push(part.trim());
-      });
-    });
-
-    const ignoreWords = /^(speedway|starting|line-up|lineup|riders|piloti|elenco|iscritti|track|reserve|riserve|rezerwa|reserv|grand|prix|fim|torun|poland|gara|heat|batteria|bieg|team|squadra|home|away|gospodarze|goscie|goście|junior|captain|capitano|rising|star|club|klub|date|data|stadium|stadion|referee|sedzia|sędzia)$/i;
-    const extractedItems = [];
-
-    lines.forEach(line => {
-      let fixedLine = line
-        .replace(/^[Il\|]([\.\)\-\:\s]+)/, '1$1')
-        .replace(/^1[Oo]([\.\)\-\:\s]+)/, '10$1');
-
-      let cleanLine = fixedLine
-        .replace(/[\(\[\{][0-9,\s\-\+RFTXNS\*]{2,14}[\)\]\}]/gi, ' ')
-        .replace(/[\(\[\{][A-Za-z0-9]{1,5}[\)\]\}]/g, ' ')
-        .replace(/\b(POL|GBR|AUS|DEN|SWE|SVK|CZE|LAT|USA|GER|ITA|FRA|SLO|NOR|FIN|UKR|ARG|NZL|U21|U24|RS)\b/gi, ' ')
-        .replace(/#[0-9]{1,3}\b/g, ' ');
-
-      const leadMatch = cleanLine.match(/^\s*#?(1[0-8]|[1-9])(?:[\.\)\-\:\s]+)(.+)$/);
-      let candidate = leadMatch ? leadMatch[2] : cleanLine;
-
-      candidate = candidate
-        .replace(/\b[0-9]{1,3}\b/g, ' ')
-        .replace(/[^A-Za-zÀ-ÿĄąĆćĘęŁłŃńÓóŚśŹźŻżÆæØøÅåÄäÖö\s'\-]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-
-      const words = candidate
-        .split(' ')
-        .map(w => w.replace(/^['\-]+|['\-]+$/g, ''))
-        .filter(w => w.length >= 2 && !ignoreWords.test(w));
-
-      if (words.length === 0) return;
-
-      const finalName = words.slice(0, 3).map(cleanRiderNameToken).join(' ');
-      if (finalName.length < 3) return;
-
-      extractedItems.push({
-        num: leadMatch ? parseInt(leadMatch[1], 10) : null,
-        name: finalName
-      });
-    });
-
-    if (extractedItems.length === 0) return 0;
-
-    const previewLines = extractedItems.map((it, idx) => (it.num || (idx + 1)) + ". " + it.name);
-    const pasteArea = document.getElementById('paste-riders-area');
-    if (pasteArea) pasteArea.value = previewLines.join("\n");
-
-    const cfg = getModeConfig();
-    let applied = 0;
-
-    if (!cfg.isTeam) {
-      const numberedMap = {};
-      extractedItems.forEach(item => {
-        if (item.num && item.num >= 1 && item.num <= 18 && !numberedMap[item.num]) {
-          numberedMap[item.num] = item.name;
-        }
-      });
-      const numberedKeys = Object.keys(numberedMap);
-      if (numberedKeys.length >= 4) {
-        numberedKeys.forEach(k => {
-          state.riders[parseInt(k, 10)] = numberedMap[k];
-          applied++;
-        });
-      } else {
-        extractedItems.slice(0, 18).forEach((item, idx) => {
-          state.riders[idx + 1] = item.name;
-          applied++;
-        });
-      }
-      return applied;
-    }
-
-    const maxR = cfg.ridersPerTeam;
-    if (ocrTeamTarget === 'a') {
-      extractedItems.slice(0, maxR).forEach((item, idx) => {
-        const slot = (item.num && item.num >= 1 && item.num <= maxR) ? item.num : (idx + 1);
-        state.riders[slot] = item.name;
-        applied++;
-      });
-      return applied;
-    }
-
-    if (ocrTeamTarget === 'b') {
-      extractedItems.slice(0, maxR).forEach((item, idx) => {
-        let slot = idx + 1;
-        if (item.num) {
-          if (item.num >= 1 && item.num <= maxR) slot = item.num;
-          else if (item.num > 8 && (item.num - 8) <= maxR) slot = item.num - 8;
-        }
-        state.riders[100 + slot] = item.name;
-        applied++;
-      });
-      return applied;
-    }
-
-    const usedHome = {};
-    let currentSide = 'A';
-    extractedItems.forEach((item, idx) => {
-      if (item.num && item.num > maxR && item.num <= 16) {
-        const awayIdx = item.num - 8;
-        if (awayIdx >= 1 && awayIdx <= maxR) {
-          state.riders[100 + awayIdx] = item.name;
-          applied++;
-        }
-        return;
-      }
-      if (item.num && item.num >= 1 && item.num <= maxR) {
-        if (!usedHome[item.num] && currentSide === 'A') {
-          state.riders[item.num] = item.name;
-          usedHome[item.num] = true;
-          applied++;
-          if (Object.keys(usedHome).length >= maxR) currentSide = 'B';
-        } else {
-          state.riders[100 + item.num] = item.name;
-          applied++;
-        }
-      } else {
-        if (idx < maxR) {
-          state.riders[idx + 1] = item.name;
-          applied++;
-        } else if (idx < maxR * 2) {
-          state.riders[100 + (idx - maxR + 1)] = item.name;
-          applied++;
-        }
-      }
-    });
-
-    return applied;
-  }
-
-  async function processRiderListPhoto(input) {
-    const file = input.files && input.files[0];
-    if (!file) return;
-    const statusEl = document.getElementById('ocr-status');
-    statusEl.style.display = 'block';
-    statusEl.textContent = '⏳ OCR Pro HD (5-10 sec)...';
-
-    try {
-      const processedDataUrl = await preprocessImageForOcr(file);
-      const result = await Tesseract.recognize(processedDataUrl, 'eng+pol+ita');
-      const count = parseRidersFromText(result.data.text || "");
-
-      saveState();
-      renderRidersInputs();
-      renderCurrentHeat();
-
-      if (count > 0) {
-        statusEl.textContent = '✅ OK (' + count + ')';
-        document.getElementById('paste-box-wrap').style.display = 'block';
-      } else {
-        statusEl.textContent = '⚠️ OCR: 0';
-      }
-    } catch (err) {
-      statusEl.textContent = '⚠️ OCR Error';
-    }
-    input.value = "";
-  }
-
-  function togglePasteBox() {
-    const box = document.getElementById('paste-box-wrap');
-    box.style.display = box.style.display === 'block' ? 'none' : 'block';
-  }
-
-  function applyPastedRiders() {
-    const raw = document.getElementById('paste-riders-area').value;
-    const count = parseRidersFromText(raw);
-    const statusEl = document.getElementById('ocr-status');
-    statusEl.style.display = 'block';
-    if (count > 0) {
-      saveState(); renderRidersInputs(); renderCurrentHeat();
-      document.getElementById('paste-box-wrap').style.display = 'none';
-      statusEl.textContent = '✅ OK (' + count + ')';
-    } else {
-      statusEl.textContent = '⚠️ 0';
-    }
-  }
-
-  /* STORICO GARE E BACKUP JSON */
   function getArchive() {
     try { const a = localStorage.getItem(ARCHIVE_KEY); if (a) return JSON.parse(a); } catch (e) {}
     return [];
@@ -2706,7 +2433,7 @@
   }
 
   function exportBackupJson() {
-    const backupPayload = { app: "Speedway Live", version: 4.3, exportedAt: new Date().toISOString(), currentRace: state, archive: getArchive() };
+    const backupPayload = { app: "Speedway Live", version: 4.4, exportedAt: new Date().toISOString(), currentRace: state, archive: getArchive() };
     const blob = new Blob([JSON.stringify(backupPayload, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
