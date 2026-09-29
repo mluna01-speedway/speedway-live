@@ -12,177 +12,219 @@
   <link rel="icon" type="image/png" href="icon.png?v=2">
   <link rel="apple-touch-icon" href="icon.png?v=2">
   <title>Speedway Live v4.9</title>
+  
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  
   <style>
-    :root{--bg:#121418;--card:#1e2229;--border:#2e3440;--text:#eceff4;--muted:#8892b0;--accent:#00e676;--red:#e53935;--blue:#1e88e5;--white:#f5f5f5;--yellow:#fdd835}
-    *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
-    html,body{width:100%;max-width:100vw;overflow-x:hidden;background:var(--bg);color:var(--text);user-select:none}
-    body{padding-bottom:88px}
-    header{background:var(--card);padding:9px 10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;gap:6px;width:100%}
-    .app-logo-header{width:32px;height:32px;border-radius:7px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);background:#000}
-    .header-title-box{min-width:0;flex:1}
-    header h1{font-size:0.92rem;font-weight:800;letter-spacing:0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .header-sub{font-size:0.68rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .header-right{display:flex;align-items:center;gap:5px;flex-shrink:0}
-    .event-badge{font-size:0.68rem;background:#2e3440;padding:5px 7px;border-radius:6px;color:var(--accent);font-weight:800;white-space:nowrap}
-    .btn-top{background:#2e3440;border:1px solid #3b4252;color:var(--text);padding:5px 7px;border-radius:6px;font-size:0.7rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:3px}
-    .btn-top.danger{background:rgba(198,40,40,0.25);border-color:#c62828;color:#ff8a80}
-    .btn-top.mode-btn{border-color:var(--accent);color:var(--accent)}
-    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.86);z-index:999;display:none;align-items:center;justify-content:center;padding:14px;overflow-y:auto}
-    .modal-backdrop.open{display:flex}
-    .modal-box{background:var(--card);border:1px solid var(--accent);border-radius:16px;padding:18px;width:100%;max-width:400px;text-align:center;box-shadow:0 10px 35px rgba(0,0,0,0.7)}
-    .modal-box h3{font-size:1.08rem;color:var(--accent);margin-bottom:6px;font-weight:900}
-    .modal-box p{font-size:0.78rem;color:var(--muted);margin-bottom:14px;line-height:1.35}
-    .mode-choice-btn{width:100%;background:#161920;border:1px solid #3b4252;color:var(--text);padding:13px 14px;border-radius:12px;margin-bottom:9px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;text-align:left;transition:0.15s}
-    .mode-choice-btn:hover,.mode-choice-btn.active{border-color:var(--accent);background:rgba(0,230,118,0.1)}
-    .mode-choice-left{display:flex;align-items:center;gap:11px}
-    .mode-choice-ico{font-size:1.45rem}
-    .mode-choice-title{font-size:0.92rem;font-weight:900;color:var(--text)}
-    .mode-choice-sub{font-size:0.7rem;color:var(--muted);margin-top:2px}
-    .qr-box{background:#ffffff;padding:14px;border-radius:12px;display:inline-block;margin-bottom:12px}
-    .qr-box img{width:200px;height:200px;display:block}
-    .qr-url{font-size:0.72rem;color:var(--text);background:#121418;padding:8px;border-radius:6px;margin-bottom:12px;word-break:break-all;border:1px solid var(--border)}
-    .qr-btn-row{display:flex;gap:8px}
-    .qr-btn-row button{flex:1;padding:10px;border-radius:8px;border:none;font-weight:800;font-size:0.8rem;cursor:pointer}
-    .qr-btn-share{background:var(--accent);color:#000}
-    .qr-btn-close{background:#2e3440;color:var(--text)}
-    .team-score-banner{background:#161920;border-bottom:1px solid var(--border);padding:8px 12px;display:none;align-items:center;justify-content:space-between;gap:8px}
-    .team-score-banner.visible{display:flex}
-    .ts-side{flex:1;min-width:0;display:flex;flex-direction:column}
-    .ts-side.right{text-align:right;align-items:flex-end}
-    .ts-dots{display:flex;gap:4px;align-items:center;font-size:0.65rem;color:var(--muted);font-weight:800;text-transform:uppercase}
-    .ts-dot{width:10px;height:10px;border-radius:3px;display:inline-block}
-    .ts-name{font-size:0.86rem;font-weight:900;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-    .ts-center{background:var(--card);border:1px solid var(--accent);border-radius:10px;padding:4px 12px;font-size:1.15rem;font-weight:900;color:var(--accent);white-space:nowrap;letter-spacing:1px}
-    .track-hero{width:100%;height:110px;position:relative;overflow:hidden;border-bottom:1px solid var(--border);display:none;background:#090b10}
-    .track-hero.visible{display:block}
-    .track-hero img{width:100%;height:100%;object-fit:cover;opacity:0.75}
-    .track-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(18,20,24,0.95),rgba(18,20,24,0.15));display:flex;flex-direction:column;justify-content:flex-end;padding:10px 14px}
-    .track-hero-title{font-size:1.02rem;font-weight:900;color:#fff}
-    .track-hero-meta{font-size:0.74rem;color:var(--accent);font-weight:700}
-    nav{position:fixed;bottom:0;left:0;right:0;width:100%;background:var(--card);border-top:1px solid var(--border);display:flex;z-index:100}
-    nav button{flex:1;min-width:0;background:none;border:none;color:var(--muted);padding:8px 1px;font-size:0.6rem;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
-    nav button .nav-ico{font-size:1.05rem;line-height:1;height:18px;display:flex;align-items:center;justify-content:center}
-    nav button span.nav-lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-    nav button.active{color:var(--accent);border-top:2px solid var(--accent)}
-    .drift-bike-svg{width:22px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transform:rotate(-14deg)}
-    .container{width:100%;max-width:600px;margin:0 auto;padding:10px;overflow-x:hidden}
-    .tab-content{display:none;width:100%}
-    .tab-content.active{display:block}
-    .heat-nav{display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--card);padding:8px;border-radius:10px;margin-bottom:8px;border:1px solid var(--border);width:100%}
-    .heat-nav button{background:#2e3440;color:var(--text);border:none;padding:9px 11px;border-radius:8px;font-weight:800;font-size:0.82rem;cursor:pointer;flex-shrink:0}
-    .heat-nav select{flex:1;min-width:0;background:#121418;color:var(--text);border:1px solid var(--border);padding:7px 6px;border-radius:6px;font-size:0.84rem;font-weight:800;text-overflow:ellipsis}
-    .heat-time-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--card);padding:7px 10px;border-radius:10px;margin-bottom:8px;border:1px solid var(--border);width:100%}
-    .heat-time-left{display:flex;align-items:center;gap:6px;font-size:0.76rem;font-weight:800;color:var(--text);flex-wrap:wrap}
-    .heat-time-input-wrap{display:flex;align-items:center;gap:5px}
-    .heat-time-input{width:86px;background:#121418;border:1px solid #3b4252;color:var(--accent);font-weight:900;font-size:0.86rem;padding:5px 8px;border-radius:6px;text-align:right}
-    .heat-time-unit{font-size:0.74rem;color:var(--muted);font-weight:800}
-    .best-time-badge{font-size:0.66rem;background:rgba(0,230,118,0.12);color:var(--accent);border:1px solid rgba(0,230,118,0.35);padding:3px 6px;border-radius:6px;font-weight:800;white-space:nowrap}
-    .swap-lanes-bar{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px}
-    .btn-swap-lane{background:#1c2028;border:1px solid #3b4252;color:var(--text);padding:8px 6px;border-radius:9px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-    .btn-swap-lane:active{transform:scale(0.98);border-color:var(--accent)}
-    .btn-swap-lane.team-a{border-left:4px solid var(--red);border-right:4px solid var(--blue)}
-    .btn-swap-lane.team-b{border-left:4px solid var(--white);border-right:4px solid var(--yellow)}
-    .btn-swap-lane span:first-child{font-size:0.68rem;color:var(--muted);font-weight:700;margin-bottom:2px}
-    .btn-swap-lane span:nth-child(2){font-size:0.86rem;font-weight:900;color:#fff;margin-bottom:3px}
-    .btn-swap-lane small{font-size:0.62rem;color:var(--accent)}
-    .qual-info-card{background:#181c24;border:1px solid var(--accent);border-radius:12px;padding:10px 12px;margin-bottom:10px;width:100%}
-    .qual-info-header{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:5px}
-    .qual-info-title{font-size:0.76rem;font-weight:900;color:var(--accent);text-transform:uppercase}
-    .qual-info-sub{font-size:0.72rem;color:var(--muted);line-height:1.35}
-    .qual-badges-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
-    .qual-pill{background:var(--card);border:1px solid var(--border);padding:4px 8px;border-radius:6px;font-size:0.72rem;font-weight:800;color:var(--text)}
-    .qual-pill span{color:var(--accent);margin-right:4px}
-    .btn-mini{background:#2e3440;color:var(--text);border:1px solid #3b4252;padding:4px 8px;border-radius:6px;font-weight:800;font-size:0.68rem;cursor:pointer}
-    .gate-card{background:var(--card);border-radius:12px;padding:10px 10px 10px 16px;margin-bottom:9px;border:1px solid var(--border);display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;width:100%}
-    .gate-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px}
-    .gate-red::before{background:var(--red)}.gate-blue::before{background:var(--blue)}.gate-white::before{background:var(--white)}.gate-yellow::before{background:var(--yellow)}
-    .rider-header{display:flex;justify-content:space-between;align-items:center;gap:6px;width:100%}
-    .helmet-badge{font-size:0.66rem;font-weight:800;text-transform:uppercase;padding:3px 7px;border-radius:4px;white-space:nowrap;flex-shrink:0}
-    .sub-select{flex:1;max-width:58%;min-width:0;background:#2e3440;color:var(--text);border:1px solid #3b4252;border-radius:6px;padding:5px 6px;font-size:0.75rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .helmet-select{background:#121418;color:var(--text);border:1px solid var(--border);border-radius:4px;padding:3px 2px;font-size:0.65rem;font-weight:bold;width:auto;max-width:65px;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
-    .rider-name{font-size:0.98rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;justify-content:space-between;align-items:center}
-    .rider-name.unassigned{color:var(--muted);font-style:italic;font-size:0.88rem}
-    .rider-team-tag{font-size:0.68rem;color:var(--muted);font-weight:700}
-    .score-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%}
-    .score-btn{background:#2b303c;border:1px solid #3b4252;color:var(--text);padding:10px 0;border-radius:8px;font-weight:800;font-size:0.95rem;cursor:pointer;min-width:0}
-    .score-btn:disabled,.spec-btn:disabled{opacity:0.35;cursor:not-allowed}
-    .score-btn.selected-4,.score-btn.selected-3{background:#00c853;color:#000;border-color:#00e676}
-    .score-btn.selected-2{background:#29b6f6;color:#000;border-color:#4fc3f7}
-    .score-btn.selected-1{background:#ffa726;color:#000;border-color:#ffb74d}
-    .score-btn.selected-0{background:#78909c;color:#000;border-color:#90a4ae}
-    .special-btns{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;width:100%}
-    .spec-btn{background:#181b20;border:1px solid #2e3440;color:var(--muted);padding:5px 2px;border-radius:6px;font-size:0.74rem;font-weight:800;cursor:pointer;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
-    .spec-btn small{font-size:0.55rem;font-weight:600;opacity:0.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-    .spec-btn.selected-spec{background:#d32f2f;color:#fff;border-color:#f44336}
-    .spec-btn.warning-active{background:#fdd835;color:#000;border-color:#fbc02d}
-    .codes-legend{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:7px 10px;font-size:0.68rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 12px;justify-content:center;margin-top:4px}
-    .codes-legend strong{color:var(--text)}
-    .share-bar{display:flex;gap:8px;margin-bottom:8px}
-    .btn-share{flex:1;background:linear-gradient(135deg,#00e676,#00b0ff);color:#000;border:none;padding:11px 12px;border-radius:10px;font-weight:900;font-size:0.84rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
-    .standings-mode-switch{display:flex;gap:6px;margin-bottom:8px;background:var(--card);padding:5px;border-radius:9px;border:1px solid var(--border)}
-    .standings-mode-switch button{flex:1;padding:7px 6px;border:none;border-radius:6px;background:transparent;color:var(--muted);font-size:0.74rem;font-weight:800;cursor:pointer}
-    .standings-mode-switch button.active{background:#2e3440;color:var(--accent)}
-    .ocr-team-target{display:none;gap:5px;margin-bottom:9px;background:#14171d;padding:5px;border-radius:8px;border:1px solid var(--border)}
-    .ocr-team-target.visible{display:flex}
-    .ocr-team-target button{flex:1;padding:6px 4px;border:none;border-radius:6px;background:transparent;color:var(--muted);font-size:0.7rem;font-weight:800;cursor:pointer}
-    .ocr-team-target button.active{background:#2e3440;color:var(--accent)}
-    .legend-bar{display:flex;gap:10px;font-size:0.7rem;color:var(--muted);margin-bottom:8px;padding:0 4px;flex-wrap:wrap}
-    .legend-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:middle}
-    .table-wrap{width:100%;overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-bottom:10px}
-    table{width:100%;border-collapse:collapse;background:var(--card);font-size:0.76rem}
-    th,td{padding:7px 3px;text-align:center;border-bottom:1px solid var(--border)}
-    th{background:#252a34;color:var(--muted);font-size:0.65rem}
-    td.name-col{text-align:left;font-weight:700;padding-left:7px;max-width:115px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    tr.final-line td{border-bottom:2px dashed var(--yellow)}
-    tr.qual-line td{border-bottom:2px dashed var(--accent)}
-    tr.team-sep-row td{background:#161920;color:var(--accent);font-weight:900;text-align:left;padding:7px 10px;font-size:0.8rem}
-    .tot-col{font-weight:900;color:var(--accent);font-size:0.86rem;background:rgba(0,230,118,0.08)}
-    .sgp-col{font-weight:900;color:var(--yellow);font-size:0.86rem;background:rgba(253,216,53,0.12)}
-    .sf-col{background:rgba(41,182,246,0.08);font-weight:700}
-    .fin-col{background:rgba(253,216,53,0.12);font-weight:800;color:var(--yellow)}
-    .btn-tie-swap{background:#2e3440;border:1px solid var(--accent);color:var(--accent);border-radius:4px;padding:1px 5px;font-size:0.68rem;font-weight:900;cursor:pointer;margin-left:4px}
-    .card-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:12px}
-    .card-box h2{font-size:0.92rem;margin-bottom:10px;color:var(--accent);display:flex;align-items:center;gap:6px}
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .form-group{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
-    .form-group.full{grid-column:1 / -1}
-    .form-group label{font-size:0.7rem;color:var(--muted);font-weight:700;text-transform:uppercase}
-    .form-group input,.form-group textarea{background:#121418;border:1px solid var(--border);color:var(--text);padding:9px 10px;border-radius:8px;font-size:0.88rem;width:100%}
-    .photo-btn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
-    .photo-upload-zone{border:2px dashed #3b4252;border-radius:10px;padding:10px;text-align:center;cursor:pointer;background:#161920;font-size:0.78rem;font-weight:700;color:var(--text);display:flex;align-items:center;justify-content:center;gap:6px}
-    .track-preview-wrap img{width:100%;height:120px;object-fit:cover;border-radius:8px;margin-top:6px;display:none;border:1px solid var(--border)}
-    .track-preview-wrap img.show{display:block}
-    .btn-primary{width:100%;padding:12px;border-radius:8px;border:none;font-weight:800;background:var(--accent);color:#000;font-size:0.9rem;cursor:pointer;margin-top:6px}
-    .btn-secondary{width:100%;padding:11px 8px;border-radius:8px;border:1px solid var(--accent);font-weight:800;background:rgba(0,230,118,0.1);color:var(--accent);font-size:0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
-    .btn-reset{width:100%;padding:11px;border-radius:8px;border:none;font-weight:700;background:#c62828;color:#fff;margin-top:8px;cursor:pointer;font-size:0.84rem}
-    .btn-outline-danger{width:100%;padding:10px;border-radius:8px;border:1px solid #c62828;font-weight:700;background:rgba(198,40,40,0.15);color:#ff8a80;margin-top:8px;cursor:pointer;font-size:0.82rem}
-    .backup-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
-    .btn-backup{background:#252a34;border:1px solid #3b4252;color:var(--text);padding:10px 8px;border-radius:8px;font-weight:800;font-size:0.78rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-align:center}
-    .team-riders-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:12px}
-    .team-riders-card.team-a{border-top:4px solid var(--red)}
-    .team-riders-card.team-b{border-top:4px solid var(--yellow)}
-    .team-name-input-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-    .team-name-input-row input{flex:1;background:#121418;border:1px solid var(--accent);color:#fff;font-weight:900;font-size:0.95rem;padding:9px 10px;border-radius:8px}
-    .rider-input-row{display:flex;align-items:center;gap:8px;background:#161920;padding:6px 9px;border-radius:8px;margin-bottom:6px;border:1px solid var(--border)}
-    .rider-input-row span{width:78px;font-weight:800;color:var(--muted);font-size:0.74rem;flex-shrink:0}
-    .rider-input-row input{flex:1;min-width:0;background:#121418;border:1px solid var(--border);color:var(--text);padding:7px 9px;border-radius:6px;font-size:0.88rem}
-    .history-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;display:flex;flex-direction:column;gap:8px}
-    .history-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-    .history-title{font-weight:800;font-size:0.95rem;color:var(--text)}
-    .history-meta{font-size:0.75rem;color:var(--muted)}
-    .history-podium{font-size:0.78rem;color:var(--accent);font-weight:700;background:#15181e;padding:6px 8px;border-radius:6px}
-    .history-actions{display:flex;gap:6px}
-    .history-actions button{flex:1;padding:7px;border-radius:6px;border:1px solid var(--border);background:#2e3440;color:var(--text);font-weight:700;font-size:0.75rem;cursor:pointer}
-    .history-actions button.del{background:rgba(198,40,40,0.2);border-color:#c62828;color:#ff8a80}
-    .lang-grid{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-    .lang-btn{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:#161920;color:var(--text);font-size:0.92rem;font-weight:800;cursor:pointer}
-    .lang-btnLeft{display:flex;align-items:center;gap:10px}
-    .lang-flag{font-size:1.35rem}
-    .lang-btn.active{border-color:var(--accent);background:rgba(0,230,118,0.1);color:var(--accent)}
-    .legal-box{font-size:0.74rem;color:var(--muted);line-height:1.45;background:#15181f;padding:10px 12px;border-radius:8px;border:1px solid var(--border)}
-    #ocr-status{font-size:0.8rem;color:var(--yellow);margin-top:8px;text-align:center;font-weight:700;display:none;line-height:1.35}
-    #paste-box-wrap{display:none;margin-top:10px}
+    :root {
+      --bg: #121418; --card: #1e2229; --border: #2e3440;
+      --text: #eceff4; --muted: #8892b0; --accent: #00e676;
+      --red: #e53935; --blue: #1e88e5; --white: #f5f5f5; --yellow: #fdd835;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    html, body { width: 100%; max-width: 100vw; overflow-x: hidden; background: var(--bg); color: var(--text); user-select: none; }
+    body { padding-bottom: 88px; }
+
+    header { background: var(--card); padding: 9px 10px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; gap: 6px; width: 100%; }
+    .app-logo-header { width: 32px; height: 32px; border-radius: 7px; object-fit: cover; flex-shrink: 0; border: 1px solid var(--border); background: #000; }
+    .header-title-box { min-width: 0; flex: 1; }
+    header h1 { font-size: 0.92rem; font-weight: 800; letter-spacing: 0.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .header-sub { font-size: 0.68rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .header-right { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .event-badge { font-size: 0.68rem; background: #2e3440; padding: 5px 7px; border-radius: 6px; color: var(--accent); font-weight: 800; white-space: nowrap; }
+    .btn-top { background: #2e3440; border: 1px solid #3b4252; color: var(--text); padding: 5px 7px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 3px; }
+    .btn-top.danger { background: rgba(198, 40, 40, 0.25); border-color: #c62828; color: #ff8a80; }
+    .btn-top.mode-btn { border-color: var(--accent); color: var(--accent); }
+
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.86); z-index: 999; display: none; align-items: center; justify-content: center; padding: 14px; overflow-y: auto; }
+    .modal-backdrop.open { display: flex; }
+    .modal-box { background: var(--card); border: 1px solid var(--accent); border-radius: 16px; padding: 18px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 35px rgba(0,0,0,0.7); }
+    .modal-box h3 { font-size: 1.08rem; color: var(--accent); margin-bottom: 6px; font-weight: 900; }
+    .modal-box p { font-size: 0.78rem; color: var(--muted); margin-bottom: 14px; line-height: 1.35; }
+    .mode-choice-btn { width: 100%; background: #161920; border: 1px solid #3b4252; color: var(--text); padding: 13px 14px; border-radius: 12px; margin-bottom: 9px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; text-align: left; transition: 0.15s; }
+    .mode-choice-btn:hover, .mode-choice-btn.active { border-color: var(--accent); background: rgba(0,230,118,0.1); }
+    .mode-choice-left { display: flex; align-items: center; gap: 11px; }
+    .mode-choice-ico { font-size: 1.45rem; }
+    .mode-choice-title { font-size: 0.92rem; font-weight: 900; color: var(--text); }
+    .mode-choice-sub { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+    .qr-box { background: #ffffff; padding: 14px; border-radius: 12px; display: inline-block; margin-bottom: 12px; }
+    .qr-box img { width: 200px; height: 200px; display: block; }
+    .qr-url { font-size: 0.72rem; color: var(--text); background: #121418; padding: 8px; border-radius: 6px; margin-bottom: 12px; word-break: break-all; border: 1px solid var(--border); }
+    .qr-btn-row { display: flex; gap: 8px; }
+    .qr-btn-row button { flex: 1; padding: 10px; border-radius: 8px; border: none; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
+    .qr-btn-share { background: var(--accent); color: #000; }
+    .qr-btn-close { background: #2e3440; color: var(--text); }
+
+    .team-score-banner { background: #161920; border-bottom: 1px solid var(--border); padding: 8px 12px; display: none; align-items: center; justify-content: space-between; gap: 8px; }
+    .team-score-banner.visible { display: flex; }
+    .ts-side { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .ts-side.right { text-align: right; align-items: flex-end; }
+    .ts-dots { display: flex; gap: 4px; align-items: center; font-size: 0.65rem; color: var(--muted); font-weight: 800; text-transform: uppercase; }
+    .ts-dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+    .ts-name { font-size: 0.86rem; font-weight: 900; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+    .ts-center { background: var(--card); border: 1px solid var(--accent); border-radius: 10px; padding: 4px 12px; font-size: 1.15rem; font-weight: 900; color: var(--accent); white-space: nowrap; letter-spacing: 1px; }
+
+    .track-hero { width: 100%; height: 110px; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); display: none; background: #090b10; }
+    .track-hero.visible { display: block; }
+    .track-hero img { width: 100%; height: 100%; object-fit: cover; opacity: 0.75; }
+    .track-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(18,20,24,0.95), rgba(18,20,24,0.15)); display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 14px; }
+    .track-hero-title { font-size: 1.02rem; font-weight: 900; color: #fff; }
+    .track-hero-meta { font-size: 0.74rem; color: var(--accent); font-weight: 700; }
+
+    nav { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; background: var(--card); border-top: 1px solid var(--border); display: flex; z-index: 100; }
+    nav button { flex: 1; min-width: 0; background: none; border: none; color: var(--muted); padding: 8px 1px; font-size: 0.6rem; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
+    nav button .nav-ico { font-size: 1.05rem; line-height: 1; height: 18px; display: flex; align-items: center; justify-content: center; }
+    nav button span.nav-lbl { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+    nav button.active { color: var(--accent); border-top: 2px solid var(--accent); }
+    .drift-bike-svg { width: 22px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transform: rotate(-14deg); }
+
+    .container { width: 100%; max-width: 600px; margin: 0 auto; padding: 10px; overflow-x: hidden; }
+    .tab-content { display: none; width: 100%; }
+    .tab-content.active { display: block; }
+
+    .heat-nav { display: flex; align-items: center; justify-content: space-between; gap: 6px; background: var(--card); padding: 8px; border-radius: 10px; margin-bottom: 8px; border: 1px solid var(--border); width: 100%; }
+    .heat-nav button { background: #2e3440; color: var(--text); border: none; padding: 9px 11px; border-radius: 8px; font-weight: 800; font-size: 0.82rem; cursor: pointer; flex-shrink: 0; }
+    .heat-nav select { flex: 1; min-width: 0; background: #121418; color: var(--text); border: 1px solid var(--border); padding: 7px 6px; border-radius: 6px; font-size: 0.84rem; font-weight: 800; text-overflow: ellipsis; }
+
+    .heat-time-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: var(--card); padding: 7px 10px; border-radius: 10px; margin-bottom: 8px; border: 1px solid var(--border); width: 100%; }
+    .heat-time-left { display: flex; align-items: center; gap: 6px; font-size: 0.76rem; font-weight: 800; color: var(--text); flex-wrap: wrap; }
+    .heat-time-input-wrap { display: flex; align-items: center; gap: 5px; }
+    .heat-time-input { width: 86px; background: #121418; border: 1px solid #3b4252; color: var(--accent); font-weight: 900; font-size: 0.86rem; padding: 5px 8px; border-radius: 6px; text-align: right; }
+    .heat-time-unit { font-size: 0.74rem; color: var(--muted); font-weight: 800; }
+    .best-time-badge { font-size: 0.66rem; background: rgba(0, 230, 118, 0.12); color: var(--accent); border: 1px solid rgba(0, 230, 118, 0.35); padding: 3px 6px; border-radius: 6px; font-weight: 800; white-space: nowrap; }
+
+    .swap-lanes-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 9px; }
+    .btn-swap-lane { background: #1c2028; border: 1px solid #3b4252; color: var(--text); padding: 8px 6px; border-radius: 9px; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .btn-swap-lane:active { transform: scale(0.98); border-color: var(--accent); }
+    .btn-swap-lane.team-a { border-left: 4px solid var(--red); border-right: 4px solid var(--blue); }
+    .btn-swap-lane.team-b { border-left: 4px solid var(--white); border-right: 4px solid var(--yellow); }
+    .btn-swap-lane span:first-child { font-size: 0.68rem; color: var(--muted); font-weight: 700; margin-bottom: 2px; }
+    .btn-swap-lane span:nth-child(2) { font-size: 0.86rem; font-weight: 900; color: #fff; margin-bottom: 3px; }
+    .btn-swap-lane small { font-size: 0.62rem; color: var(--accent); }
+
+    .qual-info-card { background: #181c24; border: 1px solid var(--accent); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; width: 100%; }
+    .qual-info-header { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 5px; }
+    .qual-info-title { font-size: 0.76rem; font-weight: 900; color: var(--accent); text-transform: uppercase; }
+    .qual-info-sub { font-size: 0.72rem; color: var(--muted); line-height: 1.35; }
+    .qual-badges-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
+    .qual-pill { background: var(--card); border: 1px solid var(--border); padding: 4px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; color: var(--text); }
+    .qual-pill span { color: var(--accent); margin-right: 4px; }
+    .btn-mini { background: #2e3440; color: var(--text); border: 1px solid #3b4252; padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 0.68rem; cursor: pointer; }
+
+    .gate-card { background: var(--card); border-radius: 12px; padding: 10px 10px 10px 16px; margin-bottom: 9px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden; width: 100%; }
+    .gate-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 8px; }
+    .gate-red::before { background: var(--red); }
+    .gate-blue::before { background: var(--blue); }
+    .gate-white::before { background: var(--white); }
+    .gate-yellow::before { background: var(--yellow); }
+
+    .rider-header { display: flex; justify-content: space-between; align-items: center; gap: 6px; width: 100%; }
+    .helmet-badge { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; padding: 3px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
+    .badge-red { background: var(--red); color: #fff; }
+    .badge-blue { background: var(--blue); color: #fff; }
+    .badge-white { background: var(--white); color: #111; }
+    .badge-yellow { background: var(--yellow); color: #111; }
+
+    .sub-select { flex: 1; max-width: 58%; min-width: 0; background: #2e3440; color: var(--text); border: 1px solid #3b4252; border-radius: 6px; padding: 5px 6px; font-size: 0.75rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .helmet-select { background: #121418; color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 3px 2px; font-size: 0.65rem; font-weight: bold; width: auto; max-width: 65px; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+    
+    .rider-name { font-size: 0.98rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; justify-content: space-between; align-items: center; }
+    .rider-name.unassigned { color: var(--muted); font-style: italic; font-size: 0.88rem; }
+    .rider-team-tag { font-size: 0.68rem; color: var(--muted); font-weight: 700; }
+
+    .score-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; }
+    .score-btn { background: #2b303c; border: 1px solid #3b4252; color: var(--text); padding: 10px 0; border-radius: 8px; font-weight: 800; font-size: 0.95rem; cursor: pointer; min-width: 0; }
+    .score-btn:disabled, .spec-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .score-btn.selected-4, .score-btn.selected-3 { background: #00c853; color: #000; border-color: #00e676; }
+    .score-btn.selected-2 { background: #29b6f6; color: #000; border-color: #4fc3f7; }
+    .score-btn.selected-1 { background: #ffa726; color: #000; border-color: #ffb74d; }
+    .score-btn.selected-0 { background: #78909c; color: #000; border-color: #90a4ae; }
+
+    .special-btns { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; width: 100%; }
+    .spec-btn { background: #181b20; border: 1px solid #2e3440; color: var(--muted); padding: 5px 2px; border-radius: 6px; font-size: 0.74rem; font-weight: 800; cursor: pointer; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.15; }
+    .spec-btn small { font-size: 0.55rem; font-weight: 600; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+    .spec-btn.selected-spec { background: #d32f2f; color: #fff; border-color: #f44336; }
+    .spec-btn.warning-active { background: #fdd835; color: #000; border-color: #fbc02d; }
+
+    .codes-legend { background: var(--card); border: 1px solid var(--border); border-radius: 9px; padding: 7px 10px; font-size: 0.68rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 12px; justify-content: center; margin-top: 4px; }
+    .codes-legend strong { color: var(--text); }
+
+    .share-bar { display: flex; gap: 8px; margin-bottom: 8px; }
+    .btn-share { flex: 1; background: linear-gradient(135deg, #00e676, #00b0ff); color: #000; border: none; padding: 11px 12px; border-radius: 10px; font-weight: 900; font-size: 0.84rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+    .standings-mode-switch { display: flex; gap: 6px; margin-bottom: 8px; background: var(--card); padding: 5px; border-radius: 9px; border: 1px solid var(--border); }
+    .standings-mode-switch button { flex: 1; padding: 7px 6px; border: none; border-radius: 6px; background: transparent; color: var(--muted); font-size: 0.74rem; font-weight: 800; cursor: pointer; }
+    .standings-mode-switch button.active { background: #2e3440; color: var(--accent); }
+
+    .ocr-team-target { display: none; gap: 5px; margin-bottom: 9px; background: #14171d; padding: 5px; border-radius: 8px; border: 1px solid var(--border); }
+    .ocr-team-target.visible { display: flex; }
+    .ocr-team-target button { flex: 1; padding: 6px 4px; border: none; border-radius: 6px; background: transparent; color: var(--muted); font-size: 0.7rem; font-weight: 800; cursor: pointer; }
+    .ocr-team-target button.active { background: #2e3440; color: var(--accent); }
+
+    .legend-bar { display: flex; gap: 10px; font-size: 0.7rem; color: var(--muted); margin-bottom: 8px; padding: 0 4px; flex-wrap: wrap; }
+    .legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+    .table-wrap { width: 100%; overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 10px; }
+    table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 0.76rem; }
+    th, td { padding: 7px 3px; text-align: center; border-bottom: 1px solid var(--border); }
+    th { background: #252a34; color: var(--muted); font-size: 0.65rem; }
+    td.name-col { text-align: left; font-weight: 700; padding-left: 7px; max-width: 115px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    tr.final-line td { border-bottom: 2px dashed var(--yellow); }
+    tr.qual-line td { border-bottom: 2px dashed var(--accent); }
+    tr.team-sep-row td { background: #161920; color: var(--accent); font-weight: 900; text-align: left; padding: 7px 10px; font-size: 0.8rem; }
+    .tot-col { font-weight: 900; color: var(--accent); font-size: 0.86rem; background: rgba(0, 230, 118, 0.08); }
+    .sgp-col { font-weight: 900; color: var(--yellow); font-size: 0.86rem; background: rgba(253, 216, 53, 0.12); }
+    .sf-col { background: rgba(41, 182, 246, 0.08); font-weight: 700; }
+    .fin-col { background: rgba(253, 216, 53, 0.12); font-weight: 800; color: var(--yellow); }
+    .btn-tie-swap { background: #2e3440; border: 1px solid var(--accent); color: var(--accent); border-radius: 4px; padding: 1px 5px; font-size: 0.68rem; font-weight: 900; cursor: pointer; margin-left: 4px; }
+
+    .card-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 13px; margin-bottom: 12px; }
+    .card-box h2 { font-size: 0.92rem; margin-bottom: 10px; color: var(--accent); display: flex; align-items: center; gap: 6px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { font-size: 0.7rem; color: var(--muted); font-weight: 700; text-transform: uppercase; }
+    .form-group input, .form-group textarea { background: #121418; border: 1px solid var(--border); color: var(--text); padding: 9px 10px; border-radius: 8px; font-size: 0.88rem; width: 100%; }
+
+    .photo-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+    .photo-upload-zone { border: 2px dashed #3b4252; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; background: #161920; font-size: 0.78rem; font-weight: 700; color: var(--text); display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .track-preview-wrap img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-top: 6px; display: none; border: 1px solid var(--border); }
+    .track-preview-wrap img.show { display: block; }
+
+    .btn-primary { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 800; background: var(--accent); color: #000; font-size: 0.9rem; cursor: pointer; margin-top: 6px; }
+    .btn-secondary { width: 100%; padding: 11px 8px; border-radius: 8px; border: 1px solid var(--accent); font-weight: 800; background: rgba(0,230,118,0.1); color: var(--accent); font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-reset { width: 100%; padding: 11px; border-radius: 8px; border: none; font-weight: 700; background: #c62828; color: #fff; margin-top: 8px; cursor: pointer; font-size: 0.84rem; }
+    .btn-outline-danger { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #c62828; font-weight: 700; background: rgba(198, 40, 40, 0.15); color: #ff8a80; margin-top: 8px; cursor: pointer; font-size: 0.82rem; }
+
+    .backup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+    .btn-backup { background: #252a34; border: 1px solid #3b4252; color: var(--text); padding: 10px 8px; border-radius: 8px; font-weight: 800; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; }
+
+    .team-riders-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 12px; }
+    .team-riders-card.team-a { border-top: 4px solid var(--red); }
+    .team-riders-card.team-b { border-top: 4px solid var(--yellow); }
+    .team-name-input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .team-name-input-row input { flex: 1; background: #121418; border: 1px solid var(--accent); color: #fff; font-weight: 900; font-size: 0.95rem; padding: 9px 10px; border-radius: 8px; }
+    .rider-input-row { display: flex; align-items: center; gap: 8px; background: #161920; padding: 6px 9px; border-radius: 8px; margin-bottom: 6px; border: 1px solid var(--border); }
+    .rider-input-row span { width: 78px; font-weight: 800; color: var(--muted); font-size: 0.74rem; flex-shrink: 0; }
+    .rider-input-row input { flex: 1; min-width: 0; background: #121418; border: 1px solid var(--border); color: var(--text); padding: 7px 9px; border-radius: 6px; font-size: 0.88rem; }
+
+    .history-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .history-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .history-title { font-weight: 800; font-size: 0.95rem; color: var(--text); }
+    .history-meta { font-size: 0.75rem; color: var(--muted); }
+    .history-podium { font-size: 0.78rem; color: var(--accent); font-weight: 700; background: #15181e; padding: 6px 8px; border-radius: 6px; }
+    .history-actions { display: flex; gap: 6px; }
+    .history-actions button { flex: 1; padding: 7px; border-radius: 6px; border: 1px solid var(--border); background: #2e3440; color: var(--text); font-weight: 700; font-size: 0.75rem; cursor: pointer; }
+    .history-actions button.del { background: rgba(198,40,40,0.2); border-color: #c62828; color: #ff8a80; }
+
+    .lang-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+    .lang-btn { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); background: #161920; color: var(--text); font-size: 0.92rem; font-weight: 800; cursor: pointer; }
+    .lang-btnLeft { display: flex; align-items: center; gap: 10px; }
+    .lang-flag { font-size: 1.35rem; }
+    .lang-btn.active { border-color: var(--accent); background: rgba(0, 230, 118, 0.1); color: var(--accent); }
+    .legal-box { font-size: 0.74rem; color: var(--muted); line-height: 1.45; background: #15181f; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); }
+    
+    #ocr-status { font-size: 0.8rem; color: var(--yellow); margin-top: 8px; text-align: center; font-weight: 700; display: none; line-height: 1.35; }
+    #paste-box-wrap { display: none; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -191,7 +233,7 @@
   <img src="icon.png?v=2" alt="Logo" class="app-logo-header" onerror="this.style.display='none'">
   <div class="header-title-box">
     <h1 id="header-event-title">SPEEDWAY LIVE</h1>
-    <div class="header-sub" id="header-event-sub">v4.9</div>
+    <div class="header-sub" id="header-event-sub">v4.9b</div>
   </div>
   <div class="header-right">
     <button type="button" class="btn-top mode-btn" onclick="openModeModal()">🏁 <span data-i18n="btnTopFormat">Formato</span></button>
@@ -218,21 +260,114 @@
     <div id="mode-step-main">
       <h3 data-i18n="modalChooseTypeTitle">🏁 Scegli il Tipo di Gara</h3>
       <p data-i18n="modalChooseTypeSub">Seleziona se vuoi gestire una gara individuale oppure una gara a squadre / coppie:</p>
-      <button type="button" class="mode-choice-btn" onclick="selectAppMode('sgp')"><div class="mode-choice-left"><span class="mode-choice-ico">🏆</span><div><div class="mode-choice-title" data-i18n="modeSgpTitle">Gara Individuale GP</div><div class="mode-choice-sub" data-i18n="modeSgpSub">16 Piloti • 20 Batt + LCQ + Finale</div></div></div><span>▶</span></button>
-      <button type="button" class="mode-choice-btn" onclick="selectAppMode('sgp_sprint')"><div class="mode-choice-left"><span class="mode-choice-ico">⏱️</span><div><div class="mode-choice-title" data-i18n="modeSprintTitle">Sprint Race (Qualifiche)</div><div class="mode-choice-sub" data-i18n="modeSprintSub">16 Piloti • 13 Batterie (Knockout)</div></div></div><span>▶</span></button>
-      <button type="button" class="mode-choice-btn" onclick="selectAppMode('ita_indiv')"><div class="mode-choice-left"><span class="mode-choice-ico">🇮🇹</span><div><div class="mode-choice-title" data-i18n="modeItaTitle">Gara Individuale (14 Piloti)</div><div class="mode-choice-sub" data-i18n="modeItaSub">14 Piloti • 18 Batt + LCQ + Finale</div></div></div><span>▶</span></button>
-      <button type="button" class="mode-choice-btn" onclick="showTeamSubmenu(true)"><div class="mode-choice-left"><span class="mode-choice-ico">👥</span><div><div class="mode-choice-title" data-i18n="modeTeamsTitle">Gara a Squadre / Coppie</div><div class="mode-choice-sub" data-i18n="modeTeamsSub">Leghe (UK, SE, DK, PL) e Nazioni</div></div></div><span>▶</span></button>
-      <button type="button" class="qr-btn-close" style="width:100%;padding:10px;border-radius:8px;border:none;font-weight:800;margin-top:6px;cursor:pointer;" onclick="closeModeModal()" data-i18n="modalStayCurrent">Chiudi</button>
+      
+      <button type="button" class="mode-choice-btn" onclick="selectAppMode('sgp')">
+        <div class="mode-choice-left">
+          <span class="mode-choice-ico">🏆</span>
+          <div>
+            <div class="mode-choice-title" data-i18n="modeSgpTitle">Gara Individuale GP (23 Batterie)</div>
+            <div class="mode-choice-sub" data-i18n="modeSgpSub">16 Piloti + 2 Riserve • 20 Batterie + LCQ 1&2 + Finale</div>
+          </div>
+        </div>
+        <span>▶</span>
+      </button>
+
+      <button type="button" class="mode-choice-btn" onclick="selectAppMode('sgp_sprint')">
+        <div class="mode-choice-left">
+          <span class="mode-choice-ico">⏱️</span>
+          <div>
+            <div class="mode-choice-title" data-i18n="modeSprintTitle">SGP Sprint Race (Qualifiche)</div>
+            <div class="mode-choice-sub" data-i18n="modeSprintSub">16 Piloti • Ottavi + Semifinali + Finale (4,3,2,1)</div>
+          </div>
+        </div>
+        <span>▶</span>
+      </button>
+
+      <button type="button" class="mode-choice-btn" onclick="selectAppMode('ita_indiv')">
+        <div class="mode-choice-left">
+          <span class="mode-choice-ico">🇮🇹</span>
+          <div>
+            <div class="mode-choice-title" data-i18n="modeItaTitle">Gara Individuale (14 Piloti)</div>
+            <div class="mode-choice-sub" data-i18n="modeItaSub">14 Piloti • 18 Batterie + Last Chance + Finale</div>
+          </div>
+        </div>
+        <span>▶</span>
+      </button>
+
+      <button type="button" class="mode-choice-btn" onclick="showTeamSubmenu(true)">
+        <div class="mode-choice-left">
+          <span class="mode-choice-ico">👥</span>
+          <div>
+            <div class="mode-choice-title" data-i18n="modeTeamsTitle">Gara a Squadre / Coppie</div>
+            <div class="mode-choice-sub" data-i18n="modeTeamsSub">Leghe Nazionali (UK, SE, DK, PL) e Torneo Nazioni</div>
+          </div>
+        </div>
+        <span>▶</span>
+      </button>
+
+      <button type="button" class="qr-btn-close" style="width:100%;padding:10px;border-radius:8px;border:none;font-weight:800;margin-top:6px;cursor:pointer;" onclick="closeModeModal()" data-i18n="modalStayCurrent">Chiudi e resta nella gara attuale</button>
     </div>
+
     <div id="mode-step-teams" style="display:none;">
       <h3 data-i18n="modalChooseLeagueTitle">👥 Scegli Formato</h3>
-      <p data-i18n="modalChooseLeagueSub">Ogni formato ha le sue regole:</p>
-      <button type="button" class="mode-choice-btn" onclick="selectAppMode('uk')"><div class="mode-choice-left"><span class="mode-choice-ico">🇬🇧</span><div><div class="mode-choice-title" data-i18n="leagueUkTitle">Lega Inglese</div><div class="mode-choice-sub" data-i18n="leagueUkSub">15 Batterie • 7 Piloti</div></div></div><span>▶</span></button>
-      <button type="button" class="mode-choice-btn" onclick="selectAppMode('se')"><div class="mode-choice-left"><span class="mode-choice-ico">🇸🇪</span><div><div class="mode-choice-title" data-i18n="leagueSeTitle">Lega Svedese</div><div class="mode-choice-sub" data-i18n="leagueSeSub">15 Batterie • 7 Piloti</div></div></div><span>▶</span></button>
-      <button type="button" class="mode-choice-btn" onclick="selectAppMode('dk')"><div class="mode-choice-left"><span class="mode-choice-ico">🇩🇰</span><div><div class="mode-choice-title" data-i18n="leagueDkTitle">Lega Danese</div><div class="mode-choice-sub" data-i18n="leagueDkSub">14 Batterie • 5 Piloti</div></div></div><span>▶</span></button>
-      <button type="button" class="mode-choice-btn" onclick="selectAppMode('pl')"><div class="mode-choice-left"><span class="mode-choice-ico">🇵🇱</span><div><div class="mode-choice-title" data-i18n="leaguePlTitle">Lega Polacca</div><div class="mode-choice-sub" data-i18n="leaguePlSub">15 Batterie • 8 Piloti</div></div></div><span>▶</span></button>
-      <button type="button" class="mode-choice-btn" onclick="selectAppMode('son')"><div class="mode-choice-left"><span class="mode-choice-ico">🌍</span><div><div class="mode-choice-title" data-i18n="leagueSonTitle">Nazioni (SON)</div><div class="mode-choice-sub" data-i18n="leagueSonSub">A Coppie • Punti 4-3-2-0</div></div></div><span>▶</span></button>
-      <button type="button" class="qr-btn-close" style="width:100%;padding:10px;border-radius:8px;border:none;font-weight:800;margin-top:6px;cursor:pointer;" onclick="showTeamSubmenu(false)" data-i18n="btnBack">◀ Indietro</button>
+      <p data-i18n="modalChooseLeagueSub">Ogni formato applica il calendario batterie, numero piloti e punteggio ufficiale:</p>
+      
+      <button type="button" class="mode-choice-btn" onclick="selectAppMode('uk')">
+        <div class="mode-choice-left">
+          <span class="mode-choice-ico">🇬🇧</span>
+          <div>
+            <div class="mode-choice-title" data-i18n="leagueUkTitle">Lega Inglese</div>
+            <div class="mode-choice-sub" data-i18n="leagueUkSub">15 Batterie • 7 Piloti per squadra • Pt 3-2-1-0</div>
+          </div>
+        </div>
+        <span>▶</span>
+      </button>
+      
+      <button type="button" class="mode-choice-btn" onclick="selectAppMode('se')">
+        <div class="mode-choice-left">
+          <span class="mode-choice-ico">🇸🇪</span>
+          <div>
+            <div class="mode-choice-title" data-i18n="leagueSeTitle">Lega Svedese</div>
+            <div class="mode-choice-sub" data-i18n="leagueSeSub">15 Batterie • 7 Piloti per squadra • Pt 3-2-1-0</div>
+          </div>
+        </div>
+        <span>▶</span>
+      </button>
+      
+      <button type="button" class="mode-choice-btn" onclick="selectAppMode('dk')">
+        <div class="mode-choice-left">
+          <span class="mode-choice-ico">🇩🇰</span>
+          <div>
+            <div class="mode-choice-title" data-i18n="leagueDkTitle">Lega Danese</div>
+            <div class="mode-choice-sub" data-i18n="leagueDkSub">14 Batterie • 5 Piloti per squadra • Pt 3-2-1-0</div>
+          </div>
+        </div>
+        <span>▶</span>
+      </button>
+      
+      <button type="button" class="mode-choice-btn" onclick="selectAppMode('pl')">
+        <div class="mode-choice-left">
+          <span class="mode-choice-ico">🇵🇱</span>
+          <div>
+            <div class="mode-choice-title" data-i18n="leaguePlTitle">Lega Polacca</div>
+            <div class="mode-choice-sub" data-i18n="leaguePlSub">15 Batterie • 8 Piloti per squadra • Pt 3-2-1-0</div>
+          </div>
+        </div>
+        <span>▶</span>
+      </button>
+      
+      <button type="button" class="mode-choice-btn" onclick="selectAppMode('son')">
+        <div class="mode-choice-left">
+          <span class="mode-choice-ico">🌍</span>
+          <div>
+            <div class="mode-choice-title" data-i18n="leagueSonTitle">Torneo Nazioni a Coppie</div>
+            <div class="mode-choice-sub" data-i18n="leagueSonSub">Gara a Coppie • 3 Piloti per Nazione • Punteggio 4-3-2-0</div>
+          </div>
+        </div>
+        <span>▶</span>
+      </button>
+
+      <button type="button" class="qr-btn-close" style="width:100%;padding:10px;border-radius:8px;border:none;font-weight:800;margin-top:6px;cursor:pointer;" onclick="showTeamSubmenu(false)" data-i18n="btnBack">◀ Torna Indietro</button>
     </div>
   </div>
 </div>
@@ -240,7 +375,7 @@
 <div class="modal-backdrop" id="qr-modal" onclick="if(event.target===this)closeQrModal()">
   <div class="modal-box">
     <h3 data-i18n="qrTitle">📲 Condividi Speedway Live</h3>
-    <p data-i18n="qrDesc">Fai inquadrare questo QR Code con la fotocamera per aprire e installare l'app sullo smartphone:</p>
+    <p data-i18n="qrDesc">Inquadra il QR Code:</p>
     <div class="qr-box">
       <img id="qr-img" src="" alt="QR Code Speedway Live">
     </div>
@@ -261,6 +396,7 @@
 </div>
 
 <div class="container">
+  
   <div id="tab-event" class="tab-content">
     <div class="card-box">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
@@ -269,7 +405,7 @@
       </div>
       <div class="form-grid">
         <div class="form-group full">
-          <label data-i18n="evNameLbl">Nome della Gara / Evento</label>
+          <label data-i18n="evNameLbl">Nome Gara / Evento</label>
           <input type="text" id="ev-name" data-i18n-placeholder="evNamePh" placeholder="Es. Grand Prix of Poland" oninput="updateEventMeta()">
         </div>
         <div class="form-group"><label data-i18n="evDateLbl">Data</label><input type="date" id="ev-date" oninput="updateEventMeta()"></div>
@@ -279,7 +415,7 @@
         <div class="form-group"><label data-i18n="evLenLbl">Pista (m)</label><input type="text" id="ev-length" placeholder="Es. 318m" oninput="updateEventMeta()"></div>
         <div class="form-group"><label data-i18n="evNotesLbl">Note</label><input type="text" id="ev-notes" placeholder="Es. Fondo compatto" oninput="updateEventMeta()"></div>
         <div class="form-group full">
-          <label data-i18n="evPhotoLbl">Foto Orizzontale della Pista</label>
+          <label data-i18n="evPhotoLbl">Foto Orizzontale Pista</label>
           <div class="photo-btn-grid">
             <label class="photo-upload-zone" for="track-camera-input"><span data-i18n="btnTakePhoto">📸 Scatta Foto</span><input type="file" id="track-camera-input" accept="image/*" capture="environment" style="display:none" onchange="handleTrackPhoto(this)"></label>
             <label class="photo-upload-zone" for="track-gallery-input"><span data-i18n="btnFromGallery">🖼️ Da Galleria</span><input type="file" id="track-gallery-input" accept="image/*" style="display:none" onchange="handleTrackPhoto(this)"></label>
@@ -297,26 +433,37 @@
   <div id="tab-riders" class="tab-content">
     <div class="card-box">
       <h2 data-i18n="ridersSectionTitle">🏍️ Inserimento Rapido Piloti</h2>
-      <p style="font-size:0.75rem; color:var(--muted); margin-bottom:10px; line-height:1.35;" data-i18n="ridersOcrDesc">Scatta una foto, caricala dalla galleria oppure incolla il testo. OCR ottimizzato.</p>
+      <p style="font-size:0.75rem; color:var(--muted); margin-bottom:10px; line-height:1.35;" data-i18n="ridersOcrDesc">
+        Scatta o carica foto, oppure incolla il testo. Il motore OCR leggero evita crash.
+      </p>
+
       <div class="ocr-team-target" id="ocr-team-target-bar">
-        <button type="button" id="ocr-target-both" class="active" onclick="setOcrTarget('both')" data-i18n="ocrTargetBoth">Entrambe</button>
+        <button type="button" id="ocr-target-both" class="active" onclick="setOcrTarget('both')" data-i18n="ocrTargetBoth">Entrambe le Squadre</button>
         <button type="button" id="ocr-target-a" onclick="setOcrTarget('a')" data-i18n="ocrTargetHome">🔴🔵 Solo Casa</button>
         <button type="button" id="ocr-target-b" onclick="setOcrTarget('b')" data-i18n="ocrTargetAway">⚪🟡 Solo Ospiti</button>
       </div>
+
       <div class="photo-btn-grid">
         <label class="btn-secondary" for="ocr-camera-input"><span data-i18n="btnTakePhoto">📸 Scatta Foto</span><input type="file" id="ocr-camera-input" accept="image/*" capture="environment" style="display:none" onchange="processRiderListPhoto(this)"></label>
         <label class="btn-secondary" for="ocr-gallery-input"><span data-i18n="btnLoadPhoto">🖼️ Carica Foto</span><input type="file" id="ocr-gallery-input" accept="image/*" style="display:none" onchange="processRiderListPhoto(this)"></label>
       </div>
+      
       <button type="button" class="btn-backup" style="width:100%;" onclick="togglePasteBox()" data-i18n="btnPasteList">📋 Incolla / Verifica Testo</button>
+      
       <div id="paste-box-wrap">
-        <div class="form-group" style="margin-top:8px;"><textarea id="paste-riders-area" rows="6" placeholder="1. Bartosz Zmarzlik&#10;2. Robert Lambert&#10;..."></textarea></div>
+        <div class="form-group" style="margin-top:8px;">
+          <textarea id="paste-riders-area" rows="6" placeholder="1. Bartosz Zmarzlik&#10;2. Robert Lambert&#10;..."></textarea>
+        </div>
         <button type="button" class="btn-primary" onclick="applyPastedRiders()" data-i18n="btnApplyPaste">✅ Applica Testo</button>
       </div>
       <div id="ocr-status"></div>
     </div>
+
     <div id="riders-inputs"></div>
+    
     <button type="button" class="btn-primary" onclick="goToHeats()" data-i18n="btnGoToHeats">Vai alle Batterie ▶</button>
     <button type="button" class="btn-outline-danger" onclick="resetRidersNames()" data-i18n="btnResetRiders">🗑️ Ripristina Nomi</button>
+    <button type="button" class="btn-reset" onclick="resetAllScores()" data-i18n="btnResetScores">🔄 Azzera Punteggi</button>
   </div>
 
   <div id="tab-heats" class="tab-content active">
@@ -325,6 +472,7 @@
       <select id="heat-select" onchange="selectHeat(this.value)"></select>
       <button type="button" onclick="changeHeat(1)" data-i18n="btnNext">Succ ▶</button>
     </div>
+
     <div class="heat-time-bar">
       <div class="heat-time-left">
         <span>⏱️ <span data-i18n="heatTimeLbl">Tempo:</span></span>
@@ -336,6 +484,7 @@
         <span class="heat-time-unit">sec</span>
       </div>
     </div>
+
     <div id="team-swap-lanes-box"></div>
     <div id="auto-finals-box"></div>
     <div id="gates-container"></div>
@@ -343,28 +492,41 @@
   </div>
 
   <div id="tab-card" class="tab-content">
-    <div class="share-bar"><button type="button" class="btn-share" onclick="exportRacePoster('card')" data-i18n="btnShareCard">📲 Condividi Tabellone</button></div>
-    <div class="table-wrap"><table id="scorecard-table"><thead id="scorecard-thead"></thead><tbody></tbody></table></div>
+    <div class="share-bar">
+      <button type="button" class="btn-share" onclick="exportRacePoster('card')" data-i18n="btnShareCard">📲 Condividi Tabellone</button>
+    </div>
+    <div class="table-wrap">
+      <table id="scorecard-table"><thead id="scorecard-thead"></thead><tbody></tbody></table>
+    </div>
+    <div class="codes-legend" style="margin-top:8px;" id="card-codes-legend"></div>
   </div>
 
   <div id="tab-standings" class="tab-content">
-    <div class="share-bar"><button type="button" class="btn-share" onclick="exportRacePoster('standings')" data-i18n="btnShareStandings">📲 Condividi Classifica</button></div>
+    <div class="share-bar">
+      <button type="button" class="btn-share" onclick="exportRacePoster('standings')" data-i18n="btnShareStandings">📲 Condividi Classifica</button>
+    </div>
     <div class="standings-mode-switch" id="standings-mode-switch">
       <button type="button" id="btn-mode-final" class="active" onclick="setStandingsMode('final')" data-i18n="btnModeFinal">🏆 Classifica Finale</button>
-      <button type="button" id="btn-mode-qual" onclick="setStandingsMode('qual')" data-i18n="btnModeQual">⏱️ Qualificazioni</button>
+      <button type="button" id="btn-mode-qual" onclick="setStandingsMode('qual')" data-i18n="btnModeQual">⏱️ Classifica Qualificazioni</button>
     </div>
     <div class="legend-bar" id="standings-legend-bar"></div>
-    <div class="table-wrap"><table id="standings-table"><thead id="standings-thead"></thead><tbody></tbody></table></div>
+    <div class="table-wrap">
+      <table id="standings-table"><thead id="standings-thead"></thead><tbody></tbody></table>
+    </div>
+    <div class="codes-legend" style="margin-top:8px;" id="standings-codes-legend"></div>
   </div>
 
   <div id="tab-history" class="tab-content">
     <div class="card-box">
-      <h2 data-i18n="histSectionTitle">💾 Gestione & Archivio</h2>
+      <h2 data-i18n="histSectionTitle">💾 Gestione Storico</h2>
       <button type="button" class="btn-primary" style="margin-bottom:8px;" onclick="saveCurrentToArchive()" data-i18n="btnSaveArchive">📥 Salva nello Storico</button>
       <button type="button" class="btn-secondary" style="margin-bottom:10px;" onclick="openModeModal()" data-i18n="btnNewCleanRace">➕ Nuova Gara</button>
       <div class="backup-grid">
         <button type="button" class="btn-backup" onclick="exportBackupJson()" data-i18n="btnExportJson">⬇️ Esporta Backup</button>
-        <label class="btn-backup" for="import-json-input"><span data-i18n="btnImportJson">⬆️ Importa Backup</span><input type="file" id="import-json-input" accept=".json,application/json" style="display:none" onchange="importBackupJson(this)"></label>
+        <label class="btn-backup" for="import-json-input">
+          <span data-i18n="btnImportJson">⬆️ Importa Backup</span>
+          <input type="file" id="import-json-input" accept=".json,application/json" style="display:none" onchange="importBackupJson(this)">
+        </label>
       </div>
     </div>
     <div id="history-list"></div>
@@ -373,36 +535,165 @@
   <div id="tab-settings" class="tab-content">
     <div class="card-box">
       <h2 data-i18n="setSectionTitle">⚙️ Impostazioni & Lingua</h2>
+      <p style="font-size:0.78rem; color:var(--muted); margin-bottom:10px; line-height:1.4;" data-i18n="setLangDesc">Seleziona la lingua dell'app.</p>
       <div class="lang-grid" id="lang-buttons-container"></div>
     </div>
+
     <div class="card-box">
       <h2 data-i18n="legalTitle">⚖️ Note Legali & Disclaimer</h2>
-      <div class="legal-box" data-i18n="legalText">L'app è indipendente e non affiliata a FIM, WBD o leghe. I nomi dei formati sono descrittivi.</div>
+      <div class="legal-box" data-i18n="legalText">
+        Questa app è indipendente e non affiliata a FIM, WBD, Ekstraliga o altre leghe. Nomi usati a scopo descrittivo.
+      </div>
     </div>
   </div>
+
 </div>
 
 <nav>
-  <button type="button" id="nav-event" onclick="switchTab('event', this)"><div class="nav-ico">🏟️</div><span class="nav-lbl" data-i18n="navEvent">Evento</span></button>
-  <button type="button" id="nav-riders" onclick="switchTab('riders', this)"><div class="nav-ico"><svg class="drift-bike-svg" viewBox="0 0 28 20" aria-hidden="true"><path d="M1 16 L5 13 M1 12 L4 11" stroke-width="1.6" opacity="0.85"/><circle cx="7.5" cy="14.5" r="3.6"/><circle cx="21.5" cy="12.5" r="3.6"/><path d="M7.5 14.5 L13.5 8.5 L20 8.5 L21.5 12.5 M13.5 8.5 L15.5 13.5 L7.5 14.5"/><circle cx="14.5" cy="4.2" r="2.1"/><path d="M14.5 6.5 L11.5 11 L9.5 16.5 M14.5 7.2 L19.5 6.5"/></svg></div><span class="nav-lbl" data-i18n="navRiders">Piloti</span></button>
-  <button type="button" id="nav-heats" class="active" onclick="switchTab('heats', this)"><div class="nav-ico">⏱️</div><span class="nav-lbl" data-i18n="navHeats">Batterie</span></button>
-  <button type="button" id="nav-card" onclick="switchTab('card', this)"><div class="nav-ico">📋</div><span class="nav-lbl" data-i18n="navCard">Tabellone</span></button>
-  <button type="button" id="nav-standings" onclick="switchTab('standings', this)"><div class="nav-ico">🏆</div><span class="nav-lbl" data-i18n="navStandings">Classifica</span></button>
-  <button type="button" id="nav-history" onclick="switchTab('history', this)"><div class="nav-ico">📚</div><span class="nav-lbl" data-i18n="navHistory">Storico</span></button>
-  <button type="button" id="nav-settings" onclick="switchTab('settings', this)"><div class="nav-ico">⚙️</div><span class="nav-lbl" data-i18n="navSettings">Setting</span></button>
+  <button type="button" id="nav-event" onclick="switchTab('event', this)">
+    <div class="nav-ico">🏟️</div><span class="nav-lbl" data-i18n="navEvent">Evento</span>
+  </button>
+  <button type="button" id="nav-riders" onclick="switchTab('riders', this)">
+    <div class="nav-ico">
+      <svg class="drift-bike-svg" viewBox="0 0 28 20" aria-hidden="true">
+        <path d="M1 16 L5 13 M1 12 L4 11" stroke-width="1.6" opacity="0.85"/>
+        <circle cx="7.5" cy="14.5" r="3.6"/>
+        <circle cx="21.5" cy="12.5" r="3.6"/>
+        <path d="M7.5 14.5 L13.5 8.5 L20 8.5 L21.5 12.5 M13.5 8.5 L15.5 13.5 L7.5 14.5"/>
+        <circle cx="14.5" cy="4.2" r="2.1"/>
+        <path d="M14.5 6.5 L11.5 11 L9.5 16.5 M14.5 7.2 L19.5 6.5"/>
+      </svg>
+    </div>
+    <span class="nav-lbl" data-i18n="navRiders">Piloti</span>
+  </button>
+  <button type="button" id="nav-heats" class="active" onclick="switchTab('heats', this)">
+    <div class="nav-ico">⏱️</div><span class="nav-lbl" data-i18n="navHeats">Batterie</span>
+  </button>
+  <button type="button" id="nav-card" onclick="switchTab('card', this)">
+    <div class="nav-ico">📋</div><span class="nav-lbl" data-i18n="navCard">Tabellone</span>
+  </button>
+  <button type="button" id="nav-standings" onclick="switchTab('standings', this)">
+    <div class="nav-ico">🏆</div><span class="nav-lbl" data-i18n="navStandings">Classifica</span>
+  </button>
+  <button type="button" id="nav-history" onclick="switchTab('history', this)">
+    <div class="nav-ico">📚</div><span class="nav-lbl" data-i18n="navHistory">Storico</span>
+  </button>
+  <button type="button" id="nav-settings" onclick="switchTab('settings', this)">
+    <div class="nav-ico">⚙️</div><span class="nav-lbl" data-i18n="navSettings">Setting</span>
+  </button>
 </nav>
 
 <script>
-  const APP_PUBLIC_URL="https://mluna01-speedway.github.io/speedway-live/";
-  const LANGUAGES=[{code:'it',name:'Italiano',flag:'🇮🇹'},{code:'en',name:'English',flag:'🇬🇧'},{code:'pl',name:'Polski',flag:'🇵🇱'},{code:'da',name:'Dansk',flag:'🇩🇰'},{code:'sv',name:'Svenska',flag:'🇸🇪'}];
+  const APP_PUBLIC_URL = "https://mluna01-speedway.github.io/speedway-live/";
+
+  const LANGUAGES = [
+    { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+    { code: 'en', name: 'English',  flag: '🇬🇧' },
+    { code: 'pl', name: 'Polski',   flag: '🇵🇱' },
+    { code: 'da', name: 'Dansk',    flag: '🇩🇰' },
+    { code: 'sv', name: 'Svenska',  flag: '🇸🇪' }
+  ];
 
   const I18N = {
-    it: { navEvent:"Evento",navRiders:"Piloti",navHeats:"Batterie",navCard:"Tabellone",navStandings:"Classifica",navHistory:"Storico",navSettings:"Setting",btnTopFormat:"Formato",homeBadge:"CASA",awayBadge:"OSPITI",teamHomeDef:"Squadra Casa",teamAwayDef:"Squadra Ospiti",nationADef:"Nazione A",nationBDef:"Nazione B",teamHomePh:"Nome Squadra Casa",teamAwayPh:"Nome Squadra Ospiti",modalChooseTypeTitle:"🏁 Scegli il Tipo di Gara",modalChooseTypeSub:"Seleziona se vuoi gestire una gara individuale oppure una gara a squadre / coppie:",modeSgpTitle:"Gara Individuale GP (23 Bat)",modeSgpSub:"16 Piloti + 2 Riserve • 20 Batterie + LCQ 1&2 + Finale",modeSprintTitle:"SGP Sprint Race (Qualifiche)",modeSprintSub:"16 Piloti • Ottavi + Semifinali + Finale (4,3,2,1)",modeItaTitle:"Gara Individuale (14 Piloti)",modeItaSub:"14 Piloti • 18 Batterie + Last Chance + Finale",modeTeamsTitle:"Gara a Squadre / Coppie",modeTeamsSub:"Leghe Nazionali (UK, SE, DK, PL) e Torneo Nazioni",modalStayCurrent:"Chiudi e resta nella gara attuale",modalChooseLeagueTitle:"👥 Scegli Formato / Regolamento",modalChooseLeagueSub:"Ogni formato applica il calendario batterie, numero piloti e punteggio ufficiale:",leagueUkTitle:"Lega Inglese",leagueUkSub:"15 Batterie • 7 Piloti per squadra • Pt 3-2-1-0",leagueSeTitle:"Lega Svedese",leagueSeSub:"15 Batterie • 7 Piloti per squadra • Pt 3-2-1-0",leagueDkTitle:"Lega Danese",leagueDkSub:"14 Batterie • 5 Piloti per squadra • Pt 3-2-1-0",leaguePlTitle:"Lega Polacca",leaguePlSub:"15 Batterie • 8 Piloti per squadra • Pt 3-2-1-0",leagueSonTitle:"Torneo Nazioni a Coppie",leagueSonSub:"Gara a Coppie • 3 Piloti per Nazione • Punteggio 4-3-2-0",btnBack:"◀ Torna Indietro",confirmChangeMode:"Vuoi cambiare formato gara e iniziare una nuova competizione?",ocrTargetBoth:"Entrambe le Squadre",ocrTargetHome:"🔴🔵 Solo Casa",ocrTargetAway:"⚪🟡 Solo Ospiti",roleReserve:"Riserva",roleRisingStar:"Rising Star",roleJunior:"Junior U21",roleU24:"Riserva U24",roleCapt:"Capitano",roleMain:"Titolare",roleU21:"Under 21",swapRedBlue:"🔴 Rosso ↔ 🔵 Blu",swapWhiteYellow:"⚪ Bianco ↔ 🟡 Giallo",partialLbl:"Parziale:",totalLbl:"TOTALE:",evSectionTitle:"🏟️ Dati Evento & Pista",evNameLbl:"Nome Gara / Evento",evNamePh:"Es. Grand Prix of Poland",evDateLbl:"Data",evTrackLbl:"Stadio",evTrackPh:"Es. Motoarena",evCityLbl:"Città",evCityPh:"Es. Torun",evCountryLbl:"Nazione",evCountryPh:"Es. Polonia",evLenLbl:"Pista (m)",evLenPh:"Es. 318m",evNotesLbl:"Note",evNotesPh:"Es. Fondo compatto",evPhotoLbl:"Foto Orizzontale Pista",btnTakePhoto:"📸 Scatta Foto",btnFromGallery:"🖼️ Da Galleria",btnLoadPhoto:"🖼️ Carica Foto",btnGoToRiders:"Vai ai Piloti ▶",btnGoToHeats:"Vai alle Batterie ▶",btnClearEvent:"🗑️ Svuota Dati Evento",btnFullReset:"🗑️ Svuota Tutto",ridersSectionTitle:"🏍️ Inserimento Rapido Piloti",ridersOcrDesc:"Scatta o carica foto, oppure incolla il testo. Il motore OCR leggero evita crash.",btnPasteList:"📋 Incolla / Verifica Testo",btnApplyPaste:"✅ Applica Testo",btnResetRiders:"🗑️ Ripristina Nomi",btnResetScores:"🔄 Azzera Punteggi",btnPrev:"◀ Prec",btnNext:"Succ ▶",heatTimeLbl:"Tempo:",bestTimeLbl:"⚡ Record:",heatLbl:"Batteria",seriesLbl:"Serie",finalLbl:"FINALE",nominatedLbl:"Nominata",sprintLbl:"Sprint Race (Finale)",sprintSub:"Assegna i punti (4,3,2,1) ai 4 finalisti.",gate1:"Corsia 1",gate2:"Corsia 2",gate3:"Corsia 3",gate4:"Corsia 4",laneLbl:"Corsia",helmetRed:"Rosso",helmetBlue:"Blu",helmetWhite:"Bianco",helmetYellow:"Giallo",swapTeamBtn:"⇄ Scambia Corsie",selectQualRider:"— Scegli pilota —",selectRiderUp:"Seleziona dal menu ▲",clearGatesBtn:"🔄 Svuota",waitingResults:"In attesa risultati",lcq1Title:"🔥 Last Chance Qualifier 1",lcq1Sub:"Seleziona i piloti. Il 1° accede alla Finale.",lcq2Title:"🔥 Last Chance Qualifier 2",lcq2Sub:"Seleziona i piloti. Il 1° accede alla Finale.",finalTitle:"🏆 FINALE",finalSub:"Seleziona i finalisti e l'ordine d'arrivo.",rankBadge:"° class.",standingsBadge:"° Classifica",btnShareCard:"📲 Condividi Tabellone",btnShareStandings:"📲 Condividi Classifica",btnModeFinal:"🏆 Classifica Finale",btnModeQual:"⏱️ Classifica Qualificazioni",thPos:"Pos",thRider:"Pilota",thRuns:"Serie",thTot:"TOT",thFin:"FIN",legFinalDirect:"Finale Diretta",legLcq:"Qualificati LCQ",legPtsInfo:"TOT = Pt Batterie • GP = Pt Camp.",codeR:"Ritirato",codeF:"Caduto",codeX:"Escluso",codeT:"Nastro",codeNS:"Non partito",codeW:"Warning",histSectionTitle:"💾 Gestione Storico",btnSaveArchive:"📥 Salva nello Storico",btnNewCleanRace:"➕ Nuova Gara",btnExportJson:"⬇️ Esporta Backup",btnImportJson:"⬆️ Importa Backup",emptyHistory:"Nessuna gara salvata.",btnOpenRace:"📂 Apri",btnDelRace:"🗑️ Elimina",raceInProgress:"In corso",setSectionTitle:"⚙️ Impostazioni & Lingua",setLangDesc:"Seleziona la lingua dell'app.",legalTitle:"⚖️ Note Legali & Disclaimer",legalText:"Questa app è indipendente e non affiliata a FIM, WBD, Ekstraliga o altre leghe. Nomi usati a scopo descrittivo.",qrTitle:"📲 Condividi Speedway Live",qrDesc:"Inquadra il QR Code:",qrShareBtn:"📤 Invia Link",qrCloseBtn:"Chiudi",riderDefault:"Pilota",reserveDefault:"Riserva",posterStandings:"CLASSIFICA UFFICIALE",posterCard:"TABELLONE GARA",posterPodium:"🏆 ORDINE D'ARRIVO",posterTeamRes:"🏆 RISULTATO SQUADRE",confirmFullReset:"Vuoi svuotare tutto?",confirmClearEvent:"Svuotare Evento?",confirmResetRiders:"Ripristinare i piloti predefiniti?",confirmResetScores:"Azzerare tutti i punteggi?",savedToHistoryMsg:"✅ Gara salvata!",confirmDelHistory:"Eliminare gara dallo storico?" },
-    en: { navEvent:"Event",navRiders:"Riders",navHeats:"Heats",navCard:"Scorecard",navStandings:"Standings",navHistory:"History",navSettings:"Settings",btnTopFormat:"Format",homeBadge:"HOME",awayBadge:"AWAY",teamHomeDef:"Home Team",teamAwayDef:"Away Team",nationADef:"Nation A",nationBDef:"Nation B",teamHomePh:"Home Team Name",teamAwayPh:"Away Team Name",modalChooseTypeTitle:"🏁 Select Meeting Format",modalChooseTypeSub:"Choose individual or team match:",modeSgpTitle:"Individual GP (23 Heats)",modeSgpSub:"16 Riders + 2 Reserves",modeSprintTitle:"SGP Sprint Race",modeSprintSub:"16 Riders • Knockout format",modeItaTitle:"Individual (14 Riders)",modeItaSub:"14 Riders • 18 Heats + LCQ + Final",modeTeamsTitle:"Team / Pairs Match",modeTeamsSub:"Leagues (UK, SE, DK, PL) & Pairs",modalStayCurrent:"Close",modalChooseLeagueTitle:"👥 Select League Rules",modalChooseLeagueSub:"Each format applies official rules:",leagueUkTitle:"British League",leagueUkSub:"15 Heats • 7 Riders",leagueSeTitle:"Swedish League",leagueSeSub:"15 Heats • 7 Riders",leagueDkTitle:"Danish League",leagueDkSub:"14 Heats • 5 Riders",leaguePlTitle:"Polish League",leaguePlSub:"15 Heats • 8 Riders",leagueSonTitle:"Nations Pairs",leagueSonSub:"Pairs • Pts 4-3-2-0",btnBack:"◀ Back",confirmChangeMode:"Change format and start new meeting?",ocrTargetBoth:"Both Teams",ocrTargetHome:"🔴🔵 Home Only",ocrTargetAway:"⚪🟡 Away Only",roleReserve:"Reserve",roleRisingStar:"Rising Star",roleJunior:"Junior U21",roleU24:"U24 Reserve",roleCapt:"Captain",roleMain:"Main Rider",roleU21:"Under 21",swapRedBlue:"🔴 Red ↔ 🔵 Blue",swapWhiteYellow:"⚪ White ↔ 🟡 Yellow",partialLbl:"Heat:",totalLbl:"TOTAL:",evSectionTitle:"🏟️ Track Info",evNameLbl:"Event Name",evNamePh:"E.g. Grand Prix",evDateLbl:"Date",evTrackLbl:"Stadium",evTrackPh:"E.g. Motoarena",evCityLbl:"City",evCityPh:"E.g. Torun",evCountryLbl:"Country",evCountryPh:"E.g. Poland",evLenLbl:"Length (m)",evLenPh:"E.g. 318m",evNotesLbl:"Notes",evNotesPh:"E.g. Slick track",evPhotoLbl:"Track Photo",btnTakePhoto:"📸 Take Photo",btnFromGallery:"🖼️ From Gallery",btnLoadPhoto:"🖼️ Upload Photo",btnGoToRiders:"Go to Riders ▶",btnGoToHeats:"Go to Heats ▶",btnClearEvent:"🗑️ Clear Event Info",btnFullReset:"🗑️ Reset All",ridersSectionTitle:"🏍️ Quick Rider Entry",ridersOcrDesc:"Take photo or paste text. Lightweight OCR prevents crashes.",btnPasteList:"📋 Paste / Verify Text",btnApplyPaste:"✅ Apply Text",btnResetRiders:"🗑️ Reset Names",btnResetScores:"🔄 Reset Scores",btnPrev:"◀ Prev",btnNext:"Next ▶",heatTimeLbl:"Time:",bestTimeLbl:"⚡ Best:",heatLbl:"Heat",seriesLbl:"Series",finalLbl:"FINAL",nominatedLbl:"Nominated",sprintLbl:"Sprint Race (Final)",sprintSub:"Assign points (4,3,2,1).",gate1:"Gate 1",gate2:"Gate 2",gate3:"Gate 3",gate4:"Gate 4",laneLbl:"Gate",helmetRed:"Red",helmetBlue:"Blue",helmetWhite:"White",helmetYellow:"Yellow",swapTeamBtn:"⇄ Swap Gates",selectQualRider:"— Select rider —",selectRiderUp:"Select from menu ▲",clearGatesBtn:"🔄 Clear",waitingResults:"Waiting results",lcq1Title:"🔥 LCQ 1",lcq1Sub:"Assign riders. 1st advances.",lcq2Title:"🔥 LCQ 2",lcq2Sub:"Assign riders. 1st advances.",finalTitle:"🏆 FINAL",finalSub:"Assign finalists and positions.",rankBadge:"th pos.",standingsBadge:"° Standings",btnShareCard:"📲 Share Scorecard",btnShareStandings:"📲 Share Standings",btnModeFinal:"🏆 Final Standings",btnModeQual:"⏱️ Qualifiers",thPos:"Pos",thRider:"Rider",thRuns:"Runs",thTot:"TOT",thFin:"FIN",legFinalDirect:"Direct Final",legLcq:"Qualified LCQ",legPtsInfo:"TOT = Heats Pts • GP = Champ. Pts",codeR:"Retired",codeF:"Fell",codeX:"Excluded",codeT:"Tapes",codeNS:"Not Started",codeW:"Warning",histSectionTitle:"💾 Archive & Backup",btnSaveArchive:"📥 Save to History",btnNewCleanRace:"➕ New Meeting",btnExportJson:"⬇️ Export Backup",btnImportJson:"⬆️ Import Backup",emptyHistory:"No saved meetings.",btnOpenRace:"📂 Open",btnDelRace:"🗑️ Delete",raceInProgress:"In progress",setSectionTitle:"⚙️ Settings",setLangDesc:"Select app language.",legalTitle:"⚖️ Legal Notice",legalText:"Independent app, not affiliated with FIM or official leagues.",qrTitle:"📲 Share App",qrDesc:"Scan QR Code:",qrShareBtn:"📤 Share Link",qrCloseBtn:"Close",riderDefault:"Rider",reserveDefault:"Reserve",posterStandings:"STANDINGS",posterCard:"SCORECARD",posterPodium:"🏆 FINAL RESULT",posterTeamRes:"🏆 TEAM RESULT",confirmFullReset:"Clear all data?",confirmClearEvent:"Clear Event fields?",confirmResetRiders:"Reset rider names?",confirmResetScores:"Reset all scores?",savedToHistoryMsg:"✅ Saved!",confirmDelHistory:"Delete meeting?" }
+    it: {
+      navEvent:"Evento",navRiders:"Piloti",navHeats:"Batterie",navCard:"Tabellone",navStandings:"Classifica",navHistory:"Storico",navSettings:"Setting",
+      btnTopFormat:"Formato",homeBadge:"CASA",awayBadge:"OSPITI",teamHomeDef:"Squadra Casa",teamAwayDef:"Squadra Ospiti",nationADef:"Nazione A",nationBDef:"Nazione B",
+      teamHomePh:"Nome Squadra Casa",teamAwayPh:"Nome Squadra Ospiti",
+      modalChooseTypeTitle:"🏁 Scegli il Tipo di Gara",modalChooseTypeSub:"Seleziona se vuoi gestire una gara individuale oppure una gara a squadre / coppie:",
+      modeSgpTitle:"Gara Individuale GP (23 Batterie)",modeSgpSub:"16 Piloti + 2 Riserve • 20 Batterie + LCQ 1&2 + Finale",
+      modeSprintTitle:"SGP Sprint Race (Qualifiche)",modeSprintSub:"16 Piloti • Ottavi + Semifinali + Finale (4,3,2,1)",
+      modeItaTitle:"Gara Individuale (14 Piloti)",modeItaSub:"14 Piloti • 18 Batterie + Last Chance + Finale",
+      modeTeamsTitle:"Gara a Squadre / Coppie",modeTeamsSub:"Leghe Nazionali (UK, SE, DK, PL) e Torneo Nazioni",
+      modalStayCurrent:"Chiudi e resta nella gara attuale",
+      modalChooseLeagueTitle:"👥 Scegli Formato / Regolamento",modalChooseLeagueSub:"Ogni formato applica il calendario batterie, numero piloti e punteggio ufficiale:",
+      leagueUkTitle:"Lega Inglese",leagueUkSub:"15 Batterie • 7 Piloti per squadra • Pt 3-2-1-0",
+      leagueSeTitle:"Lega Svedese",leagueSeSub:"15 Batterie • 7 Piloti per squadra • Pt 3-2-1-0",
+      leagueDkTitle:"Lega Danese",leagueDkSub:"14 Batterie • 5 Piloti per squadra • Pt 3-2-1-0",
+      leaguePlTitle:"Lega Polacca",leaguePlSub:"15 Batterie • 8 Piloti per squadra • Pt 3-2-1-0",
+      leagueSonTitle:"Torneo Nazioni a Coppie",leagueSonSub:"Gara a Coppie • 3 Piloti per Nazione • Punteggio 4-3-2-0",
+      btnBack:"◀ Torna Indietro",confirmChangeMode:"Vuoi cambiare formato gara e iniziare una nuova competizione?",
+      ocrTargetBoth:"Entrambe le Squadre",ocrTargetHome:"🔴🔵 Solo Casa",ocrTargetAway:"⚪🟡 Solo Ospiti",
+      roleReserve:"Riserva",roleRisingStar:"Rising Star",roleJunior:"Junior U21",roleU24:"Riserva U24",roleCapt:"Capitano",roleMain:"Titolare",roleU21:"Under 21",
+      swapRedBlue:"🔴 Rosso ↔ 🔵 Blu",swapWhiteYellow:"⚪ Bianco ↔ 🟡 Giallo",partialLbl:"Parziale:",totalLbl:"TOTALE:",
+      evSectionTitle:"🏟️ Dati Evento & Pista",evNameLbl:"Nome Gara / Evento",evNamePh:"Es. Grand Prix of Poland",
+      evDateLbl:"Data",evTrackLbl:"Stadio",evTrackPh:"Es. Motoarena",evCityLbl:"Città",evCityPh:"Es. Torun",
+      evCountryLbl:"Nazione",evCountryPh:"Es. Polonia",evLenLbl:"Pista (m)",evLenPh:"Es. 318m",evNotesLbl:"Note",evNotesPh:"Es. Fondo compatto",evPhotoLbl:"Foto Orizzontale Pista",
+      btnTakePhoto:"📸 Scatta Foto",btnFromGallery:"🖼️ Da Galleria",btnLoadPhoto:"🖼️ Carica Foto",
+      btnGoToRiders:"Vai ai Piloti ▶",btnGoToHeats:"Vai alle Batterie ▶",btnClearEvent:"🗑️ Svuota Dati Evento",btnFullReset:"🗑️ Svuota Tutto",
+      ridersSectionTitle:"🏍️ Inserimento Rapido Piloti",ridersOcrDesc:"Scatta o carica foto, oppure incolla il testo. L'OCR alleggerito previene crash di memoria.",
+      btnPasteList:"📋 Incolla / Verifica Testo",btnApplyPaste:"✅ Applica Testo",btnResetRiders:"🗑️ Ripristina Nomi",btnResetScores:"🔄 Azzera Punteggi",
+      btnPrev:"◀ Prec",btnNext:"Succ ▶",heatTimeLbl:"Tempo:",bestTimeLbl:"⚡ Record:",heatLbl:"Batteria",seriesLbl:"Serie",finalLbl:"FINALE",nominatedLbl:"Nominata",
+      sprintLbl:"Sprint Race (Finale)",sprintSub:"Assegna i punti (4,3,2,1) ai 4 finalisti.",
+      gate1:"Corsia 1",gate2:"Corsia 2",gate3:"Corsia 3",gate4:"Corsia 4",laneLbl:"Corsia",helmetRed:"Rosso",helmetBlue:"Blu",helmetWhite:"Bianco",helmetYellow:"Giallo",
+      swapTeamBtn:"⇄ Scambia Corsie",selectQualRider:"— Scegli pilota —",selectRiderUp:"Seleziona dal menu ▲",clearGatesBtn:"🔄 Svuota",waitingResults:"In attesa risultati",
+      lcq1Title:"🔥 Last Chance Qualifier 1",lcq1Sub:"Seleziona i piloti. Il 1° accede alla Finale.",
+      lcq2Title:"🔥 Last Chance Qualifier 2",lcq2Sub:"Seleziona i piloti. Il 1° accede alla Finale.",
+      finalTitle:"🏆 FINALE",finalSub:"Seleziona i finalisti e l'ordine d'arrivo.",rankBadge:"° class.",standingsBadge:"° Classifica",
+      btnShareCard:"📲 Condividi Tabellone",btnShareStandings:"📲 Condividi Classifica",
+      btnModeFinal:"🏆 Classifica Finale",btnModeQual:"⏱️ Qualificazioni",
+      thPos:"Pos",thRider:"Pilota",thRuns:"Serie",thTot:"TOT",thFin:"FIN",
+      legFinalDirect:"Finale Diretta",legLcq:"Qualificati LCQ",legPtsInfo:"TOT = Pt Batterie • GP = Pt Campionato",
+      codeR:"Ritirato",codeF:"Caduto",codeX:"Escluso",codeT:"Nastro",codeNS:"Non partito",codeW:"Warning",
+      histSectionTitle:"💾 Gestione Storico",btnSaveArchive:"📥 Salva nello Storico",btnNewCleanRace:"➕ Nuova Gara",btnExportJson:"⬇️ Esporta Backup",btnImportJson:"⬆️ Importa Backup",
+      emptyHistory:"Nessuna gara salvata.",btnOpenRace:"📂 Apri",btnDelRace:"🗑️ Elimina",raceInProgress:"In corso",
+      setSectionTitle:"⚙️ Impostazioni & Lingua",setLangDesc:"Seleziona la lingua dell'app.",
+      legalTitle:"⚖️ Note Legali & Disclaimer",legalText:"Questa app è indipendente e non affiliata a FIM, WBD, Ekstraliga o altre leghe. Nomi usati a scopo descrittivo.",
+      qrTitle:"📲 Condividi Speedway Live",qrDesc:"Inquadra il QR Code:",qrShareBtn:"📤 Invia Link",qrCloseBtn:"Chiudi",
+      riderDefault:"Pilota",reserveDefault:"Riserva",posterStandings:"CLASSIFICA UFFICIALE",posterCard:"TABELLONE GARA",posterPodium:"🏆 ORDINE D'ARRIVO",posterTeamRes:"🏆 RISULTATO SQUADRE",
+      confirmFullReset:"Vuoi svuotare tutto?",confirmClearEvent:"Svuotare Evento?",confirmResetRiders:"Ripristinare i piloti predefiniti?",confirmResetScores:"Azzerare tutti i punteggi?",
+      savedToHistoryMsg:"✅ Gara salvata!",confirmDelHistory:"Eliminare gara dallo storico?"
+    },
+    en: {
+      navEvent:"Event",navRiders:"Riders",navHeats:"Heats",navCard:"Scorecard",navStandings:"Standings",navHistory:"History",navSettings:"Settings",
+      btnTopFormat:"Format",homeBadge:"HOME",awayBadge:"AWAY",teamHomeDef:"Home Team",teamAwayDef:"Away Team",nationADef:"Nation A",nationBDef:"Nation B",
+      teamHomePh:"Home Team Name",teamAwayPh:"Away Team Name",
+      modalChooseTypeTitle:"🏁 Select Format",modalChooseTypeSub:"Choose individual or team match:",
+      modeSgpTitle:"Individual GP (23 Heats)",modeSgpSub:"16 Riders + 2 Reserves",
+      modeSprintTitle:"SGP Sprint Race",modeSprintSub:"16 Riders • Knockout format",
+      modeItaTitle:"Individual (14 Riders)",modeItaSub:"14 Riders • 18 Heats + LCQ + Final",
+      modeTeamsTitle:"Team / Pairs Match",modeTeamsSub:"Leagues (UK, SE, DK, PL) & Pairs",
+      modalStayCurrent:"Close",
+      modalChooseLeagueTitle:"👥 Select League Rules",modalChooseLeagueSub:"Each format applies official rules:",
+      leagueUkTitle:"British League",leagueUkSub:"15 Heats • 7 Riders",
+      leagueSeTitle:"Swedish League",leagueSeSub:"15 Heats • 7 Riders",
+      leagueDkTitle:"Danish League",leagueDkSub:"14 Heats • 5 Riders",
+      leaguePlTitle:"Polish League",leaguePlSub:"15 Heats • 8 Riders",
+      leagueSonTitle:"Nations Pairs",leagueSonSub:"Pairs • Pts 4-3-2-0",
+      btnBack:"◀ Back",confirmChangeMode:"Change format and start new meeting?",
+      ocrTargetBoth:"Both Teams",ocrTargetHome:"🔴🔵 Home Only",ocrTargetAway:"⚪🟡 Away Only",
+      roleReserve:"Reserve",roleRisingStar:"Rising Star",roleJunior:"Junior U21",roleU24:"U24 Reserve",roleCapt:"Captain",roleMain:"Main Rider",roleU21:"Under 21",
+      swapRedBlue:"🔴 Red ↔ 🔵 Blue",swapWhiteYellow:"⚪ White ↔ 🟡 Yellow",partialLbl:"Heat:",totalLbl:"TOTAL:",
+      evSectionTitle:"🏟️ Track Info",evNameLbl:"Event Name",evNamePh:"E.g. Grand Prix",
+      evDateLbl:"Date",evTrackLbl:"Stadium",evTrackPh:"E.g. Motoarena",evCityLbl:"City",evCityPh:"E.g. Torun",
+      evCountryLbl:"Country",evCountryPh:"E.g. Poland",evLenLbl:"Length (m)",evLenPh:"E.g. 318m",evNotesLbl:"Notes",evNotesPh:"E.g. Slick track",evPhotoLbl:"Track Photo",
+      btnTakePhoto:"📸 Take Photo",btnFromGallery:"🖼️ From Gallery",btnLoadPhoto:"🖼️ Upload Photo",
+      btnGoToRiders:"Go to Riders ▶",btnGoToHeats:"Go to Heats ▶",btnClearEvent:"🗑️ Clear Event Info",btnFullReset:"🗑️ Reset All",
+      ridersSectionTitle:"🏍️ Quick Rider Entry",ridersOcrDesc:"Take photo or paste text. Lightweight OCR prevents crashes.",
+      btnPasteList:"📋 Paste / Verify Text",btnApplyPaste:"✅ Apply Text",btnResetRiders:"🗑️ Reset Names",btnResetScores:"🔄 Reset Scores",
+      btnPrev:"◀ Prev",btnNext:"Next ▶",heatTimeLbl:"Time:",bestTimeLbl:"⚡ Best:",heatLbl:"Heat",seriesLbl:"Series",finalLbl:"FINAL",nominatedLbl:"Nominated",
+      sprintLbl:"Sprint Race (Final)",sprintSub:"Assign points (4,3,2,1).",
+      gate1:"Gate 1",gate2:"Gate 2",gate3:"Gate 3",gate4:"Gate 4",laneLbl:"Gate",helmetRed:"Red",helmetBlue:"Blue",helmetWhite:"White",helmetYellow:"Yellow",
+      swapTeamBtn:"⇄ Swap Gates",selectQualRider:"— Select rider —",selectRiderUp:"Select from menu ▲",clearGatesBtn:"🔄 Clear",waitingResults:"Waiting results",
+      lcq1Title:"🔥 LCQ 1",lcq1Sub:"Assign riders. 1st advances.",lcq2Title:"🔥 LCQ 2",lcq2Sub:"Assign riders. 1st advances.",
+      finalTitle:"🏆 FINAL",finalSub:"Assign finalists and positions.",rankBadge:"th pos.",standingsBadge:"° Standings",
+      btnShareCard:"📲 Share Scorecard",btnShareStandings:"📲 Share Standings",
+      btnModeFinal:"🏆 Final Standings",btnModeQual:"⏱️ Qualifiers",
+      thPos:"Pos",thRider:"Rider",thRuns:"Runs",thTot:"TOT",thFin:"FIN",
+      legFinalDirect:"Direct Final",legLcq:"Qualified LCQ",legPtsInfo:"TOT = Heats Pts • GP = Champ. Pts",
+      codeR:"Retired",codeF:"Fell",codeX:"Excluded",codeT:"Tapes",codeNS:"Not Started",codeW:"Warning",
+      histSectionTitle:"💾 Archive & Backup",btnSaveArchive:"📥 Save to History",btnNewCleanRace:"➕ New Meeting",btnExportJson:"⬇️ Export Backup",btnImportJson:"⬆️ Import Backup",
+      emptyHistory:"No saved meetings.",btnOpenRace:"📂 Open",btnDelRace:"🗑️ Delete",raceInProgress:"In progress",
+      setSectionTitle:"⚙️ Settings",setLangDesc:"Select app language.",
+      legalTitle:"⚖️ Legal Notice",legalText:"Independent app, not affiliated with FIM or official leagues.",
+      qrTitle:"📲 Share App",qrDesc:"Scan QR Code:",qrShareBtn:"📤 Share Link",qrCloseBtn:"Close",
+      riderDefault:"Rider",reserveDefault:"Reserve",posterStandings:"STANDINGS",posterCard:"SCORECARD",posterPodium:"🏆 FINAL RESULT",posterTeamRes:"🏆 TEAM RESULT",
+      confirmFullReset:"Clear all data?",confirmClearEvent:"Clear Event fields?",confirmResetRiders:"Reset rider names?",confirmResetScores:"Reset all scores?",
+      savedToHistoryMsg:"✅ Saved!",confirmDelHistory:"Delete meeting?"
+    }
   };
 
   const I18N_LANGS = ['pl','da','sv'];
-  I18N_LANGS.forEach(l => { I18N[l] = I18N.en; }); // Fallback for compatto
+  I18N_LANGS.forEach(l => { I18N[l] = I18N.en; });
 
   const FIM_SCHEDULE = [
     [1,2,3,4],[5,7,6,8],[10,11,9,12],[15,14,16,13],
@@ -419,49 +710,68 @@
       schedule: [
         [[1,'R'],[2,'B']],[[3,'R'],[4,'B']],[[5,'R'],[6,'B']],[[7,'R'],[8,'B']],
         [[9,'R'],[10,'B']],[[11,'R'],[12,'B']],[[13,'R'],[14,'B']],[[15,'R'],[16,'B']],
-        [[null,'R'],[null,'B'],[null,'W'],[null,'Y']],[[null,'R'],[null,'B'],[null,'W'],[null,'Y']],
+        [[null,'R'],[null,'B']],[[null,'R'],[null,'B']],[[null,'R'],[null,'B']],[[null,'R'],[null,'B']],
         [[null,'R'],[null,'B'],[null,'W'],[null,'Y']]
       ]
     },
     ita_indiv: { 
       titleKey: "modeItaTitle", isTeam: false, is14Format: true, isSprint: false, totalHeats: 20, scores: [3,2,1,0],
       schedule: [
-        [[1,'R'],[2,'B'],[3,'W'],[4,'Y']],[[5,'R'],[6,'B'],[7,'W'],[8,'Y']],[[9,'R'],[10,'B'],[11,'W'],[12,'Y']],[[13,'R'],[14,'B'],[1,'W'],[5,'Y']],[[2,'R'],[7,'B'],[9,'W'],[14,'Y']],[[6,'R'],[3,'B'],[12,'W'],[13,'Y']],[[4,'R'],[8,'B'],[10,'W'],[11,'Y']],[[1,'R'],[12,'B'],[7,'W'],[14,'Y']],[[2,'R'],[13,'B'],[8,'W'],[9,'Y']],[[3,'R'],[5,'B'],[10,'W'],[2,'Y']],[[11,'R'],[4,'B'],[6,'W'],[1,'Y']],[[14,'R'],[8,'B'],[3,'W'],[5,'Y']],[[10,'R'],[1,'B'],[13,'W'],[2,'Y']],[[9,'R'],[11,'B'],[4,'W'],[7,'Y']],[[12,'R'],[6,'B'],[14,'W'],[10,'Y']],[[5,'R'],[9,'B'],[2,'W'],[11,'Y']],[[13,'R'],[10,'B'],[8,'W'],[1,'Y']],[[3,'R'],[7,'B'],[12,'W'],[4,'Y']]
+        [[1,'R'],[2,'B'],[3,'W'],[4,'Y']],[[5,'R'],[6,'B'],[7,'W'],[8,'Y']],[[9,'R'],[10,'B'],[11,'W'],[12,'Y']],[[13,'R'],[14,'B'],[1,'W'],[5,'Y']],
+        [[2,'R'],[7,'B'],[9,'W'],[14,'Y']],[[6,'R'],[3,'B'],[12,'W'],[13,'Y']],[[4,'R'],[8,'B'],[10,'W'],[11,'Y']],[[1,'R'],[12,'B'],[7,'W'],[14,'Y']],
+        [[2,'R'],[13,'B'],[8,'W'],[9,'Y']],[[3,'R'],[5,'B'],[10,'W'],[2,'Y']],[[11,'R'],[4,'B'],[6,'W'],[1,'Y']],[[14,'R'],[8,'B'],[3,'W'],[5,'Y']],
+        [[10,'R'],[1,'B'],[13,'W'],[2,'Y']],[[9,'R'],[11,'B'],[4,'W'],[7,'Y']],[[12,'R'],[6,'B'],[14,'W'],[10,'Y']],[[5,'R'],[9,'B'],[2,'W'],[11,'Y']],
+        [[13,'R'],[10,'B'],[8,'W'],[1,'Y']],[[3,'R'],[7,'B'],[12,'W'],[4,'Y']]
       ]
     },
     uk: {
       titleKey: "leagueUkTitle", isTeam: true, ridersPerTeam: 7, totalHeats: 15, scores: [3,2,1,0],
       roles: { 6: "roleReserve", 7: "roleRisingStar" },
       schedule: [
-        [[1,'R'],[101,'W'],[2,'B'],[102,'Y']],[[106,'W'],[6,'R'],[107,'Y'],[7,'B']],[[3,'R'],[103,'W'],[4,'B'],[104,'Y']],[[105,'W'],[5,'R'],[107,'Y'],[7,'B']],[[3,'R'],[101,'W'],[4,'B'],[102,'Y']],[[103,'W'],[1,'R'],[104,'Y'],[2,'B']],[[5,'R'],[105,'W'],[6,'B'],[106,'Y']],[[102,'W'],[2,'R'],[107,'Y'],[7,'B']],[[3,'R'],[105,'W'],[4,'B'],[106,'Y']],[[103,'W'],[1,'R'],[104,'Y'],[2,'B']],[[5,'R'],[101,'W'],[6,'B'],[102,'Y']],[[103,'W'],[3,'R'],[106,'Y'],[7,'B']],[[1,'R'],[101,'W'],[5,'B'],[105,'Y']],[[104,'W'],[4,'R'],[106,'Y'],[6,'B']],[[null,'R'],[null,'W'],[null,'B'],[null,'Y']]
+        [[1,'R'],[101,'W'],[2,'B'],[102,'Y']],[[106,'W'],[6,'R'],[107,'Y'],[7,'B']],[[3,'R'],[103,'W'],[4,'B'],[104,'Y']],[[105,'W'],[5,'R'],[107,'Y'],[7,'B']],
+        [[3,'R'],[101,'W'],[4,'B'],[102,'Y']],[[103,'W'],[1,'R'],[104,'Y'],[2,'B']],[[5,'R'],[105,'W'],[6,'B'],[106,'Y']],[[102,'W'],[2,'R'],[107,'Y'],[7,'B']],
+        [[3,'R'],[105,'W'],[4,'B'],[106,'Y']],[[103,'W'],[1,'R'],[104,'Y'],[2,'B']],[[5,'R'],[101,'W'],[6,'B'],[102,'Y']],[[103,'W'],[3,'R'],[106,'Y'],[7,'B']],
+        [[1,'R'],[101,'W'],[5,'B'],[105,'Y']],[[104,'W'],[4,'R'],[106,'Y'],[6,'B']],[[null,'R'],[null,'W'],[null,'B'],[null,'Y']]
       ]
     },
     se: {
       titleKey: "leagueSeTitle", isTeam: true, ridersPerTeam: 7, totalHeats: 15, scores: [3,2,1,0],
       roles: { 6: "roleReserve", 7: "roleReserve" },
       schedule: [
-        [[1,'R'],[101,'W'],[2,'B'],[102,'Y']],[[106,'W'],[6,'R'],[107,'Y'],[7,'B']],[[3,'R'],[103,'W'],[4,'B'],[104,'Y']],[[105,'W'],[5,'R'],[106,'Y'],[7,'B']],[[2,'R'],[104,'W'],[6,'B'],[107,'Y']],[[101,'W'],[3,'R'],[102,'Y'],[4,'B']],[[1,'R'],[103,'W'],[2,'B'],[104,'Y']],[[105,'W'],[3,'R'],[106,'Y'],[5,'B']],[[5,'R'],[101,'W'],[6,'B'],[102,'Y']],[[103,'W'],[1,'R'],[107,'Y'],[7,'B']],[[4,'R'],[104,'W'],[5,'B'],[105,'Y']],[[102,'W'],[2,'R'],[103,'Y'],[3,'B']],[[1,'R'],[101,'W'],[4,'B'],[105,'Y']],[[null,'W'],[null,'R'],[null,'Y'],[null,'B']],[[null,'R'],[null,'W'],[null,'B'],[null,'Y']]
+        [[1,'R'],[101,'W'],[2,'B'],[102,'Y']],[[106,'W'],[6,'R'],[107,'Y'],[7,'B']],[[3,'R'],[103,'W'],[4,'B'],[104,'Y']],[[105,'W'],[5,'R'],[106,'Y'],[7,'B']],
+        [[2,'R'],[104,'W'],[6,'B'],[107,'Y']],[[101,'W'],[3,'R'],[102,'Y'],[4,'B']],[[1,'R'],[103,'W'],[2,'B'],[104,'Y']],[[105,'W'],[3,'R'],[106,'Y'],[5,'B']],
+        [[5,'R'],[101,'W'],[6,'B'],[102,'Y']],[[103,'W'],[1,'R'],[107,'Y'],[7,'B']],[[4,'R'],[104,'W'],[5,'B'],[105,'Y']],[[102,'W'],[2,'R'],[103,'Y'],[3,'B']],
+        [[1,'R'],[101,'W'],[4,'B'],[105,'Y']],[[null,'W'],[null,'R'],[null,'Y'],[null,'B']],[[null,'R'],[null,'W'],[null,'B'],[null,'Y']]
       ]
     },
     dk: {
       titleKey: "leagueDkTitle", isTeam: true, ridersPerTeam: 5, totalHeats: 14, scores: [3,2,1,0],
       roles: { 5: "roleJunior" },
       schedule: [
-        [[1,'R'],[101,'W'],[2,'B'],[102,'Y']],[[103,'W'],[3,'R'],[104,'Y'],[4,'B']],[[5,'R'],[105,'W'],[1,'B'],[101,'Y']],[[102,'W'],[2,'R'],[103,'Y'],[3,'B']],[[4,'R'],[104,'W'],[5,'B'],[105,'Y']],[[101,'W'],[1,'R'],[103,'Y'],[4,'B']],[[2,'R'],[102,'W'],[3,'B'],[104,'Y']],[[105,'W'],[5,'R'],[101,'Y'],[3,'B']],[[1,'R'],[102,'W'],[4,'B'],[105,'Y']],[[103,'W'],[2,'R'],[104,'Y'],[5,'B']],[[3,'R'],[101,'W'],[4,'B'],[102,'Y']],[[null,'W'],[null,'R'],[null,'Y'],[null,'B']],[[null,'R'],[null,'W'],[null,'B'],[null,'Y']],[[null,'W'],[null,'R'],[null,'Y'],[null,'B']]
+        [[1,'R'],[101,'W'],[2,'B'],[102,'Y']],[[103,'W'],[3,'R'],[104,'Y'],[4,'B']],[[5,'R'],[105,'W'],[1,'B'],[101,'Y']],[[102,'W'],[2,'R'],[103,'Y'],[3,'B']],
+        [[4,'R'],[104,'W'],[5,'B'],[105,'Y']],[[101,'W'],[1,'R'],[103,'Y'],[4,'B']],[[2,'R'],[102,'W'],[3,'B'],[104,'Y']],[[105,'W'],[5,'R'],[101,'Y'],[3,'B']],
+        [[1,'R'],[102,'W'],[4,'B'],[105,'Y']],[[103,'W'],[2,'R'],[104,'Y'],[5,'B']],[[3,'R'],[101,'W'],[4,'B'],[102,'Y']],[[null,'W'],[null,'R'],[null,'Y'],[null,'B']],
+        [[null,'R'],[null,'W'],[null,'B'],[null,'Y']],[[null,'W'],[null,'R'],[null,'Y'],[null,'B']]
       ]
     },
     pl: {
       titleKey: "leaguePlTitle", isTeam: true, ridersPerTeam: 8, totalHeats: 15, scores: [3,2,1,0],
       roles: { 6: "roleJunior", 7: "roleJunior", 8: "roleU24" },
       schedule: [
-        [[1,'R'],[101,'W'],[3,'B'],[103,'Y']],[[106,'W'],[6,'R'],[107,'Y'],[7,'B']],[[5,'R'],[102,'W'],[4,'B'],[104,'Y']],[[105,'W'],[2,'R'],[106,'Y'],[6,'B']],[[3,'R'],[101,'W'],[4,'B'],[102,'Y']],[[103,'W'],[5,'R'],[104,'Y'],[7,'B']],[[1,'R'],[105,'W'],[2,'B'],[107,'Y']],[[101,'W'],[5,'R'],[102,'Y'],[6,'B']],[[1,'R'],[103,'W'],[2,'B'],[104,'Y']],[[105,'W'],[3,'R'],[106,'Y'],[4,'B']],[[1,'R'],[102,'W'],[4,'B'],[105,'Y']],[[101,'W'],[3,'R'],[107,'Y'],[7,'B']],[[2,'R'],[103,'W'],[5,'B'],[104,'Y']],[[null,'W'],[null,'R'],[null,'Y'],[null,'B']],[[null,'R'],[null,'W'],[null,'B'],[null,'Y']]
+        [[1,'R'],[101,'W'],[3,'B'],[103,'Y']],[[106,'W'],[6,'R'],[107,'Y'],[7,'B']],[[5,'R'],[102,'W'],[4,'B'],[104,'Y']],[[105,'W'],[2,'R'],[106,'Y'],[6,'B']],
+        [[3,'R'],[101,'W'],[4,'B'],[102,'Y']],[[103,'W'],[5,'R'],[104,'Y'],[7,'B']],[[1,'R'],[105,'W'],[2,'B'],[107,'Y']],[[101,'W'],[5,'R'],[102,'Y'],[6,'B']],
+        [[1,'R'],[103,'W'],[2,'B'],[104,'Y']],[[105,'W'],[3,'R'],[106,'Y'],[4,'B']],[[1,'R'],[102,'W'],[4,'B'],[105,'Y']],[[101,'W'],[3,'R'],[107,'Y'],[7,'B']],
+        [[2,'R'],[103,'W'],[5,'B'],[104,'Y']],[[null,'W'],[null,'R'],[null,'Y'],[null,'B']],[[null,'R'],[null,'W'],[null,'B'],[null,'Y']]
       ]
     },
     son: {
       titleKey: "leagueSonTitle", isTeam: true, ridersPerTeam: 3, totalHeats: 15, scores: [4,3,2,0],
       roles: { 1: "roleCapt", 2: "roleMain", 3: "roleU21" },
       schedule: [
-        [[1,'R'],[101,'W'],[2,'B'],[102,'Y']],[[101,'W'],[1,'R'],[102,'Y'],[2,'B']],[[1,'R'],[101,'W'],[3,'B'],[103,'Y']],[[102,'W'],[2,'R'],[103,'Y'],[3,'B']],[[1,'R'],[101,'W'],[2,'B'],[102,'Y']],[[101,'W'],[1,'R'],[103,'Y'],[3,'B']],[[2,'R'],[102,'W'],[3,'B'],[103,'Y']],[[101,'W'],[1,'R'],[102,'Y'],[2,'B']],[[1,'R'],[101,'W'],[2,'B'],[102,'Y']],[[102,'W'],[2,'R'],[103,'Y'],[3,'B']],[[1,'R'],[101,'W'],[3,'B'],[103,'Y']],[[101,'W'],[1,'R'],[102,'Y'],[2,'B']],[[1,'R'],[101,'W'],[2,'B'],[102,'Y']],[[101,'W'],[1,'R'],[102,'Y'],[2,'B']],[[1,'R'],[101,'W'],[2,'B'],[102,'Y']]
+        [[1,'R'],[101,'W'],[2,'B'],[102,'Y']],[[101,'W'],[1,'R'],[102,'Y'],[2,'B']],[[1,'R'],[101,'W'],[3,'B'],[103,'Y']],[[102,'W'],[2,'R'],[103,'Y'],[3,'B']],
+        [[1,'R'],[101,'W'],[2,'B'],[102,'Y']],[[101,'W'],[1,'R'],[103,'Y'],[3,'B']],[[2,'R'],[102,'W'],[3,'B'],[103,'Y']],[[101,'W'],[1,'R'],[102,'Y'],[2,'B']],
+        [[1,'R'],[101,'W'],[2,'B'],[102,'Y']],[[102,'W'],[2,'R'],[103,'Y'],[3,'B']],[[1,'R'],[101,'W'],[3,'B'],[103,'Y']],[[101,'W'],[1,'R'],[102,'Y'],[2,'B']],
+        [[1,'R'],[101,'W'],[2,'B'],[102,'Y']],[[101,'W'],[1,'R'],[102,'Y'],[2,'B']],[[1,'R'],[101,'W'],[2,'B'],[102,'Y']]
       ]
     }
   };
@@ -487,8 +797,8 @@
     let base = "";
     if (!cfg.isTeam) {
       if (cfg.isSprint) {
-        if (idx < 8) base = "Ottavi " + (idx + 1);
-        else if (idx < 10) base = "Semifinale " + (idx - 7);
+        if (idx < 8) base = "Q1 (Ottavi) " + (idx + 1);
+        else if (idx < 12) base = "Q2 (Quarti) " + (idx - 7);
         else base = t('sprintLbl');
       } else if (cfg.is14Format) {
         if (idx < 18) base = t('heatLbl')+" "+(idx+1)+" ("+t('seriesLbl')+" "+(Math.floor(idx/4)+1)+")";
@@ -515,10 +825,7 @@
   }
 
   function isDefaultRiderName(name) { return /^(Pilota|Rider|Zawodnik|Kører|Förare|Riserva|Reserve|Rezerwa|Reserv|Casa|Ospiti|Home|Away)\s+#?\d+$/i.test((name||"").trim()); }
-  function isDefaultTeamName(name) {
-    const d=[]; Object.keys(I18N).forEach(l=>{['teamHomeDef','teamAwayDef','nationADef','nationBDef'].forEach(k=>{if(I18N[l][k])d.push(I18N[l][k].toLowerCase());});});
-    return d.includes((name||"").trim().toLowerCase());
-  }
+  function isDefaultTeamName(name) { const d=[]; Object.keys(I18N).forEach(l=>{['teamHomeDef','teamAwayDef','nationADef','nationBDef'].forEach(k=>{if(I18N[l][k])d.push(I18N[l][k].toLowerCase());});}); return d.includes((name||"").trim().toLowerCase()); }
   function getDefaultTeamName(side, mode) { return mode==='son' ? (side==='a'?t('nationADef'):t('nationBDef')) : (side==='a'?t('teamHomeDef'):t('teamAwayDef')); }
   function getDefaultRiderName(id, mode) { return (mode&&mode!=='sgp'&&mode!=='ita_indiv'&&mode!=='sgp_sprint') ? t('riderDefault')+" "+(id>100?id-100:id) : (id<=16?t('riderDefault'):t('reserveDefault'))+" "+id; }
   function formatPlacement(score) { return (score===4||score===3)?'1°' : score===2?'2°' : score===1?'3°' : score===0?'4°' : (score!==null?String(score):'-'); }
@@ -572,7 +879,7 @@
     const riders = {}; let heats = [];
     if (!cfg.isTeam) {
       if (cfg.isSprint) {
-        for(let i=1;i<=18;i++) riders[i]=getDefaultRiderName(i,mKey);
+        for(let i=1;i<=16;i++) riders[i]=getDefaultRiderName(i,mKey);
         heats = cfg.schedule.map((row,idx) => ({ heatNumber:idx+1, time:"", slots:row.map(p=>({riderId:p[0],score:null,helmet:p[1]||'R',warning:false})) }));
       } else if (cfg.is14Format) {
         for(let i=1;i<=16;i++) riders[i]=getDefaultRiderName(i,mKey);
@@ -792,84 +1099,7 @@
     document.getElementById('heat-select').innerHTML=h;
   }
 
-  function renderCurrentHeat() {
-    renderHeatSelect(); const cfg=getModeConfig(); const h=state.heats[state.currentHeat];
-    const tInp=document.getElementById('heat-time-input'); if(tInp)tInp.value=h.time||""; updateBestTimeBadge();
-    const sb=document.getElementById('team-swap-lanes-box');
-    if(cfg.isTeam){
-      sb.innerHTML='<div class="swap-lanes-bar"><button type="button" class="btn-swap-lane team-a" onclick="swapTeammatesGates(\'A\')"><span>'+t('swapTeamBtn')+'</span><span>'+(state.teamNames.a||getDefaultTeamName('a',state.mode))+'</span><small>'+t('swapRedBlue')+'</small></button><button type="button" class="btn-swap-lane team-b" onclick="swapTeammatesGates(\'B\')"><span>'+t('swapTeamBtn')+'</span><span>'+(state.teamNames.b||getDefaultTeamName('b',state.mode))+'</span><small>'+t('swapWhiteYellow')+'</small></button></div>';
-    } else sb.innerHTML='';
-    const ab=document.getElementById('auto-finals-box'); const isSpec=!cfg.isTeam&&!cfg.isSprint&&state.currentHeat>=(cfg.is14Format?18:20); const isSprFin=cfg.isSprint&&state.currentHeat===12;
-    let elList=[];
-    if(isSprFin){
-      ab.innerHTML='<div class="qual-info-card" style="border-color:#29b6f6;"><div class="qual-info-header"><span class="qual-info-title" style="color:#29b6f6;">'+t('sprintLbl')+'</span><button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">'+t('clearGatesBtn')+'</button></div><div class="qual-info-sub">'+t('sprintSub')+'</div></div>';
-    }else if(isSpec){
-      syncSpecialHeatsWithQualifiers(); elList=getEligibleRidersForSpecialHeat(state.currentHeat);
-      let tT="", rS=""; if(cfg.is14Format){ if(state.currentHeat===18){tT="🔥 LCQ"; rS="Seleziona. 1° e 2° passano.";}else{tT=t('finalTitle'); rS=t('finalSub');} }else{ tT=state.currentHeat===20?t('lcq1Title'):(state.currentHeat===21?t('lcq2Title'):t('finalTitle')); rS=state.currentHeat===20?t('lcq1Sub'):(state.currentHeat===21?t('lcq2Sub'):t('finalSub')); }
-      const p=elList.length>0 ? elList.map(i=>'<div class="qual-pill"><span>'+i.badge+':</span>#'+i.id+' '+i.name+'</div>').join('') : '<div class="qual-pill">'+t('waitingResults')+'</div>';
-      ab.innerHTML='<div class="qual-info-card"><div class="qual-info-header"><span class="qual-info-title">'+tT+'</span><button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">'+t('clearGatesBtn')+'</button></div><div class="qual-info-sub">'+rS+'</div><div class="qual-badges-list">'+p+'</div></div>';
-    } else ab.innerHTML='';
-    
-    let mBtns; if(isSprFin) mBtns=[{val:4,label:'4 pt'},{val:3,label:'3 pt'},{val:2,label:'2 pt'},{val:1,label:'1 pt'}]; else if(cfg.isSprint&&state.currentHeat<12) mBtns=[{val:3,label:'1°'},{val:2,label:'2°'}]; else if(isSpec) mBtns=[{val:3,label:'1°'},{val:2,label:'2°'},{val:1,label:'3°'},{val:0,label:'4°'}]; else mBtns=cfg.scores.map(v=>({val:v,label:v+' pt'}));
-    const spC=getSpecialCodes().filter(c=>c.code!=='W'); const cnt=document.getElementById('gates-container');
-    let aSl=h.slots; if(cfg.isSprint&&state.currentHeat<12) aSl=h.slots.slice(0,2);
-    const gStyle=isSprFin?'grid-template-columns: repeat(4, 1fr);':(cfg.isSprint&&state.currentHeat<12?'grid-template-columns: repeat(2, 1fr);':'');
-
-    cnt.innerHTML=aSl.map((sl,gI)=>{
-      const hC=sl.helmet||GATE_STYLE[gI].helmet; const hm=HELMET_META[hC]||HELMET_META.R; const sc=sl.score;
-      const hOpts=[{v:'R',c:'#e53935',l:'🔴'},{v:'B',c:'#1e88e5',l:'🔵'},{v:'W',c:'#f5f5f5',l:'⚪'},{v:'Y',c:'#fdd835',l:'🟡'}].map(o=>'<option value="'+o.v+'" '+(hC===o.v?'selected':'')+' style="background:'+o.c+';color:'+(o.v==='W'||o.v==='Y'?'#000':'#fff')+'">'+o.l+'</option>').join('');
-      let os=''; if(cfg.isSprint){ os+='<option value="" '+(!sl.riderId?'selected':'')+'>'+t('selectQualRider')+'</option>'; for(let r=1;r<=18;r++) os+='<option value="'+r+'" '+(sl.riderId==r?'selected':'')+'>#'+r+' '+state.riders[r]+'</option>'; }
-      else if(isSpec){ os+='<option value="" '+(!sl.riderId?'selected':'')+'>'+t('selectQualRider')+'</option>'; elList.forEach(i=>os+='<option value="'+i.id+'" '+(sl.riderId===i.id?'selected':'')+'>#'+i.id+' '+i.name+'</option>'); }
-      else if(cfg.isTeam){ os+='<option value="" '+(!sl.riderId?'selected':'')+'>'+t('selectQualRider')+'</option>'; const tI=hm.team==='A'?Array.from({length:cfg.ridersPerTeam},(_,i)=>i+1):Array.from({length:cfg.ridersPerTeam},(_,i)=>101+i); tI.forEach(r=>os+='<option value="'+r+'" '+(sl.riderId==r?'selected':'')+'>'+formatRiderNum(r)+' '+state.riders[r]+'</option>'); os+='<optgroup label="Sostituti">'; const oI=hm.team==='A'?Array.from({length:cfg.ridersPerTeam},(_,i)=>101+i):Array.from({length:cfg.ridersPerTeam},(_,i)=>i+1); oI.forEach(r=>os+='<option value="'+r+'" '+(sl.riderId==r?'selected':'')+'>'+formatRiderNum(r)+' '+state.riders[r]+'</option>'); os+='</optgroup>'; }
-      else { const l=cfg.is14Format?14:18; os+='<option value="" '+(!sl.riderId?'selected':'')+'>'+t('selectQualRider')+'</option>'; for(let r=1;r<=l;r++) os+='<option value="'+r+'" '+(sl.riderId==r?'selected':'')+'>#'+r+' '+state.riders[r]+'</option>'; }
-      const hasR=Boolean(sl.riderId); const tL=cfg.isTeam?(hm.team==='A'?state.teamNames.a:state.teamNames.b):''; const rL=hasR?(formatRiderNum(sl.riderId)+' '+state.riders[sl.riderId]):t('selectRiderUp');
-      const wB='<button type="button" '+(!hasR?'disabled':'')+' class="spec-btn '+(sl.warning?'warning-active':'')+'" onclick="toggleWarning('+gI+')"><span>W</span><small>Warning</small></button>';
-      return '<div class="gate-card '+hm.cls+'"><div class="rider-header"><div style="display:flex;align-items:center;gap:4px;"><span class="helmet-badge" style="background:#252a34;color:var(--text);">'+t('laneLbl')+' '+(gI+1)+'</span><select class="helmet-select" onchange="changeSlotHelmet('+gI+',this.value)" style="background:'+(hC==='R'?'#e53935':hC==='B'?'#1e88e5':hC==='W'?'#f5f5f5':'#fdd835')+'; color:'+(hC==='W'||hC==='Y'?'#000':'#fff')+'">'+hOpts+'</select></div><select class="sub-select" onchange="changeSlotRider('+gI+',this.value)">'+os+'</select></div><div class="rider-name '+(!hasR?'unassigned':'')+'"><span>'+rL+'</span>'+(tL?'<span class="rider-team-tag">'+tL+'</span>':'')+'</div><div class="score-btns" style="'+gStyle+'">'+mBtns.map(b=>'<button type="button" '+(!hasR?'disabled':'')+' class="score-btn '+(sc===b.val?'selected-'+b.val:'')+'" onclick="setScore('+gI+','+b.val+')">'+b.label+'</button>').join('')+'</div><div class="special-btns">'+spC.map(i=>'<button type="button" '+(!hasR?'disabled':'')+' class="spec-btn '+(sc===i.code?'selected-spec':'')+'" onclick="setScore('+gI+',\''+i.code+'\')"><span>'+i.code+'</span><small>'+i.short+'</small></button>').join('')+wB+'</div></div>';
-    }).join('');
-  }
-
-  function setScore(gI, v) {
-    const cfg=getModeConfig(); const h=state.heats[state.currentHeat]; if(!h.slots[gI].riderId)return;
-    if(h.slots[gI].score===v) h.slots[gI].score=null; else { if(typeof v==='number'){ if(v>0||(!isTeamMode()&&!cfg.isSprint&&state.currentHeat>=(cfg.is14Format?18:20))) h.slots.forEach(s=>{if(s.score===v)s.score=null;}); } h.slots[gI].score=v; }
-    if(!isTeamMode()&&!cfg.isSprint&&state.currentHeat<(cfg.is14Format?18:20)) syncSpecialHeatsWithQualifiers(); saveState(); renderCurrentHeat();
-  }
-  function changeSlotRider(gI, nRV) {
-    const h=state.heats[state.currentHeat]; if(!nRV){ h.slots[gI].riderId=null; h.slots[gI].score=null; h.slots[gI].warning=false; saveState(); renderCurrentHeat(); return; }
-    const pI=parseInt(nRV,10); const eI=h.slots.findIndex((s,i)=>i!==gI&&s.riderId===pI);
-    if(eI!==-1){ const pR=h.slots[gI].riderId, pS=h.slots[gI].score, pW=h.slots[gI].warning; h.slots[gI].riderId=pI; h.slots[gI].score=h.slots[eI].score; h.slots[gI].warning=h.slots[eI].warning; h.slots[eI].riderId=pR; h.slots[eI].score=pS; h.slots[eI].warning=pW; } else h.slots[gI].riderId=pI; saveState(); renderCurrentHeat();
-  }
-  function changeHeat(d) { const n=state.currentHeat+d; if(n>=0&&n<state.heats.length){state.currentHeat=n;saveState();renderCurrentHeat();} }
-  function selectHeat(idx) { state.currentHeat=parseInt(idx,10); saveState(); renderCurrentHeat(); }
-  function setStandingsMode(m) { standingsMode=m; document.getElementById('btn-mode-final').classList.toggle('active',m==='final'); document.getElementById('btn-mode-qual').classList.toggle('active',m==='qual'); renderStandings(); }
-
-  function renderStandings() {
-    const cfg=getModeConfig(); const sw=document.getElementById('standings-mode-switch'), sl=document.getElementById('standings-legend-bar'), th=document.getElementById('standings-thead'), tb=document.querySelector('#standings-table tbody');
-    if(cfg.isTeam){ sw.style.display='none'; const t=computeTeamTotals(); sl.innerHTML='<span><strong>🔴🔵 '+state.teamNames.a+': '+t.a+' pt</strong></span><span><strong>⚪🟡 '+state.teamNames.b+': '+t.b+' pt</strong></span>'; th.innerHTML='<tr><th>'+t('thPos')+'</th><th style="text-align:left;padding-left:7px;">'+t('thRider')+'</th><th>1°</th><th>2°</th><th>3°</th><th>4°(R/X)</th><th>'+t('thRuns')+'</th><th>'+t('thTot')+'</th></tr>'; tb.innerHTML=getSortedQualifyingStandings().map((s,i)=>'<tr><td><strong>'+(i+1)+'</strong></td><td class="name-col">'+(s.team==='A'?'🔴':'🟡')+' '+formatRiderNum(s.id)+' '+s.name+'</td><td>'+s.ones+'</td><td>'+s.twos+'</td><td>'+s.threes+'</td><td>'+formatZerosCell(s)+'</td><td>('+(s.runs.filter(r=>r!=='-').join(',')||'-')+')</td><td class="tot-col">'+s.total+'</td></tr>').join(''); return; }
-    if(cfg.isSprint){ sw.style.display='none'; sl.innerHTML='<span><strong>GP = Punti (Finale Sprint)</strong></span>'; th.innerHTML='<tr><th>'+t('thPos')+'</th><th style="text-align:left;padding-left:7px;">'+t('thRider')+'</th><th>'+t('thRuns')+'</th><th>GP</th></tr>'; const ls=getSortedQualifyingStandings(); ls.sort((a,b)=>{if(b.sprintPts!==a.sprintPts)return b.sprintPts-a.sprintPts;return b.total-a.total;}); tb.innerHTML=ls.map((s,i)=>'<tr><td><strong>'+(i+1)+'</strong></td><td class="name-col">#'+s.id+' '+s.name+'</td><td>('+(s.runs.filter(r=>r!=='-').join(',')||'-')+')</td><td class="sgp-col">'+s.total+'</td></tr>').join(''); return; }
-    sw.style.display='flex'; sl.innerHTML='<span><i class="legend-dot" style="background:var(--yellow)"></i>'+t('legFinalDirect')+'</span><span><i class="legend-dot" style="background:var(--accent)"></i>'+t('legLcq')+'</span><span><strong>'+t('legPtsInfo')+'</strong></span>'; th.innerHTML='<tr><th>'+t('thPos')+'</th><th style="text-align:left;padding-left:7px;">'+t('thRider')+'</th><th>1°</th><th>2°</th><th>3°</th><th>4°(R/X)</th><th>'+t('thRuns')+'</th><th>'+t('thTot')+'</th><th>GP</th></tr>';
-    syncSpecialHeatsWithQualifiers(); const fs=getFinalGpStandings(), sm={}; fs.forEach(s=>sm[s.id]={tot:s.sgpPts}); const l=standingsMode==='final'?fs:getSortedQualifyingStandings();
-    tb.innerHTML=l.map((s,i)=>{ const rC=cfg.is14Format?(i===1?'final-line':i===5?'qual-line':''):(i===1?'final-line':i===9?'qual-line':''); const sv=sm[s.id]?sm[s.id].tot:'-'; const nx=l[i+1]; const cS=nx&&s.total===nx.total&&s.ones===nx.ones&&s.twos===nx.twos&&s.threes===nx.threes&&s.finishedZeros===nx.finishedZeros; const sB=cS?'<button type="button" class="btn-tie-swap" onclick="swapTiedRiders('+s.id+','+nx.id+')">⇅</button>':''; return '<tr class="'+rC+'"><td><strong>'+(i+1)+'</strong>'+sB+'</td><td class="name-col">#'+s.id+' '+s.name+'</td><td>'+s.ones+'</td><td>'+s.twos+'</td><td>'+s.threes+'</td><td>'+formatZerosCell(s)+'</td><td>('+(s.runs.filter(r=>r!=='-').join(',')||'-')+')</td><td class="tot-col">'+s.total+'</td><td class="sgp-col">'+sv+'</td></tr>'; }).join('');
-  }
-
-  function renderScorecard() {
-    const cfg=getModeConfig(); const th=document.getElementById('scorecard-thead'), tb=document.querySelector('#scorecard-table tbody'); const as=computeStats();
-    if(cfg.isTeam){ th.innerHTML='<tr><th>#</th><th style="text-align:left;padding-left:7px;">'+t('thRider')+'</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>S6</th><th>'+t('thTot')+'</th></tr>'; const tot=computeTeamTotals(); const rTR=(l)=>l.map(s=>{const r=s.runs.filter(x=>x!=='-'); return '<tr><td><strong>'+formatRiderNum(s.id)+'</strong></td><td class="name-col">'+s.name+'</td><td>'+(r[0]??'-')+'</td><td>'+(r[1]??'-')+'</td><td>'+(r[2]??'-')+'</td><td>'+(r[3]??'-')+'</td><td>'+(r[4]??'-')+'</td><td>'+(r[5]??'-')+'</td><td class="tot-col">'+s.total+'</td></tr>';}).join(''); tb.innerHTML='<tr class="team-sep-row"><td colspan="9">🔴🔵 '+state.teamNames.a+' — '+t('totalLbl')+' '+tot.a+' pt</td></tr>'+rTR(as.filter(s=>s.team==='A'))+'<tr class="team-sep-row"><td colspan="9">⚪🟡 '+state.teamNames.b+' — '+t('totalLbl')+' '+tot.b+' pt</td></tr>'+rTR(as.filter(s=>s.team==='B')); return; }
-    if(cfg.isSprint){ th.innerHTML='<tr><th>#</th><th style="text-align:left;padding-left:7px;">'+t('thRider')+'</th><th>OTT</th><th>SEM</th><th>'+t('thFin')+'</th><th>GP</th></tr>'; tb.innerHTML=as.map(s=>{const r=s.runs.filter(x=>x!=='-');return '<tr><td><strong>'+s.id+'</strong></td><td class="name-col">'+s.name+'</td><td>'+(r[0]??'-')+'</td><td>'+(r[1]??'-')+'</td><td>'+(r[2]??'-')+'</td><td class="sgp-col">'+s.total+'</td></tr>';}).join(''); return; }
-    th.innerHTML='<tr><th>#</th><th style="text-align:left;padding-left:7px;">'+t('thRider')+'</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>'+t('thTot')+'</th><th>'+(cfg.is14Format?'LC':'LCQ')+'</th><th>'+t('thFin')+'</th><th>GP</th></tr>';
-    syncSpecialHeatsWithQualifiers(); const fs=getFinalGpStandings(), sm={}; fs.forEach(s=>{sm[s.id]={tot:s.sgpPts};});
-    tb.innerHTML=as.map(s=>{ const r=s.runs; const sv=sm[s.id]?sm[s.id].tot:'-'; return '<tr><td><strong>'+s.id+'</strong></td><td class="name-col">'+s.name+'</td><td>'+(r[0]??'-')+'</td><td>'+(r[1]??'-')+'</td><td>'+(r[2]??'-')+'</td><td>'+(r[3]??'-')+'</td><td>'+(r[4]??'-')+'</td><td class="tot-col">'+s.total+'</td><td class="sf-col">'+s.sfScore+'</td><td class="fin-col">'+s.finScore+'</td><td class="sgp-col">'+sv+'</td></tr>'; }).join('');
-  }
-
-  function renderRidersInputs() {
-    const cfg=getModeConfig(); const cnt=document.getElementById('riders-inputs'), tb=document.getElementById('ocr-team-target-bar');
-    if(!cfg.isTeam){ if(tb)tb.classList.remove('visible'); let ht=''; const l=cfg.isSprint?16:(cfg.is14Format?14:18); for(let r=1;r<=l;r++) ht+='<div class="rider-input-row"><span>#'+r+'</span><input type="text" value="'+(state.riders[r]||'').replace(/"/g,'&quot;')+'" oninput="updateRiderName('+r+',this.value)"></div>'; cnt.innerHTML=ht; return; }
-    if(tb)tb.classList.add('visible'); let hA='<div class="team-riders-card team-a"><div class="team-name-input-row"><span>🔴🔵</span><input type="text" value="'+(state.teamNames.a||'').replace(/"/g,'&quot;')+'" placeholder="'+t('teamHomePh')+'" oninput="updateTeamName(\'a\',this.value)"></div>'; for(let i=1;i<=cfg.ridersPerTeam;i++){ const rT=cfg.roles&&cfg.roles[i]?' ('+t(cfg.roles[i])+')':''; hA+='<div class="rider-input-row"><span>#'+i+rT+'</span><input type="text" value="'+(state.riders[i]||'').replace(/"/g,'&quot;')+'" oninput="updateRiderName('+i+',this.value)"></div>'; } hA+='</div>';
-    let hB='<div class="team-riders-card team-b"><div class="team-name-input-row"><span>⚪🟡</span><input type="text" value="'+(state.teamNames.b||'').replace(/"/g,'&quot;')+'" placeholder="'+t('teamAwayPh')+'" oninput="updateTeamName(\'b\',this.value)"></div>'; for(let i=1;i<=cfg.ridersPerTeam;i++){ const rId=100+i; const rT=cfg.roles&&cfg.roles[i]?' ('+t(cfg.roles[i])+')':''; hB+='<div class="rider-input-row"><span>#'+i+rT+'</span><input type="text" value="'+(state.riders[rId]||'').replace(/"/g,'&quot;')+'" oninput="updateRiderName('+rId+',this.value)"></div>'; } hB+='</div>'; cnt.innerHTML=hA+hB;
-  }
-  function updateTeamName(s,v) { state.teamNames[s]=v||getDefaultTeamName(s,state.mode); saveState(); }
-  function updateRiderName(id,v) { state.riders[id]=v||getDefaultRiderName(id,state.mode); saveState(); }
-
-  /* == OCR OTTIMIZZATO SENZA FILTRI ESTREMI PER EVITARE CRASH E PERDITA RISOLUZIONE == */
+  /* OTTIMIZZAZIONE FOTO PER TESSERACT (Evita Crash) */
   function resizeImageForOcr(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -877,8 +1107,10 @@
         const img = new Image();
         img.onload = () => {
           const cvs = document.createElement('canvas');
-          const maxW = 1000; const sc = img.width>maxW ? maxW/img.width : 1;
-          cvs.width = Math.round(img.width * sc); cvs.height = Math.round(img.height * sc);
+          const maxW = 1200; // Riduce peso memoria
+          const sc = img.width > maxW ? maxW / img.width : 1;
+          cvs.width = Math.round(img.width * sc);
+          cvs.height = Math.round(img.height * sc);
           cvs.getContext('2d').drawImage(img, 0, 0, cvs.width, cvs.height);
           resolve(cvs.toDataURL('image/jpeg', 0.8));
         };
@@ -925,18 +1157,54 @@
     const file = input.files && input.files[0]; if(!file)return;
     const sEl = document.getElementById('ocr-status'); sEl.style.display='block'; sEl.textContent='⏳ Ottimizzazione foto...';
     try {
-      const resized = await resizeImageForOcr(file);
-      sEl.textContent='⏳ Lettura in corso...';
-      const result = await Tesseract.recognize(resized, 'eng');
+      const resizedUrl = await resizeImageForOcr(file);
+      sEl.textContent='⏳ Lettura OCR in corso...';
+      const result = await Tesseract.recognize(resizedUrl, 'eng');
       const count = parseRidersFromText(result.data.text || "");
       saveState(); renderRidersInputs(); renderCurrentHeat();
       if(count>0){ sEl.textContent='✅ OK ('+count+')'; document.getElementById('paste-box-wrap').style.display='block'; }
-      else { sEl.textContent='⚠️ Trovati 0. Scrivi testo.'; document.getElementById('paste-box-wrap').style.display='block'; }
+      else { sEl.textContent='⚠️ OCR: 0. Controlla il testo.'; document.getElementById('paste-box-wrap').style.display='block'; }
     } catch(err) { sEl.textContent='⚠️ Errore OCR'; document.getElementById('paste-box-wrap').style.display='block'; }
     input.value="";
   }
   function togglePasteBox() { const b=document.getElementById('paste-box-wrap'); b.style.display=b.style.display==='block'?'none':'block'; }
   function applyPastedRiders() { const c=parseRidersFromText(document.getElementById('paste-riders-area').value); const s=document.getElementById('ocr-status'); s.style.display='block'; if(c>0){saveState();renderRidersInputs();renderCurrentHeat();document.getElementById('paste-box-wrap').style.display='none';s.textContent='✅ OK ('+c+')';}else{s.textContent='⚠️ 0';} }
+
+  function renderCurrentHeat() {
+    renderHeatSelect(); const cfg=getModeConfig(); const h=state.heats[state.currentHeat];
+    const tInp=document.getElementById('heat-time-input'); if(tInp)tInp.value=h.time||""; updateBestTimeBadge();
+    const sb=document.getElementById('team-swap-lanes-box');
+    if(cfg.isTeam){
+      sb.innerHTML='<div class="swap-lanes-bar"><button type="button" class="btn-swap-lane team-a" onclick="swapTeammatesGates(\'A\')"><span>'+t('swapTeamBtn')+'</span><span>'+(state.teamNames.a||getDefaultTeamName('a',state.mode))+'</span><small>'+t('swapRedBlue')+'</small></button><button type="button" class="btn-swap-lane team-b" onclick="swapTeammatesGates(\'B\')"><span>'+t('swapTeamBtn')+'</span><span>'+(state.teamNames.b||getDefaultTeamName('b',state.mode))+'</span><small>'+t('swapWhiteYellow')+'</small></button></div>';
+    } else sb.innerHTML='';
+    const ab=document.getElementById('auto-finals-box'); const isSpec=!cfg.isTeam&&!cfg.isSprint&&state.currentHeat>=(cfg.is14Format?18:20); const isSprFin=cfg.isSprint&&state.currentHeat===12;
+    let elList=[];
+    if(isSprFin){
+      ab.innerHTML='<div class="qual-info-card" style="border-color:#29b6f6;"><div class="qual-info-header"><span class="qual-info-title" style="color:#29b6f6;">'+t('sprintLbl')+'</span><button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">'+t('clearGatesBtn')+'</button></div><div class="qual-info-sub">'+t('sprintSub')+'</div></div>';
+    }else if(isSpec){
+      syncSpecialHeatsWithQualifiers(); elList=getEligibleRidersForSpecialHeat(state.currentHeat);
+      let tT="", rS=""; if(cfg.is14Format){ if(state.currentHeat===18){tT="🔥 LCQ"; rS="Seleziona. 1° e 2° passano.";}else{tT=t('finalTitle'); rS=t('finalSub');} }else{ tT=state.currentHeat===20?t('lcq1Title'):(state.currentHeat===21?t('lcq2Title'):t('finalTitle')); rS=state.currentHeat===20?t('lcq1Sub'):(state.currentHeat===21?t('lcq2Sub'):t('finalSub')); }
+      const p=elList.length>0 ? elList.map(i=>'<div class="qual-pill"><span>'+i.badge+':</span>#'+i.id+' '+i.name+'</div>').join('') : '<div class="qual-pill">'+t('waitingResults')+'</div>';
+      ab.innerHTML='<div class="qual-info-card"><div class="qual-info-header"><span class="qual-info-title">'+tT+'</span><button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">'+t('clearGatesBtn')+'</button></div><div class="qual-info-sub">'+rS+'</div><div class="qual-badges-list">'+p+'</div></div>';
+    } else ab.innerHTML='';
+    
+    let mBtns; if(isSprFin) mBtns=[{val:4,label:'4 pt'},{val:3,label:'3 pt'},{val:2,label:'2 pt'},{val:1,label:'1 pt'}]; else if(cfg.isSprint&&state.currentHeat<12) mBtns=[{val:3,label:'1° (Passa)'},{val:2,label:'2° (Fuori)'}]; else if(isSpec) mBtns=[{val:3,label:'1°'},{val:2,label:'2°'},{val:1,label:'3°'},{val:0,label:'4°'}]; else mBtns=cfg.scores.map(v=>({val:v,label:v+' pt'}));
+    const spC=getSpecialCodes().filter(c=>c.code!=='W'); const cnt=document.getElementById('gates-container');
+    let aSl=h.slots; if(cfg.isSprint&&state.currentHeat<12) aSl=h.slots.slice(0,2);
+    const gStyle=isSprFin?'grid-template-columns: repeat(4, 1fr);':(cfg.isSprint&&state.currentHeat<12?'grid-template-columns: repeat(2, 1fr);':'');
+
+    cnt.innerHTML=aSl.map((sl,gI)=>{
+      const hC=sl.helmet||GATE_STYLE[gI].helmet; const hm=HELMET_META[hC]||HELMET_META.R; const sc=sl.score;
+      const hOpts=[{v:'R',c:'#e53935',l:'🔴'},{v:'B',c:'#1e88e5',l:'🔵'},{v:'W',c:'#f5f5f5',l:'⚪'},{v:'Y',c:'#fdd835',l:'🟡'}].map(o=>'<option value="'+o.v+'" '+(hC===o.v?'selected':'')+' style="background:'+o.c+';color:'+(o.v==='W'||o.v==='Y'?'#000':'#fff')+'">'+o.l+'</option>').join('');
+      let os=''; if(cfg.isSprint){ os+='<option value="" '+(!sl.riderId?'selected':'')+'>'+t('selectQualRider')+'</option>'; for(let r=1;r<=18;r++) os+='<option value="'+r+'" '+(sl.riderId==r?'selected':'')+'>#'+r+' '+state.riders[r]+'</option>'; }
+      else if(isSpec){ os+='<option value="" '+(!sl.riderId?'selected':'')+'>'+t('selectQualRider')+'</option>'; elList.forEach(i=>os+='<option value="'+i.id+'" '+(sl.riderId===i.id?'selected':'')+'>#'+i.id+' '+i.name+'</option>'); }
+      else if(cfg.isTeam){ os+='<option value="" '+(!sl.riderId?'selected':'')+'>'+t('selectQualRider')+'</option>'; const tI=hm.team==='A'?Array.from({length:cfg.ridersPerTeam},(_,i)=>i+1):Array.from({length:cfg.ridersPerTeam},(_,i)=>101+i); tI.forEach(r=>os+='<option value="'+r+'" '+(sl.riderId==r?'selected':'')+'>'+formatRiderNum(r)+' '+state.riders[r]+'</option>'); os+='<optgroup label="Sostituti">'; const oI=hm.team==='A'?Array.from({length:cfg.ridersPerTeam},(_,i)=>101+i):Array.from({length:cfg.ridersPerTeam},(_,i)=>i+1); oI.forEach(r=>os+='<option value="'+r+'" '+(sl.riderId==r?'selected':'')+'>'+formatRiderNum(r)+' '+state.riders[r]+'</option>'); os+='</optgroup>'; }
+      else { const l=cfg.is14Format?14:18; os+='<option value="" '+(!sl.riderId?'selected':'')+'>'+t('selectQualRider')+'</option>'; for(let r=1;r<=l;r++) os+='<option value="'+r+'" '+(sl.riderId==r?'selected':'')+'>#'+r+' '+state.riders[r]+'</option>'; }
+      const hasR=Boolean(sl.riderId); const tL=cfg.isTeam?(hm.team==='A'?state.teamNames.a:state.teamNames.b):''; const rL=hasR?(formatRiderNum(sl.riderId)+' '+state.riders[sl.riderId]):t('selectRiderUp');
+      const wB='<button type="button" '+(!hasR?'disabled':'')+' class="spec-btn '+(sl.warning?'warning-active':'')+'" onclick="toggleWarning('+gI+')"><span>W</span><small>Warning</small></button>';
+      return '<div class="gate-card '+hm.cls+'"><div class="rider-header"><div style="display:flex;align-items:center;gap:4px;"><span class="helmet-badge" style="background:#252a34;color:var(--text);">'+t('laneLbl')+' '+(gI+1)+'</span><select class="helmet-select" onchange="changeSlotHelmet('+gI+',this.value)" style="background:'+(hC==='R'?'#e53935':hC==='B'?'#1e88e5':hC==='W'?'#f5f5f5':'#fdd835')+'; color:'+(hC==='W'||hC==='Y'?'#000':'#fff')+'">'+hOpts+'</select></div><select class="sub-select" onchange="changeSlotRider('+gI+',this.value)">'+os+'</select></div><div class="rider-name '+(!hasR?'unassigned':'')+'"><span>'+rL+'</span>'+(tL?'<span class="rider-team-tag">'+tL+'</span>':'')+'</div><div class="score-btns" style="'+gStyle+'">'+mBtns.map(b=>'<button type="button" '+(!hasR?'disabled':'')+' class="score-btn '+(sc===b.val?'selected-'+b.val:'')+'" onclick="setScore('+gI+','+b.val+')">'+b.label+'</button>').join('')+'</div><div class="special-btns">'+spC.map(i=>'<button type="button" '+(!hasR?'disabled':'')+' class="spec-btn '+(sc===i.code?'selected-spec':'')+'" onclick="setScore('+gI+',\''+i.code+'\')"><span>'+i.code+'</span><small>'+i.short+'</small></button>').join('')+wB+'</div></div>';
+    }).join('');
+  }
 
   async function exportRacePoster(mode) {
     if(!isTeamMode()) syncSpecialHeatsWithQualifiers(); const cfg=getModeConfig(); const W=1080;
@@ -963,8 +1231,8 @@
     c.fillStyle='#252a34'; c.fillRect(30,y,W-60,tHH); c.fillStyle='#8892b0'; c.font='800 21px sans-serif';
     let cls=[]; if(cfg.isSprint) cls=[{label:'#',x:68},{label:t('thRider').toUpperCase(),x:125,align:'left'},{label:'OTT',x:500},{label:'SEM',x:600},{label:t('thFin').toUpperCase(),x:700},{label:'GP',x:965}]; else cls=[{label:'#',x:68},{label:t('thRider').toUpperCase(),x:125,align:'left'},{label:'1°',x:470},{label:'2°',x:530},{label:'3°',x:590},{label:'4°(R/X)',x:665},{label:t('thRuns').toUpperCase(),x:805},{label:t('thTot').toUpperCase(),x:965}];
     cls.forEach(k=>{c.textAlign=k.align||'center'; c.fillText(k.label,k.x,y+40);}); y+=tHH;
-    rows.forEach((st,i)=>{ c.fillStyle=i%2===0?'#1e2229':'#181b21'; c.fillRect(30,y,W-60,rH); c.textAlign='center'; c.fillStyle='#00e676'; c.font='900 23px sans-serif'; c.fillText(String(i+1),68,y+36); const pfx=cfg.isTeam?((st.team==='A'?'🔴 ':'🟡 ')+formatRiderNum(st.id)):('#'+st.id); c.textAlign='left'; c.fillStyle='#ffffff'; c.font='800 23px sans-serif'; c.fillText((pfx+' '+st.name).slice(0,24),125,y+36); c.textAlign='center'; c.fillStyle='#eceff4'; c.font='600 22px sans-serif'; if(cfg.isSprint){const r=st.runs.filter(x=>x!=='-'); c.fillText(String(r[0]??'-'),500,y+36); c.fillText(String(r[1]??'-'),600,y+36); c.fillText(String(r[2]??'-'),700,y+36); c.fillStyle='#00e676'; c.font='900 26px sans-serif'; c.fillText(st.sprintPts>0?String(st.sprintPts):'-',965,y+36);}else{c.fillText(String(st.ones),470,y+36); c.fillText(String(st.twos),530,y+36); c.fillText(String(st.threes),590,y+36); c.fillText(formatZerosCell(st),665,y+36); c.fillStyle='#8892b0'; c.font='600 19px sans-serif'; c.fillText('('+(st.runs.filter(r=>r!=='-').join(',')||'-')+')',805,y+36); c.fillStyle='#00e676'; c.font='900 26px sans-serif'; c.fillText(String(mode==='standings'&&!cfg.isTeam&&!cfg.is14Format?(sm[st.id]?sm[st.id].tot:st.total):st.total),965,y+36);} y+=rH; });
-    c.textAlign='center'; c.fillStyle='#8892b0'; c.font='700 20px sans-serif'; c.fillText('Speedway Live v4.9 App',W/2,H-25);
+    rows.forEach((st,i)=>{ c.fillStyle=i%2===0?'#1e2229':'#181b21'; c.fillRect(30,y,W-60,rH); c.textAlign='center'; c.fillStyle='#00e676'; c.font='900 23px sans-serif'; c.fillText(String(i+1),68,y+36); const pfx=cfg.isTeam?((st.team==='A'?'🔴 ':'🟡 ')+formatRiderNum(st.id)):('#'+st.id); c.textAlign='left'; c.fillStyle='#ffffff'; c.font='800 23px sans-serif'; c.fillText((pfx+' '+st.name).slice(0,24),125,y+36); c.textAlign='center'; c.fillStyle='#eceff4'; c.font='600 22px sans-serif'; if(cfg.isSprint){const r=st.runs.filter(x=>x!=='-'); c.fillText(String(r[0]??'-'),500,y+36); c.fillText(String(r[1]??'-'),600,y+36); c.fillText(String(r[2]??'-'),700,y+36); c.fillStyle='#00e676'; c.font='900 26px sans-serif'; c.fillText(st.total>0?String(st.total):'-',965,y+36);}else{c.fillText(String(st.ones),470,y+36); c.fillText(String(st.twos),530,y+36); c.fillText(String(st.threes),590,y+36); c.fillText(formatZerosCell(st),665,y+36); c.fillStyle='#8892b0'; c.font='600 19px sans-serif'; c.fillText('('+(st.runs.filter(r=>r!=='-').join(',')||'-')+')',805,y+36); c.fillStyle='#00e676'; c.font='900 26px sans-serif'; c.fillText(String(mode==='standings'&&!cfg.isTeam&&!cfg.is14Format?(sm[st.id]?sm[st.id].tot:st.total):st.total),965,y+36);} y+=rH; });
+    c.textAlign='center'; c.fillStyle='#8892b0'; c.font='700 20px sans-serif'; c.fillText('Speedway Live v4.9b App',W/2,H-25);
     cvs.toBlob(async function(b){if(!b)return; const n=(m.name||'speedway-live').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-'+mode+'.png'; const f=new File([b],n,{type:'image/png'}); if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({title:'Speedway Live',files:[f]});return;}catch(e){if(e.name==='AbortError')return;}} const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download=n; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(()=>URL.revokeObjectURL(u),3000);},'image/png');
   }
 
