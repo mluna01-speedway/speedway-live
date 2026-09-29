@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-title" content="Speedway Live">
   <link rel="icon" type="image/png" href="icon.png?v=2">
   <link rel="apple-touch-icon" href="icon.png?v=2">
-  <title>Speedway Live v4.2</title>
+  <title>Speedway Live v4.3</title>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
     :root {
@@ -100,7 +100,8 @@
     .btn-swap-lane:active { transform: scale(0.98); border-color: var(--accent); }
     .btn-swap-lane.team-a { border-left: 4px solid var(--red); border-right: 4px solid var(--blue); }
     .btn-swap-lane.team-b { border-left: 4px solid var(--white); border-right: 4px solid var(--yellow); }
-    .btn-swap-lane small { font-size: 0.63rem; color: var(--accent); }
+    .btn-swap-lane span { display: block; line-height: 1.2; }
+    .btn-swap-lane small { font-size: 0.63rem; color: var(--accent); margin-top: 2px; }
 
     .qual-info-card { background: #181c24; border: 1px solid var(--accent); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; width: 100%; }
     .qual-info-header { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 5px; }
@@ -125,7 +126,8 @@
     .badge-white { background: var(--white); color: #111; }
     .badge-yellow { background: var(--yellow); color: #111; }
 
-    .sub-select { flex: 1; max-width: 62%; min-width: 0; background: #2e3440; color: var(--text); border: 1px solid #3b4252; border-radius: 6px; padding: 5px 6px; font-size: 0.75rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sub-select { flex: 1; max-width: 58%; min-width: 0; background: #2e3440; color: var(--text); border: 1px solid #3b4252; border-radius: 6px; padding: 5px 6px; font-size: 0.75rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .helmet-select { background: #121418; color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 3px; font-size: 0.65rem; font-weight: bold; width: 28px; text-align: center; }
     .rider-name { font-size: 0.98rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; justify-content: space-between; align-items: center; }
     .rider-name.unassigned { color: var(--muted); font-style: italic; font-size: 0.88rem; }
     .rider-team-tag { font-size: 0.68rem; color: var(--muted); font-weight: 700; }
@@ -202,7 +204,7 @@
     .team-name-input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
     .team-name-input-row input { flex: 1; background: #121418; border: 1px solid var(--accent); color: #fff; font-weight: 900; font-size: 0.95rem; padding: 9px 10px; border-radius: 8px; }
     .rider-input-row { display: flex; align-items: center; gap: 8px; background: #161920; padding: 6px 9px; border-radius: 8px; margin-bottom: 6px; border: 1px solid var(--border); }
-    .rider-input-row span { width: 82px; font-weight: 800; color: var(--muted); font-size: 0.74rem; flex-shrink: 0; }
+    .rider-input-row span { width: 78px; font-weight: 800; color: var(--muted); font-size: 0.74rem; flex-shrink: 0; }
     .rider-input-row input { flex: 1; min-width: 0; background: #121418; border: 1px solid var(--border); color: var(--text); padding: 7px 9px; border-radius: 6px; font-size: 0.88rem; }
 
     .history-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -230,7 +232,7 @@
   <img src="icon.png?v=2" alt="Logo" class="app-logo-header" onerror="this.style.display='none'">
   <div class="header-title-box">
     <h1 id="header-event-title">SPEEDWAY LIVE</h1>
-    <div class="header-sub" id="header-event-sub">v4.2</div>
+    <div class="header-sub" id="header-event-sub">v4.3</div>
   </div>
   <div class="header-right">
     <button type="button" class="btn-top mode-btn" onclick="openModeModal()">🏁 <span data-i18n="btnTopFormat">Formato</span></button>
@@ -435,7 +437,6 @@
         Scatta una foto nitida all'elenco piloti (anche su sfondo scuro o schermo TV), caricala dalla galleria oppure incolla il testo.
       </p>
 
-      <!-- Selettore squadra target per OCR/Testo (visibile nelle gare a squadre) -->
       <div class="ocr-team-target" id="ocr-team-target-bar">
         <button type="button" id="ocr-target-both" class="active" onclick="setOcrTarget('both')" data-i18n="ocrTargetBoth">Entrambe le Squadre</button>
         <button type="button" id="ocr-target-a" onclick="setOcrTarget('a')" data-i18n="ocrTargetHome">🔴🔵 Solo Casa</button>
@@ -621,7 +622,6 @@
     { code: 'sv', name: 'Svenska',  flag: '🇸🇪' }
   ];
 
-  /* DIZIONARIO MULTILINGUA COMPLETO (STORE-SAFE + DISCLAIMER LEGALE) */
   const I18N = {
     it: {
       navEvent: "Evento", navRiders: "Piloti", navHeats: "Batterie", navCard: "Tabellone", navStandings: "Classifica", navHistory: "Storico", navSettings: "Setting",
@@ -682,7 +682,7 @@
       raceInProgress: "Gara in corso", setSectionTitle: "⚙️ Impostazioni & Lingua",
       setLangDesc: "Seleziona la lingua dell'applicazione. Tutte le schermate, le tabelle e le locandine verranno tradotte automaticamente.",
       legalTitle: "⚖️ Note Legali & Disclaimer",
-      legalText: "Questa applicazione è uno strumento indipendente di segnapunti sportivo e non è affiliata, associata, autorizzata o approvata da FIM, Warner Bros. Discovery Sports, Ekstraliga, Premiership, Elitserien, Speedway Ligaen o altri enti sportivi ufficiali. Tutti i riferimenti a formati di gara e regolamenti hanno scopo puramente descrittivo.",
+      legalText: "Questa applicazione è uno strumento indipendente di segnapunti sportivo e non è affiliata, associata, autorizzata o approvata da FIM, Warner Bros. Discovery Sports, Ekstraliga, Premiership, Elitserien, Speedway Ligaen o altri enti sportivi ufficiali. Tutti i riferimenti a formati di gara e regolamenti hanno scopo puramente descrittivo e informativo.",
       qrTitle: "📲 Condividi Speedway Live", qrDesc: "Fai inquadrare questo QR Code con la fotocamera per aprire e installare l'app:",
       qrShareBtn: "📤 Invia Link", qrCloseBtn: "Chiudi", riderDefault: "Pilota", reserveDefault: "Riserva",
       posterStandings: "CLASSIFICA UFFICIALE", posterCard: "TABELLONE GARA", posterPodium: "🏆 ORDINE D'ARRIVO FINALE (BATTERIA 23)", posterTeamRes: "🏆 RISULTATO SQUADRE",
@@ -943,7 +943,7 @@
       raceInProgress: "Tävling pågår", setSectionTitle: "⚙️ Inställningar & Språk",
       setLangDesc: "Välj språk.",
       legalTitle: "⚖️ Juridisk Information & Disclaimer",
-      legalText: "Denna applikation är ett oberoende verktyg för poängräkning och är inte associerad med, auktoriserad eller godkänd av FIM, Warner Bros. Discovery Sports, Ekstraliga, Premiership, Elitserien, Speedway Ligaen eller något annat officiellt förbund. Alla hänvisningar till tävlingsformat är uteslutande beskrivande.",
+      legalText: "Denna applikation är ett oberoende verktyg för poängräkning och är inte associerad med, auktoriserad eller godkänd av FIM, Warner Bros. Discovery Sports, Ekstraliga, Premiership, Elitserien, Speedway Ligaen eller något annat officiellt förbund. Alla hänvisningar till tävlingsformat är uteslutande beskrivende.",
       qrTitle: "📲 Dela Speedway Live", qrDesc: "Skanna denna QR-kod:",
       qrShareBtn: "📤 Dela Länk", qrCloseBtn: "Stäng", riderDefault: "Förare", reserveDefault: "Reserv",
       posterStandings: "OFFICIELL STÄLLNING", posterCard: "KÖRSCHEMA", posterPodium: "🏆 FINALRESULTAT", posterTeamRes: "🏆 LAGMATCH RESULTAT",
@@ -1423,6 +1423,16 @@
     }
   }
 
+  /* ASSEGNAZIONE MANUALE DEL CASCO ALLA CORSIA */
+  function changeSlotHelmet(gateIdx, newHelmet) {
+    const heat = state.heats[state.currentHeat];
+    if (heat.slots[gateIdx]) {
+      heat.slots[gateIdx].helmet = newHelmet;
+      saveState();
+      renderCurrentHeat();
+    }
+  }
+
   function computeTeamTotals(raceObj) {
     const rState = raceObj || state;
     let totA = 0, totB = 0;
@@ -1871,12 +1881,12 @@
       swapBox.innerHTML =
         '<div class="swap-lanes-bar">' +
           '<button type="button" class="btn-swap-lane team-a" onclick="swapTeammatesGates(\'A\')">' +
-            '<span>' + t('swapTeamBtn') + ' ' + (state.teamNames.a || getDefaultTeamName('a', state.mode)) + '</span>' +
-            '<small>' + t('swapRedBlue') + '</small>' +
+            '<span>' + t('swapTeamBtn') + '</span>' +
+            '<span>' + (state.teamNames.a || getDefaultTeamName('a', state.mode)) + '</span>' +
           '</button>' +
           '<button type="button" class="btn-swap-lane team-b" onclick="swapTeammatesGates(\'B\')">' +
-            '<span>' + t('swapTeamBtn') + ' ' + (state.teamNames.b || getDefaultTeamName('b', state.mode)) + '</span>' +
-            '<small>' + t('swapWhiteYellow') + '</small>' +
+            '<span>' + t('swapTeamBtn') + '</span>' +
+            '<span>' + (state.teamNames.b || getDefaultTeamName('b', state.mode)) + '</span>' +
           '</button>' +
         '</div>';
     } else {
@@ -1915,13 +1925,17 @@
     container.innerHTML = heat.slots.map((slot, gIdx) => {
       const hColor = slot.helmet || GATE_STYLE[gIdx].helmet;
       const hm = HELMET_META[hColor] || HELMET_META.R;
-      const gateTitle = cfg.isTeam
-        ? (t('laneLbl') + ' ' + (gIdx + 1) + ' • ' + t(hm.key))
-        : t(GATE_STYLE[gIdx].key);
-
       const sc = slot.score;
-      let opts = '';
 
+      // Select per assegnare liberamente il colore del casco alla corsia
+      const helmetOpts = [
+        { val: 'R', clr: '#e53935' },
+        { val: 'B', clr: '#1e88e5' },
+        { val: 'W', clr: '#f5f5f5' },
+        { val: 'Y', clr: '#fdd835' }
+      ].map(o => '<option value="' + o.val + '" ' + (hColor === o.val ? 'selected' : '') + ' style="background:' + o.clr + '"></option>').join('');
+
+      let opts = '';
       if (isSpecialHeat) {
         opts += '<option value="" ' + (!slot.riderId ? 'selected' : '') + '>' + t('selectQualRider') + '</option>';
         eligibleList.forEach(item => {
@@ -1929,12 +1943,23 @@
         });
       } else if (cfg.isTeam) {
         opts += '<option value="" ' + (!slot.riderId ? 'selected' : '') + '>' + t('selectQualRider') + '</option>';
-        const teamIds = hm.team === 'A'
+        const isHome = hm.team === 'A';
+        const teamIds = isHome
           ? Array.from({length: cfg.ridersPerTeam}, (_, i) => i + 1)
           : Array.from({length: cfg.ridersPerTeam}, (_, i) => 101 + i);
         teamIds.forEach(r => {
           opts += '<option value="' + r + '" ' + (slot.riderId == r ? 'selected' : '') + '>' + formatRiderNum(r) + ' ' + state.riders[r] + '</option>';
         });
+        
+        // Aggiunge la possibilità di scegliere anche i piloti dell'altra squadra (Tactical Substitute/Joker)
+        opts += '<optgroup label="Sostituti Altra Squadra">';
+        const otherIds = isHome
+          ? Array.from({length: cfg.ridersPerTeam}, (_, i) => 101 + i)
+          : Array.from({length: cfg.ridersPerTeam}, (_, i) => i + 1);
+        otherIds.forEach(r => {
+          opts += '<option value="' + r + '" ' + (slot.riderId == r ? 'selected' : '') + '>' + formatRiderNum(r) + ' ' + state.riders[r] + '</option>';
+        });
+        opts += '</optgroup>';
       } else {
         for (let r = 1; r <= 18; r++) {
           opts += '<option value="' + r + '" ' + (slot.riderId == r ? 'selected' : '') + '>#' + r + ' ' + state.riders[r] + '</option>';
@@ -1947,7 +1972,10 @@
 
       return '<div class="gate-card ' + hm.cls + '">' +
         '<div class="rider-header">' +
-          '<span class="helmet-badge ' + hm.badge + '">' + gateTitle + '</span>' +
+          '<div style="display:flex;align-items:center;gap:4px;">' +
+            '<span class="helmet-badge" style="background:#252a34;color:var(--text);">' + t('laneLbl') + ' ' + (gIdx + 1) + '</span>' +
+            '<select class="helmet-select" onchange="changeSlotHelmet(' + gIdx + ', this.value)" style="background:' + (hColor === 'R' ? '#e53935' : hColor === 'B' ? '#1e88e5' : hColor === 'W' ? '#f5f5f5' : '#fdd835') + '; color:' + (hColor === 'W' || hColor === 'Y' ? '#000' : '#fff') + '">' + helmetOpts + '</select>' +
+          '</div>' +
           '<select class="sub-select" onchange="changeSlotRider(' + gIdx + ', this.value)">' + opts + '</select>' +
         '</div>' +
         '<div class="rider-name ' + (!hasRider ? 'unassigned' : '') + '">' +
@@ -2336,7 +2364,7 @@
     });
 
     ctx.textAlign = 'center'; ctx.fillStyle = '#8892b0'; ctx.font = '700 20px sans-serif';
-    ctx.fillText('Speedway Live v4.2 App', W / 2, H - 25);
+    ctx.fillText('Speedway Live v4.3 App', W / 2, H - 25);
 
     canvas.toBlob(async function(blob) {
       if (!blob) return;
@@ -2383,7 +2411,6 @@
           const d = imgData.data;
           const totalPixels = d.length / 4;
 
-          // Passaggio 1: Calcolo luminosità media e min/max per capire se lo sfondo è scuro
           let sumGray = 0;
           let minG = 255, maxG = 0;
           const grays = new Uint8Array(totalPixels);
@@ -2397,18 +2424,16 @@
           }
 
           const avgGray = sumGray / totalPixels;
-          const isDarkBackground = avgGray < 118; // Grafica TV/Social scura con testo chiaro
+          const isDarkBackground = avgGray < 118;
           const range = Math.max(40, maxG - minG);
 
-          // Passaggio 2: Inversione automatica (se fondo scuro) + Stretch istogramma + Contrasto netto
           const contrast = 1.65;
           for (let i = 0, p = 0; i < d.length; i += 4, p++) {
             let norm = ((grays[p] - minG) / range) * 255;
             if (isDarkBackground) {
-              norm = 255 - norm; // Inverte: testo scuro su sfondo bianco per Tesseract
+              norm = 255 - norm;
             }
             let adj = ((norm - 128) * contrast) + 128;
-            // Pulizia sfondo quasi bianco per eliminare disturbi della carta o dello schermo
             if (adj > 205) adj = 255;
             else if (adj < 55) adj = 0;
             adj = Math.max(0, Math.min(255, adj));
@@ -2428,7 +2453,6 @@
 
   function cleanRiderNameToken(word) {
     if (!word) return "";
-    // Se è tutto maiuscolo (es. ZMARZLIK), lo formatta in modo leggibile (Zmarzlik)
     if (word.length > 2 && word === word.toUpperCase()) {
       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     }
@@ -2436,7 +2460,6 @@
   }
 
   function parseRidersFromText(rawText) {
-    // Separa sia per righe sia per eventuali doppie colonne separate
     const rawLines = (rawText || "")
       .replace(/\t+/g, '  ')
       .split(/\r?\n/)
@@ -2445,7 +2468,6 @@
 
     const lines = [];
     rawLines.forEach(l => {
-      // Se sulla stessa riga ci sono due piloti numerati (es. colonna sinistra e colonna destra: "1. Zmarzlik   9. Lambert")
       const splitCols = l.split(/\s{2,}(?=#?(?:1[0-8]|[1-9])[\.\)\-\:\s])/);
       splitCols.forEach(part => {
         if (part && part.trim().length >= 3) lines.push(part.trim());
@@ -2456,12 +2478,10 @@
     const extractedItems = [];
 
     lines.forEach(line => {
-      // Corregge errori OCR frequenti ad inizio riga: "I." o "l." o "|." -> "1.", "IO." -> "10."
       let fixedLine = line
         .replace(/^[Il\|]([\.\)\-\:\s]+)/, '1$1')
         .replace(/^1[Oo]([\.\)\-\:\s]+)/, '10$1');
 
-      // Rimuove punteggi tra parentesi es. (3,2,1,0), nazionalità (POL), numeri di casacca #95 o (505)
       let cleanLine = fixedLine
         .replace(/[\(\[\{][0-9,\s\-\+RFTXNS\*]{2,14}[\)\]\}]/gi, ' ')
         .replace(/[\(\[\{][A-Za-z0-9]{1,5}[\)\]\}]/g, ' ')
@@ -2495,7 +2515,6 @@
 
     if (extractedItems.length === 0) return 0;
 
-    // Popola il box di testo con l'elenco pulito così l'utente può sempre vederlo o correggerlo
     const previewLines = extractedItems.map((it, idx) => (it.num || (idx + 1)) + ". " + it.name);
     const pasteArea = document.getElementById('paste-riders-area');
     if (pasteArea) pasteArea.value = previewLines.join("\n");
@@ -2503,7 +2522,6 @@
     const cfg = getModeConfig();
     let applied = 0;
 
-    // 1. MODALITÀ INDIVIDUALE (1..18)
     if (!cfg.isTeam) {
       const numberedMap = {};
       extractedItems.forEach(item => {
@@ -2526,15 +2544,10 @@
       return applied;
     }
 
-    // 2. MODALITÀ SQUADRE / LEGHE
     const maxR = cfg.ridersPerTeam;
     if (ocrTeamTarget === 'a') {
       extractedItems.slice(0, maxR).forEach((item, idx) => {
-        let slot = idx + 1;
-        if (item.num) {
-          if (item.num >= 1 && item.num <= maxR) slot = item.num;
-          else if (item.num >= 9 && (item.num - 8) <= maxR) slot = item.num - 8;
-        }
+        const slot = (item.num && item.num >= 1 && item.num <= maxR) ? item.num : (idx + 1);
         state.riders[slot] = item.name;
         applied++;
       });
@@ -2546,7 +2559,7 @@
         let slot = idx + 1;
         if (item.num) {
           if (item.num >= 1 && item.num <= maxR) slot = item.num;
-          else if (item.num >= 9 && (item.num - 8) <= maxR) slot = item.num - 8;
+          else if (item.num > 8 && (item.num - 8) <= maxR) slot = item.num - 8;
         }
         state.riders[100 + slot] = item.name;
         applied++;
@@ -2554,14 +2567,13 @@
       return applied;
     }
 
-    // Target 'both' (Entrambe le squadre)
     const usedHome = {};
     let currentSide = 'A';
     extractedItems.forEach((item, idx) => {
       if (item.num && item.num > maxR && item.num <= 16) {
-        const secondIdx = item.num - 8;
-        if (secondIdx >= 1 && secondIdx <= maxR) {
-          state.riders[100 + secondIdx] = item.name;
+        const awayIdx = item.num - 8;
+        if (awayIdx >= 1 && awayIdx <= maxR) {
+          state.riders[100 + awayIdx] = item.name;
           applied++;
         }
         return;
@@ -2694,7 +2706,7 @@
   }
 
   function exportBackupJson() {
-    const backupPayload = { app: "Speedway Live", version: 4.2, exportedAt: new Date().toISOString(), currentRace: state, archive: getArchive() };
+    const backupPayload = { app: "Speedway Live", version: 4.3, exportedAt: new Date().toISOString(), currentRace: state, archive: getArchive() };
     const blob = new Blob([JSON.stringify(backupPayload, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
