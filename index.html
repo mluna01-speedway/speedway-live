@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-title" content="Speedway Live">
   <link rel="icon" type="image/png" href="icon.png?v=2">
   <link rel="apple-touch-icon" href="icon.png?v=2">
-  <title>Speedway Live v4.5</title>
+  <title>Speedway Live v4.6</title>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
     :root {
@@ -34,7 +34,6 @@
     .btn-top.danger { background: rgba(198, 40, 40, 0.25); border-color: #c62828; color: #ff8a80; }
     .btn-top.mode-btn { border-color: var(--accent); color: var(--accent); }
 
-    /* Modal Scelta Formato Gara & QR */
     .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.86); z-index: 999; display: none; align-items: center; justify-content: center; padding: 14px; overflow-y: auto; }
     .modal-backdrop.open { display: flex; }
     .modal-box { background: var(--card); border: 1px solid var(--accent); border-radius: 16px; padding: 18px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 35px rgba(0,0,0,0.7); }
@@ -54,7 +53,6 @@
     .qr-btn-share { background: var(--accent); color: #000; }
     .qr-btn-close { background: #2e3440; color: var(--text); }
 
-    /* Banner Punteggio Squadre Live */
     .team-score-banner { background: #161920; border-bottom: 1px solid var(--border); padding: 8px 12px; display: none; align-items: center; justify-content: space-between; gap: 8px; }
     .team-score-banner.visible { display: flex; }
     .ts-side { flex: 1; min-width: 0; display: flex; flex-direction: column; }
@@ -64,7 +62,6 @@
     .ts-name { font-size: 0.86rem; font-weight: 900; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
     .ts-center { background: var(--card); border: 1px solid var(--accent); border-radius: 10px; padding: 4px 12px; font-size: 1.15rem; font-weight: 900; color: var(--accent); white-space: nowrap; letter-spacing: 1px; }
 
-    /* Banner Orizzontale Pista */
     .track-hero { width: 100%; height: 110px; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); display: none; background: #090b10; }
     .track-hero.visible { display: block; }
     .track-hero img { width: 100%; height: 100%; object-fit: cover; opacity: 0.75; }
@@ -94,7 +91,6 @@
     .heat-time-unit { font-size: 0.74rem; color: var(--muted); font-weight: 800; }
     .best-time-badge { font-size: 0.66rem; background: rgba(0, 230, 118, 0.12); color: var(--accent); border: 1px solid rgba(0, 230, 118, 0.35); padding: 3px 6px; border-radius: 6px; font-weight: 800; white-space: nowrap; }
 
-    /* Barra Scambio Corsie Compagni di Squadra (due righe) */
     .swap-lanes-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 9px; }
     .btn-swap-lane { background: #1c2028; border: 1px solid #3b4252; color: var(--text); padding: 8px 6px; border-radius: 9px; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
     .btn-swap-lane:active { transform: scale(0.98); border-color: var(--accent); }
@@ -128,23 +124,20 @@
     .badge-yellow { background: var(--yellow); color: #111; }
 
     .sub-select { flex: 1; max-width: 58%; min-width: 0; background: #2e3440; color: var(--text); border: 1px solid #3b4252; border-radius: 6px; padding: 5px 6px; font-size: 0.75rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    
-    /* Menu Colore Casco Modificato */
     .helmet-select { background: #121418; color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 3px 2px; font-size: 0.65rem; font-weight: bold; width: auto; max-width: 65px; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
-    
     .rider-name { font-size: 0.98rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; justify-content: space-between; align-items: center; }
     .rider-name.unassigned { color: var(--muted); font-style: italic; font-size: 0.88rem; }
     .rider-team-tag { font-size: 0.68rem; color: var(--muted); font-weight: 700; }
 
-    .score-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; }
+    .score-btns { display: grid; gap: 6px; width: 100%; }
     .score-btn { background: #2b303c; border: 1px solid #3b4252; color: var(--text); padding: 10px 0; border-radius: 8px; font-weight: 800; font-size: 0.95rem; cursor: pointer; min-width: 0; }
     .score-btn:disabled, .spec-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-    .score-btn.selected-4, .score-btn.selected-3 { background: #00c853; color: #000; border-color: #00e676; }
+    .score-btn.selected-4 { background: #b2ff59; color: #000; border-color: #76ff03; }
+    .score-btn.selected-3 { background: #00c853; color: #000; border-color: #00e676; }
     .score-btn.selected-2 { background: #29b6f6; color: #000; border-color: #4fc3f7; }
     .score-btn.selected-1 { background: #ffa726; color: #000; border-color: #ffb74d; }
     .score-btn.selected-0 { background: #78909c; color: #000; border-color: #90a4ae; }
 
-    /* Modifica Pulsanti Speciali: ora sono 6 (+ Warning) */
     .special-btns { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; width: 100%; }
     .spec-btn { background: #181b20; border: 1px solid #2e3440; color: var(--muted); padding: 5px 2px; border-radius: 6px; font-size: 0.74rem; font-weight: 800; cursor: pointer; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.15; }
     .spec-btn small { font-size: 0.55rem; font-weight: 600; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
@@ -161,7 +154,6 @@
     .standings-mode-switch button { flex: 1; padding: 7px 6px; border: none; border-radius: 6px; background: transparent; color: var(--muted); font-size: 0.74rem; font-weight: 800; cursor: pointer; }
     .standings-mode-switch button.active { background: #2e3440; color: var(--accent); }
 
-    /* Selettore squadra target per OCR in modalità squadre */
     .ocr-team-target { display: none; gap: 5px; margin-bottom: 9px; background: #14171d; padding: 5px; border-radius: 8px; border: 1px solid var(--border); }
     .ocr-team-target.visible { display: flex; }
     .ocr-team-target button { flex: 1; padding: 6px 4px; border: none; border-radius: 6px; background: transparent; color: var(--muted); font-size: 0.7rem; font-weight: 800; cursor: pointer; }
@@ -238,7 +230,7 @@
   <img src="icon.png?v=2" alt="Logo" class="app-logo-header" onerror="this.style.display='none'">
   <div class="header-title-box">
     <h1 id="header-event-title">SPEEDWAY LIVE</h1>
-    <div class="header-sub" id="header-event-sub">v4.5</div>
+    <div class="header-sub" id="header-event-sub">v4.6</div>
   </div>
   <div class="header-right">
     <button type="button" class="btn-top mode-btn" onclick="openModeModal()">🏁 <span data-i18n="btnTopFormat">Formato</span></button>
@@ -248,7 +240,6 @@
   </div>
 </header>
 
-<!-- Banner Punteggio Live Gara a Squadre / Coppie -->
 <div class="team-score-banner" id="team-score-banner">
   <div class="ts-side">
     <div class="ts-dots"><i class="ts-dot" style="background:var(--red)"></i><i class="ts-dot" style="background:var(--blue)"></i> <span id="ts-role-a" data-i18n="homeBadge">CASA</span></div>
@@ -261,7 +252,6 @@
   </div>
 </div>
 
-<!-- Finestra Scelta Formato Gara (Store-Safe Nominative Fair Use + Formato ITA) -->
 <div class="modal-backdrop" id="mode-modal">
   <div class="modal-box">
     <div id="mode-step-main">
@@ -362,7 +352,6 @@
   </div>
 </div>
 
-<!-- Finestra Popup QR Code -->
 <div class="modal-backdrop" id="qr-modal" onclick="if(event.target===this)closeQrModal()">
   <div class="modal-box">
     <h3 data-i18n="qrTitle">📲 Condividi Speedway Live</h3>
@@ -378,7 +367,6 @@
   </div>
 </div>
 
-<!-- Foto Orizzontale della Pista -->
 <div class="track-hero" id="track-hero">
   <img id="track-hero-img" src="" alt="Foto Pista">
   <div class="track-hero-overlay">
@@ -389,7 +377,6 @@
 
 <div class="container">
 
-  <!-- SEZIONE 1: EVENTO -->
   <div id="tab-event" class="tab-content">
     <div class="card-box">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
@@ -449,7 +436,6 @@
     </div>
   </div>
 
-  <!-- SEZIONE 2: PILOTI + OCR PRO MULTI-PASS -->
   <div id="tab-riders" class="tab-content">
     <div class="card-box">
       <h2 data-i18n="ridersSectionTitle">🏍️ Inserimento Rapido Piloti (OCR Pro / Testo)</h2>
@@ -457,7 +443,6 @@
         Scatta una foto nitida all'elenco piloti (anche su sfondo scuro o schermo TV), caricala dalla galleria oppure incolla il testo.
       </p>
 
-      <!-- Selettore squadra target per OCR/Testo (visibile nelle gare a squadre) -->
       <div class="ocr-team-target" id="ocr-team-target-bar">
         <button type="button" id="ocr-target-both" class="active" onclick="setOcrTarget('both')" data-i18n="ocrTargetBoth">Entrambe le Squadre</button>
         <button type="button" id="ocr-target-a" onclick="setOcrTarget('a')" data-i18n="ocrTargetHome">🔴🔵 Solo Casa</button>
@@ -490,7 +475,6 @@
     <button type="button" class="btn-reset" onclick="resetAllScores()" data-i18n="btnResetScores">🔄 Azzera Punteggi e Piazzamenti Batteria</button>
   </div>
 
-  <!-- SEZIONE 3: BATTERIE -->
   <div id="tab-heats" class="tab-content active">
     <div class="heat-nav">
       <button type="button" onclick="changeHeat(-1)" data-i18n="btnPrev">◀ Prec</button>
@@ -510,15 +494,12 @@
       </div>
     </div>
 
-    <!-- Pulsanti Scambio Corsia tra Compagni di Squadra -->
     <div id="team-swap-lanes-box"></div>
-
     <div id="auto-finals-box"></div>
     <div id="gates-container"></div>
     <div class="codes-legend" id="heats-codes-legend"></div>
   </div>
 
-  <!-- SEZIONE 4: TABELLONE COMPLETO -->
   <div id="tab-card" class="tab-content">
     <div class="share-bar">
       <button type="button" class="btn-share" onclick="exportRacePoster('card')" data-i18n="btnShareCard">
@@ -534,7 +515,6 @@
     <div class="codes-legend" style="margin-top:8px;" id="card-codes-legend"></div>
   </div>
 
-  <!-- SEZIONE 5: CLASSIFICA -->
   <div id="tab-standings" class="tab-content">
     <div class="share-bar">
       <button type="button" class="btn-share" onclick="exportRacePoster('standings')" data-i18n="btnShareStandings">
@@ -543,7 +523,7 @@
     </div>
     <div class="standings-mode-switch" id="standings-mode-switch">
       <button type="button" id="btn-mode-final" class="active" onclick="setStandingsMode('final')" data-i18n="btnModeFinal">🏆 Classifica Finale GP</button>
-      <button type="button" id="btn-mode-qual" onclick="setStandingsMode('qual')" data-i18n="btnModeQual">⏱️ Classifica 20 Batterie</button>
+      <button type="button" id="btn-mode-qual" onclick="setStandingsMode('qual')" data-i18n="btnModeQual">⏱️ Classifica Qualificazioni</button>
     </div>
     <div class="legend-bar" id="standings-legend-bar"></div>
     <div class="table-wrap">
@@ -555,7 +535,6 @@
     <div class="codes-legend" style="margin-top:8px;" id="standings-codes-legend"></div>
   </div>
 
-  <!-- SEZIONE 6: STORICO GARE & BACKUP JSON -->
   <div id="tab-history" class="tab-content">
     <div class="card-box">
       <h2 data-i18n="histSectionTitle">💾 Gestione & Archivio Gare</h2>
@@ -572,7 +551,6 @@
     <div id="history-list"></div>
   </div>
 
-  <!-- SEZIONE 7: SETTING (LINGUA & DISCLAIMER LEGALE) -->
   <div id="tab-settings" class="tab-content">
     <div class="card-box">
       <h2 data-i18n="setSectionTitle">⚙️ Impostazioni & Lingua</h2>
@@ -680,6 +658,7 @@
       btnResetRiders: "🗑️ Ripristina Nomi Piloti", btnResetScores: "🔄 Azzera Punteggi e Piazzamenti Batteria",
       btnPrev: "◀ Prec", btnNext: "Succ ▶", heatTimeLbl: "Tempo:", bestTimeLbl: "⚡ Record:",
       heatLbl: "Batteria", seriesLbl: "Serie", finalLbl: "FINALE", nominatedLbl: "Nominata",
+      sprintLbl: "Sprint Race (Qualifiche)", sprintSub: "Seleziona i 4 vincitori delle qualifiche. I punti (4,3,2,1) si sommano alla classifica mondiale GP.",
       gate1: "Corsia 1", gate2: "Corsia 2", gate3: "Corsia 3", gate4: "Corsia 4",
       laneLbl: "Corsia", helmetRed: "Rosso", helmetBlue: "Blu", helmetWhite: "Bianco", helmetYellow: "Giallo",
       swapTeamBtn: "⇄ Scambia Corsie",
@@ -750,6 +729,7 @@
       btnResetRiders: "🗑️ Reset Rider Names", btnResetScores: "🔄 Reset Heat Scores & Times",
       btnPrev: "◀ Prev", btnNext: "Next ▶", heatTimeLbl: "Time:", bestTimeLbl: "⚡ Best:",
       heatLbl: "Heat", seriesLbl: "Series", finalLbl: "FINAL", nominatedLbl: "Nominated",
+      sprintLbl: "Sprint Race (Qualifying)", sprintSub: "Select the top 4 from qualifying. Points (4,3,2,1) are added to the World Champ. standings.",
       gate1: "Gate 1", gate2: "Gate 2", gate3: "Gate 3", gate4: "Gate 4",
       laneLbl: "Gate", helmetRed: "Red", helmetBlue: "Blue", helmetWhite: "White", helmetYellow: "Yellow",
       swapTeamBtn: "⇄ Swap Gates",
@@ -820,6 +800,7 @@
       btnResetRiders: "🗑️ Przywróć Domyślne Nazwiska", btnResetScores: "🔄 Wyzeruj Punkty i Czasy Biegów",
       btnPrev: "◀ Poprz.", btnNext: "Nast. ▶", heatTimeLbl: "Czas:", bestTimeLbl: "⚡ Rekord:",
       heatLbl: "Bieg", seriesLbl: "Seria", finalLbl: "FINAŁ", nominatedLbl: "Nominowany",
+      sprintLbl: "Sprint Race (Kwalifikacje)", sprintSub: "Wybierz czołową czwórkę kwalifikacji. Punkty (4,3,2,1) wliczają się do klasyfikacji MŚ.",
       gate1: "Tor 1", gate2: "Tor 2", gate3: "Tor 3", gate4: "Tor 4",
       laneLbl: "Tor", helmetRed: "Czerwony", helmetBlue: "Niebieski", helmetWhite: "Biały", helmetYellow: "Żółty",
       swapTeamBtn: "⇄ Zamień Tory",
@@ -884,6 +865,7 @@
       btnResetRiders: "🗑️ Nulstil Kørernavne", btnResetScores: "🔄 Nulstil Point & Heattider",
       btnPrev: "◀ Forrige", btnNext: "Næste ▶", heatTimeLbl: "Tid:", bestTimeLbl: "⚡ Bedste:",
       heatLbl: "Heat", seriesLbl: "Serie", finalLbl: "FINALE", nominatedLbl: "Nomineret",
+      sprintLbl: "Sprint Race (Kvalifikation)", sprintSub: "Vælg de 4 bedste fra kvalifikationen. Point (4,3,2,1) lægges til VM-stillingen.",
       gate1: "Bane 1", gate2: "Bane 2", gate3: "Bane 3", gate4: "Bane 4",
       laneLbl: "Bane", helmetRed: "Rød", helmetBlue: "Blå", helmetWhite: "Hvid", helmetYellow: "Gul",
       swapTeamBtn: "⇄ Byt Baner",
@@ -948,6 +930,7 @@
       btnResetRiders: "🗑️ Återställ Förarnamn", btnResetScores: "🔄 Nollställ Poäng & Heattider",
       btnPrev: "◀ Föreg", btnNext: "Nästa ▶", heatTimeLbl: "Tid:", bestTimeLbl: "⚡ Bästa:",
       heatLbl: "Heat", seriesLbl: "Omgång", finalLbl: "FINAL", nominatedLbl: "Nominerat",
+      sprintLbl: "Sprint Race (Kval)", sprintSub: "Välj topp 4 från kvalet. Poäng (4,3,2,1) läggs till i VM-ställningen.",
       gate1: "Bana 1", gate2: "Bana 2", gate3: "Bana 3", gate4: "Bana 4",
       laneLbl: "Bana", helmetRed: "Röd", helmetBlue: "Blå", helmetWhite: "Vit", helmetYellow: "Gul",
       swapTeamBtn: "⇄ Byt Banor",
@@ -993,7 +976,7 @@
   ];
 
   const LEAGUE_CONFIGS = {
-    sgp: { titleKey: "modeSgpTitle", isTeam: false, is14Format: false, totalHeats: 23, scores: [3,2,1,0] },
+    sgp: { titleKey: "modeSgpTitle", isTeam: false, is14Format: false, totalHeats: 24, scores: [3,2,1,0] },
     ita_indiv: { 
       titleKey: "modeItaTitle", isTeam: false, is14Format: true, totalHeats: 20, scores: [3,2,1,0],
       schedule: [
@@ -1006,7 +989,7 @@
         [[4,'R'], [8,'B'], [10,'W'], [11,'Y']],
         [[1,'R'], [12,'B'], [7,'W'], [14,'Y']],
         [[2,'R'], [13,'B'], [8,'W'], [9,'Y']],
-        [[3,'R'], [5,'B'], [10,'W'], [2,'Y']], // Note: The second '2' could be a reserve, typically 1..14 used. Handled by generic mapping if out of bounds
+        [[3,'R'], [5,'B'], [10,'W'], [2,'Y']],
         [[11,'R'], [4,'B'], [6,'W'], [1,'Y']],
         [[14,'R'], [8,'B'], [3,'W'], [5,'Y']],
         [[10,'R'], [1,'B'], [13,'W'], [2,'Y']],
@@ -1021,20 +1004,13 @@
       titleKey: "leagueUkTitle", isTeam: true, ridersPerTeam: 7, totalHeats: 15, scores: [3,2,1,0],
       roles: { 6: "roleReserve", 7: "roleRisingStar" },
       schedule: [
-        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']],
-        [[106,'W'], [6,'R'], [107,'Y'], [7,'B']],
-        [[3,'R'], [103,'W'], [4,'B'], [104,'Y']],
-        [[105,'W'], [5,'R'], [107,'Y'], [7,'B']],
-        [[3,'R'], [101,'W'], [4,'B'], [102,'Y']],
-        [[103,'W'], [1,'R'], [104,'Y'], [2,'B']],
-        [[5,'R'], [105,'W'], [6,'B'], [106,'Y']],
-        [[102,'W'], [2,'R'], [107,'Y'], [7,'B']],
-        [[3,'R'], [105,'W'], [4,'B'], [106,'Y']],
-        [[103,'W'], [1,'R'], [104,'Y'], [2,'B']],
-        [[5,'R'], [101,'W'], [6,'B'], [102,'Y']],
-        [[103,'W'], [3,'R'], [106,'Y'], [7,'B']],
-        [[1,'R'], [101,'W'], [5,'B'], [105,'Y']],
-        [[104,'W'], [4,'R'], [106,'Y'], [6,'B']],
+        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']], [[106,'W'], [6,'R'], [107,'Y'], [7,'B']],
+        [[3,'R'], [103,'W'], [4,'B'], [104,'Y']], [[105,'W'], [5,'R'], [107,'Y'], [7,'B']],
+        [[3,'R'], [101,'W'], [4,'B'], [102,'Y']], [[103,'W'], [1,'R'], [104,'Y'], [2,'B']],
+        [[5,'R'], [105,'W'], [6,'B'], [106,'Y']], [[102,'W'], [2,'R'], [107,'Y'], [7,'B']],
+        [[3,'R'], [105,'W'], [4,'B'], [106,'Y']], [[103,'W'], [1,'R'], [104,'Y'], [2,'B']],
+        [[5,'R'], [101,'W'], [6,'B'], [102,'Y']], [[103,'W'], [3,'R'], [106,'Y'], [7,'B']],
+        [[1,'R'], [101,'W'], [5,'B'], [105,'Y']], [[104,'W'], [4,'R'], [106,'Y'], [6,'B']],
         [[null,'R'], [null,'W'], [null,'B'], [null,'Y']]
       ]
     },
@@ -1042,20 +1018,13 @@
       titleKey: "leagueSeTitle", isTeam: true, ridersPerTeam: 7, totalHeats: 15, scores: [3,2,1,0],
       roles: { 6: "roleReserve", 7: "roleReserve" },
       schedule: [
-        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']],
-        [[106,'W'], [6,'R'], [107,'Y'], [7,'B']],
-        [[3,'R'], [103,'W'], [4,'B'], [104,'Y']],
-        [[105,'W'], [5,'R'], [106,'Y'], [7,'B']],
-        [[2,'R'], [104,'W'], [6,'B'], [107,'Y']],
-        [[101,'W'], [3,'R'], [102,'Y'], [4,'B']],
-        [[1,'R'], [103,'W'], [2,'B'], [104,'Y']],
-        [[105,'W'], [3,'R'], [106,'Y'], [5,'B']],
-        [[5,'R'], [101,'W'], [6,'B'], [102,'Y']],
-        [[103,'W'], [1,'R'], [107,'Y'], [7,'B']],
-        [[4,'R'], [104,'W'], [5,'B'], [105,'Y']],
-        [[102,'W'], [2,'R'], [103,'Y'], [3,'B']],
-        [[1,'R'], [101,'W'], [4,'B'], [105,'Y']],
-        [[null,'W'], [null,'R'], [null,'Y'], [null,'B']],
+        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']], [[106,'W'], [6,'R'], [107,'Y'], [7,'B']],
+        [[3,'R'], [103,'W'], [4,'B'], [104,'Y']], [[105,'W'], [5,'R'], [106,'Y'], [7,'B']],
+        [[2,'R'], [104,'W'], [6,'B'], [107,'Y']], [[101,'W'], [3,'R'], [102,'Y'], [4,'B']],
+        [[1,'R'], [103,'W'], [2,'B'], [104,'Y']], [[105,'W'], [3,'R'], [106,'Y'], [5,'B']],
+        [[5,'R'], [101,'W'], [6,'B'], [102,'Y']], [[103,'W'], [1,'R'], [107,'Y'], [7,'B']],
+        [[4,'R'], [104,'W'], [5,'B'], [105,'Y']], [[102,'W'], [2,'R'], [103,'Y'], [3,'B']],
+        [[1,'R'], [101,'W'], [4,'B'], [105,'Y']], [[null,'W'], [null,'R'], [null,'Y'], [null,'B']],
         [[null,'R'], [null,'W'], [null,'B'], [null,'Y']]
       ]
     },
@@ -1063,40 +1032,26 @@
       titleKey: "leagueDkTitle", isTeam: true, ridersPerTeam: 5, totalHeats: 14, scores: [3,2,1,0],
       roles: { 5: "roleJunior" },
       schedule: [
-        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']],
-        [[103,'W'], [3,'R'], [104,'Y'], [4,'B']],
-        [[5,'R'], [105,'W'], [1,'B'], [101,'Y']],
-        [[102,'W'], [2,'R'], [103,'Y'], [3,'B']],
-        [[4,'R'], [104,'W'], [5,'B'], [105,'Y']],
-        [[101,'W'], [1,'R'], [103,'Y'], [4,'B']],
-        [[2,'R'], [102,'W'], [3,'B'], [104,'Y']],
-        [[105,'W'], [5,'R'], [101,'Y'], [3,'B']],
-        [[1,'R'], [102,'W'], [4,'B'], [105,'Y']],
-        [[103,'W'], [2,'R'], [104,'Y'], [5,'B']],
-        [[3,'R'], [101,'W'], [4,'B'], [102,'Y']],
-        [[null,'W'], [null,'R'], [null,'Y'], [null,'B']],
-        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']],
-        [[null,'W'], [null,'R'], [null,'Y'], [null,'B']]
+        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']], [[103,'W'], [3,'R'], [104,'Y'], [4,'B']],
+        [[5,'R'], [105,'W'], [1,'B'], [101,'Y']], [[102,'W'], [2,'R'], [103,'Y'], [3,'B']],
+        [[4,'R'], [104,'W'], [5,'B'], [105,'Y']], [[101,'W'], [1,'R'], [103,'Y'], [4,'B']],
+        [[2,'R'], [102,'W'], [3,'B'], [104,'Y']], [[105,'W'], [5,'R'], [101,'Y'], [3,'B']],
+        [[1,'R'], [102,'W'], [4,'B'], [105,'Y']], [[103,'W'], [2,'R'], [104,'Y'], [5,'B']],
+        [[3,'R'], [101,'W'], [4,'B'], [102,'Y']], [[null,'W'], [null,'R'], [null,'Y'], [null,'B']],
+        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']], [[null,'W'], [null,'R'], [null,'Y'], [null,'B']]
       ]
     },
     pl: {
       titleKey: "leaguePlTitle", isTeam: true, ridersPerTeam: 8, totalHeats: 15, scores: [3,2,1,0],
       roles: { 6: "roleJunior", 7: "roleJunior", 8: "roleU24" },
       schedule: [
-        [[1,'R'], [101,'W'], [3,'B'], [103,'Y']],
-        [[106,'W'], [6,'R'], [107,'Y'], [7,'B']],
-        [[5,'R'], [102,'W'], [4,'B'], [104,'Y']],
-        [[105,'W'], [2,'R'], [106,'Y'], [6,'B']],
-        [[3,'R'], [101,'W'], [4,'B'], [102,'Y']],
-        [[103,'W'], [5,'R'], [104,'Y'], [7,'B']],
-        [[1,'R'], [105,'W'], [2,'B'], [107,'Y']],
-        [[101,'W'], [5,'R'], [102,'Y'], [6,'B']],
-        [[1,'R'], [103,'W'], [2,'B'], [104,'Y']],
-        [[105,'W'], [3,'R'], [106,'Y'], [4,'B']],
-        [[1,'R'], [102,'W'], [4,'B'], [105,'Y']],
-        [[101,'W'], [3,'R'], [107,'Y'], [7,'B']],
-        [[2,'R'], [103,'W'], [5,'B'], [104,'Y']],
-        [[null,'W'], [null,'R'], [null,'Y'], [null,'B']],
+        [[1,'R'], [101,'W'], [3,'B'], [103,'Y']], [[106,'W'], [6,'R'], [107,'Y'], [7,'B']],
+        [[5,'R'], [102,'W'], [4,'B'], [104,'Y']], [[105,'W'], [2,'R'], [106,'Y'], [6,'B']],
+        [[3,'R'], [101,'W'], [4,'B'], [102,'Y']], [[103,'W'], [5,'R'], [104,'Y'], [7,'B']],
+        [[1,'R'], [105,'W'], [2,'B'], [107,'Y']], [[101,'W'], [5,'R'], [102,'Y'], [6,'B']],
+        [[1,'R'], [103,'W'], [2,'B'], [104,'Y']], [[105,'W'], [3,'R'], [106,'Y'], [4,'B']],
+        [[1,'R'], [102,'W'], [4,'B'], [105,'Y']], [[101,'W'], [3,'R'], [107,'Y'], [7,'B']],
+        [[2,'R'], [103,'W'], [5,'B'], [104,'Y']], [[null,'W'], [null,'R'], [null,'Y'], [null,'B']],
         [[null,'R'], [null,'W'], [null,'B'], [null,'Y']]
       ]
     },
@@ -1104,20 +1059,13 @@
       titleKey: "leagueSonTitle", isTeam: true, ridersPerTeam: 3, totalHeats: 15, scores: [4,3,2,0],
       roles: { 1: "roleCapt", 2: "roleMain", 3: "roleU21" },
       schedule: [
-        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']],
-        [[101,'W'], [1,'R'], [102,'Y'], [2,'B']],
-        [[1,'R'], [101,'W'], [3,'B'], [103,'Y']],
-        [[102,'W'], [2,'R'], [103,'Y'], [3,'B']],
-        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']],
-        [[101,'W'], [1,'R'], [103,'Y'], [3,'B']],
-        [[2,'R'], [102,'W'], [3,'B'], [103,'Y']],
-        [[101,'W'], [1,'R'], [102,'Y'], [2,'B']],
-        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']],
-        [[102,'W'], [2,'R'], [103,'Y'], [3,'B']],
-        [[1,'R'], [101,'W'], [3,'B'], [103,'Y']],
-        [[101,'W'], [1,'R'], [102,'Y'], [2,'B']],
-        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']],
-        [[101,'W'], [1,'R'], [102,'Y'], [2,'B']],
+        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']], [[101,'W'], [1,'R'], [102,'Y'], [2,'B']],
+        [[1,'R'], [101,'W'], [3,'B'], [103,'Y']], [[102,'W'], [2,'R'], [103,'Y'], [3,'B']],
+        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']], [[101,'W'], [1,'R'], [103,'Y'], [3,'B']],
+        [[2,'R'], [102,'W'], [3,'B'], [103,'Y']], [[101,'W'], [1,'R'], [102,'Y'], [2,'B']],
+        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']], [[102,'W'], [2,'R'], [103,'Y'], [3,'B']],
+        [[1,'R'], [101,'W'], [3,'B'], [103,'Y']], [[101,'W'], [1,'R'], [102,'Y'], [2,'B']],
+        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']], [[101,'W'], [1,'R'], [102,'Y'], [2,'B']],
         [[1,'R'], [101,'W'], [2,'B'], [102,'Y']]
       ]
     }
@@ -1188,7 +1136,8 @@
         if (idx < 20) base = t('heatLbl') + " " + (idx + 1) + " (" + t('seriesLbl') + " " + (Math.floor(idx / 4) + 1) + ")";
         else if (idx === 20) base = t('heatLbl') + " 21 (LCQ 1)";
         else if (idx === 21) base = t('heatLbl') + " 22 (LCQ 2)";
-        else base = t('heatLbl') + " 23 (" + t('finalLbl') + ")";
+        else if (idx === 22) base = t('heatLbl') + " 23 (" + t('finalLbl') + ")";
+        else if (idx === 23) base = t('sprintLbl');
       }
     } else {
       const hNum = idx + 1;
@@ -1372,7 +1321,6 @@
           time: "",
           slots: row.map(pair => ({ riderId: pair[0], score: null, helmet: pair[1], warning: false }))
         }));
-        // LCQ e Finale per il formato 14
         for (let i = 0; i < 2; i++) {
           heats.push({
             heatNumber: 19 + i,
@@ -1394,6 +1342,12 @@
             slots: [0, 1, 2, 3].map(gIdx => ({ riderId: null, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false }))
           });
         }
+        // Aggiungi la batteria 24 (Sprint Race per l'SGP)
+        heats.push({
+            heatNumber: 'Sprint',
+            time: "",
+            slots: [0, 1, 2, 3].map(gIdx => ({ riderId: null, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false }))
+        });
       }
     } else {
       for (let i = 1; i <= cfg.ridersPerTeam; i++) {
@@ -1445,6 +1399,14 @@
           if (s.warning === undefined) s.warning = false;
         });
       });
+      // Patch for older JSONs loading into SGP missing the 24th Sprint Race
+      if (mKey === 'sgp' && merged.heats.length === 23) {
+          merged.heats.push({
+            heatNumber: 'Sprint',
+            time: "",
+            slots: [0, 1, 2, 3].map(gIdx => ({ riderId: null, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false }))
+          });
+      }
     }
     return merged;
   }
@@ -1679,7 +1641,8 @@
     const mainLimit = cfg.isTeam ? state.heats.length : (cfg.is14Format ? 18 : 20);
     
     state.heats.forEach((h, idx) => {
-      if (h.time) {
+      // Non considerare il tempo della Sprint Race come record della gara
+      if (h.time && !(state.mode === 'sgp' && idx === 23)) {
         const num = parseFloat(h.time);
         if (!isNaN(num) && num > 20 && num < bestVal) {
           bestVal = num;
@@ -1717,7 +1680,7 @@
       stats.push({
         id: r, team: r > 100 ? 'B' : 'A', name: state.riders[r], runs: [], total: 0,
         ones: 0, twos: 0, threes: 0, finishedZeros: 0, nonFinished: [], zeros: 0,
-        lcqRaw: null, finRaw: null, sfScore: '-', finScore: '-', qualRank: 99, finalRank: 99, sgpPts: 0
+        lcqRaw: null, finRaw: null, sfScore: '-', finScore: '-', qualRank: 99, finalRank: 99, sgpPts: 0, sprintPts: 0
       });
     });
 
@@ -1778,6 +1741,15 @@
           const st = stats.find(x => x.id === s.riderId);
           if (st && s.score !== null) { st.finRaw = s.score; st.finScore = formatPlacement(s.score); }
         });
+        // SGP Sprint Race (Qualifiche) a index 23
+        if (state.mode === 'sgp' && state.heats[23]) {
+          state.heats[23].slots.forEach(s => {
+            if (s.riderId && typeof s.score === 'number' && s.score > 0) {
+              const st = stats.find(x => x.id === s.riderId);
+              if (st) st.sprintPts = s.score;
+            }
+          });
+        }
       }
     }
 
@@ -1935,7 +1907,7 @@
 
     sortedFinal.forEach((st, idx) => {
       st.finalRank = idx + 1;
-      st.sgpPts = GP_CHAMP_POINTS[idx] || 0;
+      st.sgpPts = (GP_CHAMP_POINTS[idx] || 0) + (st.sprintPts || 0);
     });
     return sortedFinal;
   }
@@ -1953,12 +1925,12 @@
     const cfg = getModeConfig();
 
     if (cfg.is14Format) {
-      if (heatIdx === 18) { // LCQ per 14 piloti (3°, 4°, 5°, 6°)
+      if (heatIdx === 18) {
         return [2, 3, 4, 5].filter(idx => ranked[idx]).map(idx => ({
           id: ranked[idx].id, name: state.riders[ranked[idx].id], badge: (idx + 1) + t('rankBadge') + " (" + ranked[idx].total + " pt)"
         }));
       }
-      if (heatIdx === 19) { // Finale per 14 piloti (Top 2 + Top 2 LCQ)
+      if (heatIdx === 19) {
         const list = [];
         if (ranked[0]) list.push({ id: ranked[0].id, name: state.riders[ranked[0].id], badge: "1" + t('standingsBadge') + " (" + ranked[0].total + " pt)" });
         if (ranked[1]) list.push({ id: ranked[1].id, name: state.riders[ranked[1].id], badge: "2" + t('standingsBadge') + " (" + ranked[1].total + " pt)" });
@@ -1980,6 +1952,7 @@
       return [];
     }
 
+    // SGP Special Heats
     if (heatIdx === 20) {
       return [2, 5, 7, 8].filter(idx => ranked[idx]).map(idx => ({
         id: ranked[idx].id, name: state.riders[ranked[idx].id], badge: (idx + 1) + t('rankBadge') + " (" + ranked[idx].total + " pt)"
@@ -2018,17 +1991,28 @@
 
   function renderHeatSelect() {
     const sel = document.getElementById('heat-select');
-    sel.innerHTML = state.heats.map((h, i) => {
+    let html = '';
+    
+    if (state.mode === 'sgp' && state.heats[23]) {
+      const partTxt = state.heats[23].time ? " • ⏱️ " + state.heats[23].time + "s" : "";
+      html += '<option value="23" ' + (state.currentHeat === 23 ? 'selected' : '') + '>🏁 ' + t('sprintLbl') + partTxt + '</option>';
+    }
+
+    state.heats.forEach((h, i) => {
+      if (state.mode === 'sgp' && i === 23) return;
       const part = isTeamMode() ? computeHeatTeamPartial(h) : null;
       const partTxt = part ? " [" + part + "]" : "";
-      return '<option value="' + i + '" ' + (i === state.currentHeat ? 'selected' : '') + '>' + getHeatLabel(i, true) + partTxt + '</option>';
-    }).join('');
+      html += '<option value="' + i + '" ' + (i === state.currentHeat ? 'selected' : '') + '>' + getHeatLabel(i, true) + partTxt + '</option>';
+    });
+    sel.innerHTML = html;
   }
 
   function renderCurrentHeat() {
     renderHeatSelect();
     const cfg = getModeConfig();
     const heat = state.heats[state.currentHeat];
+    const isSprint = (state.mode === 'sgp' && state.currentHeat === 23);
+
     const timeInput = document.getElementById('heat-time-input');
     if (timeInput) timeInput.value = heat.time || "";
     updateBestTimeBadge();
@@ -2053,17 +2037,22 @@
     }
 
     const autoBox = document.getElementById('auto-finals-box');
-    const isSpecialHeat = !cfg.isTeam && state.currentHeat >= (cfg.is14Format ? 18 : 20);
+    const isSpecialHeat = !cfg.isTeam && state.currentHeat >= (cfg.is14Format ? 18 : 20) && !isSprint;
 
     let eligibleList = [];
-    if (isSpecialHeat) {
+    if (isSprint) {
+      autoBox.innerHTML = '<div class="qual-info-card" style="border-color:#29b6f6;">' +
+        '<div class="qual-info-header"><span class="qual-info-title" style="color:#29b6f6;">' + t('sprintLbl') + '</span>' +
+        '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button></div>' +
+        '<div class="qual-info-sub">' + t('sprintSub') + '</div></div>';
+    } else if (isSpecialHeat) {
       syncSpecialHeatsWithQualifiers();
       eligibleList = getEligibleRidersForSpecialHeat(state.currentHeat);
       let titleText = "";
       let ruleSub = "";
       
       if (cfg.is14Format) {
-        if (state.currentHeat === 18) { titleText = "🔥 Last Chance Qualifier (3°, 4°, 5°, 6°)"; ruleSub = "Seleziona i piloti. I primi due (1° e 2°) accedono alla Finale."; }
+        if (state.currentHeat === 18) { titleText = "🔥 Last Chance Qualifier"; ruleSub = "Seleziona i piloti. I primi due (1° e 2°) accedono alla Finale."; }
         else { titleText = t('finalTitle'); ruleSub = t('finalSub'); }
       } else {
         titleText = state.currentHeat === 20 ? t('lcq1Title') : (state.currentHeat === 21 ? t('lcq2Title') : t('finalTitle'));
@@ -2083,13 +2072,18 @@
       autoBox.innerHTML = '';
     }
 
-    const pts = cfg.scores;
-    const mainButtons = isSpecialHeat
-      ? [{ val: 3, label: '1°' }, { val: 2, label: '2°' }, { val: 1, label: '3°' }, { val: 0, label: '4°' }]
-      : pts.map(v => ({ val: v, label: v + ' pt' }));
+    let mainButtons;
+    if (isSprint) {
+      mainButtons = [{ val: 4, label: '4 pt' }, { val: 3, label: '3 pt' }, { val: 2, label: '2 pt' }, { val: 1, label: '1 pt' }, { val: 0, label: '0 pt' }];
+    } else if (isSpecialHeat) {
+      mainButtons = [{ val: 3, label: '1°' }, { val: 2, label: '2°' }, { val: 1, label: '3°' }, { val: 0, label: '4°' }];
+    } else {
+      mainButtons = cfg.scores.map(v => ({ val: v, label: v + ' pt' }));
+    }
 
     const specialCodes = getSpecialCodes().filter(c => c.code !== 'W');
     const container = document.getElementById('gates-container');
+    const btnGridStyle = isSprint ? 'grid-template-columns: repeat(5, 1fr);' : '';
     
     container.innerHTML = heat.slots.map((slot, gIdx) => {
       const hColor = slot.helmet || GATE_STYLE[gIdx].helmet;
@@ -2104,7 +2098,12 @@
       ].map(o => '<option value="' + o.val + '" ' + (hColor === o.val ? 'selected' : '') + ' style="background:' + o.clr + '; color:' + (o.val === 'W' || o.val === 'Y' ? '#000' : '#fff') + '">' + o.label + '</option>').join('');
 
       let opts = '';
-      if (isSpecialHeat) {
+      if (isSprint) {
+        opts += '<option value="" ' + (!slot.riderId ? 'selected' : '') + '>' + t('selectQualRider') + '</option>';
+        for (let r = 1; r <= 18; r++) {
+          opts += '<option value="' + r + '" ' + (slot.riderId == r ? 'selected' : '') + '>#' + r + ' ' + state.riders[r] + '</option>';
+        }
+      } else if (isSpecialHeat) {
         opts += '<option value="" ' + (!slot.riderId ? 'selected' : '') + '>' + t('selectQualRider') + '</option>';
         eligibleList.forEach(item => {
           opts += '<option value="' + item.id + '" ' + (slot.riderId === item.id ? 'selected' : '') + '>#' + item.id + ' ' + item.name + ' — ' + item.badge + '</option>';
@@ -2155,7 +2154,7 @@
           '<span>' + riderLabel + '</span>' +
           (teamLabel ? '<span class="rider-team-tag">' + teamLabel + '</span>' : '') +
         '</div>' +
-        '<div class="score-btns">' +
+        '<div class="score-btns" style="' + btnGridStyle + '">' +
           mainButtons.map(btn =>
             '<button type="button" ' + (!hasRider ? 'disabled' : '') + ' class="score-btn ' + (sc === btn.val ? 'selected-' + btn.val : '') + '" onclick="setScore(' + gIdx + ', ' + btn.val + ')">' + btn.label + '</button>'
           ).join('') +
@@ -2173,19 +2172,24 @@
 
   function setScore(gateIdx, val) {
     const cfg = getModeConfig();
+    const isSprint = (state.mode === 'sgp' && state.currentHeat === 23);
     const heat = state.heats[state.currentHeat];
     if (!heat.slots[gateIdx].riderId) return;
 
     if (heat.slots[gateIdx].score === val) {
       heat.slots[gateIdx].score = null;
     } else {
-      if (typeof val === 'number' && (val > 0 || (!isTeamMode() && state.currentHeat >= (cfg.is14Format ? 18 : 20)))) {
-        heat.slots.forEach(s => { if (s.score === val) s.score = null; });
+      if (typeof val === 'number') {
+        if (isSprint) {
+          if (val > 0) heat.slots.forEach(s => { if (s.score === val) s.score = null; });
+        } else if (val > 0 || (!isTeamMode() && state.currentHeat >= (cfg.is14Format ? 18 : 20))) {
+          heat.slots.forEach(s => { if (s.score === val) s.score = null; });
+        }
       }
       heat.slots[gateIdx].score = val;
     }
 
-    if (!isTeamMode() && state.currentHeat < (cfg.is14Format ? 18 : 20)) syncSpecialHeatsWithQualifiers();
+    if (!isTeamMode() && !isSprint && state.currentHeat < (cfg.is14Format ? 18 : 20)) syncSpecialHeatsWithQualifiers();
     saveState();
     renderCurrentHeat();
   }
@@ -2276,7 +2280,7 @@
     syncSpecialHeatsWithQualifiers();
     const finalStandings = getFinalGpStandings();
     const sgpMap = {};
-    finalStandings.forEach(st => { sgpMap[st.id] = st.sgpPts; });
+    finalStandings.forEach(st => { sgpMap[st.id] = { total: st.sgpPts, sprint: st.sprintPts || 0 }; });
     const list = standingsMode === 'final' ? finalStandings : getSortedQualifyingStandings();
 
     document.querySelector('#standings-table tbody').innerHTML = list.map((st, idx) => {
@@ -2286,7 +2290,10 @@
       } else {
         rowCls = idx === 1 ? 'final-line' : (idx === 9 ? 'qual-line' : '');
       }
-      const sgpVal = sgpMap[st.id] ?? 0;
+      
+      const sgpData = sgpMap[st.id];
+      const sgpVal = sgpData ? (sgpData.total + (sgpData.sprint > 0 ? ' <small style="color:var(--muted)">(+' + sgpData.sprint + ')</small>' : '')) : '-';
+      
       const nextSt = list[idx + 1];
       const canSwap = nextSt && st.total === nextSt.total && st.ones === nextSt.ones && st.twos === nextSt.twos && st.threes === nextSt.threes && st.finishedZeros === nextSt.finishedZeros;
       const swapBtn = canSwap ? '<button type="button" class="btn-tie-swap" onclick="swapTiedRiders(' + st.id + ', ' + nextSt.id + ')">⇅</button>' : '';
@@ -2339,11 +2346,13 @@
     syncSpecialHeatsWithQualifiers();
     const finalStandings = getFinalGpStandings();
     const sgpMap = {};
-    finalStandings.forEach(st => { sgpMap[st.id] = st.sgpPts; });
+    finalStandings.forEach(st => { sgpMap[st.id] = { total: st.sgpPts, sprint: st.sprintPts || 0 }; });
 
     tbody.innerHTML = allStats.map(st => {
       const r = st.runs;
-      const sgpVal = sgpMap[st.id] ?? '-';
+      const sgpData = sgpMap[st.id];
+      const sgpVal = sgpData ? (sgpData.total + (sgpData.sprint > 0 ? ' <small style="color:var(--muted)">(+' + sgpData.sprint + ')</small>' : '')) : '-';
+      
       return '<tr><td><strong>' + st.id + '</strong></td><td class="name-col">' + st.name + '</td>' +
         '<td>' + (r[0] ?? '-') + '</td><td>' + (r[1] ?? '-') + '</td><td>' + (r[2] ?? '-') + '</td><td>' + (r[3] ?? '-') + '</td><td>' + (r[4] ?? '-') + '</td>' +
         '<td class="tot-col">' + st.total + '</td><td class="sf-col">' + st.sfScore + '</td><td class="fin-col">' + st.finScore + '</td><td class="sgp-col">' + sgpVal + '</td></tr>';
@@ -2412,7 +2421,7 @@
     const W = 1080;
     const finalStandings = getFinalGpStandings();
     const sgpMap = {};
-    finalStandings.forEach(st => { sgpMap[st.id] = st.sgpPts; });
+    finalStandings.forEach(st => { sgpMap[st.id] = { total: st.sgpPts, sprint: st.sprintPts || 0 }; });
 
     const rows = mode === 'standings'
       ? (standingsMode === 'final' ? finalStandings : getSortedQualifyingStandings())
@@ -2549,12 +2558,19 @@
       ctx.fillText(runsStr, 805, y + 36);
 
       ctx.fillStyle = '#00e676'; ctx.font = '900 26px sans-serif';
-      ctx.fillText(String(st.total), 965, y + 36);
+      const sgpData = sgpMap[st.id];
+      const sgpVal = sgpData ? (sgpData.total + (sgpData.sprint > 0 ? ' (+' + sgpData.sprint + ')' : '')) : st.total;
+      
+      if (mode === 'standings' && !cfg.isTeam) {
+        ctx.fillText(String(sgpVal), 965, y + 36);
+      } else {
+        ctx.fillText(String(st.total), 965, y + 36);
+      }
       y += rowH;
     });
 
     ctx.textAlign = 'center'; ctx.fillStyle = '#8892b0'; ctx.font = '700 20px sans-serif';
-    ctx.fillText('Speedway Live v4.5 App', W / 2, H - 25);
+    ctx.fillText('Speedway Live v4.6 App', W / 2, H - 25);
 
     canvas.toBlob(async function(blob) {
       if (!blob) return;
@@ -2630,7 +2646,7 @@
   }
 
   function exportBackupJson() {
-    const backupPayload = { app: "Speedway Live", version: 4.5, exportedAt: new Date().toISOString(), currentRace: state, archive: getArchive() };
+    const backupPayload = { app: "Speedway Live", version: 4.6, exportedAt: new Date().toISOString(), currentRace: state, archive: getArchive() };
     const blob = new Blob([JSON.stringify(backupPayload, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
