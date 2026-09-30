@@ -1033,18 +1033,30 @@
         [[null,'R'], [null,'W'], [null,'B'], [null,'Y']]
       ]
     },
-    se: {
-      titleKey: "leagueSeTitle", isTeam: true, ridersPerTeam: 7, totalHeats: 15, scores: [3,2,1,0],
+se: {
+      titleKey: "leagueSeTitle", 
+      isTeam: true, 
+      ridersPerTeam: 7, 
+      totalHeats: 15, 
+      scores: [3, 2, 1, 0],
       roles: { 6: "roleReserve", 7: "roleReserve" },
       schedule: [
-        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']], [[106,'W'], [6,'R'], [107,'Y'], [7,'B']],
-        [[3,'R'], [103,'W'], [4,'B'], [104,'Y']], [[105,'W'], [5,'R'], [106,'Y'], [7,'B']],
-        [[2,'R'], [104,'W'], [6,'B'], [107,'Y']], [[101,'W'], [3,'R'], [102,'Y'], [4,'B']],
-        [[1,'R'], [103,'W'], [2,'B'], [104,'Y']], [[105,'W'], [3,'R'], [106,'Y'], [5,'B']],
-        [[5,'R'], [101,'W'], [6,'B'], [102,'Y']], [[103,'W'], [1,'R'], [107,'Y'], [7,'B']],
-        [[4,'R'], [104,'W'], [5,'B'], [105,'Y']], [[102,'W'], [2,'R'], [103,'Y'], [3,'B']],
-        [[1,'R'], [101,'W'], [4,'B'], [105,'Y']], [[null,'R'], [null,'W'], [null,'B'], [null,'Y']],
-        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']]
+        // Casa (1-7) in Rosso/Blu. Ospiti (101-107) in Bianco/Giallo. Alternanza corsie.
+        [[1, 'R'], [101, 'W'], [2, 'B'], [102, 'Y']], // H1: Casa in 1 e 3
+        [[106, 'W'], [6, 'R'], [107, 'Y'], [7, 'B']], // H2: Ospiti in 1 e 3
+        [[3, 'R'], [103, 'W'], [4, 'B'], [104, 'Y']], // H3: Casa in 1 e 3
+        [[105, 'W'], [5, 'R'], [106, 'Y'], [7, 'B']], // H4: Ospiti in 1 e 3
+        [[2, 'R'], [104, 'W'], [6, 'B'], [107, 'Y']], // H5: Casa in 1 e 3
+        [[101, 'W'], [3, 'R'], [102, 'Y'], [4, 'B']], // H6: Ospiti in 1 e 3
+        [[1, 'R'], [103, 'W'], [2, 'B'], [104, 'Y']], // H7: Casa in 1 e 3
+        [[105, 'W'], [3, 'R'], [106, 'Y'], [5, 'B']], // H8: Ospiti in 1 e 3
+        [[5, 'R'], [101, 'W'], [6, 'B'], [102, 'Y']], // H9: Casa in 1 e 3
+        [[103, 'W'], [1, 'R'], [107, 'Y'], [7, 'B']], // H10: Ospiti in 1 e 3
+        [[4, 'R'], [104, 'W'], [5, 'B'], [105, 'Y']], // H11: Casa in 1 e 3
+        [[102, 'W'], [2, 'R'], [103, 'Y'], [3, 'B']], // H12: Ospiti in 1 e 3
+        [[1, 'R'], [101, 'W'], [4, 'B'], [105, 'Y']], // H13: Casa in 1 e 3
+        [[null, 'W'], [null, 'R'], [null, 'Y'], [null, 'B']], // H14: Ospiti in 1 e 3
+        [[null, 'R'], [null, 'W'], [null, 'B'], [null, 'Y']]  // H15: Casa in 1 e 3
       ]
     },
     dk: {
