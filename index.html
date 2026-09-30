@@ -125,7 +125,7 @@
 
     .sub-select { flex: 1; max-width: 58%; min-width: 0; background: #2e3440; color: var(--text); border: 1px solid #3b4252; border-radius: 6px; padding: 5px 6px; font-size: 0.75rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     
-    .helmet-select { background: #121418; color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 3px 2px; font-size: 0.65rem; font-weight: bold; width: auto; max-width: 65px; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+    .helmet-select { background: #121418; color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 3px 2px; font-size: 0.65rem; font-weight: bold; width: auto; max-width: 80px; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; text-align: center; }
     
     .rider-name { font-size: 0.98rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; justify-content: space-between; align-items: center; }
     .rider-name.unassigned { color: var(--muted); font-style: italic; font-size: 0.88rem; }
@@ -272,7 +272,7 @@
 
       <button type="button" class="mode-choice-btn" onclick="selectAppMode('sgp_sprint')">
         <div class="mode-choice-left">
-          <span class="mode-choice-ico">⏱️️</span>
+          <span class="mode-choice-ico">⏱</span>
           <div>
             <div class="mode-choice-title" data-i18n="modeSprintTitle">SGP Sprint Race (Qualifiche)</div>
             <div class="mode-choice-sub" data-i18n="modeSprintSub">16 Piloti • Q1 (8) + Q2 (4) + Finale (4,3,2,1)</div>
@@ -616,7 +616,7 @@
     <span class="nav-lbl" data-i18n="navHistory">Storico</span>
   </button>
   <button type="button" id="nav-settings" onclick="switchTab('settings', this)">
-    <div class="nav-ico">⚙️</div>
+    <div class="nav-ico">⚙️️</div>
     <span class="nav-lbl" data-i18n="navSettings">Setting</span>
   </button>
 </nav>
@@ -735,7 +735,7 @@
       evNotesLbl: "Track Record / Notes", evNotesPh: "E.g. Slick track", evPhotoLbl: "Horizontal Track Photo",
       btnTakePhoto: "📸 Take Photo", btnFromGallery: "🖼️ From Gallery", btnLoadPhoto: "🖼️ Upload Photo",
       btnGoToRiders: "Go to Riders ▶", btnGoToHeats: "Go to Heats ▶",
-      btnClearEvent: "🗑️ Clear Event Info", btnFullReset: "🗑️️ Reset All (New Clean Meeting)",
+      btnClearEvent: "🗑️ Clear Event Info", btnFullReset: "🗑 Reset All (New Clean Meeting)",
       ridersSectionTitle: "🏍️ Quick Rider Entry (OCR / Text)",
       ridersOcrDesc: "Take a photo of the rider list or paste text. OCR uses standard filters for maximum precision.",
       btnPasteList: "📋 Paste / Verify rider list text", btnApplyPaste: "✅ Apply Text List",
@@ -963,7 +963,7 @@
       codeR: "Bröt", codeF: "Omkull", codeX: "Utesluten", codeT: "Tejp", codeNS: "Ej startat", codeW: "Warning",
       histSectionTitle: "💾 Tävlingsarkiv & Backup", btnSaveArchive: "📥 Spara Aktuell Tävling",
       btnNewCleanRace: "➕ Starta Ny Tävling (Välj Format)",
-      btnExportJson: "⬇️ Exportera (.json)", btnImportJson: "⬆️ Importera (.json)",
+      btnExportJson: "⬇️ Exportera (.json)", btnImportJson: "⬆️ Importer (.json)",
       emptyHistory: "Inga sparade tävlingar.", btnOpenRace: "📂 Öppna", btnDelRace: "🗑️ Radera",
       raceInProgress: "Tävling pågår", setSectionTitle: "⚙️ Inställningar & Språk",
       setLangDesc: "Välj språk.",
@@ -1043,7 +1043,7 @@
         [[1,'R'], [103,'W'], [2,'B'], [104,'Y']], [[105,'W'], [3,'R'], [106,'Y'], [5,'B']],
         [[5,'R'], [101,'W'], [6,'B'], [102,'Y']], [[103,'W'], [1,'R'], [107,'Y'], [7,'B']],
         [[4,'R'], [104,'W'], [5,'B'], [105,'Y']], [[102,'W'], [2,'R'], [103,'Y'], [3,'B']],
-        [[1,'R'], [101,'W'], [4,'B'], [105,'Y']], [[null,'W'], [null,'R'], [null,'Y'], [null,'B']],
+        [[1,'R'], [101,'W'], [4,'B'], [105,'Y']], [[null,'R'], [null,'W'], [null,'B'], [null,'Y']],
         [[null,'R'], [null,'W'], [null,'B'], [null,'Y']]
       ]
     },
@@ -1051,13 +1051,20 @@
       titleKey: "leagueDkTitle", isTeam: true, ridersPerTeam: 5, totalHeats: 14, scores: [3,2,1,0],
       roles: { 5: "roleJunior" },
       schedule: [
-        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']], [[103,'W'], [3,'R'], [104,'Y'], [4,'B']],
-        [[5,'R'], [105,'W'], [1,'B'], [101,'Y']], [[102,'W'], [2,'R'], [103,'Y'], [3,'B']],
-        [[4,'R'], [104,'W'], [5,'B'], [105,'Y']], [[101,'W'], [1,'R'], [103,'Y'], [4,'B']],
-        [[2,'R'], [102,'W'], [3,'B'], [104,'Y']], [[105,'W'], [5,'R'], [101,'Y'], [3,'B']],
-        [[1,'R'], [102,'W'], [4,'B'], [105,'Y']], [[103,'W'], [2,'R'], [104,'Y'], [5,'B']],
-        [[3,'R'], [101,'W'], [4,'B'], [102,'Y']], [[null,'W'], [null,'R'], [null,'Y'], [null,'B']],
-        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']], [[null,'W'], [null,'R'], [null,'Y'], [null,'B']]
+        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']], // H1
+        [[3,'R'], [103,'W'], [4,'B'], [104,'Y']], // H2
+        [[1,'R'], [101,'W'], [5,'B'], [105,'Y']], // H3
+        [[2,'R'], [102,'W'], [3,'B'], [103,'Y']], // H4
+        [[4,'R'], [104,'W'], [5,'B'], [105,'Y']], // H5
+        [[1,'R'], [101,'W'], [3,'B'], [103,'Y']], // H6
+        [[2,'R'], [102,'W'], [4,'B'], [104,'Y']], // H7
+        [[3,'R'], [103,'W'], [5,'B'], [105,'Y']], // H8
+        [[1,'R'], [101,'W'], [4,'B'], [104,'Y']], // H9
+        [[2,'R'], [102,'W'], [5,'B'], [105,'Y']], // H10
+        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']], // H11
+        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']], // H12
+        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']], // H13
+        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']]  // H14
       ]
     },
     pl: {
@@ -1070,7 +1077,7 @@
         [[1,'R'], [105,'W'], [2,'B'], [107,'Y']], [[101,'W'], [5,'R'], [102,'Y'], [6,'B']],
         [[1,'R'], [103,'W'], [2,'B'], [104,'Y']], [[105,'W'], [3,'R'], [106,'Y'], [4,'B']],
         [[1,'R'], [102,'W'], [4,'B'], [105,'Y']], [[101,'W'], [3,'R'], [107,'Y'], [7,'B']],
-        [[2,'R'], [103,'W'], [5,'B'], [104,'Y']], [[null,'W'], [null,'R'], [null,'Y'], [null,'B']],
+        [[2,'R'], [103,'W'], [5,'B'], [104,'Y']], [[null,'R'], [null,'W'], [null,'B'], [null,'Y']],
         [[null,'R'], [null,'W'], [null,'B'], [null,'Y']]
       ]
     },
@@ -1475,13 +1482,34 @@
     }
   }
 
-  function changeSlotHelmet(gateIdx, newHelmet) {
+  function swapGateRiders(currentGateIdx, targetGateIdxStr) {
+    const targetGateIdx = parseInt(targetGateIdxStr, 10);
+    if (currentGateIdx === targetGateIdx) return;
     const heat = state.heats[state.currentHeat];
-    if (heat.slots[gateIdx]) {
-      heat.slots[gateIdx].helmet = newHelmet;
-      saveState();
-      renderCurrentHeat();
+
+    // Scambia i dati del pilota, punteggio e warning tra le due corsie
+    const tempRider = heat.slots[currentGateIdx].riderId;
+    const tempScore = heat.slots[currentGateIdx].score;
+    const tempWarning = heat.slots[currentGateIdx].warning;
+
+    heat.slots[currentGateIdx].riderId = heat.slots[targetGateIdx].riderId;
+    heat.slots[currentGateIdx].score = heat.slots[targetGateIdx].score;
+    heat.slots[currentGateIdx].warning = heat.slots[targetGateIdx].warning;
+
+    heat.slots[targetGateIdx].riderId = tempRider;
+    heat.slots[targetGateIdx].score = tempScore;
+    heat.slots[targetGateIdx].warning = tempWarning;
+
+    // Forza i colori delle corsie affinché non varino MAI
+    if (heat.slots.length >= 4) {
+      heat.slots[0].helmet = 'R';
+      heat.slots[1].helmet = 'B';
+      heat.slots[2].helmet = 'W';
+      heat.slots[3].helmet = 'Y';
     }
+
+    saveState();
+    renderCurrentHeat();
   }
 
   function toggleWarning(gateIdx) {
@@ -2111,17 +2139,21 @@
       actualSlots = heat.slots.slice(0, 2);
     }
     
+    // Assicura che i colori delle corsie siano sempre fissi
+    const fixedColors = ['R', 'B', 'W', 'Y'];
+
     container.innerHTML = actualSlots.map((slot, gIdx) => {
-      const hColor = slot.helmet || GATE_STYLE[gIdx].helmet;
-      const hm = HELMET_META[hColor] || HELMET_META.R;
+      const fixedColor = fixedColors[gIdx] || 'R';
+      slot.helmet = fixedColor; // Forza il salvataggio del colore corretto nello state
+      const hm = HELMET_META[fixedColor];
       const sc = slot.score;
 
-      const helmetOpts = [
-        { val: 'R', clr: '#e53935', label: '🔴 ' + t('helmetRed') },
-        { val: 'B', clr: '#1e88e5', label: '🔵 ' + t('helmetBlue') },
-        { val: 'W', clr: '#f5f5f5', label: '⚪ ' + t('helmetWhite') },
-        { val: 'Y', clr: '#fdd835', label: '🟡 ' + t('helmetYellow') }
-      ].map(o => '<option value="' + o.val + '" ' + (hColor === o.val ? 'selected' : '') + ' style="background:' + o.clr + '; color:' + (o.val === 'W' || o.val === 'Y' ? '#000' : '#fff') + '">' + o.label + '</option>').join('');
+      const gateOpts = [
+        { val: 0, label: 'Sposta in ' + t('gate1') },
+        { val: 1, label: 'Sposta in ' + t('gate2') },
+        { val: 2, label: 'Sposta in ' + t('gate3') },
+        { val: 3, label: 'Sposta in ' + t('gate4') }
+      ].map(o => '<option value="' + o.val + '" ' + (gIdx === o.val ? 'selected' : '') + ' style="color:#000;">' + o.label + '</option>').join('');
 
       let opts = '';
       if (cfg.isSprint) {
@@ -2172,7 +2204,7 @@
         '<div class="rider-header">' +
           '<div style="display:flex;align-items:center;gap:4px;">' +
             '<span class="helmet-badge" style="background:#252a34;color:var(--text);">' + t('laneLbl') + ' ' + (gIdx + 1) + '</span>' +
-            '<select class="helmet-select" onchange="changeSlotHelmet(' + gIdx + ', this.value)" style="background:' + (hColor === 'R' ? '#e53935' : hColor === 'B' ? '#1e88e5' : hColor === 'W' ? '#f5f5f5' : '#fdd835') + '; color:' + (hColor === 'W' || hColor === 'Y' ? '#000' : '#fff') + '">' + helmetOpts + '</select>' +
+            '<select class="helmet-select" onchange="swapGateRiders(' + gIdx + ', this.value)" style="background:' + (fixedColor === 'R' ? '#e53935' : fixedColor === 'B' ? '#1e88e5' : fixedColor === 'W' ? '#f5f5f5' : '#fdd835') + '; color:' + (fixedColor === 'W' || fixedColor === 'Y' ? '#000' : '#fff') + '">' + gateOpts + '</select>' +
           '</div>' +
           '<select class="sub-select" onchange="changeSlotRider(' + gIdx + ', this.value)">' + opts + '</select>' +
         '</div>' +
@@ -2819,7 +2851,6 @@
      SISTEMA OCR POTENZIATO & GESTIONE TESTO
      ========================================== */
 
-  // 1. Gestione dei target squadra per l'OCR
   function setOcrTarget(target) {
     ocrTeamTarget = target;
     document.getElementById('ocr-target-both').classList.remove('active');
@@ -2831,12 +2862,9 @@
     if (target === 'b') document.getElementById('ocr-target-b').classList.add('active');
   }
 
-  // 2. Pre-processing dell'immagine per massimizzare la precisione di Tesseract
   function preprocessImageForOCR(imageObj) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    
-    // Ridimensiona se l'immagine è troppo grande, per non bloccare la memoria, mantenendo un'alta risoluzione
     const MAX_WIDTH = 1500; 
     let width = imageObj.width;
     let height = imageObj.height;
@@ -2849,19 +2877,16 @@
     canvas.height = height;
     ctx.drawImage(imageObj, 0, 0, width, height);
 
-    // Converte in scala di grigi per migliorare il contrasto del testo
     const imageData = ctx.getImageData(0, 0, width, height);
     const data = imageData.data;
     for (let i = 0; i < data.length; i += 4) {
       const avg = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
-      data[i] = data[i + 1] = data[i + 2] = avg; // R, G, B = Grayscale
+      data[i] = data[i + 1] = data[i + 2] = avg; 
     }
     ctx.putImageData(imageData, 0, 0);
-
     return canvas.toDataURL('image/jpeg', 1.0);
   }
 
-  // 3. Funzione principale di elaborazione foto OCR
   async function processRiderListPhoto(input) {
     const file = input.files && input.files[0];
     if (!file) return;
@@ -2872,7 +2897,6 @@
     statusEl.innerHTML = '⏳ <b>Fase 1/3:</b> Ottimizzazione immagine...';
 
     try {
-      // Caricamento Immagine nel Canvas
       const img = new Image();
       const imgDataUrl = await new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -2887,18 +2911,16 @@
 
       statusEl.innerHTML = '🔍 <b>Fase 2/3:</b> Lettura IA (Può richiedere qualche secondo)...';
 
-      // Inizializzazione Tesseract.js (Inglese + Polacco per i nomi dello speedway)
-      const worker = await Tesseract.createWorker('eng+pol');
+      // OCR esteso a tutte le lingue dell'app per riconoscere caratteri come å, ø, æ, ł, ś, ä, ö
+      const worker = await Tesseract.createWorker('eng+pol+ita+swe+dan');
       await worker.setParameters({
-        tessedit_pageseg_mode: 4, // Assume a single column of text of variable sizes
+        tessedit_pageseg_mode: 4, 
       });
 
       const { data: { text } } = await worker.recognize(imgDataUrl);
       await worker.terminate();
 
       statusEl.innerHTML = '⚙️ <b>Fase 3/3:</b> Estrazione dei nomi...';
-      
-      // Passa il testo grezzo al parser intelligente
       parseAndAssignRiders(text);
 
       statusEl.style.color = 'var(--accent)';
@@ -2910,22 +2932,16 @@
       statusEl.style.color = 'var(--red)';
       statusEl.innerHTML = '❌ <b>Errore OCR:</b> Impossibile leggere l\'immagine. Riprova.';
     }
-    
-    // Resetta l'input per permettere di ricaricare la stessa foto
     input.value = "";
   }
 
-  // 4. Parser intelligente per pulire il testo OCR / Copia-Incolla
   function parseAndAssignRiders(rawText) {
     const cfg = getModeConfig();
     const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 2);
     const extractedNames = [];
 
-    // Regex per estrarre solo lettere (ignora numeri di pettorale all'inizio, puntini, ecc.)
-    // Es. "1. Bartosz Zmarzlik" -> "Bartosz Zmarzlik"
-    // Es. "[13] Maciej Janowski" -> "Maciej Janowski"
-    const nameRegex = /^[\d\W_]*([A-ZÀ-ÿa-z][A-ZÀ-ÿa-z\s\-\']{2,})/;
-
+    // Regex avanzata che accetta tutte le lettere con accenti scandinavi e polacchi
+    const nameRegex = /^[\d\W_]*([A-Za-zÀ-ÖØ-öø-ÿĀ-ž\s\-\']{3,})/;
     const bannedWords = ["team", "rider", "riders", "heat", "total", "speedway", "manager", "pt", "pts"];
 
     lines.forEach(line => {
@@ -2934,11 +2950,9 @@
         let cleanName = match[1].trim();
         let lowerName = cleanName.toLowerCase();
         
-        // Verifica che non sia una parola proibita (intestazioni della tabella)
         const isBanned = bannedWords.some(bw => lowerName === bw || lowerName.includes(" " + bw + " "));
         
         if (!isBanned && cleanName.length >= 4) {
-          // Formatta in Title Case (es. BARTOSZ ZMARZLIK -> Bartosz Zmarzlik)
           cleanName = cleanName.toLowerCase().replace(/\b\w/g, s => s.toUpperCase());
           extractedNames.push(cleanName);
         }
@@ -2950,15 +2964,12 @@
       return;
     }
 
-    // 5. Assegnazione logica in base alla modalità gara (Team o Individuale)
     if (!cfg.isTeam) {
-      // Gara individuale: Assegna dal pilota 1 fino al limite
       let limit = cfg.isSprint ? 16 : (cfg.is14Format ? 14 : 18);
       for (let i = 0; i < Math.min(extractedNames.length, limit); i++) {
         updateRiderName(i + 1, extractedNames[i]);
       }
     } else {
-      // Gara a squadre: Rispetta il target (Solo Casa, Solo Ospiti, o Entrambi)
       const max = cfg.ridersPerTeam;
       if (ocrTeamTarget === 'a') {
         for (let i = 0; i < Math.min(extractedNames.length, max); i++) {
@@ -2969,23 +2980,20 @@
           updateRiderName(100 + i + 1, extractedNames[i]);
         }
       } else { 
-        // Entrambi: La prima metà va alla squadra A, la seconda alla squadra B
         for (let i = 0; i < Math.min(extractedNames.length, max); i++) {
           updateRiderName(i + 1, extractedNames[i]);
         }
-        const offset = max; // Salta i primi "max" nomi per passare alla squadra B
+        const offset = max; 
         for (let i = 0; i < Math.min(extractedNames.length - offset, max); i++) {
           updateRiderName(100 + i + 1, extractedNames[i + offset]);
         }
       }
     }
 
-    // Ridisegna l'interfaccia con i nuovi nomi
     renderRidersInputs();
     renderCurrentHeat();
   }
 
-  // 6. Gestione Copia/Incolla testo manuale
   function togglePasteBox() {
     const box = document.getElementById('paste-box-wrap');
     box.style.display = box.style.display === 'block' ? 'none' : 'block';
@@ -2998,7 +3006,7 @@
       return;
     }
     parseAndAssignRiders(text);
-    document.getElementById('paste-riders-area').value = ""; // Pulisce dopo l'uso
+    document.getElementById('paste-riders-area').value = ""; 
     togglePasteBox();
   }
 
