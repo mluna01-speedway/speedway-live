@@ -125,7 +125,8 @@
 
     .sub-select { flex: 1; max-width: 58%; min-width: 0; background: #2e3440; color: var(--text); border: 1px solid #3b4252; border-radius: 6px; padding: 5px 6px; font-size: 0.75rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     
-    .helmet-select { background: #121418; color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 3px 2px; font-size: 0.65rem; font-weight: bold; width: auto; max-width: 80px; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; text-align: center; }
+    /* Modificata per accogliere il testo Corsia 1, 2, 3, 4 */
+    .helmet-select { background: #121418; color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 3px 2px; font-size: 0.65rem; font-weight: bold; width: auto; max-width: 95px; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; text-align: center; }
     
     .rider-name { font-size: 0.98rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; justify-content: space-between; align-items: center; }
     .rider-name.unassigned { color: var(--muted); font-style: italic; font-size: 0.88rem; }
@@ -616,7 +617,7 @@
     <span class="nav-lbl" data-i18n="navHistory">Storico</span>
   </button>
   <button type="button" id="nav-settings" onclick="switchTab('settings', this)">
-    <div class="nav-ico">⚙️️</div>
+    <div class="nav-ico">⚙</div>
     <span class="nav-lbl" data-i18n="navSettings">Setting</span>
   </button>
 </nav>
@@ -965,7 +966,7 @@
       btnNewCleanRace: "➕ Starta Ny Tävling (Välj Format)",
       btnExportJson: "⬇️ Exportera (.json)", btnImportJson: "⬆️ Importer (.json)",
       emptyHistory: "Inga sparade tävlingar.", btnOpenRace: "📂 Öppna", btnDelRace: "🗑️ Radera",
-      raceInProgress: "Tävling pågår", setSectionTitle: "⚙️ Inställningar & Språk",
+      raceInProgress: "Tävling pågår", setSectionTitle: "⚙️️ Inställningar & Språk",
       setLangDesc: "Välj språk.",
       legalTitle: "⚖️ Juridisk Information & Disclaimer",
       legalText: "Denna applikation är ett oberoende verktyg för poängräkning och är inte associerad med, auktoriserad eller godkänd av FIM, Warner Bros. Discovery Sports, Ekstraliga, Premiership, Elitserien, Speedway Ligaen eller något annat officiellt förbund. Alla hänvisningar till tävlingsformat är uteslutande beskrivende.",
@@ -1051,20 +1052,20 @@
       titleKey: "leagueDkTitle", isTeam: true, ridersPerTeam: 5, totalHeats: 14, scores: [3,2,1,0],
       roles: { 5: "roleJunior" },
       schedule: [
-        [[1,'R'], [101,'W'], [2,'B'], [102,'Y']], // H1
-        [[3,'R'], [103,'W'], [4,'B'], [104,'Y']], // H2
-        [[1,'R'], [101,'W'], [5,'B'], [105,'Y']], // H3
-        [[2,'R'], [102,'W'], [3,'B'], [103,'Y']], // H4
-        [[4,'R'], [104,'W'], [5,'B'], [105,'Y']], // H5
-        [[1,'R'], [101,'W'], [3,'B'], [103,'Y']], // H6
-        [[2,'R'], [102,'W'], [4,'B'], [104,'Y']], // H7
-        [[3,'R'], [103,'W'], [5,'B'], [105,'Y']], // H8
-        [[1,'R'], [101,'W'], [4,'B'], [104,'Y']], // H9
-        [[2,'R'], [102,'W'], [5,'B'], [105,'Y']], // H10
-        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']], // H11
-        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']], // H12
-        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']], // H13
-        [[null,'R'], [null,'W'], [null,'B'], [null,'Y']]  // H14
+        [[102,'R'], [2,'B'], [101,'W'], [1,'Y']], // H1
+        [[3,'R'], [103,'B'], [4,'W'], [104,'Y']], // H2
+        [[1,'R'], [101,'B'], [5,'W'], [105,'Y']], // H3
+        [[102,'R'], [2,'B'], [103,'W'], [3,'Y']], // H4
+        [[4,'R'], [104,'B'], [5,'W'], [105,'Y']], // H5
+        [[1,'R'], [101,'B'], [3,'W'], [103,'Y']], // H6
+        [[102,'R'], [2,'B'], [104,'W'], [4,'Y']], // H7
+        [[103,'R'], [3,'B'], [105,'W'], [5,'Y']], // H8
+        [[1,'R'], [101,'B'], [4,'W'], [104,'Y']], // H9
+        [[2,'R'], [102,'B'], [5,'W'], [105,'Y']], // H10
+        [[null,'R'], [null,'B'], [null,'W'], [null,'Y']], // H11
+        [[null,'R'], [null,'B'], [null,'W'], [null,'Y']], // H12
+        [[null,'R'], [null,'B'], [null,'W'], [null,'Y']], // H13
+        [[null,'R'], [null,'B'], [null,'W'], [null,'Y']]  // H14
       ]
     },
     pl: {
@@ -2149,10 +2150,10 @@
       const sc = slot.score;
 
       const gateOpts = [
-        { val: 0, label: 'Sposta in ' + t('gate1') },
-        { val: 1, label: 'Sposta in ' + t('gate2') },
-        { val: 2, label: 'Sposta in ' + t('gate3') },
-        { val: 3, label: 'Sposta in ' + t('gate4') }
+        { val: 0, label: '↔ ' + t('gate1') },
+        { val: 1, label: '↔ ' + t('gate2') },
+        { val: 2, label: '↔ ' + t('gate3') },
+        { val: 3, label: '↔ ' + t('gate4') }
       ].map(o => '<option value="' + o.val + '" ' + (gIdx === o.val ? 'selected' : '') + ' style="color:#000;">' + o.label + '</option>').join('');
 
       let opts = '';
@@ -2168,21 +2169,16 @@
         });
       } else if (cfg.isTeam) {
         opts += '<option value="" ' + (!slot.riderId ? 'selected' : '') + '>' + t('selectQualRider') + '</option>';
-        const isHome = hm.team === 'A';
-        const teamIds = isHome
-          ? Array.from({length: cfg.ridersPerTeam}, (_, i) => i + 1)
-          : Array.from({length: cfg.ridersPerTeam}, (_, i) => 101 + i);
-        teamIds.forEach(r => {
-          opts += '<option value="' + r + '" ' + (slot.riderId == r ? 'selected' : '') + '>' + formatRiderNum(r) + ' ' + state.riders[r] + '</option>';
-        });
         
-        opts += '<optgroup label="Sostituti Altra Squadra">';
-        const otherIds = isHome
-          ? Array.from({length: cfg.ridersPerTeam}, (_, i) => 101 + i)
-          : Array.from({length: cfg.ridersPerTeam}, (_, i) => i + 1);
-        otherIds.forEach(r => {
-          opts += '<option value="' + r + '" ' + (slot.riderId == r ? 'selected' : '') + '>' + formatRiderNum(r) + ' ' + state.riders[r] + '</option>';
-        });
+        // Raggruppa per squadra permettendo qualsiasi pilota in qualsiasi corsia
+        opts += '<optgroup label="' + (state.teamNames.a || t('teamHomeDef')) + '">';
+        for(let i=1; i<=cfg.ridersPerTeam; i++) {
+            opts += '<option value="'+i+'" '+(slot.riderId == i ? 'selected' : '')+'>'+formatRiderNum(i)+' '+state.riders[i]+'</option>';
+        }
+        opts += '</optgroup><optgroup label="' + (state.teamNames.b || t('teamAwayDef')) + '">';
+        for(let i=101; i<=100+cfg.ridersPerTeam; i++) {
+            opts += '<option value="'+i+'" '+(slot.riderId == i ? 'selected' : '')+'>'+formatRiderNum(i)+' '+state.riders[i]+'</option>';
+        }
         opts += '</optgroup>';
       } else {
         const limit = cfg.is14Format ? 14 : 18;
@@ -2193,8 +2189,12 @@
       }
 
       const hasRider = Boolean(slot.riderId);
-      const teamLabel = cfg.isTeam ? (hm.team === 'A' ? state.teamNames.a : state.teamNames.b) : '';
       const riderLabel = hasRider ? (formatRiderNum(slot.riderId) + ' ' + state.riders[slot.riderId]) : t('selectRiderUp');
+      
+      let teamLabel = '';
+      if (cfg.isTeam && hasRider) {
+          teamLabel = slot.riderId < 100 ? state.teamNames.a : state.teamNames.b;
+      }
 
       const wBtn = '<button type="button" ' + (!hasRider ? 'disabled' : '') + ' class="spec-btn ' + (slot.warning ? 'warning-active' : '') + '" onclick="toggleWarning(' + gIdx + ')">' +
             '<span>W</span><small>Warning</small>' +
@@ -2879,9 +2879,13 @@
 
     const imageData = ctx.getImageData(0, 0, width, height);
     const data = imageData.data;
+    
+    // Filtro di binarizzazione (Bianco/Nero puro per massimizzare il contrasto e aiutare Tesseract)
     for (let i = 0; i < data.length; i += 4) {
       const avg = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
-      data[i] = data[i + 1] = data[i + 2] = avg; 
+      const threshold = 140; // Valore limite per decidere se un pixel diventa bianco o nero
+      const bw = avg > threshold ? 255 : 0;
+      data[i] = data[i + 1] = data[i + 2] = bw; 
     }
     ctx.putImageData(imageData, 0, 0);
     return canvas.toDataURL('image/jpeg', 1.0);
@@ -2941,7 +2945,7 @@
     const extractedNames = [];
 
     // Regex avanzata che accetta tutte le lettere con accenti scandinavi e polacchi
-    const nameRegex = /^[\d\W_]*([A-Za-zÀ-ÖØ-öø-ÿĀ-ž\s\-\']{3,})/;
+    const nameRegex = /^[\d\W_]*([A-Za-zÀ-ÖØ-öø-ÿĀ-ž][A-Za-zÀ-ÖØ-öø-ÿĀ-ž\s\-\']{2,})/;
     const bannedWords = ["team", "rider", "riders", "heat", "total", "speedway", "manager", "pt", "pts"];
 
     lines.forEach(line => {
