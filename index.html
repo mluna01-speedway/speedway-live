@@ -117,16 +117,15 @@
     .gate-yellow::before { background: var(--yellow); }
 
     .rider-header { display: flex; justify-content: space-between; align-items: center; gap: 6px; width: 100%; }
-    .helmet-badge { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; padding: 3px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
-    .badge-red { background: var(--red); color: #fff; }
-    .badge-blue { background: var(--blue); color: #fff; }
-    .badge-white { background: var(--white); color: #111; }
-    .badge-yellow { background: var(--yellow); color: #111; }
-
-    .sub-select { flex: 1; max-width: 58%; min-width: 0; background: #2e3440; color: var(--text); border: 1px solid #3b4252; border-radius: 6px; padding: 5px 6px; font-size: 0.75rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     
-    /* Modificata per accogliere il testo Corsia 1, 2, 3, 4 */
-    .helmet-select { background: #121418; color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 3px 2px; font-size: 0.65rem; font-weight: bold; width: auto; max-width: 95px; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; text-align: center; }
+    .helmet-select { 
+      background: #121418; color: var(--text); border: 1px solid var(--border); 
+      border-radius: 6px; padding: 4px 6px; font-size: 0.72rem; font-weight: 900; 
+      text-transform: uppercase; cursor: pointer; text-align: center;
+      appearance: auto;
+    }
+    
+    .sub-select { flex: 1; max-width: 58%; min-width: 0; background: #2e3440; color: var(--text); border: 1px solid #3b4252; border-radius: 6px; padding: 5px 6px; font-size: 0.75rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     
     .rider-name { font-size: 0.98rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; justify-content: space-between; align-items: center; }
     .rider-name.unassigned { color: var(--muted); font-style: italic; font-size: 0.88rem; }
@@ -736,7 +735,7 @@
       evNotesLbl: "Track Record / Notes", evNotesPh: "E.g. Slick track", evPhotoLbl: "Horizontal Track Photo",
       btnTakePhoto: "📸 Take Photo", btnFromGallery: "🖼️ From Gallery", btnLoadPhoto: "🖼️ Upload Photo",
       btnGoToRiders: "Go to Riders ▶", btnGoToHeats: "Go to Heats ▶",
-      btnClearEvent: "🗑️ Clear Event Info", btnFullReset: "🗑 Reset All (New Clean Meeting)",
+      btnClearEvent: "🗑️️ Clear Event Info", btnFullReset: "🗑 Reset All (New Clean Meeting)",
       ridersSectionTitle: "🏍️ Quick Rider Entry (OCR / Text)",
       ridersOcrDesc: "Take a photo of the rider list or paste text. OCR uses standard filters for maximum precision.",
       btnPasteList: "📋 Paste / Verify rider list text", btnApplyPaste: "✅ Apply Text List",
@@ -765,7 +764,7 @@
       btnNewCleanRace: "➕ Start New Meeting (Select Format)",
       btnExportJson: "⬇️ Export Backup (.json)", btnImportJson: "⬆️ Import Backup (.json)",
       emptyHistory: "No meetings saved in history.", btnOpenRace: "📂 Open / View", btnDelRace: "🗑️ Delete",
-      raceInProgress: "Meeting in progress", setSectionTitle: "⚙️ Settings & Language",
+      raceInProgress: "Meeting in progress", setSectionTitle: "⚙️️ Settings & Language",
       setLangDesc: "Select application language. All screens, scorecards and exported posters will be translated automatically.",
       legalTitle: "⚖️ Legal Notice & Disclaimer",
       legalText: "This application is an independent sports scorecard tool and is not affiliated with, associated with, authorized, or endorsed by FIM, Warner Bros. Discovery Sports, Ekstraliga, Premiership, Elitserien, Speedway Ligaen, or any official governing body. All references to competition formats and rules are purely descriptive.",
@@ -898,7 +897,7 @@
       codeR: "Udgået", codeF: "Styrt", codeX: "Udelukket", codeT: "Bånd", codeNS: "Ikke startet", codeW: "Warning",
       histSectionTitle: "💾 Løbsarkiv & Backup", btnSaveArchive: "📥 Gem Nuværende Løb",
       btnNewCleanRace: "➕ Start Nyt Løb (Vælg Format)",
-      btnExportJson: "⬇️ Eksporter (.json)", btnImportJson: "⬆️ Importer (.json)",
+      btnExportJson: "⬇️ Eksporter (.json)", btnImportJson: "⬆️️ Importer (.json)",
       emptyHistory: "Ingen gemte løb.", btnOpenRace: "📂 Åbn", btnDelRace: "🗑️ Slet",
       raceInProgress: "Løb i gang", setSectionTitle: "⚙️ Indstillinger & Sprog",
       setLangDesc: "Vælg sprog.",
@@ -966,7 +965,7 @@
       btnNewCleanRace: "➕ Starta Ny Tävling (Välj Format)",
       btnExportJson: "⬇️ Exportera (.json)", btnImportJson: "⬆️ Importer (.json)",
       emptyHistory: "Inga sparade tävlingar.", btnOpenRace: "📂 Öppna", btnDelRace: "🗑️ Radera",
-      raceInProgress: "Tävling pågår", setSectionTitle: "⚙️️ Inställningar & Språk",
+      raceInProgress: "Tävling pågår", setSectionTitle: "⚙ Inställningar & Språk",
       setLangDesc: "Välj språk.",
       legalTitle: "⚖️ Juridisk Information & Disclaimer",
       legalText: "Denna applikation är ett oberoende verktyg för poängräkning och är inte associerad med, auktoriserad eller godkänd av FIM, Warner Bros. Discovery Sports, Ekstraliga, Premiership, Elitserien, Speedway Ligaen eller något annat officiellt förbund. Alla hänvisningar till tävlingsformat är uteslutande beskrivende.",
@@ -1348,20 +1347,20 @@
         heats = cfg.schedule.map((row, idx) => ({
           heatNumber: idx + 1,
           time: "",
-          slots: row.map(pair => ({ riderId: pair[0], score: null, helmet: pair[1] || 'R', warning: false }))
+          slots: row.map(pair => ({ riderId: pair[0], score: null, helmet: pair[1] || 'R', warning: false, gate: null }))
         }));
       } else if (cfg.is14Format) {
         for (let i = 1; i <= 16; i++) riders[i] = getDefaultRiderName(i, mKey);
         heats = cfg.schedule.map((row, idx) => ({
           heatNumber: idx + 1,
           time: "",
-          slots: row.map(pair => ({ riderId: pair[0], score: null, helmet: pair[1], warning: false }))
+          slots: row.map(pair => ({ riderId: pair[0], score: null, helmet: pair[1], warning: false, gate: null }))
         }));
         for (let i = 0; i < 2; i++) {
           heats.push({
             heatNumber: 19 + i,
             time: "",
-            slots: [0, 1, 2, 3].map(gIdx => ({ riderId: null, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false }))
+            slots: [0, 1, 2, 3].map(gIdx => ({ riderId: null, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false, gate: null }))
           });
         }
       } else {
@@ -1369,13 +1368,13 @@
         heats = FIM_SCHEDULE.map((gates, idx) => ({
           heatNumber: idx + 1,
           time: "",
-          slots: gates.map((rId, gIdx) => ({ riderId: rId, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false }))
+          slots: gates.map((rId, gIdx) => ({ riderId: rId, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false, gate: null }))
         }));
         for (let i = 0; i < 3; i++) {
           heats.push({
             heatNumber: 21 + i,
             time: "",
-            slots: [0, 1, 2, 3].map(gIdx => ({ riderId: null, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false }))
+            slots: [0, 1, 2, 3].map(gIdx => ({ riderId: null, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false, gate: null }))
           });
         }
       }
@@ -1387,7 +1386,7 @@
       heats = cfg.schedule.map((row, idx) => ({
         heatNumber: idx + 1,
         time: "",
-        slots: row.map(pair => ({ riderId: pair[0], helmet: pair[1], score: null, warning: false }))
+        slots: row.map(pair => ({ riderId: pair[0], helmet: pair[1], score: null, warning: false, gate: null }))
       }));
     }
 
@@ -1427,6 +1426,7 @@
         h.slots.forEach((s, idx) => {
           if (!s.helmet) s.helmet = GATE_STYLE[idx].helmet;
           if (s.warning === undefined) s.warning = false;
+          if (!s.gate) s.gate = idx + 1; // Gestione retrocompatibilità
         });
       });
       if (mKey === 'sgp_sprint' && merged.heats.length !== 13) {
@@ -1471,43 +1471,35 @@
     const targetHelmets = teamLetter === 'A' ? ['R', 'B'] : ['W', 'Y'];
     const indices = [];
     heat.slots.forEach((s, idx) => {
+      if (!s.gate) s.gate = idx + 1;
       if (targetHelmets.includes(s.helmet)) indices.push(idx);
     });
     if (indices.length === 2) {
       const i1 = indices[0], i2 = indices[1];
-      const temp = Object.assign({}, heat.slots[i1]);
-      heat.slots[i1] = Object.assign({}, heat.slots[i2]);
-      heat.slots[i2] = temp;
+      // Scambiamo SOLO il numero di corsia, i piloti restano fermi sulle loro righe colorate
+      const tempGate = heat.slots[i1].gate;
+      heat.slots[i1].gate = heat.slots[i2].gate;
+      heat.slots[i2].gate = tempGate;
       saveState();
       renderCurrentHeat();
     }
   }
 
-  function swapGateRiders(currentGateIdx, targetGateIdxStr) {
-    const targetGateIdx = parseInt(targetGateIdxStr, 10);
-    if (currentGateIdx === targetGateIdx) return;
+  function changeSlotGate(gIdx, newGateStr) {
+    const newGate = parseInt(newGateStr, 10);
     const heat = state.heats[state.currentHeat];
 
-    // Scambia i dati del pilota, punteggio e warning tra le due corsie
-    const tempRider = heat.slots[currentGateIdx].riderId;
-    const tempScore = heat.slots[currentGateIdx].score;
-    const tempWarning = heat.slots[currentGateIdx].warning;
+    heat.slots.forEach((s, i) => { if (!s.gate) s.gate = i + 1; });
 
-    heat.slots[currentGateIdx].riderId = heat.slots[targetGateIdx].riderId;
-    heat.slots[currentGateIdx].score = heat.slots[targetGateIdx].score;
-    heat.slots[currentGateIdx].warning = heat.slots[targetGateIdx].warning;
+    const oldGate = heat.slots[gIdx].gate;
+    if (oldGate === newGate) return;
 
-    heat.slots[targetGateIdx].riderId = tempRider;
-    heat.slots[targetGateIdx].score = tempScore;
-    heat.slots[targetGateIdx].warning = tempWarning;
-
-    // Forza i colori delle corsie affinché non varino MAI
-    if (heat.slots.length >= 4) {
-      heat.slots[0].helmet = 'R';
-      heat.slots[1].helmet = 'B';
-      heat.slots[2].helmet = 'W';
-      heat.slots[3].helmet = 'Y';
+    // Troviamo chi aveva precedentemente questa corsia e li scambiamo di corsia
+    const otherIdx = heat.slots.findIndex(s => s.gate === newGate);
+    if (otherIdx !== -1) {
+      heat.slots[otherIdx].gate = oldGate;
     }
+    heat.slots[gIdx].gate = newGate;
 
     saveState();
     renderCurrentHeat();
@@ -2140,21 +2132,21 @@
       actualSlots = heat.slots.slice(0, 2);
     }
     
-    // Assicura che i colori delle corsie siano sempre fissi
+    // I colori delle corsie sono visivamente fissi
     const fixedColors = ['R', 'B', 'W', 'Y'];
 
     container.innerHTML = actualSlots.map((slot, gIdx) => {
       const fixedColor = fixedColors[gIdx] || 'R';
-      slot.helmet = fixedColor; // Forza il salvataggio del colore corretto nello state
+      slot.helmet = fixedColor; 
       const hm = HELMET_META[fixedColor];
       const sc = slot.score;
 
-      const gateOpts = [
-        { val: 0, label: '↔ ' + t('gate1') },
-        { val: 1, label: '↔ ' + t('gate2') },
-        { val: 2, label: '↔ ' + t('gate3') },
-        { val: 3, label: '↔ ' + t('gate4') }
-      ].map(o => '<option value="' + o.val + '" ' + (gIdx === o.val ? 'selected' : '') + ' style="color:#000;">' + o.label + '</option>').join('');
+      // Determiniamo in quale corsia sta partendo fisicamente questo pilota
+      const currentGate = slot.gate || (gIdx + 1);
+
+      const gateOpts = [1, 2, 3, 4].map(val => 
+        '<option value="' + val + '" ' + (currentGate === val ? 'selected' : '') + ' style="color:#000;">' + t('laneLbl') + ' ' + val + '</option>'
+      ).join('');
 
       let opts = '';
       if (cfg.isSprint) {
@@ -2170,7 +2162,6 @@
       } else if (cfg.isTeam) {
         opts += '<option value="" ' + (!slot.riderId ? 'selected' : '') + '>' + t('selectQualRider') + '</option>';
         
-        // Raggruppa per squadra permettendo qualsiasi pilota in qualsiasi corsia
         opts += '<optgroup label="' + (state.teamNames.a || t('teamHomeDef')) + '">';
         for(let i=1; i<=cfg.ridersPerTeam; i++) {
             opts += '<option value="'+i+'" '+(slot.riderId == i ? 'selected' : '')+'>'+formatRiderNum(i)+' '+state.riders[i]+'</option>';
@@ -2203,8 +2194,7 @@
       return '<div class="gate-card ' + hm.cls + '">' +
         '<div class="rider-header">' +
           '<div style="display:flex;align-items:center;gap:4px;">' +
-            '<span class="helmet-badge" style="background:#252a34;color:var(--text);">' + t('laneLbl') + ' ' + (gIdx + 1) + '</span>' +
-            '<select class="helmet-select" onchange="swapGateRiders(' + gIdx + ', this.value)" style="background:' + (fixedColor === 'R' ? '#e53935' : fixedColor === 'B' ? '#1e88e5' : fixedColor === 'W' ? '#f5f5f5' : '#fdd835') + '; color:' + (fixedColor === 'W' || fixedColor === 'Y' ? '#000' : '#fff') + '">' + gateOpts + '</select>' +
+            '<select class="helmet-select" onchange="changeSlotGate(' + gIdx + ', this.value)" style="background:' + (fixedColor === 'R' ? '#e53935' : fixedColor === 'B' ? '#1e88e5' : fixedColor === 'W' ? '#f5f5f5' : '#fdd835') + '; color:' + (fixedColor === 'W' || fixedColor === 'Y' ? '#000' : '#fff') + '">' + gateOpts + '</select>' +
           '</div>' +
           '<select class="sub-select" onchange="changeSlotRider(' + gIdx + ', this.value)">' + opts + '</select>' +
         '</div>' +
