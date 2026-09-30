@@ -431,7 +431,7 @@
              <input type="file" id="track-camera-input" accept="image/*" capture="environment" style="display:none" onchange="handleTrackPhoto(this)">
            </label>
             <label class="photo-upload-zone" for="track-gallery-input">
-              <span data-i18n="btnFromGallery">🖼️ Da Galleria</span>
+              <span data-i18n="btnFromGallery">🖼️️ Da Galleria</span>
              <input type="file" id="track-gallery-input" accept="image/*" style="display:none" onchange="handleTrackPhoto(this)">
            </label>
           </div>
@@ -442,7 +442,7 @@
       </div>
       <button type="button" class="btn-primary" onclick="switchTab('riders', document.getElementById('nav-riders'))" data-i18n="btnGoToRiders">Vai ai Piloti ▶</button>
       <button type="button" class="btn-secondary" style="margin-top:8px;" onclick="goToHeats()" data-i18n="btnGoToHeats">Vai alle Batterie ▶</button>
-      <button type="button" class="btn-outline-danger" onclick="clearEventMetaOnly()" data-i18n="btnClearEvent">🗑️ Svuota Dati Evento</button>
+      <button type="button" class="btn-outline-danger" onclick="clearEventMetaOnly()" data-i18n="btnClearEvent">🗑️️ Svuota Dati Evento</button>
       <button type="button" class="btn-reset" onclick="fullResetApp()" data-i18n="btnFullReset">🗑️ Svuota Tutto (Nuova Gara Pulita)</button>
     </div>
   </div>
@@ -534,7 +534,7 @@
     </div>
     <div class="standings-mode-switch" id="standings-mode-switch">
       <button type="button" id="btn-mode-final" class="active" onclick="setStandingsMode('final')" data-i18n="btnModeFinal">🏆 Classifica Finale</button>
-      <button type="button" id="btn-mode-qual" onclick="setStandingsMode('qual')" data-i18n="btnModeQual">⏱️ Classifica Qualificazioni</button>
+      <button type="button" id="btn-mode-qual" onclick="setStandingsMode('qual')" data-i18n="btnModeQual">⏱️️ Classifica Qualificazioni</button>
     </div>
     <div class="legend-bar" id="standings-legend-bar"></div>
     <div class="table-wrap">
@@ -583,7 +583,7 @@
  
 <nav>
   <button type="button" id="nav-event" onclick="switchTab('event', this)">
-    <div class="nav-ico">🏟️️</div>
+    <div class="nav-ico">🏟</div>
     <span class="nav-lbl" data-i18n="navEvent">Evento</span>
   </button>
   <button type="button" id="nav-riders" onclick="switchTab('riders', this)">
@@ -664,7 +664,7 @@
       btnTakePhoto: "📸 Scatta Foto", btnFromGallery: "🖼️ Da Galleria", btnLoadPhoto: "🖼️ Carica Foto",
       btnGoToRiders: "Vai ai Piloti ▶", btnGoToHeats: "Vai alle Batterie ▶",
       btnClearEvent: "🗑️ Svuota Dati Evento", btnFullReset: "🗑️ Svuota Tutto (Nuova Gara Pulita)",
-     ridersSectionTitle: "🏍️ Inserimento Rapido Piloti (OCR / Testo)",
+     ridersSectionTitle: "🏍️️ Inserimento Rapido Piloti (OCR / Testo)",
       ridersOcrDesc: "Scatta una foto all'elenco piloti, caricala dalla galleria oppure incolla il testo. L'OCR usa i filtri base per la massima precisione.",
       btnPasteList: "📋 Incolla / Verifica elenco piloti da testo", btnApplyPaste: "✅ Applica Elenco Testo",
       btnResetRiders: "🗑️ Ripristina Nomi Piloti", btnResetScores: "🔄 Azzera Punteggi e Piazzamenti Batteria",
@@ -805,7 +805,7 @@
       evDateLbl: "Data", evTrackLbl: "Nazwa Toru / Stadionu", evTrackPh: "Np. Motoarena", evCityLbl: "Miasto", evCityPh: "Np. Toruń",
       evCountryLbl: "Kraj", evCountryPh: "Np. Polska 🇵🇱", evLenLbl: "Długość Toru (m)", evLenPh: "Np. 318m",
       evNotesLbl: "Rekord Toru / Uwagi", evNotesPh: "Np. Twarda nawierzchnia", evPhotoLbl: "Poziome Zdjęcie Toru",
-      btnTakePhoto: "📸 Zrób Zdjęcie", btnFromGallery: "🖼️ Z Galerii", btnLoadPhoto: "🖼️️ Wczytaj Zdjęcie",
+      btnTakePhoto: "📸 Zrób Zdjęcie", btnFromGallery: "🖼️ Z Galerii", btnLoadPhoto: "🖼 Wczytaj Zdjęcie",
       btnGoToRiders: "Przejdź do Zawodników ▶", btnGoToHeats: "Przejdź do Biegów ▶",
       btnClearEvent: "🗑️ Wyczyść Dane Zawodów", btnFullReset: "🗑️ Wyczyść Wszystko",
      ridersSectionTitle: "🏍️ Lista Startowa Zawodników (OCR / Tekst)",
@@ -899,7 +899,7 @@
       btnNewCleanRace: "➕ Start Nyt Løb (Vælg Format)",
       btnExportJson: "⬇️ Eksporter (.json)", btnImportJson: "⬆ Importer (.json)",
       emptyHistory: "Ingen gemte løb.", btnOpenRace: "📂 Åbn", btnDelRace: "🗑️ Slet",
-      raceInProgress: "Løb i gang", setSectionTitle: "⚙️️ Indstillinger & Sprog",
+      raceInProgress: "Løb i gang", setSectionTitle: "⚙ Indstillinger & Sprog",
       setLangDesc: "Vælg sprog.",
       legalTitle: "⚖️ Juridisk Note & Disclaimer",
       legalText: "Denne applikation er et uafhængigt sports-scorecard værktøj og er ikke tilknyttet, autoriseret eller godkendt af FIM, Warner Bros. Discovery Sports, Ekstraliga, Premiership, Elitserien, Speedway Ligaen eller andre officielle forbund. Alle henvisninger til løbsformater er udelukkende beskrivende.",
@@ -957,7 +957,7 @@
       finalTitle: "🏆 FINAL", finalSub: "Välj de 4 finalisterna och ange placering.",
       rankBadge: ":a", standingsBadge: ":a",
       btnShareCard: "📲 Dela / Ladda ner Körschema (PNG)", btnShareStandings: "📲 Dela / Ladda ner Ställning (PNG)",
-      btnModeFinal: "🏆 Slutställning", btnModeQual: "⏱️️ Ställning efter Kval",
+      btnModeFinal: "🏆 Slutställning", btnModeQual: "⏱ Ställning efter Kval",
       thPos: "Pos", thRider: "Förare", thRuns: "Heat", thTot: "TOT", thFin: "FIN",
       legFinalDirect: "Direkt till Final", legLcq: "Kvalificerade till LCQ", legPtsInfo: "TOT = Heatpoäng • GP = VM P",
       codeR: "Bröt", codeF: "Omkull", codeX: "Utesluten", codeT: "Tejp", codeNS: "Ej startat", codeW: "Warning",
@@ -1055,23 +1055,23 @@
       scores: [3, 2, 1, 0],
       roles: { 5: "roleJunior" },
       schedule: [
-        // FASE REGOLARE (Batterie 1-10) - Incroci fissi
-        [[1, 'R'], [101, 'W'], [2, 'B'], [102, 'Y']], // H1: 1,2 vs 1,2
-        [[103, 'W'], [3, 'R'], [104, 'Y'], [4, 'B']], // H2: 3,4 vs 3,4
-        [[5, 'R'], [105, 'W'], [1, 'B'], [101, 'Y']], // H3: 1,5 vs 1,5
-        [[2, 'R'], [102, 'W'], [3, 'B'], [103, 'Y']], // H4: 2,3 vs 2,3
-        [[104, 'W'], [4, 'R'], [105, 'Y'], [5, 'B']], // H5: 4,5 vs 4,5
-        [[103, 'W'], [1, 'R'], [101, 'Y'], [3, 'B']], // H6: 1,3 vs 1,3
-        [[4, 'R'], [104, 'W'], [2, 'B'], [102, 'Y']], // H7: 2,4 vs 2,4
-        [[3, 'R'], [105, 'W'], [5, 'B'], [103, 'Y']], // H8: 3,5 vs 3,5
-        [[1, 'R'], [104, 'W'], [4, 'B'], [101, 'Y']], // H9: 1,4 vs 1,4
-        [[102, 'W'], [2, 'R'], [105, 'Y'], [5, 'B']], // H10: 2,5 vs 2,5
+        // FASE REGOLARE: Casa (1-5) sempre in Rosso/Blu, Ospiti (101-105) sempre in Bianco/Giallo
+        [[1, 'R'], [2, 'B'], [101, 'W'], [102, 'Y']], // H1
+        [[3, 'R'], [4, 'B'], [103, 'W'], [104, 'Y']], // H2
+        [[1, 'R'], [5, 'B'], [101, 'W'], [105, 'Y']], // H3
+        [[2, 'R'], [3, 'B'], [102, 'W'], [103, 'Y']], // H4
+        [[4, 'R'], [5, 'B'], [104, 'W'], [105, 'Y']], // H5
+        [[1, 'R'], [3, 'B'], [101, 'W'], [103, 'Y']], // H6
+        [[2, 'R'], [4, 'B'], [102, 'W'], [104, 'Y']], // H7
+        [[3, 'R'], [5, 'B'], [103, 'W'], [105, 'Y']], // H8
+        [[1, 'R'], [4, 'B'], [101, 'W'], [104, 'Y']], // H9
+        [[2, 'R'], [5, 'B'], [102, 'W'], [105, 'Y']], // H10
         
-        // FASE NOMINATA (Batterie 11-14) - Scelta libera
-        [[null, 'R'], [null, 'W'], [null, 'B'], [null, 'Y']], // H11
-        [[null, 'W'], [null, 'R'], [null, 'Y'], [null, 'B']], // H12
-        [[null, 'R'], [null, 'W'], [null, 'B'], [null, 'Y']], // H13
-        [[null, 'W'], [null, 'R'], [null, 'Y'], [null, 'B']]  // H14
+        // FASE NOMINATA (Batterie 11-14) - Scelta libera per i manager
+        [[null, 'R'], [null, 'B'], [null, 'W'], [null, 'Y']], // H11
+        [[null, 'R'], [null, 'B'], [null, 'W'], [null, 'Y']], // H12
+        [[null, 'R'], [null, 'B'], [null, 'W'], [null, 'Y']], // H13
+        [[null, 'R'], [null, 'B'], [null, 'W'], [null, 'Y']]  // H14
       ]
     },
     pl: {
