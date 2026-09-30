@@ -347,7 +347,7 @@
           <span class="mode-choice-ico">🇩🇰</span>
           <div>
             <div class="mode-choice-title" data-i18n="leagueDkTitle">Lega Danese (SpeedwayLigaen)</div>
-            <div class="mode-choice-sub" data-i18n="leagueDkSub">14 Batterie • 5 Piloti (Cat. A-E) • Scelta libera Piloti & Corsie</div>
+            <div class="mode-choice-sub" data-i18n="leagueDkSub">14 Batterie (13-14 Nominate) • 5 Piloti (Cat. A-E) • Piloti & Corsie Dinamici</div>
           </div>
         </div>
         <span>▶</span>
@@ -381,9 +381,9 @@
 <div class="modal-backdrop" id="dk-info-modal" onclick="if(event.target===this)closeDkInfoModal()">
   <div class="modal-box" style="border-color: var(--red);">
     <div style="font-size: 2.1rem; margin-bottom: 6px;">🇩🇰</div>
-    <h3 id="dk-modal-title" style="color: #ff8a80;" data-i18n="dkNoticeTitle">Regolamento Lega Danese</h3>
+    <h3 id="dk-modal-title" style="color: #ff8a80;" data-i18n="dkNoticeTitle">Regolamento Dinamico SpeedwayLigaen</h3>
     <p id="dk-modal-text" style="text-align: left; font-size: 0.82rem; color: var(--text); line-height: 1.48; background: #15181f; padding: 12px; border-radius: 10px; border: 1px solid var(--border);" data-i18n="dkNoticeBody"></p>
-    <button type="button" class="btn-primary" onclick="closeDkInfoModal()" data-i18n="dkNoticeBtn">Ho capito, vai alla gara ▶</button>
+    <button type="button" class="btn-primary" onclick="closeDkInfoModal()" data-i18n="dkNoticeBtn">Ho capito, procedi ▶</button>
   </div>
 </div>
 
@@ -475,7 +475,7 @@
     <!-- Banner informativo Lega Danese nella scheda Piloti -->
     <div class="dk-info-banner" id="dk-banner-riders">
       <div class="dk-info-banner-top">
-        <span>🇩🇰 <span data-i18n="dkNoticeTitle">Regolamento Lega Danese</span></span>
+        <span>🇩🇰 <span data-i18n="dkNoticeTitle">Regolamento Dinamico SpeedwayLigaen</span></span>
       </div>
       <div data-i18n="dkNoticeBody"></div>
     </div>
@@ -505,7 +505,7 @@
       <button type="button" class="btn-backup" style="width:100%;" onclick="togglePasteBox()" data-i18n="btnPasteList">📋 Incolla / Verifica elenco piloti da testo</button>
       <div id="paste-box-wrap">
         <div class="form-group" style="margin-top:8px;">
-          <textarea id="paste-riders-area" rows="6" placeholder="1. Leon Madsen&#10;2. Anders Thomsen&#10;..."></textarea>
+          <textarea id="paste-riders-area" rows="6" placeholder="1. Anders Thomsen&#10;2. Andrzej Lebiediew&#10;..."></textarea>
         </div>
         <button type="button" class="btn-primary" onclick="applyPastedRiders()" data-i18n="btnApplyPaste">✅ Applica Elenco Testo</button>
       </div>
@@ -522,7 +522,7 @@
     <!-- Banner informativo Lega Danese nella scheda Batterie -->
     <div class="dk-info-banner" id="dk-banner-heats">
       <div class="dk-info-banner-top">
-        <span>🇩🇰 <span data-i18n="dkNoticeTitle">Regolamento Lega Danese</span></span>
+        <span>🇩🇰 <span data-i18n="dkNoticeTitle">Regolamento Dinamico SpeedwayLigaen</span></span>
         <button type="button" class="btn-mini" onclick="openDkInfoModal()">ℹ️</button>
       </div>
       <div data-i18n="dkNoticeBody"></div>
@@ -575,7 +575,7 @@
     </div>
     <div class="standings-mode-switch" id="standings-mode-switch">
       <button type="button" id="btn-mode-final" class="active" onclick="setStandingsMode('final')" data-i18n="btnModeFinal">🏆 Classifica Finale</button>
-      <button type="button" id="btn-mode-qual" onclick="setStandingsMode('qual')" data-i18n="btnModeQual">⏱️ Classifica Qualificazioni</button>
+      <button type="button" id="btn-mode-qual" onclick="setStandingsMode('qual')" data-i18n="btnModeQual">⏱ Classifica Qualificazioni</button>
     </div>
     <div class="legend-bar" id="standings-legend-bar"></div>
     <div class="table-wrap">
@@ -689,7 +689,7 @@
       modalChooseLeagueSub: "Ogni formato applica il calendario batterie, numero piloti e punteggio del relativo regolamento:",
       leagueUkTitle: "Lega Inglese (Formato Premiership)", leagueUkSub: "15 Batterie • 7 Piloti per squadra (#6-#7 Riserve) • Pt 3-2-1-0",
       leagueSeTitle: "Lega Svedese (Formato Elitserien)", leagueSeSub: "15 Batterie • 7 Piloti per squadra (#6-#7 Riserve) • Pt 3-2-1-0",
-      leagueDkTitle: "Lega Danese (SpeedwayLigaen)", leagueDkSub: "14 Batterie • 5 Piloti per squadra (Cat. A-E) • Scelta libera Piloti & Corsie",
+      leagueDkTitle: "Lega Danese (SpeedwayLigaen)", leagueDkSub: "14 Batterie (13-14 Nominate) • 5 Piloti (Cat. A-E) • Piloti & Corsie Dinamici",
       leaguePlTitle: "Lega Polacca (Formato Ekstraliga)", leaguePlSub: "15 Batterie (H2 Junior, H14-15 Nom.) • 8 Piloti • Pt 3-2-1-0",
       leagueSonTitle: "Torneo Nazioni a Coppie (Formato SON)", leagueSonSub: "Gara a Coppie • 3 Piloti per Nazione • Punteggio 4-3-2-0",
       btnBack: "◀ Torna Indietro",
@@ -697,18 +697,18 @@
       ocrTargetBoth: "Entrambe le Squadre", ocrTargetHome: "🔴🔵 Solo Casa", ocrTargetAway: "⚪🟡 Solo Ospiti",
       roleReserve: "Riserva", roleRisingStar: "Rising Star", roleJunior: "Junior U21", roleU24: "Riserva U24", roleCapt: "Capitano #1", roleMain: "Titolare #2", roleU21: "Under 21 #3",
       roleCatA: "Cat. A", roleCatB: "Cat. B", roleCatC: "Cat. C", roleCatD: "Cat. D", roleCatE: "Cat. E / U21",
-      dkNoticeTitle: "Gestione Variabili Lega Danese (SpeedwayLigaen)",
-      dkNoticeBody: "Viste le variabili in gioco non preventivabili prioritariamente (media piloti/snit, utilizzo della riserva #5, riserve tattiche e scelte libere del team manager), non è possibile predefinire la composizione delle batterie. Sarà a cura dell'utilizzatore comporre ogni batteria e selezionare la corsia tramite gli appositi menù a tendina per la squadra di casa (Rosso/Blu) e la squadra ospite (Bianco/Giallo).",
+      dkNoticeTitle: "Regolamento Dinamico SpeedwayLigaen (DMU)",
+      dkNoticeBody: "Lo schema base DMU (Batterie 1–12) è precaricato. Viste le variabili non preventivabili prioritariamente (media piloti/snit, ingressi extra della riserva #5, riserve tattiche da -6 pt e scelte libere del team manager nelle batterie e nelle nominate 13–14), sarà a cura dell'utilizzatore verificare o comporre piloti e corsie tramite gli appositi menù a tendina per la squadra di casa (Rosso/Blu) e la squadra ospite (Bianco/Giallo).",
       dkNoticeBtn: "Ho capito, procedi ▶",
-      dkHeat9Info: "Batteria 9: Scontro categorie C/D (Riserva Tattica non consentita). Seleziona piloti e corsie dai menù a tendina.",
-      dkHeat13Info: "Batteria 13 (Nominata): Scelta del manager di 2 piloti tra i 3 con il punteggio più basso. Seleziona piloti e corsie.",
-      dkHeat14Info: "Batteria 14 (Nominata Finale): Scelta del manager dei 2 piloti con il punteggio più alto. Seleziona piloti e corsie.",
+      dkHeat7Info: "Batteria 7 (Incrocio Cat. C/D): Verifica eventuali sostituzioni col pilota #5 o seleziona la corsia dal menù a tendina.",
+      dkHeat13Info: "Batteria 13 (Nominata): Il manager sceglie 2 tra i 3 piloti con il punteggio più basso. Seleziona piloti e corsie dai menù a tendina.",
+      dkHeat14Info: "Batteria 14 (Nominata Finale): Il manager sceglie i 2 piloti con il punteggio più alto. Seleziona piloti e corsie dai menù a tendina.",
       swapRedBlue: "🔴 Rosso ↔ 🔵 Blu", swapWhiteYellow: "⚪ Bianco ↔ 🟡 Giallo", partialLbl: "Parziale:", totalLbl: "TOTALE:",
       evSectionTitle: "🏟️ Dati Evento & Pista", evNameLbl: "Nome della Gara / Evento", evNamePh: "Es. Grand Prix of Poland - Torun",
       evDateLbl: "Data", evTrackLbl: "Nome Pista / Stadio", evTrackPh: "Es. Motoarena", evCityLbl: "Luogo / Città", evCityPh: "Es. Torun",
       evCountryLbl: "Stato / Nazione", evCountryPh: "Es. Polonia 🇵🇱", evLenLbl: "Lunghezza Pista (m)", evLenPh: "Es. 318m",
       evNotesLbl: "Record / Note", evNotesPh: "Es. Fondo compatto", evPhotoLbl: "Foto Orizzontale della Pista",
-      btnTakePhoto: "📸 Scatta Foto", btnFromGallery: "🖼️ Da Galleria", btnLoadPhoto: "🖼️️ Carica Foto",
+      btnTakePhoto: "📸 Scatta Foto", btnFromGallery: "🖼️ Da Galleria", btnLoadPhoto: "🖼️ Carica Foto",
       btnGoToRiders: "Vai ai Piloti ▶", btnGoToHeats: "Vai alle Batterie ▶",
       btnClearEvent: "🗑️ Svuota Dati Evento", btnFullReset: "🗑️ Svuota Tutto (Nuova Gara Pulita)",
       ridersSectionTitle: "🏍️ Inserimento Rapido Piloti (OCR / Testo)",
@@ -735,7 +735,7 @@
       histSectionTitle: "💾 Gestione & Archivio Gare", btnSaveArchive: "📥 Salva Gara Corrente nello Storico",
       btnNewCleanRace: "➕ Inizia Nuova Gara (Scegli Formato)",
       btnExportJson: "⬇️ Esporta Backup (.json)", btnImportJson: "⬆️ Importa Backup (.json)",
-      emptyHistory: "Nessuna gara salvata nello storico.", btnOpenRace: "📂 Apri / Rivedi", btnDelRace: "🗑️ Elimina",
+      emptyHistory: "Nessuna gara salvata nello storico.", btnOpenRace: "📂 Apri / Rivedi", btnDelRace: "🗑 Elimina",
       raceInProgress: "Gara in corso", setSectionTitle: "⚙️ Impostazioni & Lingua",
       setLangDesc: "Seleziona la lingua dell'applicazione. Tutte le schermate, le tabelle e le locandine verranno tradotte automaticamente.",
       legalTitle: "⚖️ Note Legali & Disclaimer",
@@ -763,19 +763,19 @@
       modalChooseLeagueSub: "Each format applies the official heat schedule, squad size and scoring rules:",
       leagueUkTitle: "British League (Premiership Format)", leagueUkSub: "15 Heats • 7 Riders per team (#6-#7 Reserves) • Pts 3-2-1-0",
       leagueSeTitle: "Swedish League (Elitserien Format)", leagueSeSub: "15 Heats • 7 Riders per team (#6-#7 Reserves) • Pts 3-2-1-0",
-      leagueDkTitle: "Danish League (SpeedwayLigaen)", leagueDkSub: "14 Heats • 5 Riders per team (Cat. A-E) • Manual Rider & Gate Selection",
+      leagueDkTitle: "Danish League (SpeedwayLigaen)", leagueDkSub: "14 Heats (13-14 Nominated) • 5 Riders (Cat. A-E) • Dynamic Riders & Gates",
       leaguePlTitle: "Polish League (Ekstraliga Format)", leaguePlSub: "15 Heats (H2 Junior, H14-15 Nom.) • 8 Riders • Pts 3-2-1-0",
       leagueSonTitle: "Nations Pairs (SON Format)", leagueSonSub: "Pairs Meeting • 3 Riders per Nation • Scoring 4-3-2-0",
       btnBack: "◀ Back", confirmChangeMode: "Do you want to change format and start a new competition?",
       ocrTargetBoth: "Both Teams", ocrTargetHome: "🔴🔵 Home Only", ocrTargetAway: "⚪🟡 Away Only",
       roleReserve: "Reserve", roleRisingStar: "Rising Star", roleJunior: "Junior U21", roleU24: "U24 Reserve", roleCapt: "Captain #1", roleMain: "Rider #2", roleU21: "Under 21 #3",
       roleCatA: "Cat. A", roleCatB: "Cat. B", roleCatC: "Cat. C", roleCatD: "Cat. D", roleCatE: "Cat. E / U21",
-      dkNoticeTitle: "Danish League Variables (SpeedwayLigaen)",
-      dkNoticeBody: "Due to unpredictable match variables (rider averages/snit, #5 reserve usage, tactical reserves, and free team manager choices), heat lineups cannot be pre-defined in advance. It is up to the user to compose each heat and select the starting gate via the dropdown menus for the Home team (Red/Blue) and Away team (White/Yellow).",
+      dkNoticeTitle: "Dynamic SpeedwayLigaen Rules (DMU)",
+      dkNoticeBody: "The official DMU base schedule (Heats 1–12) is pre-loaded. Due to unpredictable match variables (rider averages/snit, extra rides for #5 reserve, tactical reserves at -6 pts, and free team manager choices including Nominated Heats 13–14), the user can freely customize or compose riders and starting gates via the dropdown menus for the Home team (Red/Blue) and Away team (White/Yellow).",
       dkNoticeBtn: "Got it, continue ▶",
-      dkHeat9Info: "Heat 9: C/D category riders heat (Tactical Reserve not permitted). Select riders and gates from the dropdown menus.",
-      dkHeat13Info: "Heat 13 (Nominated): Manager chooses 2 out of the 3 lowest-scoring riders. Select riders and gates manually.",
-      dkHeat14Info: "Heat 14 (Final Nominated): Manager chooses the 2 highest-scoring riders. Select riders and gates manually.",
+      dkHeat7Info: "Heat 7 (Cat. C/D Crossover): Check for #5 reserve substitutions or adjust starting gates via dropdowns.",
+      dkHeat13Info: "Heat 13 (Nominated): Manager chooses 2 out of the 3 lowest-scoring riders. Select riders and gates from the dropdowns.",
+      dkHeat14Info: "Heat 14 (Final Nominated): Manager chooses the 2 highest-scoring riders. Select riders and gates from the dropdowns.",
       swapRedBlue: "🔴 Red ↔ 🔵 Blue", swapWhiteYellow: "⚪ White ↔ 🟡 Yellow", partialLbl: "Heat Score:", totalLbl: "TOTAL:",
       evSectionTitle: "🏟️ Event & Track Info", evNameLbl: "Event / Meeting Name", evNamePh: "E.g. Grand Prix of Poland - Torun",
       evDateLbl: "Date", evTrackLbl: "Track / Stadium Name", evTrackPh: "E.g. Motoarena", evCityLbl: "City / Location", evCityPh: "E.g. Torun",
@@ -799,7 +799,7 @@
       finalTitle: "🏆 FINAL", finalSub: "Assign the 4 finalists to their chosen gates and select finishing order.",
       rankBadge: "th pos.", standingsBadge: "° Standings",
       btnShareCard: "📲 Share / Download Scorecard (PNG)", btnShareStandings: "📲 Share / Download Standings (PNG)",
-      btnModeFinal: "🏆 Final Standings", btnModeQual: "⏱️️ Qualifying Standings",
+      btnModeFinal: "🏆 Final Standings", btnModeQual: "⏱️ Qualifying Standings",
       thPos: "Pos", thRider: "Rider", thRuns: "Runs", thTot: "TOT", thFin: "FIN",
       legFinalDirect: "Direct Final", legLcq: "LCQ / Last Chance", legPtsInfo: "TOT = Heats Pts • GP = Champ. Pts",
       codeR: "Retired", codeF: "Fell", codeX: "Excluded", codeT: "Tapes", codeNS: "Not Started", codeW: "Warning",
@@ -834,25 +834,25 @@
       modalChooseLeagueSub: "Każdy format posiada własną tabelę biegową, składy i punktację:",
       leagueUkTitle: "Liga Angielska (Format Premiership)", leagueUkSub: "15 Biegów • 7 Zawodników (#6-#7 Rezerwy) • Pkt 3-2-1-0",
       leagueSeTitle: "Liga Szwedzka (Format Elitserien)", leagueSeSub: "15 Biegów • 7 Zawodników (#6-#7 Rezerwy) • Pkt 3-2-1-0",
-      leagueDkTitle: "Liga Duńska (SpeedwayLigaen)", leagueDkSub: "14 Biegów • 5 Zawodników (Kat. A-E) • Ręczny wybór zawodników i pól",
+      leagueDkTitle: "Liga Duńska (SpeedwayLigaen)", leagueDkSub: "14 Biegów (13-14 Nominowane) • 5 Zawodników (Kat. A-E) • Dynamiczne składy i pola",
       leaguePlTitle: "Liga Polska (Format Ekstraliga)", leaguePlSub: "15 Biegów (Bieg 2 Juniorzy, 14-15 Nom.) • 8 Zawodników • Pkt 3-2-1-0",
       leagueSonTitle: "Turniej Par Narodowych (Format SON)", leagueSonSub: "Zawody Parowe • 3 Zawodników • Punktacja 4-3-2-0",
       btnBack: "◀ Wróć", confirmChangeMode: "Czy chcesz zmienić format zawodów i rozpocząć nowy mecz?",
       ocrTargetBoth: "Obie Drużyny", ocrTargetHome: "🔴🔵 Gospodarze", ocrTargetAway: "⚪🟡 Goście",
       roleReserve: "Rezerwa", roleRisingStar: "Rising Star", roleJunior: "Junior U21", roleU24: "Rezerwa U24", roleCapt: "Kapitan #1", roleMain: "Zawodnik #2", roleU21: "Junior U21 #3",
       roleCatA: "Kat. A", roleCatB: "Kat. B", roleCatC: "Kat. C", roleCatD: "Kat. D", roleCatE: "Kat. E / U21",
-      dkNoticeTitle: "Zasady Ligi Duńskiej (SpeedwayLigaen)",
-      dkNoticeBody: "Ze względu na zmienne niedające się przewidzieć przed meczem (średnie zawodników/snit, zmiany rezerwowego nr 5, rezerwy taktyczne oraz wybory menedżera), składy biegów nie mogą być z góry narzucone. Użytkownik samodzielnie wybiera skład każdego biegu oraz pola startowe z list rozwijanych dla gospodarzy (Czerwony/Niebieski) i gości (Biały/Żółty).",
+      dkNoticeTitle: "Dynamiczny Regulamin SpeedwayLigaen (DMU)",
+      dkNoticeBody: "Podstawowy program DMU (Biegi 1–12) został wstępnie załadowany. Ze względu na zmienne meczowe (średnie zawodników/snit, zmiany rezerwowego nr 5, rezerwy taktyczne od -6 pkt oraz decyzje menedżera i biegi nominowane 13–14), użytkownik może w każdej chwili zmieniać zawodników i pola startowe za pomocą list rozwijanych dla gospodarzy (Czerwony/Niebieski) i gości (Biały/Żółty).",
       dkNoticeBtn: "Rozumiem, przejdź do meczu ▶",
-      dkHeat9Info: "Bieg 9: Bieg zawodników kategorii C/D (Rezerwa taktyczna niedozwolona). Wybierz zawodników i pola startowe.",
-      dkHeat13Info: "Bieg 13 (Nominowany): Menedżer wybiera 2 z 3 zawodników z najmniejszą liczbą punktów.",
-      dkHeat14Info: "Bieg 14 (Nominowany Finałowy): Menedżer wybiera 2 najlepiej punktujących zawodników.",
+      dkHeat7Info: "Bieg 7 (Kategorie C/D): Sprawdź ewentualne zmiany rezerwowego #5 lub pola startowe.",
+      dkHeat13Info: "Bieg 13 (Nominowany): Menedżer wybiera 2 z 3 zawodników z najmniejszą liczbą punktów. Wybierz zawodników i pola z list.",
+      dkHeat14Info: "Bieg 14 (Nominowany Finałowy): Menedżer wybiera 2 najlepiej punktujących zawodników. Wybierz zawodników i pola z list.",
       swapRedBlue: "🔴 Czerwony ↔ 🔵 Niebieski", swapWhiteYellow: "⚪ Biały ↔ 🟡 Żółty", partialLbl: "Wynik biegu:", totalLbl: "RAZEM:",
       evSectionTitle: "🏟️ Dane Zawodów i Toru", evNameLbl: "Nazwa Zawodów / Meczu", evNamePh: "Np. Grand Prix Polski - Toruń",
       evDateLbl: "Data", evTrackLbl: "Nazwa Toru / Stadionu", evTrackPh: "Np. Motoarena", evCityLbl: "Miasto", evCityPh: "Np. Toruń",
       evCountryLbl: "Kraj", evCountryPh: "Np. Polska 🇵🇱", evLenLbl: "Długość Toru (m)", evLenPh: "Np. 318m",
       evNotesLbl: "Rekord Toru / Uwagi", evNotesPh: "Np. Twarda nawierzchnia", evPhotoLbl: "Poziome Zdjęcie Toru",
-      btnTakePhoto: "📸 Zrób Zdjęcie", btnFromGallery: "🖼️ Z Galerii", btnLoadPhoto: "🖼️ Wczytaj Zdjęcie",
+      btnTakePhoto: "📸 Zrób Zdjęcie", btnFromGallery: "🖼 Z Galerii", btnLoadPhoto: "🖼️ Wczytaj Zdjęcie",
       btnGoToRiders: "Przejdź do Zawodników ▶", btnGoToHeats: "Przejdź do Biegów ▶",
       btnClearEvent: "🗑️ Wyczyść Dane Zawodów", btnFullReset: "🗑️ Wyczyść Wszystko",
       ridersSectionTitle: "🏍️ Lista Startowa Zawodników (OCR / Tekst)",
@@ -905,21 +905,21 @@
       modalChooseLeagueSub: "Hvert format bruger sit eget heatprogram, holdstørrelse og pointsystem:",
       leagueUkTitle: "Engelsk Liga (Premiership Format)", leagueUkSub: "15 Heats • 7 Kørere pr. hold (#6-#7 Reserver) • Pt 3-2-1-0",
       leagueSeTitle: "Svensk Liga (Elitserien Format)", leagueSeSub: "15 Heats • 7 Kørere pr. hold (#6-#7 Reserver) • Pt 3-2-1-0",
-      leagueDkTitle: "Dansk Liga (SpeedwayLigaen)", leagueDkSub: "14 Heats • 5 Kørere pr. hold (Kat. A-E) • Frit valg af Kørere & Startspor",
+      leagueDkTitle: "Dansk Liga (SpeedwayLigaen)", leagueDkSub: "14 Heats (13-14 Nominerede) • 5 Kørere (Kat. A-E) • Dynamiske Kørere & Baner",
       leaguePlTitle: "Polsk Liga (Ekstraliga Format)", leaguePlSub: "15 Heats (H2 Junior, H14-15 Nom.) • 8 Kørere • Pt 3-2-1-0",
       leagueSonTitle: "Nations Parløb (SON Format)", leagueSonSub: "Parløb • 3 Kørere pr. Nation • Point 4-3-2-0",
       btnBack: "◀ Tilbage", confirmChangeMode: "Vil du skifte format og starte en ny match?",
       ocrTargetBoth: "Begge Hold", ocrTargetHome: "🔴🔵 Kun Hjemme", ocrTargetAway: "⚪🟡 Kun Ude",
       roleReserve: "Reserve", roleRisingStar: "Rising Star", roleJunior: "Junior U21", roleU24: "U24 Reserve", roleCapt: "Kaptajn #1", roleMain: "Kører #2", roleU21: "Under 21 #3",
       roleCatA: "Kat. A", roleCatB: "Kat. B", roleCatC: "Kat. C", roleCatD: "Kat. D", roleCatE: "Kat. E / U21",
-      dkNoticeTitle: "Bemærkning om SpeedwayLigaen (Danmark)",
-      dkNoticeBody: "På grund af uforudsigelige variabler under matchen (kørergennemsnit/snit, brug af 5. kører, taktiske reserver samt holdlederens frie valg), kan heatsammensætningen ikke fastlåses på forhånd. Brugeren sammensætter selv hvert heat og vælger startbane via rullemenuerne for hjemmeholdet (Rød/Blå) og udeholdet (Hvid/Gul).",
+      dkNoticeTitle: "Dynamisk SpeedwayLigaen-styring (DMU)",
+      dkNoticeBody: "DMU's grundskema (Heat 1–12) er forudindlæst. På grund af uforudsigelige variabler under matchen (kørergennemsnit/snit, indskiftning af 5. kører, taktiske reserver ved -6 point samt holdlederens frie valg og nominerede heats 13–14), kan brugeren frit sammensætte eller ændre kørere og startbaner via rullemenuerne for hjemmeholdet (Rød/Blå) og udeholdet (Hvid/Gul).",
       dkNoticeBtn: "Forstået, gå til match ▶",
-      dkHeat9Info: "Heat 9: C/D-kørere (Taktisk reserve er ikke tilladt). Vælg kørere og startbaner i rullemenuerne.",
-      dkHeat13Info: "Heat 13 (Nomineret): Holdlederen vælger 2 blandt de 3 lavest scorende kørere.",
-      dkHeat14Info: "Heat 14 (Nomineret Finale): Holdlederen vælger de 2 højest scorende kørere.",
+      dkHeat7Info: "Heat 7 (C/D-kørere): Tjek eventuelle udskiftninger eller tilpas startbaner i rullemenuerne.",
+      dkHeat13Info: "Heat 13 (Nomineret): Holdlederen vælger 2 blandt de 3 lavest scorende kørere. Vælg kørere og startbaner i rullemenuerne.",
+      dkHeat14Info: "Heat 14 (Nomineret Finale): Holdlederen vælger de 2 højest scorende kørere. Vælg kørere og startbaner i rullemenuerne.",
       swapRedBlue: "🔴 Rød ↔ 🔵 Blå", swapWhiteYellow: "⚪ Hvid ↔ 🟡 Gul", partialLbl: "Heat:", totalLbl: "TOTAL:",
-      evSectionTitle: "🏟️ Løbs- & Baneinfo", evNameLbl: "Løbsnavn / Match", evNamePh: "F.eks. Grand Prix of Denmark - Vojens",
+      evSectionTitle: "🏟️️ Løbs- & Baneinfo", evNameLbl: "Løbsnavn / Match", evNamePh: "F.eks. Grand Prix of Denmark - Vojens",
       evDateLbl: "Dato", evTrackLbl: "Bane / Stadion", evTrackPh: "F.eks. Vojens", evCityLbl: "By", evCityPh: "F.eks. Vojens",
       evCountryLbl: "Land", evCountryPh: "F.eks. Danmark 🇩🇰", evLenLbl: "Banelængde (m)", evLenPh: "F.eks. 300m",
       evNotesLbl: "Banerekord / Noter", evNotesPh: "F.eks. Fast underlag", evPhotoLbl: "Vandret Banefoto",
@@ -946,7 +946,7 @@
       codeR: "Udgået", codeF: "Styrt", codeX: "Udelukket", codeT: "Bånd", codeNS: "Ikke startet", codeW: "Warning",
       histSectionTitle: "💾 Løbsarkiv & Backup", btnSaveArchive: "📥 Gem Nuværende Løb",
       btnNewCleanRace: "➕ Start Nyt Løb (Vælg Format)",
-      btnExportJson: "⬇️️ Eksporter (.json)", btnImportJson: "⬆️ Importer (.json)",
+      btnExportJson: "⬇️ Eksporter (.json)", btnImportJson: "⬆️ Importer (.json)",
       emptyHistory: "Ingen gemte løb.", btnOpenRace: "📂 Åbn", btnDelRace: "🗑️ Slet",
       raceInProgress: "Løb i gang", setSectionTitle: "⚙️ Indstillinger & Sprog",
       setLangDesc: "Vælg sprog.",
@@ -975,19 +975,19 @@
       modalChooseLeagueSub: "Varje format använder sitt officiella körschema, lagstorlek och poängsystem:",
       leagueUkTitle: "Engelska Ligan (Premiership Format)", leagueUkSub: "15 Heat • 7 Förare per lag (#6-#7 Reserver) • P 3-2-1-0",
       leagueSeTitle: "Svenska Ligan (Elitserien Format)", leagueSeSub: "15 Heat • 7 Förare per lag (#6-#7 Reserver) • P 3-2-1-0",
-      leagueDkTitle: "Danska Ligan (SpeedwayLigaen)", leagueDkSub: "14 Heat • 5 Förare per lag (Kat. A-E) • Fritt val av Förare & Startspår",
+      leagueDkTitle: "Danska Ligan (SpeedwayLigaen)", leagueDkSub: "14 Heat (13-14 Nominerade) • 5 Förare (Kat. A-E) • Dynamiska Förare & Banor",
       leaguePlTitle: "Polska Ligan (Ekstraliga Format)", leaguePlSub: "15 Heat (H2 Junior, H14-15 Nom.) • 8 Förare • P 3-2-1-0",
       leagueSonTitle: "Nations Partävling (SON Format)", leagueSonSub: "Partävling • 3 Förare per Nation • Poäng 4-3-2-0",
       btnBack: "◀ Tillbaka", confirmChangeMode: "Vill du byta format och starta en ny tävling?",
       ocrTargetBoth: "Båda Lagen", ocrTargetHome: "🔴🔵 Endast Hemma", ocrTargetAway: "⚪🟡 Endast Borta",
       roleReserve: "Reserv", roleRisingStar: "Rising Star", roleJunior: "Junior U21", roleU24: "U24 Reserv", roleCapt: "Kapten #1", roleMain: "Förare #2", roleU21: "Under 21 #3",
       roleCatA: "Kat. A", roleCatB: "Kat. B", roleCatC: "Kat. C", roleCatD: "Kat. D", roleCatE: "Kat. E / U21",
-      dkNoticeTitle: "Information om Danska Ligan (SpeedwayLigaen)",
-      dkNoticeBody: "På grund av oförutsägbara variabler (förarsnitt, 5:e förare/reserv, taktiska reserver och lagledarens fria val) kan heatindelningen inte förhandsbestämmas. Användaren komponerar själv varje heat och väljer startbana via rullgardinsmenyerna för hemmalaget (Röd/Blå) och bortalaget (Vit/Gul).",
+      dkNoticeTitle: "Dynamiska Regler för SpeedwayLigaen (DMU)",
+      dkNoticeBody: "DMU:s grundschema (Heat 1–12) är förladdat. På grund av oförutsägbara matchvariabler (förarsnitt, inhopp av 5:e förare, taktiska reserver vid -6 poäng samt lagledarens fria val och nomineringsheat 13–14), kan användaren när som helst anpassa förare och startspår via rullgardinsmenyerna för hemmalaget (Röd/Blå) och bortalaget (Vit/Gul).",
       dkNoticeBtn: "Jag förstår, fortsätt ▶",
-      dkHeat9Info: "Heat 9: C/D-förare (Taktisk reserv ej tillåten). Välj förare och startspår i menyerna.",
-      dkHeat13Info: "Heat 13 (Nomineringsheat): Lagledaren väljer 2 av de 3 förarna med lägst poäng.",
-      dkHeat14Info: "Heat 14 (Nomineringsheat Final): Lagledaren väljer de 2 förarna med högst poäng.",
+      dkHeat7Info: "Heat 7 (Kat. C/D): Kontrollera eventuella reservbyten eller ändra startspår i menyerna.",
+      dkHeat13Info: "Heat 13 (Nomineringsheat): Lagledaren väljer 2 av de 3 förarna med lägst poäng. Välj förare och startspår i menyerna.",
+      dkHeat14Info: "Heat 14 (Nomineringsheat Final): Lagledaren väljer de 2 förarna med högst poäng. Välj förare och startspår i menyerna.",
       swapRedBlue: "🔴 Röd ↔ 🔵 Blå", swapWhiteYellow: "⚪ Vit ↔ 🟡 Gul", partialLbl: "Heat:", totalLbl: "TOTALT:",
       evSectionTitle: "🏟️ Tävlings- & Baninfo", evNameLbl: "Tävlingsnamn / Match", evNamePh: "T.ex. Grand Prix of Sweden - Målilla",
       evDateLbl: "Datum", evTrackLbl: "Bana / Arena", evTrackPh: "T.ex. Målilla", evCityLbl: "Stad / Ort", evCityPh: "T.ex. Målilla",
@@ -1016,7 +1016,7 @@
       codeR: "Bröt", codeF: "Omkull", codeX: "Utesluten", codeT: "Tejp", codeNS: "Ej startat", codeW: "Warning",
       histSectionTitle: "💾 Tävlingsarkiv & Backup", btnSaveArchive: "📥 Spara Aktuell Tävling",
       btnNewCleanRace: "➕ Starta Ny Tävling (Välj Format)",
-      btnExportJson: "⬇️ Exportera (.json)", btnImportJson: "⬆️ Importer (.json)",
+      btnExportJson: "⬇️ Exportera (.json)", btnImportJson: "⬆ Importer (.json)",
       emptyHistory: "Inga sparade tävlingar.", btnOpenRace: "📂 Öppna", btnDelRace: "🗑️ Radera",
       raceInProgress: "Tävling pågår", setSectionTitle: "⚙️ Inställningar & Språk",
       setLangDesc: "Välj språk.",
@@ -1088,8 +1088,13 @@
     dk: {
       titleKey: "leagueDkTitle", isTeam: true, ridersPerTeam: 5, totalHeats: 14, scores: [3,2,1,0],
       roles: { 1: "roleCatA", 2: "roleCatB", 3: "roleCatC", 4: "roleCatD", 5: "roleCatE" },
-      // Tutte le 14 batterie sono a composizione libera tramite menù a tendina
-      schedule: Array.from({ length: 14 }, () => [null, null, null, null])
+      // Tabella Ufficiale DMU SpeedwayLigaen (Batterie 1-12 precaricate + Batterie 13-14 Nominate)
+      schedule: [
+        [1, 2, 101, 102], [4, 5, 104, 105], [1, 3, 102, 103], [2, 5, 101, 104],
+        [1, 4, 102, 105], [2, 3, 101, 103], [3, 4, 103, 104], [2, 5, 102, 105],
+        [1, 4, 101, 103], [3, 5, 103, 105], [2, 4, 102, 104], [1, 3, 101, 104],
+        [null, null, null, null], [null, null, null, null]
+      ]
     },
     pl: {
       titleKey: "leaguePlTitle", isTeam: true, ridersPerTeam: 8, totalHeats: 15, scores: [3,2,1,0],
@@ -1191,7 +1196,7 @@
       else if (state.mode === 'son' && hNum === 15) base = t('heatLbl') + " 15 (" + t('finalLbl') + ")";
       else if ((state.mode === 'pl' || state.mode === 'se' || state.mode === 'uk') && hNum >= 14) base = t('heatLbl') + " " + hNum + " (" + t('nominatedLbl') + ")";
       else if (state.mode === 'dk' && hNum >= 13) base = t('heatLbl') + " " + hNum + " (" + t('nominatedLbl') + ")";
-      else if (state.mode === 'dk' && hNum === 9) base = t('heatLbl') + " 9 (Cat. C/D)";
+      else if (state.mode === 'dk' && hNum === 7) base = t('heatLbl') + " 7 (Cat. C/D)";
       else if (state.mode === 'pl' && hNum === 2) base = t('heatLbl') + " 2 (" + t('roleJunior') + ")";
       else base = t('heatLbl') + " " + hNum;
     }
@@ -1279,7 +1284,7 @@
     renderRidersInputs();
     renderCurrentHeat();
 
-    // Se l'utente clicca su Lega Danese, mostra subito l'avviso tradotto nella lingua selezionata
+    // Mostra subito l'avviso tradotto quando l'utente seleziona la Lega Danese
     if (newMode === 'dk') {
       switchTab('riders', document.getElementById('nav-riders'));
       openDkInfoModal();
@@ -1415,7 +1420,7 @@
         riders[100 + i] = getDefaultRiderName(100 + i, mKey);
       }
       heats = cfg.schedule.map((row, idx) => {
-        // Corsie iniziali proposte (Casa: 1-3 vs 2-4, Ospiti: 2-4 vs 1-3), sempre modificabili da menù a tendina
+        // Corsie iniziali alternate (Casa: 1-3 vs 2-4, Ospiti: 2-4 vs 1-3), sempre libere tramite menù a tendina
         const hGates = idx % 2 === 0 ? [1, 3] : [2, 4];
         const aGates = idx % 2 === 0 ? [2, 4] : [1, 3];
         return {
@@ -1474,13 +1479,17 @@
         merged.heats = def.heats;
       }
       if (mKey === 'dk') {
-        // Assicura i 5 piloti per squadra nella Lega Danese
         const cleanRiders = {};
         for (let i = 1; i <= 5; i++) {
           cleanRiders[i] = (merged.riders && merged.riders[i]) ? merged.riders[i] : getDefaultRiderName(i, 'dk');
           cleanRiders[100 + i] = (merged.riders && merged.riders[100 + i]) ? merged.riders[100 + i] : getDefaultRiderName(100 + i, 'dk');
         }
         merged.riders = cleanRiders;
+        // Se una vecchia versione aveva le batterie 1-12 vuote senza punteggi, applica la tabella base DMU
+        const noRidersInH1 = merged.heats[0] && merged.heats[0].slots.every(s => !s.riderId && s.score === null);
+        if (noRidersInH1) {
+          merged.heats = def.heats;
+        }
       }
     }
     return merged;
@@ -1648,7 +1657,6 @@
       tsBanner.classList.remove('visible');
     }
 
-    // Mostra/nascondi i banner esplicativi della Lega Danese
     const isDk = state.mode === 'dk';
     const dkBannerRiders = document.getElementById('dk-banner-riders');
     const dkBannerHeats = document.getElementById('dk-banner-heats');
@@ -2093,22 +2101,32 @@
     const autoBox = document.getElementById('auto-finals-box');
     const isSpecialHeat = !cfg.isTeam && !cfg.isSprint && state.currentHeat >= (cfg.is14Format ? 18 : 20);
 
-    // Calcolo statistiche live per mostrare uscite e punti nei menù a tendina della Lega Danese
     const liveStatsMap = {};
+    let allTeamStats = [];
     if (cfg.isTeam) {
-      computeStats().forEach(st => {
+      allTeamStats = computeStats();
+      allTeamStats.forEach(st => {
         const ridesDone = st.runs.filter(r => r !== '-').length;
         liveStatsMap[st.id] = { rides: ridesDone, pts: st.total };
       });
     }
 
     let eligibleList = [];
-    if (state.mode === 'dk' && (state.currentHeat === 8 || state.currentHeat === 12 || state.currentHeat === 13)) {
-      const noteKey = state.currentHeat === 8 ? 'dkHeat9Info' : (state.currentHeat === 12 ? 'dkHeat13Info' : 'dkHeat14Info');
+    if (state.mode === 'dk' && (state.currentHeat === 6 || state.currentHeat === 12 || state.currentHeat === 13)) {
+      const noteKey = state.currentHeat === 6 ? 'dkHeat7Info' : (state.currentHeat === 12 ? 'dkHeat13Info' : 'dkHeat14Info');
+      let rankPillsHtml = '';
+      if (state.currentHeat === 12 || state.currentHeat === 13) {
+        const isLowest = state.currentHeat === 12;
+        const homeSorted = allTeamStats.filter(s => s.team === 'A').sort((a, b) => isLowest ? (a.total - b.total) : (b.total - a.total)).slice(0, isLowest ? 3 : 2);
+        const awaySorted = allTeamStats.filter(s => s.team === 'B').sort((a, b) => isLowest ? (a.total - b.total) : (b.total - a.total)).slice(0, isLowest ? 3 : 2);
+        const hPills = homeSorted.map(x => `<div class="qual-pill"><span>🔴 #${x.id}:</span>${x.name} (${x.total}pt)</div>`).join('');
+        const aPills = awaySorted.map(x => `<div class="qual-pill"><span>🟡 #${x.id - 100}:</span>${x.name} (${x.total}pt)</div>`).join('');
+        rankPillsHtml = `<div class="qual-badges-list">${hPills}${aPills}</div>`;
+      }
       autoBox.innerHTML = '<div class="qual-info-card" style="border-color:var(--yellow);">' +
         '<div class="qual-info-header"><span class="qual-info-title" style="color:var(--yellow);">🇩🇰 ' + getHeatLabel(state.currentHeat, false) + '</span>' +
         '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button></div>' +
-        '<div class="qual-info-sub">' + t(noteKey) + '</div></div>';
+        '<div class="qual-info-sub">' + t(noteKey) + '</div>' + rankPillsHtml + '</div>';
     } else if (isSprintFinal) {
       autoBox.innerHTML = '<div class="qual-info-card" style="border-color:#29b6f6;">' +
         '<div class="qual-info-header"><span class="qual-info-title" style="color:#29b6f6;">' + t('sprintLbl') + '</span>' +
