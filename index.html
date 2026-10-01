@@ -5988,10 +5988,186 @@ Object.assign(I18N.it, {
       setTimeout(() => URL.revokeObjectURL(url), 3000);
     }, 'image/png');
   };
+/* =========================================================================
+     MODULO REVISIONE CHIRURGICA SGP (23B) & INDIVIDUALE 14 PILOTI (18B+LC+FIN)
+     ========================================================================= */
+
+  Object.assign(I18N.it, {
+    btnAutoFillQual: "⚡ Schiera Qualificati",
+    itaNoticeTitle: "Formato Individuale 14 Piloti (18 Batterie + Last Chance + Finale)",
+    itaNoticeBody: "Ogni pilota (#1–#14) disputa esattamente 5 batterie regolari (Batterie 1–18), con 2 Riserve di pista (#15–#16) sempre selezionabili dai menù a tendina. Dopo la Batteria 18: 1° e 2° vanno direttamente in Finale (B20); 3°, 4°, 5° e 6° disputano la Last Chance (B19) dove i primi due (1° e 2°) accedono alla Finale."
+  });
+
+  Object.assign(I18N.en, {
+    btnAutoFillQual: "⚡ Auto-Fill Qualifiers",
+    itaNoticeTitle: "14-Rider Individual Format (18 Heats + Last Chance + Final)",
+    itaNoticeBody: "Each rider (#1–#14) contests exactly 5 regular heats (Heats 1–18), with 2 track Reserves (#15–#16) selectable via dropdowns. After Heat 18: 1st & 2nd advance directly to the Final (H20); 3rd, 4th, 5th & 6th contest the Last Chance (H19) where 1st & 2nd advance to the Final."
+  });
+
+  Object.assign(I18N.pl, {
+    btnAutoFillQual: "⚡ Wstaw Zakwalifikowanych",
+    itaNoticeTitle: "Format Indywidualny 14 Zawodników (18 Biegów + Baraż + Finał)",
+    itaNoticeBody: "Każdy z 14 zawodników (#1–#14) jedzie dokładnie 5 biegów zasadniczych (Biegi 1–18), a 2 Rezerwowych (#15–#16) jest dostępnych z listy. Po 18 biegach: 1. i 2. miejsce bezpośrednio w Finale (B20); miejsca 3–6 jadą w Barażu (B19), z którego 1. i 2. awansują do Finału."
+  });
+
+  Object.assign(I18N.da, {
+    btnAutoFillQual: "⚡ Indsæt Kvalificerede",
+    itaNoticeTitle: "Individuelt 14-Kørere Format (18 Heats + Last Chance + Finale)",
+    itaNoticeBody: "Hver kører (#1–#14) kører præcis 5 indledende heats (Heat 1–18) med 2 banereserver (#15–#16). Efter Heat 18 går nr. 1 og 2 direkte i Finalen (H20); nr. 3–6 kører Last Chance (H19), hvor nr. 1 og 2 går videre til Finalen."
+  });
+
+  Object.assign(I18N.sv, {
+    btnAutoFillQual: "⚡ Fyll i Kvalificerade",
+    itaNoticeTitle: "Individuellt 14-Förare Format (18 Heat + Last Chance + Final)",
+    itaNoticeBody: "Varje förare (#1–#14) kör exakt 5 grundheat (Heat 1–18) med 2 banreserver (#15–#16). Efter Heat 18 går 1:an och 2:an direkt till Final (H20); 3:an–6:an kör Last Chance (H19) där 1:an och 2:an går till Final."
+  });
+
+  // 1. Correzione Matrice 18 Batterie Formato 14 Piloti:
+  // - In Batteria 10 sostituito il duplicato #2 con il #6 ([3, 5, 10, 6])
+  // - Rimossi i 2 turni extra (6ª uscita) che avevano #1 (in B8) e #10 (in B17) lasciando lo slot libero per Riserva/3 piloti
+  // Ora TUTTI i 14 piloti (#1..#14) disputano esattamente 5 batterie a testa!
+  LEAGUE_CONFIGS.ita_indiv.schedule = [
+    [1, 2, 3, 4],       // B1  (Serie 1)
+    [5, 6, 7, 8],       // B2  (Serie 1)
+    [9, 10, 11, 12],    // B3  (Serie 1)
+    [13, 14, 1, 5],     // B4  (Serie 1/2)
+    [2, 7, 9, 14],      // B5  (Serie 2)
+    [6, 3, 12, 13],     // B6  (Serie 2)
+    [4, 8, 10, 11],     // B7  (Serie 2)
+    [null, 12, 7, 14],  // B8  (Slot 1 libero/Riserva #15 per garantire 5 uscite esatte al #1)
+    [2, 13, 8, 9],      // B9  (Serie 3)
+    [3, 5, 10, 6],      // B10 (Corretto #6 in corsia Gialla: 5 uscite esatte per #2 e #6)
+    [11, 4, 6, 1],      // B11 (Serie 3)
+    [14, 8, 3, 5],      // B12 (Serie 4)
+    [10, 1, 13, 2],     // B13 (Serie 4)
+    [9, 11, 4, 7],      // B14 (Serie 4)
+    [12, 6, 14, 10],    // B15 (Serie 4)
+    [5, 9, 2, 11],      // B16 (Serie 5)
+    [13, null, 8, 1],   // B17 (Slot 2 libero/Riserva #16 per garantire 5 uscite esatte al #10)
+    [3, 7, 12, 4]       // B18 (Serie 5)
+  ];
+
+  // Se una gara ita_indiv salvata aveva la vecchia Batteria 10 errata ([3,5,10,2]) senza punteggi inseriti, la aggiorna automaticamente
+  const _indivPrevNormalize = normalizeLoadedState;
+  normalizeLoadedState = function(saved) {
+    const merged = _indivPrevNormalize(saved);
+    if (merged && merged.mode === 'ita_indiv') {
+      for (let i = 1; i <= 16; i++) {
+        if (!merged.riders[i]) merged.riders[i] = getDefaultRiderName(i, 'ita_indiv');
+      }
+      const hasAnyScore = merged.heats && merged.heats.some(h => h.slots.some(s => s.score !== null));
+      if (!hasAnyScore && merged.heats && merged.heats[9] && merged.heats[9].slots[3].riderId === 2) {
+        const fresh = createDefaultState('ita_indiv');
+        merged.heats = fresh.heats;
+      }
+    }
+    return merged;
+  };
+
+  // 2. Funzione per schierare con 1 clic i 4 piloti qualificati in LCQ 1, LCQ 2, Last Chance (B19) e Finale (B20/B23)
+  function autoFillIndividualSpecialHeat(heatIdx) {
+    if (isTeamMode()) return;
+    const eligible = getEligibleRidersForSpecialHeat(heatIdx);
+    const heat = state.heats[heatIdx];
+    if (!heat || eligible.length === 0) return;
+    heat.slots.forEach((s, idx) => {
+      s.riderId = eligible[idx] ? eligible[idx].id : null;
+    });
+    saveState();
+    renderCurrentHeat();
+  }
+
+  // 3. Abilita le Riserve di Pista (#15 e #16 nel formato 14 piloti, #17 e #18 nel GP) nella scheda Piloti
+  const _indivPrevRenderRidersInputs = renderRidersInputs;
+  renderRidersInputs = function() {
+    const cfg = getModeConfig();
+    if (cfg.isTeam) {
+      _indivPrevRenderRidersInputs();
+      return;
+    }
+    const container = document.getElementById('riders-inputs');
+    const ocrTargetBar = document.getElementById('ocr-team-target-bar');
+    if (ocrTargetBar) ocrTargetBar.classList.remove('visible');
+
+    let html = '';
+    const mainLimit = cfg.isSprint ? 16 : (cfg.is14Format ? 14 : 16);
+    const totalLimit = cfg.isSprint ? 16 : (cfg.is14Format ? 16 : 18);
+
+    for (let r = 1; r <= totalLimit; r++) {
+      const isRes = r > mainLimit;
+      const lbl = isRes ? `#${r} (${t('roleReserve')})` : `#${r}`;
+      html += '<div class="rider-input-row"><span>' + lbl + '</span>' +
+        '<input type="text" value="' + (state.riders[r] || '').replace(/"/g, '&quot;') + '" oninput="updateRiderName(' + r + ', this.value)"></div>';
+    }
+    container.innerHTML = html;
+  };
+
+  // 4. Abilita le Riserve (#15-#16 in ita_indiv, #17-#18 in SGP) nei menù a tendina delle Batterie + Bottone "Schiera Qualificati"
+  const _indivPrevRenderCurrentHeat = renderCurrentHeat;
+  renderCurrentHeat = function() {
+    _indivPrevRenderCurrentHeat();
+    const cfg = getModeConfig();
+    if (cfg.isTeam || cfg.isSprint) return;
+
+    const heat = state.heats[state.currentHeat];
+    const isSpecialHeat = state.currentHeat >= (cfg.is14Format ? 18 : 20);
+
+    // Aggiunge le Riserve #15 e #16 nei menù a tendina delle batterie regolari 1-18 del formato 14 piloti
+    if (cfg.is14Format && !isSpecialHeat && heat) {
+      const selects = document.querySelectorAll('#gates-container .gate-card .sub-select');
+      selects.forEach((sel, sIdx) => {
+        const slot = heat.slots[sIdx];
+        let opts = `<option value="" ${!slot.riderId ? 'selected' : ''}>${t('selectQualRider')}</option>`;
+        for (let r = 1; r <= 16; r++) {
+          const resTag = r > 14 ? ` [${t('roleReserve')}]` : '';
+          opts += `<option value="${r}" ${slot.riderId == r ? 'selected' : ''}>#${r} ${state.riders[r]}${resTag}</option>`;
+        }
+        sel.innerHTML = opts;
+      });
+    }
+
+    // Nelle batterie di semifinale/LCQ e Finale (sia GP che 14 Piloti):
+    // - Mette in cima al menù a tendina i 4 qualificati con il loro piazzamento, seguiti dagli altri piloti per eventuali subentri
+    // - Aggiunge il pulsante rapido "⚡ Schiera Qualificati" nell'intestazione del box
+    if (isSpecialHeat && heat) {
+      const eligibleList = getEligibleRidersForSpecialHeat(state.currentHeat);
+      const headerDiv = document.querySelector('#auto-finals-box .qual-info-header');
+      if (headerDiv && eligibleList.length > 0 && !headerDiv.innerHTML.includes('autoFillIndividualSpecialHeat')) {
+        const titleSpan = headerDiv.querySelector('.qual-info-title');
+        const titleHtml = titleSpan ? titleSpan.outerHTML : '';
+        headerDiv.innerHTML = titleHtml +
+          '<div style="display:flex;gap:5px;">' +
+            `<button type="button" class="btn-mini" style="border-color:var(--accent);color:var(--accent);" onclick="autoFillIndividualSpecialHeat(${state.currentHeat})">${t('btnAutoFillQual')}</button>` +
+            `<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">${t('clearGatesBtn')}</button>` +
+          '</div>';
+      }
+
+      if (eligibleList.length > 0) {
+        const eligibleIds = eligibleList.map(x => x.id);
+        const totalLimit = cfg.is14Format ? 16 : 18;
+        const selects = document.querySelectorAll('#gates-container .gate-card .sub-select');
+        selects.forEach((sel, sIdx) => {
+          const slot = heat.slots[sIdx];
+          let opts = `<option value="" ${!slot.riderId ? 'selected' : ''}>${t('selectQualRider')}</option>`;
+          opts += `<optgroup label="★ Qualificati">`;
+          eligibleList.forEach(item => {
+            opts += `<option value="${item.id}" ${slot.riderId == item.id ? 'selected' : ''}>#${item.id} ${item.name} (${item.badge})</option>`;
+          });
+          opts += `</optgroup><optgroup label="Tutti i Piloti / Riserve">`;
+          for (let r = 1; r <= totalLimit; r++) {
+            if (!eligibleIds.includes(r)) {
+              opts += `<option value="${r}" ${slot.riderId == r ? 'selected' : ''}>#${r} ${state.riders[r]}</option>`;
+            }
+          }
+          opts += `</optgroup>`;
+          sel.innerHTML = opts;
+        });
+      }
+    }
+  };
 
   initState();
   renderCurrentHeat();
 </script>
 </body>
 </html>
-
