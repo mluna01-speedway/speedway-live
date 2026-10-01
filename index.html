@@ -5662,9 +5662,336 @@ Object.assign(I18N.it, {
       }
     }
   };
+/* =========================================================================
+     SIGILLO FINALE: LOCANDINA PNG, STORICO E OCR PER 2, 4 E 7 SQUADRE + PL
+     ========================================================================= */
+
+  // 1. Blindatura caricamento salvataggio per SON 7 Nazioni (23 batterie + 7 Nazioni)
+  const _finalPrevNormalize = normalizeLoadedState;
+  normalizeLoadedState = function(saved) {
+    const merged = _finalPrevNormalize(saved);
+    if (merged && merged.mode === 'son7') {
+      const def = createDefaultState('son7');
+      merged.teamNames = Object.assign(def.teamNames, saved.teamNames || {});
+      SON7_TEAM_KEYS.forEach(k => {
+        const base = SON7_BASES[k];
+        for (let i = 1; i <= 3; i++) {
+          if (!merged.riders[base + i]) merged.riders[base + i] = getDefaultRiderName(base + i, 'son7');
+        }
+      });
+    }
+    return merged;
+  };
+
+  // 2. Riepilogo Storico Gare completo anche per SON 7 Nazioni (con podio Grand Final B23)
+  const _finalPrevGetPodiumSummary = getPodiumSummary;
+  getPodiumSummary = function(raceState) {
+    if (isSevenTeamMode(raceState)) {
+      const ranked = getSon7Standings(raceState);
+      const h23 = raceState.heats && raceState.heats[22];
+      if (h23 && h23.slots.some(s => typeof s.score === 'number')) {
+        let rb = 0, wy = 0;
+        h23.slots.forEach((s, idx) => {
+          if (typeof s.score === 'number') { if (idx < 2) rb += s.score; else wy += s.score; }
+        });
+        if (rb !== wy) {
+          const winSlot = rb > wy ? h23.slots[0] : h23.slots[2];
+          const loseSlot = rb > wy ? h23.slots[2] : h23.slots[0];
+          const wKey = winSlot && winSlot.riderId ? getRiderTeamSide(winSlot.riderId, null, raceState).toLowerCase() : null;
+          const lKey = loseSlot && loseSlot.riderId ? getRiderTeamSide(loseSlot.riderId, null, raceState).toLowerCase() : null;
+          const wName = (wKey && raceState.teamNames && raceState.teamNames[wKey]) || '1°';
+          const lName = (lKey && raceState.teamNames && raceState.teamNames[lKey]) || '2°';
+          return `🥇 ${wName} • 🥈 ${lName} (GF ${Math.max(rb, wy)}:${Math.min(rb, wy)})`;
+        }
+      }
+      return ranked.slice(0, 4).map((x, i) => `${i + 1}° ${x.name} (${x.pts})`).join(' • ');
+    }
+    return _finalPrevGetPodiumSummary(raceState);
+  };
+
+  // 3. OCR e Incolla Testo esteso anche alle 7 Nazioni (A..G)
+  const _finalPrevParseAndAssign = parseAndAssignRiders;
+  parseAndAssignRiders = function(rawText) {
+    if (!isSevenTeamMode()) {
+      _finalPrevParseAndAssign(rawText);
+      return;
+    }
+    const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 2);
+    const extractedNames = [];
+    const nameRegex = /^[\d\W_]*([A-Za-zÀ-ÖØ-öø-ÿĀ-ž][A-Za-zÀ-ÖØ-öø-ÿĀ-ž\s\-\']{2,})/;
+    const bannedWords = ["team", "rider", "riders", "heat", "total", "speedway", "manager", "pt", "pts", "nation"];
+
+    lines.forEach(line => {
+      const match = line.match(nameRegex);
+      if (match && match[1]) {
+        let cleanName = match[1].trim();
+        let lowerName = cleanName.toLowerCase();
+        const isBanned = bannedWords.some(bw => lowerName === bw || lowerName.includes(" " + bw + " "));
+        if (!isBanned && cleanName.length >= 4) {
+          cleanName = cleanName.toLowerCase().replace(/\b\w/g, s => s.toUpperCase());
+          extractedNames.push(cleanName);
+        }
+      }
+    });
+
+    if (extractedNames.length === 0) {
+      alert("⚠️ Nessun nome valido trovato. L'immagine è mossa o illeggibile.");
+      return;
+    }
+
+    if (SON7_BASES[ocrTeamTarget] !== undefined) {
+      const base = SON7_BASES[ocrTeamTarget];
+      for (let i = 0; i < Math.min(extractedNames.length, 3); i++) {
+        updateRiderName(base + i + 1, extractedNames[i]);
+      }
+    } else {
+      SON7_TEAM_KEYS.forEach((k, tIdx) => {
+        const base = SON7_BASES[k];
+        const offset = tIdx * 3;
+        for (let i = 0; i < 3; i++) {
+          if (extractedNames[offset + i]) updateRiderName(base + i + 1, extractedNames[offset + i]);
+        }
+      });
+    }
+    renderRidersInputs();
+    renderCurrentHeat();
+  };
+
+  // 4. Locandina PNG universale (supporta GP, Sprint, 14 Piloti, Leghe 2 Squadre, DK 4 Squadre, SON 7 Nazioni e sigle Polacche D/W)
+  exportRacePoster = async function(mode) {
+    if (!isTeamMode()) syncSpecialHeatsWithQualifiers();
+    const cfg = getModeConfig();
+    const modeTitle = getModeTitle();
+    const W = 1080;
+    const finalStandings = getFinalGpStandings();
+    const sgpMap = {};
+    finalStandings.forEach(st => { sgpMap[st.id] = { total: st.sgpPts }; });
+
+    const rows = mode === 'standings'
+      ? (standingsMode === 'final' ? finalStandings : getSortedQualifyingStandings())
+      : computeStats().filter(s => cfg.isTeam || s.id <= (cfg.isSprint ? 16 : (cfg.is14Format ? 14 : 16)) || s.runs.some(x => x !== '-'));
+
+    const m = state.eventMeta || {};
+    const finalHeatIdx = cfg.isTeam ? null : (cfg.isSprint ? 12 : (cfg.is14Format ? 19 : 22));
+    const finalSlots = (!cfg.isTeam && state.heats[finalHeatIdx]) ? state.heats[finalHeatIdx].slots : [];
+    const hasFinalPodium = cfg.isTeam || finalSlots.some(s => s.score !== null && s.riderId);
+    const bestTimeInfo = getBestHeatTimeInfo();
+
+    const headerH = 250;
+    const podiumH = hasFinalPodium ? 135 : 0;
+    const tableHeaderH = 62;
+    const rowH = 54;
+    const footerH = 95;
+    const H = headerH + podiumH + tableHeaderH + (rows.length * rowH) + footerH + 40;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#121418';
+    ctx.fillRect(0, 0, W, H);
+
+    if (m.photoDataUrl) {
+      await new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => {
+          const scale = Math.max(W / img.width, headerH / img.height);
+          const nw = img.width * scale, nh = img.height * scale;
+          ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, headerH); ctx.clip();
+          ctx.globalAlpha = 0.55;
+          ctx.drawImage(img, (W - nw) / 2, (headerH - nh) / 2, nw, nh);
+          ctx.restore(); resolve();
+        };
+        img.onerror = resolve;
+        img.src = m.photoDataUrl;
+      });
+    }
+
+    const grad = ctx.createLinearGradient(0, 0, 0, headerH);
+    grad.addColorStop(0, 'rgba(18,20,24,0.45)');
+    grad.addColorStop(1, 'rgba(18,20,24,0.98)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, headerH);
+
+    ['#e53935', '#1e88e5', '#f5f5f5', '#fdd835'].forEach((c, i) => {
+      ctx.fillStyle = c;
+      ctx.fillRect(i * (W / 4), headerH - 6, W / 4, 6);
+    });
+
+    ctx.fillStyle = '#00e676';
+    ctx.font = '900 24px sans-serif';
+    ctx.fillText('🏁 SPEEDWAY LIVE • ' + modeTitle.toUpperCase(), 40, 62);
+
+    let defaultMainTitle = 'Speedway Grand Prix';
+    if (isSevenTeamMode()) defaultMainTitle = 'Speedway of Nations';
+    else if (isFourTeamMode()) defaultMainTitle = [state.teamNames.a, state.teamNames.b, state.teamNames.c, state.teamNames.d].join(' • ');
+    else if (cfg.isTeam) defaultMainTitle = state.teamNames.a + ' vs ' + state.teamNames.b;
+
+    const mainTitle = m.name || defaultMainTitle;
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '900 42px sans-serif';
+    ctx.fillText(mainTitle.slice(0, 42), 40, 125);
+
+    const subLine1 = [m.track, m.city, m.country].filter(Boolean).join(' • ');
+    const subLine2 = [m.date, m.length, bestTimeInfo ? (t('bestTimeLbl') + ' ' + bestTimeInfo.time + 's (H' + bestTimeInfo.heatNumber + ')') : '', m.notes].filter(Boolean).join(' • ');
+
+    ctx.fillStyle = '#eceff4'; ctx.font = '700 26px sans-serif';
+    ctx.fillText(subLine1 || 'Speedway Circuit', 40, 172);
+    ctx.fillStyle = '#8892b0'; ctx.font = '600 22px sans-serif';
+    ctx.fillText(subLine2, 40, 212);
+
+    let y = headerH + 20;
+
+    if (hasFinalPodium) {
+      ctx.fillStyle = '#1e2229'; ctx.strokeStyle = '#fdd835'; ctx.lineWidth = 2;
+      ctx.fillRect(30, y, W - 60, 115); ctx.strokeRect(30, y, W - 60, 115);
+
+      if (isSevenTeamMode()) {
+        const ranked = getSon7Standings();
+        ctx.fillStyle = '#fdd835'; ctx.font = '900 21px sans-serif';
+        ctx.fillText(t('posterTeamRes') + ' — ' + getPodiumSummary(state), 50, y + 38);
+        ctx.fillStyle = '#ffffff'; ctx.font = '800 21px sans-serif';
+        const line7 = ranked.map((x, i) => `${i + 1}.${x.name} (${x.pts})`).join('  •  ');
+        ctx.fillText(line7.slice(0, 78), 50, y + 84);
+      } else if (isFourTeamMode()) {
+        const totals = computeTeamTotals();
+        ctx.fillStyle = '#fdd835'; ctx.font = '900 22px sans-serif';
+        ctx.fillText(t('posterTeamRes') + ' (' + modeTitle + ')', 50, y + 38);
+        ctx.fillStyle = '#ffffff'; ctx.font = '900 25px sans-serif';
+        const line4 = `${state.teamNames.a}: ${totals.a}  •  ${state.teamNames.b}: ${totals.b}  •  ${state.teamNames.c}: ${totals.c}  •  ${state.teamNames.d}: ${totals.d}`;
+        ctx.fillText(line4.slice(0, 68), 50, y + 84);
+      } else if (cfg.isTeam) {
+        const totals = computeTeamTotals();
+        ctx.fillStyle = '#fdd835'; ctx.font = '900 22px sans-serif';
+        ctx.fillText(t('posterTeamRes') + ' (' + modeTitle + ')', 50, y + 38);
+        ctx.fillStyle = '#ffffff'; ctx.font = '900 34px sans-serif';
+        ctx.fillText(state.teamNames.a + '  ' + totals.a + '  :  ' + totals.b + '  ' + state.teamNames.b, 50, y + 86);
+      } else {
+        ctx.fillStyle = '#fdd835'; ctx.font = '900 22px sans-serif';
+        ctx.fillText(t('posterPodium'), 50, y + 36);
+        let p1, p2, p3, p4;
+        if (cfg.isSprint) {
+          p1 = finalSlots.find(s => s.score === 4 && s.riderId);
+          p2 = finalSlots.find(s => s.score === 3 && s.riderId);
+          p3 = finalSlots.find(s => s.score === 2 && s.riderId);
+          p4 = finalSlots.find(s => (s.score === 1 || typeof s.score === 'string') && s.riderId);
+        } else {
+          p1 = finalSlots.find(s => s.score === 3 && s.riderId);
+          p2 = finalSlots.find(s => s.score === 2 && s.riderId);
+          p3 = finalSlots.find(s => s.score === 1 && s.riderId);
+          p4 = finalSlots.find(s => (s.score === 0 || typeof s.score === 'string') && s.riderId);
+        }
+        const podiumText = [
+          p1 ? ('🥇 1° ' + state.riders[p1.riderId]) : '',
+          p2 ? ('🥈 2° ' + state.riders[p2.riderId]) : '',
+          p3 ? ('🥉 3° ' + state.riders[p3.riderId]) : '',
+          p4 ? ('4° ' + state.riders[p4.riderId]) : ''
+        ].filter(Boolean).join('     ');
+        ctx.fillStyle = '#ffffff'; ctx.font = '800 26px sans-serif';
+        ctx.fillText(podiumText.slice(0, 68), 50, y + 84);
+      }
+      y += podiumH;
+    }
+
+    ctx.fillStyle = '#252a34';
+    ctx.fillRect(30, y, W - 60, tableHeaderH);
+    ctx.fillStyle = '#8892b0'; ctx.font = '800 21px sans-serif';
+
+    const fourthColLbl = usePolishCodes() ? '4°(D/W)' : '4°(R/X)';
+    let cols = [];
+    if (cfg.isSprint) {
+      cols = [
+        { label: '#', x: 68 }, { label: t('thRider').toUpperCase(), x: 125, align: 'left' },
+        { label: 'Q1', x: 500 }, { label: 'Q2', x: 600 }, { label: t('thFin').toUpperCase(), x: 700 },
+        { label: 'GP', x: 965 }
+      ];
+    } else {
+      cols = [
+        { label: '#', x: 68 }, { label: t('thRider').toUpperCase(), x: 125, align: 'left' },
+        { label: '1°', x: 470 }, { label: '2°', x: 530 }, { label: '3°', x: 590 }, { label: fourthColLbl, x: 665 },
+        { label: t('thRuns').toUpperCase(), x: 805 }, { label: t('thTot').toUpperCase(), x: 965 }
+      ];
+    }
+
+    cols.forEach(c => { ctx.textAlign = c.align || 'center'; ctx.fillText(c.label, c.x, y + 40); });
+    y += tableHeaderH;
+
+    rows.forEach((st, idx) => {
+      ctx.fillStyle = idx % 2 === 0 ? '#1e2229' : '#181b21';
+      ctx.fillRect(30, y, W - 60, rowH);
+
+      ctx.textAlign = 'center'; ctx.fillStyle = '#00e676'; ctx.font = '900 23px sans-serif';
+      ctx.fillText(String(idx + 1), 68, y + 36);
+
+      let prefix = '#' + st.id;
+      if (isSevenTeamMode()) {
+        const tKey = st.team.toLowerCase();
+        const tShort = ((state.teamNames && state.teamNames[tKey]) || st.team).slice(0, 3).toUpperCase();
+        prefix = '[' + tShort + '] ' + formatRiderNum(st.id);
+      } else if (isFourTeamMode()) {
+        const ico4 = st.team === 'A' ? '🔴 ' : (st.team === 'B' ? '🔵 ' : (st.team === 'C' ? '⚪ ' : '🟡 '));
+        prefix = ico4 + formatRiderNum(st.id);
+      } else if (cfg.isTeam) {
+        prefix = (st.team === 'A' ? '🔴 ' : '🟡 ') + formatRiderNum(st.id);
+      }
+
+      ctx.textAlign = 'left'; ctx.fillStyle = '#ffffff'; ctx.font = '800 23px sans-serif';
+      ctx.fillText((prefix + ' ' + st.name).slice(0, 25), 125, y + 36);
+
+      ctx.textAlign = 'center'; ctx.fillStyle = '#eceff4'; ctx.font = '600 22px sans-serif';
+
+      if (cfg.isSprint) {
+        const r = st.runs.filter(x => x !== '-');
+        ctx.fillText(String(r[0] ?? '-'), 500, y + 36);
+        ctx.fillText(String(r[1] ?? '-'), 600, y + 36);
+        ctx.fillText(String(r[2] ?? '-'), 700, y + 36);
+        ctx.fillStyle = '#00e676'; ctx.font = '900 26px sans-serif';
+        ctx.fillText(st.sprintPts > 0 ? String(st.sprintPts) : '-', 965, y + 36);
+      } else {
+        ctx.fillText(String(st.ones), 470, y + 36);
+        ctx.fillText(String(st.twos), 530, y + 36);
+        ctx.fillText(String(st.threes), 590, y + 36);
+        ctx.fillText(formatZerosCell(st), 665, y + 36);
+
+        const runsStr = '(' + (st.runs.filter(r => r !== '-').join(',') || '-') + ')';
+        ctx.fillStyle = '#8892b0'; ctx.font = '600 19px sans-serif';
+        ctx.fillText(runsStr, 805, y + 36);
+
+        ctx.fillStyle = '#00e676'; ctx.font = '900 26px sans-serif';
+        const sgpData = sgpMap[st.id];
+        const sgpVal = sgpData ? sgpData.total : st.total;
+
+        if (mode === 'standings' && !cfg.isTeam && !cfg.is14Format) {
+          ctx.fillText(String(sgpVal), 965, y + 36);
+        } else {
+          ctx.fillText(String(st.total), 965, y + 36);
+        }
+      }
+      y += rowH;
+    });
+
+    ctx.textAlign = 'center'; ctx.fillStyle = '#8892b0'; ctx.font = '700 20px sans-serif';
+    ctx.fillText('Speedway Live App', W / 2, H - 25);
+
+    canvas.toBlob(async function(blob) {
+      if (!blob) return;
+      const safeName = (m.name || 'speedway-live').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const fileName = safeName + '-' + mode + '.png';
+      const file = new File([blob], fileName, { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ title: 'Speedway Live', files: [file] }); return; } catch (err) { if (err.name === 'AbortError') return; }
+      }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = fileName;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 3000);
+    }, 'image/png');
+  };
 
   initState();
   renderCurrentHeat();
 </script>
 </body>
 </html>
+
