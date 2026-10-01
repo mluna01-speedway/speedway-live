@@ -235,6 +235,21 @@
     .legal-box { font-size: 0.74rem; color: var(--muted); line-height: 1.45; background: #15181f; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); }
     #ocr-status { font-size: 0.8rem; color: var(--yellow); margin-top: 8px; text-align: center; font-weight: 700; display: none; line-height: 1.35; }
     #paste-box-wrap { display: none; margin-top: 10px; }
+/* Stili Lega Danese 4 Squadre (Semifinale / Finale 22 Batterie) */
+    .team4-score-banner { background: #161920; border-bottom: 1px solid var(--border); padding: 7px 8px; display: none; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .team4-score-banner.visible { display: grid; }
+    .t4-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 5px 6px; display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 0; position: relative; overflow: hidden; }
+    .t4-box::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+    .t4-box.t4-r::before { background: var(--red); }
+    .t4-box.t4-b::before { background: var(--blue); }
+    .t4-box.t4-w::before { background: var(--white); }
+    .t4-box.t4-y::before { background: var(--yellow); }
+    .t4-name { font-size: 0.66rem; font-weight: 800; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; margin-top: 2px; }
+    .t4-pts { font-size: 0.98rem; font-weight: 900; color: var(--accent); line-height: 1.15; }
+    .team-riders-card.team-blue { border-top: 4px solid var(--blue); }
+    .team-riders-card.team-white { border-top: 4px solid var(--white); }
+    .team-riders-card.team-yellow { border-top: 4px solid var(--yellow); }
+    .ocr-team-target { flex-wrap: wrap; }
   </style>
 </head>
 <body>
@@ -265,6 +280,29 @@
   </div>
 </div>
 
+<!-- Banner Punteggio 4 Squadre (Semifinale e Finale DK 22 Batterie) -->
+<div class="team4-score-banner" id="team4-score-banner">
+  <div class="t4-box t4-r">
+    <div class="ts-dots"><i class="ts-dot" style="background:var(--red)"></i> <span data-i18n="helmetRed">Rosso</span></div>
+    <div class="t4-name" id="t4-name-a">Squadra 1</div>
+    <div class="t4-pts" id="t4-pts-a">0</div>
+  </div>
+  <div class="t4-box t4-b">
+    <div class="ts-dots"><i class="ts-dot" style="background:var(--blue)"></i> <span data-i18n="helmetBlue">Blu</span></div>
+    <div class="t4-name" id="t4-name-b">Squadra 2</div>
+    <div class="t4-pts" id="t4-pts-b">0</div>
+  </div>
+  <div class="t4-box t4-w">
+    <div class="ts-dots"><i class="ts-dot" style="background:var(--white)"></i> <span data-i18n="helmetWhite">Bianco</span></div>
+    <div class="t4-name" id="t4-name-c">Squadra 3</div>
+    <div class="t4-pts" id="t4-pts-c">0</div>
+  </div>
+  <div class="t4-box t4-y">
+    <div class="ts-dots"><i class="ts-dot" style="background:var(--yellow)"></i> <span data-i18n="helmetYellow">Giallo</span></div>
+    <div class="t4-name" id="t4-name-d">Squadra 4</div>
+    <div class="t4-pts" id="t4-pts-d">0</div>
+  </div>
+</div>
 <!-- Modal Scelta Formato -->
 <div class="modal-backdrop" id="mode-modal">
   <div class="modal-box">
@@ -342,7 +380,7 @@
         </div>
         <span>▶</span>
       </button>
-      <button type="button" class="mode-choice-btn" onclick="selectAppMode('dk')">
+      <button type="button" class="mode-choice-btn" onclick="openDkEntryFlow()">
         <div class="mode-choice-left">
           <span class="mode-choice-ico">🇩🇰</span>
           <div>
@@ -378,12 +416,38 @@
 </div>
 
 <!-- Modal Informativo Specifico Lega Danese -->
+<!-- Modal Informativo + Scelta 2 Squadre / 4 Squadre Lega Danese -->
 <div class="modal-backdrop" id="dk-info-modal" onclick="if(event.target===this)closeDkInfoModal()">
   <div class="modal-box" style="border-color: var(--red);">
-    <div style="font-size: 2.1rem; margin-bottom: 6px;">🇩🇰</div>
+    <div style="font-size: 2.1rem; margin-bottom: 4px;">🇩🇰</div>
     <h3 id="dk-modal-title" style="color: #ff8a80;" data-i18n="dkNoticeTitle">Regolamento Dinamico SpeedwayLigaen</h3>
-    <p id="dk-modal-text" style="text-align: left; font-size: 0.82rem; color: var(--text); line-height: 1.48; background: #15181f; padding: 12px; border-radius: 10px; border: 1px solid var(--border);" data-i18n="dkNoticeBody"></p>
-    <button type="button" class="btn-primary" onclick="closeDkInfoModal()" data-i18n="dkNoticeBtn">Ho capito, procedi ▶</button>
+    <p id="dk-modal-text" style="text-align: left; font-size: 0.8rem; color: var(--text); line-height: 1.46; background: #15181f; padding: 11px 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 12px;" data-i18n="dkNoticeBody"></p>
+
+    <div style="text-align: left; font-size: 0.74rem; font-weight: 900; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.3px;" data-i18n="dkChooseCompTitle">Scegli il formato della competizione danese:</div>
+
+    <button type="button" class="mode-choice-btn" id="btn-dk-choice-2" onclick="chooseDkCompetition('dk')">
+      <div class="mode-choice-left">
+        <span class="mode-choice-ico">⚔️</span>
+        <div>
+          <div class="mode-choice-title" data-i18n="dkMode2TeamsTitle">Competizione a 2 Squadre (14 Batterie)</div>
+          <div class="mode-choice-sub" data-i18n="dkMode2TeamsSub">Regular Season • Casa (Rosso/Blu) vs Ospiti (Bianco/Giallo) • 5 Piloti per squadra (Cat. A-E) • Batterie 13-14 Nominate</div>
+        </div>
+      </div>
+      <span>▶</span>
+    </button>
+
+    <button type="button" class="mode-choice-btn" id="btn-dk-choice-4" onclick="chooseDkCompetition('dk4')">
+      <div class="mode-choice-left">
+        <span class="mode-choice-ico">🏆</span>
+        <div>
+          <div class="mode-choice-title" data-i18n="dkMode4TeamsTitle">Competizione a 4 Squadre • Semifinale / Finale (22 Batterie)</div>
+          <div class="mode-choice-sub" data-i18n="dkMode4TeamsSub">Playoff / Superfinale (4-Holdsmatch) • 4 Squadre (Rosso, Blu, Bianco, Giallo) • 5 Piloti per squadra • 22 Batterie (19-22 Nominate)</div>
+        </div>
+      </div>
+      <span>▶</span>
+    </button>
+
+    <button type="button" class="qr-btn-close" style="width:100%;padding:10px;border-radius:8px;border:none;font-weight:800;margin-top:4px;cursor:pointer;" onclick="closeDkInfoModal()" data-i18n="dkNoticeBtn">Ho capito, procedi ▶</button>
   </div>
 </div>
 
@@ -3038,9 +3102,1136 @@
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(regs => { regs.forEach(r => r.update()); });
   }
+/* =========================================================================
+     MODULO LEGA DANESE (SPEEDWAYLIGAEN DMU): 2 SQUADRE (14B) & 4 SQUADRE (22B)
+     ========================================================================= */
+
+  Object.assign(I18N.it, {
+    team1Def: "Squadra 1 (Rosso)", team2Def: "Squadra 2 (Blu)", team3Def: "Squadra 3 (Bianco)", team4Def: "Squadra 4 (Giallo)",
+    team1Ph: "Nome Squadra 1 (Casco Rosso)", team2Ph: "Nome Squadra 2 (Casco Blu)", team3Ph: "Nome Squadra 3 (Casco Bianco)", team4Ph: "Nome Squadra 4 (Casco Giallo)",
+    leagueDkSub: "2 Squadre (14 Batterie) oppure 4 Squadre Semifinale/Finale (22 Batterie) • 5 Piloti (Cat. A-E)",
+    ocrTargetAll4: "Tutte (4 Squadre)", ocrTargetT1: "🔴 Sq. 1", ocrTargetT2: "🔵 Sq. 2", ocrTargetT3: "⚪ Sq. 3", ocrTargetT4: "🟡 Sq. 4",
+    dkNoticeTitle: "Regolamento Dinamico SpeedwayLigaen (DMU)",
+    dkNoticeBody: "Viste le variabili in gioco non preventivabili prioritariamente (media piloti/snit, ingressi extra della riserva #5, riserve tattiche e scelte libere del team manager nelle batterie e nelle batterie nominate), è attiva la gestione libera di piloti e corsie tramite menù a tendina mantenendo sempre l'ordine fisso dei caschi Rosso, Blu, Bianco e Giallo. Scegli qui sotto se disputare la competizione a 2 squadre (14 batterie) o la Semifinale/Finale a 4 squadre (22 batterie):",
+    dkChooseCompTitle: "Scegli il formato della competizione danese:",
+    dkMode2TeamsTitle: "Competizione a 2 Squadre (14 Batterie)",
+    dkMode2TeamsSub: "Regular Season • Casa (Rosso/Blu) vs Ospiti (Bianco/Giallo) • 5 Piloti per squadra (Cat. A-E) • Batterie 13-14 Nominate",
+    dkMode4TeamsTitle: "Competizione a 4 Squadre • Semifinale / Finale (22 Batterie)",
+    dkMode4TeamsSub: "Playoff / Superfinale (4-Holdsmatch) • 4 Squadre (Rosso, Blu, Bianco, Giallo) • 5 Piloti per squadra • 22 Batterie (19-22 Nominate)",
+    dk4Heat5Info: "Batteria 5 (Riserve #5 / Cat. E): Batteria dedicata ai numeri #5 delle 4 squadre. Puoi modificare piloti e corsie dai menù a tendina.",
+    dk4Heat1415Info: "Batteria Incrocio Tattico / Cat. C-D-E: Verifica i piloti schierati dai 4 team manager e le relative corsie di partenza.",
+    dk4Heat1922Info: "Batteria Nominata Finale (19–22): I 4 team manager nominano i piloti per le batterie decisive. Seleziona piloti e corsie dai menù a tendina."
+  });
+
+  Object.assign(I18N.en, {
+    team1Def: "Team 1 (Red)", team2Def: "Team 2 (Blue)", team3Def: "Team 3 (White)", team4Def: "Team 4 (Yellow)",
+    team1Ph: "Team 1 Name (Red Helmet)", team2Ph: "Team 2 Name (Blue Helmet)", team3Ph: "Team 3 Name (White Helmet)", team4Ph: "Team 4 Name (Yellow Helmet)",
+    leagueDkSub: "2 Teams (14 Heats) or 4 Teams Semifinal/Final (22 Heats) • 5 Riders (Cat. A-E)",
+    ocrTargetAll4: "All (4 Teams)", ocrTargetT1: "🔴 Team 1", ocrTargetT2: "🔵 Team 2", ocrTargetT3: "⚪ Team 3", ocrTargetT4: "🟡 Team 4",
+    dkNoticeTitle: "Dynamic SpeedwayLigaen Rules (DMU)",
+    dkNoticeBody: "Due to unpredictable match variables (rider averages/snit, extra rides for #5 reserve, tactical reserves, and free team manager choices including Nominated Heats), free rider and gate selection via dropdowns is enabled while keeping the fixed Red, Blue, White and Yellow helmet order. Choose below between the 2-Team match (14 heats) or the 4-Team Semifinal/Final (22 heats):",
+    dkChooseCompTitle: "Select Danish League competition format:",
+    dkMode2TeamsTitle: "2-Team Competition (14 Heats)",
+    dkMode2TeamsSub: "Regular Season • Home (Red/Blue) vs Away (White/Yellow) • 5 Riders per team (Cat. A-E) • Heats 13-14 Nominated",
+    dkMode4TeamsTitle: "4-Team Competition • Semifinal / Final (22 Heats)",
+    dkMode4TeamsSub: "Playoffs / Superfinal (4-Holdsmatch) • 4 Teams (Red, Blue, White, Yellow) • 5 Riders per team • 22 Heats (19-22 Nominated)",
+    dk4Heat5Info: "Heat 5 (#5 Reserves / Cat. E): Dedicated heat for #5 riders of all 4 teams. You can adjust riders and gates via dropdowns.",
+    dk4Heat1415Info: "Tactical / Cat. C-D-E Crossover Heat: Verify the riders nominated by the 4 team managers and their starting gates.",
+    dk4Heat1922Info: "Final Nominated Heats (19–22): Team managers nominate their riders for the decisive heats. Select riders and gates from the dropdowns."
+  });
+
+  Object.assign(I18N.pl, {
+    team1Def: "Drużyna 1 (Czerwony)", team2Def: "Drużyna 2 (Niebieski)", team3Def: "Drużyna 3 (Biały)", team4Def: "Drużyna 4 (Żółty)",
+    team1Ph: "Nazwa Drużyny 1 (Kask Czerwony)", team2Ph: "Nazwa Drużyny 2 (Kask Niebieski)", team3Ph: "Nazwa Drużyny 3 (Kask Biały)", team4Ph: "Nazwa Drużyny 4 (Kask Żółty)",
+    leagueDkSub: "Mecz 2 Drużyn (14 Biegów) lub 4 Drużyny Półfinał/Finał (22 Biegi) • 5 Zawodników (Kat. A-E)",
+    ocrTargetAll4: "Wszystkie (4)", ocrTargetT1: "🔴 Dr. 1", ocrTargetT2: "🔵 Dr. 2", ocrTargetT3: "⚪ Dr. 3", ocrTargetT4: "🟡 Dr. 4",
+    dkNoticeTitle: "Dynamiczny Regulamin SpeedwayLigaen (DMU)",
+    dkNoticeBody: "Ze względu na zmienne meczowe nieprzewidywalne z góry (średnie zawodników/snit, zmiany rezerwowego nr 5, rezerwy taktyczne oraz decyzje menedżera i biegi nominowane), aktywne jest swobodne zarządzanie zawodnikami i polami startowymi z list rozwijanych przy zachowaniu stałej kolejności kasków: Czerwony, Niebieski, Biały, Żółty. Wybierz poniżej mecz 2-drużynowy (14 biegów) lub czwórmecz Półfinał/Finał (22 biegi):",
+    dkChooseCompTitle: "Wybierz format rozgrywek ligi duńskiej:",
+    dkMode2TeamsTitle: "Mecz 2 Drużyn (14 Biegów)",
+    dkMode2TeamsSub: "Runda Zasadnicza • Gospodarze (Czerw./Nieb.) vs Goście (Biały/Żółty) • 5 Zawodników (Kat. A-E) • Biegi 13-14 Nominowane",
+    dkMode4TeamsTitle: "Czwórmecz 4 Drużyn • Półfinał / Finał (22 Biegi)",
+    dkMode4TeamsSub: "Playoff / Superfinał (4-Holdsmatch) • 4 Drużyny (Czerwony, Niebieski, Biały, Żółty) • po 5 Zawodników • 22 Biegi (19-22 Nominowane)",
+    dk4Heat5Info: "Bieg 5 (Rezerwowi #5 / Kat. E): Bieg dedykowany zawodnikom nr 5 wszystkich 4 drużyn. Możesz zmieniać zawodników i pola z list.",
+    dk4Heat1415Info: "Bieg Taktyczny / Kat. C-D-E: Sprawdź zawodników wyznaczonych przez 4 menedżerów oraz ich pola startowe.",
+    dk4Heat1922Info: "Biegi Nominowane Finałowe (19–22): Menedżerowie nominują zawodników do decydujących biegów. Wybierz zawodników i pola z list."
+  });
+
+  Object.assign(I18N.da, {
+    team1Def: "Hold 1 (Rød)", team2Def: "Hold 2 (Blå)", team3Def: "Hold 3 (Hvid)", team4Def: "Hold 4 (Gul)",
+    team1Ph: "Hold 1 Navn (Rød Hjelm)", team2Ph: "Hold 2 Navn (Blå Hjelm)", team3Ph: "Hold 3 Navn (Hvid Hjelm)", team4Ph: "Hold 4 Navn (Gul Hjelm)",
+    leagueDkSub: "2 Hold (14 Heats) eller 4 Hold Semifinale/Finale (22 Heats) • 5 Kørere (Kat. A-E)",
+    ocrTargetAll4: "Alle (4 Hold)", ocrTargetT1: "🔴 Hold 1", ocrTargetT2: "🔵 Hold 2", ocrTargetT3: "⚪ Hold 3", ocrTargetT4: "🟡 Hold 4",
+    dkNoticeTitle: "Dynamisk SpeedwayLigaen-styring (DMU)",
+    dkNoticeBody: "På grund af uforudsigelige variabler under matchen (kørergennemsnit/snit, indskiftning af 5. kører, taktiske reserver samt holdlederens frie valg og nominerede heats), er fri styring af kørere og startbaner aktiveret via rullemenuer med fast hjelmrækkefølge: Rød, Blå, Hvid og Gul. Vælg herunder mellem 2-holdsmatch (14 heats) eller 4-holdsmatch Semifinale/Finale (22 heats):",
+    dkChooseCompTitle: "Vælg SpeedwayLigaen matchformat:",
+    dkMode2TeamsTitle: "2-Holdsmatch (14 Heats)",
+    dkMode2TeamsSub: "Grundspil • Hjemme (Rød/Blå) vs Ude (Hvid/Gul) • 5 Kørere pr. hold (Kat. A-E) • Heat 13-14 Nominerede",
+    dkMode4TeamsTitle: "4-Holdsmatch • Semifinale / Superfinale (22 Heats)",
+    dkMode4TeamsSub: "Slutspil / Finale • 4 Hold (Rød, Blå, Hvid, Gul) • 5 Kørere pr. hold (Kat. A-E) • 22 Heats (Heat 19-22 Nominerede)",
+    dk4Heat5Info: "Heat 5 (5. kører / Kat. E): Heat for de 4 holds nr. 5 kørere. Du kan tilpasse kørere og startbaner i rullemenuerne.",
+    dk4Heat1415Info: "Taktisk / Kat. C-D-E Heat: Tjek holdledernes valgte kørere og startbaner i rullemenuerne.",
+    dk4Heat1922Info: "Nominerede Finaleheats (19–22): Holdlederne nominerer kørere til de afgørende heats. Vælg kørere og startbaner i rullemenuerne."
+  });
+
+  Object.assign(I18N.sv, {
+    team1Def: "Lag 1 (Röd)", team2Def: "Lag 2 (Blå)", team3Def: "Lag 3 (Vit)", team4Def: "Lag 4 (Gul)",
+    team1Ph: "Lag 1 Namn (Röd Hjälm)", team2Ph: "Lag 2 Namn (Blå Hjälm)", team3Ph: "Lag 3 Namn (Vit Hjälm)", team4Ph: "Lag 4 Namn (Gul Hjälm)",
+    leagueDkSub: "2 Lag (14 Heat) eller 4 Lag Semifinal/Final (22 Heat) • 5 Förare (Kat. A-E)",
+    ocrTargetAll4: "Alla (4 Lag)", ocrTargetT1: "🔴 Lag 1", ocrTargetT2: "🔵 Lag 2", ocrTargetT3: "⚪ Lag 3", ocrTargetT4: "🟡 Lag 4",
+    dkNoticeTitle: "Dynamiska Regler för SpeedwayLigaen (DMU)",
+    dkNoticeBody: "På grund av oförutsägbara matchvariabler (förarsnitt, inhopp av 5:e förare, taktiska reserver samt lagledarens fria val och nomineringsheat), är fri hantering av förare och startspår aktiverad via rullgardinsmenyer med fast hjälmordning: Röd, Blå, Vit och Gul. Välj nedan mellan 2-lagsmatch (14 heat) eller 4-lagsmatch Semifinal/Final (22 heat):",
+    dkChooseCompTitle: "Välj tävlingsformat för Danska Ligan:",
+    dkMode2TeamsTitle: "2-Lagsmatch (14 Heat)",
+    dkMode2TeamsSub: "Grundserie • Hemma (Röd/Blå) vs Borta (Vit/Gul) • 5 Förare per lag (Kat. A-E) • Heat 13-14 Nominerade",
+    dkMode4TeamsTitle: "4-Lagsmatch • Semifinal / Final (22 Heat)",
+    dkMode4TeamsSub: "Slutspel / Superfinal (4-Holdsmatch) • 4 Lag (Röd, Blå, Vit, Gul) • 5 Förare per lag • 22 Heat (19-22 Nominerade)",
+    dk4Heat5Info: "Heat 5 (Reserv #5 / Kat. E): Heat för samtliga 4 lags #5-förare. Du kan ändra förare och startspår i menyerna.",
+    dk4Heat1415Info: "Taktiskt / Kat. C-D-E Heat: Kontrollera lagledarnas valda förare och startspår.",
+    dk4Heat1922Info: "Nominerade Finalheat (19–22): Lagledarna nominerar förare till de avgörande heaten. Välj förare och startspår i menyerna."
+  });
+
+  LEAGUE_CONFIGS.dk.titleKey = "dkMode2TeamsTitle";
+  LEAGUE_CONFIGS.dk.teamsCount = 2;
+
+  LEAGUE_CONFIGS.dk4 = {
+    titleKey: "dkMode4TeamsTitle",
+    isTeam: true,
+    teamsCount: 4,
+    ridersPerTeam: 5,
+    totalHeats: 22,
+    scores: [3, 2, 1, 0],
+    roles: { 1: "roleCatA", 2: "roleCatB", 3: "roleCatC", 4: "roleCatD", 5: "roleCatE" },
+    // Tabella Ufficiale DMU 4-Holdsmatch Semifinale & Finale (22 Batterie: [Rosso=Sq1, Blu=Sq2, Bianco=Sq3, Giallo=Sq4])
+    schedule: [
+      [4, 101, 204, 302], // H1
+      [3, 102, 203, 301], // H2
+      [2, 104, 201, 303], // H3
+      [1, 103, 202, 304], // H4
+      [5, 105, 205, 305], // H5 (Riserve #5 / Cat. E)
+      [4, 102, 201, 304], // H6
+      [3, 101, 202, 303], // H7
+      [2, 103, 204, 301], // H8
+      [1, 104, 203, 302], // H9
+      [4, 104, 202, 301], // H10
+      [3, 103, 201, 302], // H11
+      [2, 101, 203, 304], // H12
+      [1, 102, 204, 303], // H13
+      [5, 105, 204, 304], // H14 (Incrocio C/D/E)
+      [3, 104, 203, 305], // H15 (Incrocio C/D/E)
+      [4, 103, 203, 303], // H16
+      [2, 102, 202, 302], // H17
+      [1, 101, 201, 301], // H18
+      [null, null, null, null], // H19 (Nominata)
+      [null, null, null, null], // H20 (Nominata)
+      [null, null, null, null], // H21 (Nominata)
+      [null, null, null, null]  // H22 (Nominata Finale)
+    ]
+  };
+
+  function isFourTeamMode(stObj) {
+    const s = stObj || state;
+    return Boolean(s && s.mode && LEAGUE_CONFIGS[s.mode] && LEAGUE_CONFIGS[s.mode].teamsCount === 4);
+  }
+
+  function isDkMode(stObj) {
+    const s = stObj || state;
+    return Boolean(s && (s.mode === 'dk' || s.mode === 'dk4'));
+  }
+
+  function formatRiderNum(rId) {
+    if (!rId) return "";
+    if (rId > 100) return "#" + (rId % 100);
+    return "#" + rId;
+  }
+
+  function getRiderTeamSide(rId, helmetFallback, stObj) {
+    if (isFourTeamMode(stObj)) {
+      if (rId >= 301) return 'D';
+      if (rId >= 201) return 'C';
+      if (rId >= 101) return 'B';
+      if (rId >= 1) return 'A';
+      if (helmetFallback === 'B') return 'B';
+      if (helmetFallback === 'W') return 'C';
+      if (helmetFallback === 'Y') return 'D';
+      return 'A';
+    }
+    if (rId > 100) return 'B';
+    if (rId >= 1) return 'A';
+    return (helmetFallback === 'W' || helmetFallback === 'Y') ? 'B' : 'A';
+  }
+
+  function getHeatLabel(idx, includeTime) {
+    const cfg = getModeConfig();
+    let base = "";
+    if (!cfg.isTeam) {
+      if (cfg.isSprint) {
+        if (idx < 8) base = "Q1 - Ottavi " + (idx + 1);
+        else if (idx < 12) base = "Q2 - Quarti " + (idx - 7);
+        else base = t('sprintLbl');
+      } else if (cfg.is14Format) {
+        if (idx < 18) base = t('heatLbl') + " " + (idx + 1) + " (" + t('seriesLbl') + " " + (Math.floor(idx / 4) + 1) + ")";
+        else if (idx === 18) base = t('heatLbl') + " 19 (LCQ)";
+        else base = t('heatLbl') + " 20 (" + t('finalLbl') + ")";
+      } else {
+        if (idx < 20) base = t('heatLbl') + " " + (idx + 1) + " (" + t('seriesLbl') + " " + (Math.floor(idx / 4) + 1) + ")";
+        else if (idx === 20) base = t('heatLbl') + " 21 (LCQ 1)";
+        else if (idx === 21) base = t('heatLbl') + " 22 (LCQ 2)";
+        else if (idx === 22) base = t('heatLbl') + " 23 (" + t('finalLbl') + ")";
+      }
+    } else {
+      const hNum = idx + 1;
+      if (state.mode === 'son' && hNum === 14) base = t('heatLbl') + " 14 (Final Qualifier)";
+      else if (state.mode === 'son' && hNum === 15) base = t('heatLbl') + " 15 (" + t('finalLbl') + ")";
+      else if ((state.mode === 'pl' || state.mode === 'se' || state.mode === 'uk') && hNum >= 14) base = t('heatLbl') + " " + hNum + " (" + t('nominatedLbl') + ")";
+      else if (state.mode === 'dk' && hNum >= 13) base = t('heatLbl') + " " + hNum + " (" + t('nominatedLbl') + ")";
+      else if (state.mode === 'dk' && hNum === 7) base = t('heatLbl') + " 7 (Cat. C/D)";
+      else if (state.mode === 'dk4' && hNum === 5) base = t('heatLbl') + " 5 (#5 / Cat. E)";
+      else if (state.mode === 'dk4' && (hNum === 14 || hNum === 15)) base = t('heatLbl') + " " + hNum + " (Cat. C/D/E)";
+      else if (state.mode === 'dk4' && hNum >= 19) base = t('heatLbl') + " " + hNum + " (" + t('nominatedLbl') + ")";
+      else if (state.mode === 'pl' && hNum === 2) base = t('heatLbl') + " 2 (" + t('roleJunior') + ")";
+      else base = t('heatLbl') + " " + hNum;
+    }
+    if (includeTime && state.heats[idx] && state.heats[idx].time) {
+      base += " •⏱️ " + state.heats[idx].time + "s";
+    }
+    return base;
+  }
+
+  function isDefaultTeamName(name) {
+    if (!name) return true;
+    const allDefaults = [];
+    Object.keys(I18N).forEach(lang => {
+      ['teamHomeDef', 'teamAwayDef', 'nationADef', 'nationBDef', 'team1Def', 'team2Def', 'team3Def', 'team4Def'].forEach(k => {
+        if (I18N[lang][k]) allDefaults.push(I18N[lang][k].toLowerCase());
+      });
+    });
+    return allDefaults.includes(name.trim().toLowerCase());
+  }
+
+  function getDefaultTeamName(side, mode) {
+    if (mode === 'dk4' || side === 'c' || side === 'd') {
+      if (side === 'a') return t('team1Def');
+      if (side === 'b') return t('team2Def');
+      if (side === 'c') return t('team3Def');
+      return t('team4Def');
+    }
+    if (mode === 'son') return side === 'a' ? t('nationADef') : t('nationBDef');
+    return side === 'a' ? t('teamHomeDef') : t('teamAwayDef');
+  }
+
+  function getDefaultRiderName(id, mode) {
+    if (mode && mode !== 'sgp' && mode !== 'ita_indiv' && mode !== 'sgp_sprint') {
+      if (id > 100) return t('riderDefault') + " " + (id % 100);
+      return t('riderDefault') + " " + id;
+    }
+    return (id <= 16 ? t('riderDefault') : t('reserveDefault')) + " " + id;
+  }
+
+  function openDkEntryFlow() {
+    closeModeModal();
+    openDkInfoModal();
+  }
+
+  function openDkInfoModal() {
+    const b2 = document.getElementById('btn-dk-choice-2');
+    const b4 = document.getElementById('btn-dk-choice-4');
+    if (b2) b2.classList.toggle('active', state.mode === 'dk');
+    if (b4) b4.classList.toggle('active', state.mode === 'dk4');
+    document.getElementById('dk-info-modal').classList.add('open');
+  }
+
+  function chooseDkCompetition(dkModeKey) {
+    const targetMode = dkModeKey === 'dk4' ? 'dk4' : 'dk';
+    const hasScores = state.heats && state.heats.some(h => h.slots.some(s => s.score !== null));
+    if (hasScores && state.mode !== targetMode) {
+      if (!confirm(t('confirmChangeMode'))) return;
+    }
+    if (state.mode !== targetMode || hasScores) {
+      state = createDefaultState(targetMode);
+      ocrTeamTarget = 'both';
+      populateEventForm();
+      saveState();
+    }
+    closeDkInfoModal();
+    renderRidersInputs();
+    renderCurrentHeat();
+    switchTab('riders', document.getElementById('nav-riders'));
+  }
+
+  function selectAppMode(newMode) {
+    if (newMode === 'dk' || newMode === 'dk4') {
+      openDkEntryFlow();
+      return;
+    }
+    const hasScores = state.heats && state.heats.some(h => h.slots.some(s => s.score !== null));
+    if (hasScores && state.mode !== newMode) {
+      if (!confirm(t('confirmChangeMode'))) return;
+    }
+    if (state.mode !== newMode || hasScores) {
+      state = createDefaultState(newMode);
+      ocrTeamTarget = 'both';
+      populateEventForm();
+      saveState();
+    }
+    closeModeModal();
+    renderRidersInputs();
+    renderCurrentHeat();
+    switchTab('event', document.getElementById('nav-event'));
+  }
+
+  function createDefaultState(modeKey) {
+    const mKey = LEAGUE_CONFIGS[modeKey] ? modeKey : 'sgp';
+    const cfg = LEAGUE_CONFIGS[mKey];
+    const today = new Date().toISOString().split('T')[0];
+    const riders = {};
+    let heats = [];
+
+    if (!cfg.isTeam) {
+      if (cfg.isSprint) {
+        for (let i = 1; i <= 16; i++) riders[i] = getDefaultRiderName(i, mKey);
+        heats = cfg.schedule.map((row, idx) => ({
+          heatNumber: idx + 1, time: "",
+          slots: row.map((rId, gIdx) => ({ riderId: rId, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false, gate: gIdx + 1 }))
+        }));
+      } else if (cfg.is14Format) {
+        for (let i = 1; i <= 16; i++) riders[i] = getDefaultRiderName(i, mKey);
+        heats = cfg.schedule.map((row, idx) => ({
+          heatNumber: idx + 1, time: "",
+          slots: row.map((rId, gIdx) => ({ riderId: rId, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false, gate: gIdx + 1 }))
+        }));
+        for (let i = 0; i < 2; i++) {
+          heats.push({
+            heatNumber: 19 + i, time: "",
+            slots: [0, 1, 2, 3].map(gIdx => ({ riderId: null, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false, gate: gIdx + 1 }))
+          });
+        }
+      } else {
+        for (let i = 1; i <= 18; i++) riders[i] = getDefaultRiderName(i, mKey);
+        heats = FIM_SCHEDULE.map((gates, idx) => ({
+          heatNumber: idx + 1, time: "",
+          slots: gates.map((rId, gIdx) => ({ riderId: rId, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false, gate: gIdx + 1 }))
+        }));
+        for (let i = 0; i < 3; i++) {
+          heats.push({
+            heatNumber: 21 + i, time: "",
+            slots: [0, 1, 2, 3].map(gIdx => ({ riderId: null, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false, gate: gIdx + 1 }))
+          });
+        }
+      }
+    } else if (cfg.teamsCount === 4) {
+      for (let i = 1; i <= cfg.ridersPerTeam; i++) {
+        riders[i] = getDefaultRiderName(i, mKey);
+        riders[100 + i] = getDefaultRiderName(100 + i, mKey);
+        riders[200 + i] = getDefaultRiderName(200 + i, mKey);
+        riders[300 + i] = getDefaultRiderName(300 + i, mKey);
+      }
+      const gateRotations = [
+        [1, 2, 3, 4],
+        [2, 3, 4, 1],
+        [3, 4, 1, 2],
+        [4, 1, 2, 3]
+      ];
+      heats = cfg.schedule.map((row, idx) => {
+        const gRot = gateRotations[idx % 4];
+        return {
+          heatNumber: idx + 1,
+          time: "",
+          slots: [
+            { helmet: 'R', riderId: row[0] || null, gate: gRot[0], score: null, warning: false },
+            { helmet: 'B', riderId: row[1] || null, gate: gRot[1], score: null, warning: false },
+            { helmet: 'W', riderId: row[2] || null, gate: gRot[2], score: null, warning: false },
+            { helmet: 'Y', riderId: row[3] || null, gate: gRot[3], score: null, warning: false }
+          ]
+        };
+      });
+    } else {
+      for (let i = 1; i <= cfg.ridersPerTeam; i++) {
+        riders[i] = getDefaultRiderName(i, mKey);
+        riders[100 + i] = getDefaultRiderName(100 + i, mKey);
+      }
+      heats = cfg.schedule.map((row, idx) => {
+        const hGates = idx % 2 === 0 ? [1, 3] : [2, 4];
+        const aGates = idx % 2 === 0 ? [2, 4] : [1, 3];
+        return {
+          heatNumber: idx + 1,
+          time: "",
+          slots: [
+            { helmet: 'R', riderId: row[0] || null, gate: hGates[0], score: null, warning: false },
+            { helmet: 'B', riderId: row[1] || null, gate: hGates[1], score: null, warning: false },
+            { helmet: 'W', riderId: row[2] || null, gate: aGates[0], score: null, warning: false },
+            { helmet: 'Y', riderId: row[3] || null, gate: aGates[1], score: null, warning: false }
+          ]
+        };
+      });
+    }
+
+    return {
+      id: Date.now(),
+      mode: mKey,
+      teamNames: {
+        a: getDefaultTeamName('a', mKey),
+        b: getDefaultTeamName('b', mKey),
+        c: getDefaultTeamName('c', mKey),
+        d: getDefaultTeamName('d', mKey)
+      },
+      eventMeta: { name: "", date: today, track: "", city: "", country: "", length: "", notes: "", photoDataUrl: "" },
+      currentHeat: 0,
+      riders: riders,
+      heats: heats,
+      tieOrder: []
+    };
+  }
+
+  function normalizeLoadedState(saved) {
+    const mKey = (saved && saved.mode && LEAGUE_CONFIGS[saved.mode]) ? saved.mode : 'sgp';
+    const def = createDefaultState(mKey);
+    const merged = Object.assign(def, saved);
+    merged.eventMeta = Object.assign(def.eventMeta, saved.eventMeta || {});
+    merged.teamNames = Object.assign(def.teamNames, saved.teamNames || {});
+    if (!Array.isArray(merged.tieOrder)) merged.tieOrder = [];
+    if (merged.heats) {
+      merged.heats.forEach(h => {
+        if (typeof h.time !== 'string') h.time = "";
+        h.slots.forEach((s, idx) => {
+          if (!s.helmet) s.helmet = GATE_STYLE[idx].helmet;
+          if (s.warning === undefined) s.warning = false;
+          if (!s.gate) s.gate = idx + 1;
+        });
+      });
+      if (mKey === 'sgp_sprint' && merged.heats.length !== 13) merged.heats = def.heats;
+      if (mKey === 'dk') {
+        const cleanRiders = {};
+        for (let i = 1; i <= 5; i++) {
+          cleanRiders[i] = (merged.riders && merged.riders[i]) ? merged.riders[i] : getDefaultRiderName(i, 'dk');
+          cleanRiders[100 + i] = (merged.riders && merged.riders[100 + i]) ? merged.riders[100 + i] : getDefaultRiderName(100 + i, 'dk');
+        }
+        merged.riders = cleanRiders;
+        if (merged.heats.length !== 14) merged.heats = def.heats;
+      }
+      if (mKey === 'dk4') {
+        const cleanRiders = {};
+        for (let i = 1; i <= 5; i++) {
+          cleanRiders[i] = (merged.riders && merged.riders[i]) ? merged.riders[i] : getDefaultRiderName(i, 'dk4');
+          cleanRiders[100 + i] = (merged.riders && merged.riders[100 + i]) ? merged.riders[100 + i] : getDefaultRiderName(100 + i, 'dk4');
+          cleanRiders[200 + i] = (merged.riders && merged.riders[200 + i]) ? merged.riders[200 + i] : getDefaultRiderName(200 + i, 'dk4');
+          cleanRiders[300 + i] = (merged.riders && merged.riders[300 + i]) ? merged.riders[300 + i] : getDefaultRiderName(300 + i, 'dk4');
+        }
+        merged.riders = cleanRiders;
+        if (merged.heats.length !== 22) merged.heats = def.heats;
+      }
+    }
+    return merged;
+  }
+
+  function computeTeamTotals(raceObj) {
+    const rState = raceObj || state;
+    if (isFourTeamMode(rState)) {
+      let totA = 0, totB = 0, totC = 0, totD = 0;
+      rState.heats.forEach(h => {
+        h.slots.forEach(s => {
+          if (typeof s.score === 'number') {
+            const side = getRiderTeamSide(s.riderId, s.helmet, rState);
+            if (side === 'A') totA += s.score;
+            else if (side === 'B') totB += s.score;
+            else if (side === 'C') totC += s.score;
+            else totD += s.score;
+          }
+        });
+      });
+      return { a: totA, b: totB, c: totC, d: totD };
+    }
+    let totA = 0, totB = 0;
+    rState.heats.forEach(h => {
+      h.slots.forEach(s => {
+        if (typeof s.score === 'number') {
+          if ((s.riderId && s.riderId < 100) || (!s.riderId && (s.helmet === 'R' || s.helmet === 'B'))) totA += s.score;
+          else totB += s.score;
+        }
+      });
+    });
+    return { a: totA, b: totB };
+  }
+
+  function computeHeatTeamPartial(heat, stObj) {
+    const rState = stObj || state;
+    if (isFourTeamMode(rState)) {
+      let a = 0, b = 0, c = 0, d = 0, done = false;
+      heat.slots.forEach(s => {
+        if (s.score !== null) done = true;
+        if (typeof s.score === 'number') {
+          const side = getRiderTeamSide(s.riderId, s.helmet, rState);
+          if (side === 'A') a += s.score;
+          else if (side === 'B') b += s.score;
+          else if (side === 'C') c += s.score;
+          else d += s.score;
+        }
+      });
+      return done ? (a + ":" + b + ":" + c + ":" + d) : null;
+    }
+    let a = 0, b = 0, done = false;
+    heat.slots.forEach(s => {
+      if (s.score !== null) done = true;
+      if (typeof s.score === 'number') {
+        if ((s.riderId && s.riderId < 100) || (!s.riderId && (s.helmet === 'R' || s.helmet === 'B'))) a += s.score;
+        else b += s.score;
+      }
+    });
+    return done ? (a + " : " + b) : null;
+  }
+
+  function updateHeaderAndHero() {
+    const m = state.eventMeta;
+    const modeTitle = getModeTitle();
+    let defaultTitle = "SPEEDWAY LIVE";
+    if (isFourTeamMode()) {
+      defaultTitle = [state.teamNames.a, state.teamNames.b, state.teamNames.c, state.teamNames.d].join(" • ");
+    } else if (isTeamMode()) {
+      defaultTitle = state.teamNames.a + " vs " + state.teamNames.b;
+    }
+    document.getElementById('header-event-title').textContent = (m.name || defaultTitle);
+    const locParts = [modeTitle, m.track, m.city, m.date].filter(Boolean);
+    document.getElementById('header-event-sub').textContent = locParts.join(" • ");
+
+    const pill = document.getElementById('ev-current-mode-pill');
+    if (pill) pill.textContent = "🏁 " + modeTitle + " ▾";
+
+    const tsBanner2 = document.getElementById('team-score-banner');
+    const tsBanner4 = document.getElementById('team4-score-banner');
+
+    if (isFourTeamMode()) {
+      if (tsBanner2) tsBanner2.classList.remove('visible');
+      if (tsBanner4) {
+        tsBanner4.classList.add('visible');
+        const totals = computeTeamTotals();
+        document.getElementById('t4-name-a').textContent = state.teamNames.a || getDefaultTeamName('a', 'dk4');
+        document.getElementById('t4-name-b').textContent = state.teamNames.b || getDefaultTeamName('b', 'dk4');
+        document.getElementById('t4-name-c').textContent = state.teamNames.c || getDefaultTeamName('c', 'dk4');
+        document.getElementById('t4-name-d').textContent = state.teamNames.d || getDefaultTeamName('d', 'dk4');
+        document.getElementById('t4-pts-a').textContent = totals.a;
+        document.getElementById('t4-pts-b').textContent = totals.b;
+        document.getElementById('t4-pts-c').textContent = totals.c;
+        document.getElementById('t4-pts-d').textContent = totals.d;
+      }
+    } else if (isTeamMode()) {
+      if (tsBanner4) tsBanner4.classList.remove('visible');
+      if (tsBanner2) {
+        tsBanner2.classList.add('visible');
+        const totals = computeTeamTotals();
+        document.getElementById('ts-name-a').textContent = state.teamNames.a || getDefaultTeamName('a', state.mode);
+        document.getElementById('ts-name-b').textContent = state.teamNames.b || getDefaultTeamName('b', state.mode);
+        document.getElementById('ts-score-box').textContent = totals.a + " : " + totals.b;
+      }
+    } else {
+      if (tsBanner2) tsBanner2.classList.remove('visible');
+      if (tsBanner4) tsBanner4.classList.remove('visible');
+    }
+
+    const dkActive = isDkMode();
+    const dkBannerRiders = document.getElementById('dk-banner-riders');
+    const dkBannerHeats = document.getElementById('dk-banner-heats');
+    if (dkBannerRiders) dkBannerRiders.classList.toggle('visible', dkActive);
+    if (dkBannerHeats) dkBannerHeats.classList.toggle('visible', dkActive);
+
+    const hero = document.getElementById('track-hero');
+    if (m.photoDataUrl) {
+      hero.classList.add('visible');
+      document.getElementById('track-hero-img').src = m.photoDataUrl;
+      document.getElementById('hero-track-name').textContent = m.track || m.name || "Speedway";
+      const details = [m.city, m.country, m.length, m.notes].filter(Boolean).join(" • ");
+      document.getElementById('hero-track-meta').textContent = details;
+    } else {
+      hero.classList.remove('visible');
+    }
+  }
+
+  function computeStats(raceObj) {
+    const rState = raceObj || state;
+    const cfg = getModeConfig(rState);
+    const stats = [];
+    const riderIds = Object.keys(rState.riders).map(k => parseInt(k, 10)).sort((a, b) => a - b);
+
+    riderIds.forEach(r => {
+      stats.push({
+        id: r, team: getRiderTeamSide(r, null, rState), name: rState.riders[r], runs: [], total: 0,
+        ones: 0, twos: 0, threes: 0, finishedZeros: 0, nonFinished: [], zeros: 0,
+        lcqRaw: null, finRaw: null, sfScore: '-', finScore: '-', qualRank: 99, finalRank: 99, sgpPts: 0, sprintPts: 0
+      });
+    });
+
+    const mainHeatsCount = cfg.isTeam ? rState.heats.length : (cfg.isSprint ? 13 : (cfg.is14Format ? 18 : 20));
+    const winVal = cfg.scores[0], secVal = cfg.scores[1], trdVal = cfg.scores[2];
+
+    rState.heats.slice(0, mainHeatsCount).forEach(h => {
+      h.slots.forEach(s => {
+        if (!s.riderId) return;
+        const st = stats.find(x => x.id === s.riderId);
+        if (!st) return;
+
+        if (s.score !== null) {
+          const numScore = typeof s.score === 'number' ? s.score : null;
+          if (numScore !== null) {
+            st.runs.push(numScore + (s.warning ? 'W' : ''));
+            if (!cfg.isSprint || h.heatNumber === 13) st.total += numScore;
+            if (numScore === winVal) st.ones++;
+            else if (numScore === secVal) st.twos++;
+            else if (numScore === trdVal) st.threes++;
+            else { st.finishedZeros++; st.zeros++; }
+          } else {
+            const code = String(s.score).toUpperCase();
+            st.runs.push(code + (s.warning ? 'W' : ''));
+            st.nonFinished.push(code);
+            st.zeros++;
+          }
+        } else {
+          st.runs.push(s.warning ? 'W' : '-');
+        }
+      });
+    });
+
+    if (!cfg.isTeam) {
+      if (cfg.isSprint) {
+        if (rState.heats[12]) {
+          rState.heats[12].slots.forEach(s => {
+            if (s.riderId && typeof s.score === 'number' && s.score > 0) {
+              const st = stats.find(x => x.id === s.riderId);
+              if (st) st.sprintPts = s.score;
+            }
+          });
+        }
+      } else if (cfg.is14Format) {
+        rState.heats[18].slots.forEach(s => {
+          if (!s.riderId) return;
+          const st = stats.find(x => x.id === s.riderId);
+          if (st && s.score !== null) { st.lcqRaw = s.score; st.sfScore = formatPlacement(s.score); }
+        });
+        rState.heats[19].slots.forEach(s => {
+          if (!s.riderId) return;
+          const st = stats.find(x => x.id === s.riderId);
+          if (st && s.score !== null) { st.finRaw = s.score; st.finScore = formatPlacement(s.score); }
+        });
+      } else {
+        [20, 21].forEach(idx => {
+          rState.heats[idx].slots.forEach(s => {
+            if (!s.riderId) return;
+            const st = stats.find(x => x.id === s.riderId);
+            if (st && s.score !== null) { st.lcqRaw = s.score; st.sfScore = formatPlacement(s.score); }
+          });
+        });
+        rState.heats[22].slots.forEach(s => {
+          if (!s.riderId) return;
+          const st = stats.find(x => x.id === s.riderId);
+          if (st && s.score !== null) { st.finRaw = s.score; st.finScore = formatPlacement(s.score); }
+        });
+      }
+    }
+
+    return stats;
+  }
+
+  function renderCurrentHeat() {
+    renderHeatSelect();
+    const cfg = getModeConfig();
+    const heat = state.heats[state.currentHeat];
+    const isSprintFinal = (cfg.isSprint && state.currentHeat === 12);
+    const isSprintQual = (cfg.isSprint && state.currentHeat < 12);
+
+    const timeInput = document.getElementById('heat-time-input');
+    if (timeInput) timeInput.value = heat.time || "";
+    updateBestTimeBadge();
+
+    const swapBox = document.getElementById('team-swap-lanes-box');
+    if (swapBox) swapBox.innerHTML = '';
+
+    const autoBox = document.getElementById('auto-finals-box');
+    const isSpecialHeat = !cfg.isTeam && !cfg.isSprint && state.currentHeat >= (cfg.is14Format ? 18 : 20);
+
+    const liveStatsMap = {};
+    let allTeamStats = [];
+    if (cfg.isTeam) {
+      allTeamStats = computeStats();
+      allTeamStats.forEach(st => {
+        const ridesDone = st.runs.filter(r => r !== '-').length;
+        liveStatsMap[st.id] = { rides: ridesDone, pts: st.total };
+      });
+    }
+
+    if (state.mode === 'dk' && (state.currentHeat === 6 || state.currentHeat === 12 || state.currentHeat === 13)) {
+      const noteKey = state.currentHeat === 6 ? 'dkHeat7Info' : (state.currentHeat === 12 ? 'dkHeat13Info' : 'dkHeat14Info');
+      let rankPillsHtml = '';
+      if (state.currentHeat === 12 || state.currentHeat === 13) {
+        const isLowest = state.currentHeat === 12;
+        const homeSorted = allTeamStats.filter(s => s.team === 'A').sort((a, b) => isLowest ? (a.total - b.total) : (b.total - a.total)).slice(0, isLowest ? 3 : 2);
+        const awaySorted = allTeamStats.filter(s => s.team === 'B').sort((a, b) => isLowest ? (a.total - b.total) : (b.total - a.total)).slice(0, isLowest ? 3 : 2);
+        const hPills = homeSorted.map(x => `<div class="qual-pill"><span>🔴 #${x.id}:</span>${x.name} (${x.total}pt)</div>`).join('');
+        const aPills = awaySorted.map(x => `<div class="qual-pill"><span>🟡 #${x.id - 100}:</span>${x.name} (${x.total}pt)</div>`).join('');
+        rankPillsHtml = `<div class="qual-badges-list">${hPills}${aPills}</div>`;
+      }
+      autoBox.innerHTML = '<div class="qual-info-card" style="border-color:var(--yellow);">' +
+        '<div class="qual-info-header"><span class="qual-info-title" style="color:var(--yellow);">🇩🇰 ' + getHeatLabel(state.currentHeat, false) + '</span>' +
+        '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button></div>' +
+        '<div class="qual-info-sub">' + t(noteKey) + '</div>' + rankPillsHtml + '</div>';
+    } else if (state.mode === 'dk4' && (state.currentHeat === 4 || state.currentHeat === 13 || state.currentHeat === 14 || state.currentHeat >= 18)) {
+      const noteKey = state.currentHeat === 4 ? 'dk4Heat5Info' : (state.currentHeat >= 18 ? 'dk4Heat1922Info' : 'dk4Heat1415Info');
+      let rankPillsHtml = '';
+      if (state.currentHeat >= 18) {
+        const teamMeta = [
+          { code: 'A', ico: '🔴' },
+          { code: 'B', ico: '🔵' },
+          { code: 'C', ico: '⚪' },
+          { code: 'D', ico: '🟡' }
+        ];
+        const pills = teamMeta.map(tm => {
+          const topRiders = allTeamStats.filter(s => s.team === tm.code).sort((a, b) => b.total - a.total).slice(0, 2);
+          return topRiders.map(x => `<div class="qual-pill"><span>${tm.ico} ${formatRiderNum(x.id)}:</span>${x.name} (${x.total}pt)</div>`).join('');
+        }).join('');
+        rankPillsHtml = `<div class="qual-badges-list">${pills}</div>`;
+      }
+      autoBox.innerHTML = '<div class="qual-info-card" style="border-color:var(--yellow);">' +
+        '<div class="qual-info-header"><span class="qual-info-title" style="color:var(--yellow);">🇩🇰 ' + getHeatLabel(state.currentHeat, false) + '</span>' +
+        '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button></div>' +
+        '<div class="qual-info-sub">' + t(noteKey) + '</div>' + rankPillsHtml + '</div>';
+    } else if (isSprintFinal) {
+      autoBox.innerHTML = '<div class="qual-info-card" style="border-color:#29b6f6;">' +
+        '<div class="qual-info-header"><span class="qual-info-title" style="color:#29b6f6;">' + t('sprintLbl') + '</span>' +
+        '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button></div>' +
+        '<div class="qual-info-sub">' + t('sprintSub') + '</div></div>';
+    } else if (isSpecialHeat) {
+      syncSpecialHeatsWithQualifiers();
+      const eligibleList = getEligibleRidersForSpecialHeat(state.currentHeat);
+      let titleText = "", ruleSub = "";
+      if (cfg.is14Format) {
+        if (state.currentHeat === 18) { titleText = "🔥 Last Chance Qualifier"; ruleSub = "Seleziona i piloti. I primi due (1° e 2°) accedono alla Finale."; }
+        else { titleText = t('finalTitle'); ruleSub = t('finalSub'); }
+      } else {
+        titleText = state.currentHeat === 20 ? t('lcq1Title') : (state.currentHeat === 21 ? t('lcq2Title') : t('finalTitle'));
+        ruleSub = state.currentHeat === 20 ? t('lcq1Sub') : (state.currentHeat === 21 ? t('lcq2Sub') : t('finalSub'));
+      }
+      const pillsHtml = eligibleList.length > 0
+        ? eligibleList.map(item => '<div class="qual-pill"><span>' + item.badge + ':</span>#' + item.id + ' ' + item.name + '</div>').join('')
+        : '<div class="qual-pill">' + t('waitingResults') + '</div>';
+      autoBox.innerHTML = '<div class="qual-info-card">' +
+        '<div class="qual-info-header"><span class="qual-info-title">' + titleText + '</span>' +
+        '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button></div>' +
+        '<div class="qual-info-sub">' + ruleSub + '</div>' +
+        '<div class="qual-badges-list">' + pillsHtml + '</div></div>';
+    } else {
+      autoBox.innerHTML = '';
+    }
+
+    let mainButtons;
+    if (isSprintFinal) mainButtons = [{ val: 4, label: '4 pt' }, { val: 3, label: '3 pt' }, { val: 2, label: '2 pt' }, { val: 1, label: '1 pt' }];
+    else if (isSprintQual) mainButtons = [{ val: 3, label: '1° (Passa)' }, { val: 2, label: '2° (Fuori)' }];
+    else if (isSpecialHeat) mainButtons = [{ val: 3, label: '1°' }, { val: 2, label: '2°' }, { val: 1, label: '3°' }, { val: 0, label: '4°' }];
+    else mainButtons = cfg.scores.map(v => ({ val: v, label: v + ' pt' }));
+
+    const specialCodes = getSpecialCodes().filter(c => c.code !== 'W');
+    const container = document.getElementById('gates-container');
+    let actualSlots = (cfg.isSprint && state.currentHeat < 12) ? heat.slots.slice(0, 2) : heat.slots;
+
+    // Ordine caschi sempre bloccato: Rosso, Blu, Bianco, Giallo
+    const fixedColors = ['R', 'B', 'W', 'Y'];
+
+    container.innerHTML = actualSlots.map((slot, sIdx) => {
+      const fixedColor = fixedColors[sIdx] || 'R';
+      slot.helmet = fixedColor;
+      const hm = HELMET_META[fixedColor];
+      const sc = slot.score;
+      const currentGate = slot.gate || (sIdx + 1);
+
+      const gateOpts = [1, 2, 3, 4].map(val =>
+        `<option value="${val}" ${currentGate === val ? 'selected' : ''}>${t('laneLbl')} ${val}</option>`
+      ).join('');
+
+      let opts = `<option value="" ${!slot.riderId ? 'selected' : ''}>${t('selectQualRider')}</option>`;
+      let teamLabel = '';
+
+      if (cfg.isTeam && cfg.teamsCount === 4) {
+        const teamMap = {
+          R: { name: state.teamNames.a || getDefaultTeamName('a', 'dk4'), base: 0 },
+          B: { name: state.teamNames.b || getDefaultTeamName('b', 'dk4'), base: 100 },
+          W: { name: state.teamNames.c || getDefaultTeamName('c', 'dk4'), base: 200 },
+          Y: { name: state.teamNames.d || getDefaultTeamName('d', 'dk4'), base: 300 }
+        };
+        const tInfo = teamMap[fixedColor];
+        teamLabel = tInfo.name;
+        opts += `<optgroup label="${teamLabel}">`;
+        for (let localIdx = 1; localIdx <= cfg.ridersPerTeam; localIdx++) {
+          const rId = tInfo.base + localIdx;
+          const roleKey = cfg.roles && cfg.roles[localIdx] ? cfg.roles[localIdx] : null;
+          const catTag = roleKey ? ` [${t(roleKey)}]` : '';
+          const stInfo = liveStatsMap[rId] ? ` (${liveStatsMap[rId].pts}pt • ${liveStatsMap[rId].rides}H)` : '';
+          opts += `<option value="${rId}" ${slot.riderId == rId ? 'selected' : ''}>${formatRiderNum(rId)} ${state.riders[rId]}${catTag}${stInfo}</option>`;
+        }
+        opts += `</optgroup>`;
+      } else if (cfg.isTeam) {
+        const isHome = (fixedColor === 'R' || fixedColor === 'B');
+        teamLabel = isHome ? (state.teamNames.a || t('teamHomeDef')) : (state.teamNames.b || t('teamAwayDef'));
+        opts += `<optgroup label="${teamLabel}">`;
+        const startId = isHome ? 1 : 101;
+        const endId = isHome ? cfg.ridersPerTeam : (100 + cfg.ridersPerTeam);
+        for (let i = startId; i <= endId; i++) {
+          const localIdx = isHome ? i : (i - 100);
+          const roleKey = cfg.roles && cfg.roles[localIdx] ? cfg.roles[localIdx] : null;
+          const catTag = (state.mode === 'dk' && roleKey) ? ` [${t(roleKey)}]` : '';
+          const stInfo = liveStatsMap[i] ? ` (${liveStatsMap[i].pts}pt • ${liveStatsMap[i].rides}H)` : '';
+          opts += `<option value="${i}" ${slot.riderId == i ? 'selected' : ''}>${formatRiderNum(i)} ${state.riders[i]}${catTag}${stInfo}</option>`;
+        }
+        opts += `</optgroup>`;
+      } else {
+        const limit = cfg.is14Format ? 14 : (cfg.isSprint ? 16 : 18);
+        for (let r = 1; r <= limit; r++) {
+          opts += `<option value="${r}" ${slot.riderId == r ? 'selected' : ''}>#${r} ${state.riders[r]}</option>`;
+        }
+      }
+
+      const hasRider = Boolean(slot.riderId);
+      const riderLabel = hasRider ? (formatRiderNum(slot.riderId) + ' ' + state.riders[slot.riderId]) : t('selectRiderUp');
+      const wBtn = `<button type="button" ${!hasRider ? 'disabled' : ''} class="spec-btn ${slot.warning ? 'warning-active' : ''}" onclick="toggleWarning(${sIdx})"><span>W</span><small>Warning</small></button>`;
+
+      return `
+        <div class="gate-card ${hm.cls}">
+          <div class="rider-header">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="helmet-badge helmet-${fixedColor}"></span>
+              <span class="helmet-name-tag" style="color:${hm.color}">${t(hm.nameKey)}</span>
+              <select class="gate-select" onchange="changeSlotGate(${sIdx}, this.value)">
+                ${gateOpts}
+              </select>
+            </div>
+            <select class="sub-select" onchange="changeSlotRider(${sIdx}, this.value)">
+              ${opts}
+            </select>
+          </div>
+          <div class="rider-name ${!hasRider ? 'unassigned' : ''}">
+            <span>${riderLabel}</span>
+            ${teamLabel ? `<span class="rider-team-tag">${teamLabel}</span>` : ''}
+          </div>
+          <div class="score-btns" style="${cfg.isSprint ? (isSprintFinal ? 'grid-template-columns: repeat(4, 1fr);' : 'grid-template-columns: repeat(2, 1fr);') : ''}">
+            ${mainButtons.map(btn => `<button type="button" ${!hasRider ? 'disabled' : ''} class="score-btn ${sc === btn.val ? 'selected-' + btn.val : ''}" onclick="setScore(${sIdx}, ${btn.val})">${btn.label}</button>`).join('')}
+          </div>
+          <div class="special-btns">
+            ${specialCodes.map(item => `<button type="button" ${!hasRider ? 'disabled' : ''} title="${item.full}" class="spec-btn ${sc === item.code ? 'selected-spec' : ''}" onclick="setScore(${sIdx}, '${item.code}')"><span>${item.code}</span><small>${item.short}</small></button>`).join('')}
+            ${wBtn}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function renderStandings() {
+    const cfg = getModeConfig();
+    const stSwitch = document.getElementById('standings-mode-switch');
+    const stLeg = document.getElementById('standings-legend-bar');
+    const thead = document.getElementById('standings-thead');
+
+    if (cfg.isTeam) {
+      stSwitch.style.display = 'none';
+      const totals = computeTeamTotals();
+      if (cfg.teamsCount === 4) {
+        stLeg.innerHTML =
+          '<span><strong>🔴 ' + state.teamNames.a + ': ' + totals.a + ' pt</strong></span>' +
+          '<span><strong>🔵 ' + state.teamNames.b + ': ' + totals.b + ' pt</strong></span>' +
+          '<span><strong>⚪ ' + state.teamNames.c + ': ' + totals.c + ' pt</strong></span>' +
+          '<span><strong>🟡 ' + state.teamNames.d + ': ' + totals.d + ' pt</strong></span>';
+      } else {
+        stLeg.innerHTML = '<span><strong>🔴🔵 ' + state.teamNames.a + ': ' + totals.a + ' pt</strong></span><span><strong>⚪🟡 ' + state.teamNames.b + ': ' + totals.b + ' pt</strong></span>';
+      }
+      thead.innerHTML = '<tr><th>' + t('thPos') + '</th><th style="text-align:left;padding-left:7px;">' + t('thRider') + '</th><th>1°</th><th>2°</th><th>3°</th><th>4°(R/X)</th><th>' + t('thRuns') + '</th><th>' + t('thTot') + '</th></tr>';
+
+      const list = getSortedQualifyingStandings();
+      document.querySelector('#standings-table tbody').innerHTML = list.map((st, idx) => {
+        let teamBadge = st.team === 'A' ? '🔴' : '🟡';
+        if (cfg.teamsCount === 4) {
+          teamBadge = st.team === 'A' ? '🔴' : (st.team === 'B' ? '🔵' : (st.team === 'C' ? '⚪' : '🟡'));
+        }
+        return '<tr><td><strong>' + (idx + 1) + '</strong></td>' +
+          '<td class="name-col">' + teamBadge + ' ' + formatRiderNum(st.id) + ' ' + st.name + '</td>' +
+          '<td>' + st.ones + '</td><td>' + st.twos + '</td><td>' + st.threes + '</td>' +
+          '<td>' + formatZerosCell(st) + '</td>' +
+          '<td>(' + (st.runs.filter(r => r !== '-').join(',') || '-') + ')</td>' +
+          '<td class="tot-col">' + st.total + '</td></tr>';
+      }).join('');
+      return;
+    }
+
+    if (cfg.isSprint) {
+      stSwitch.style.display = 'none';
+      stLeg.innerHTML = '<span><strong>GP = Punti Campionato (Assegnati solo in Finale Sprint)</strong></span>';
+      thead.innerHTML = '<tr><th>' + t('thPos') + '</th><th style="text-align:left;padding-left:7px;">' + t('thRider') + '</th><th>' + t('thRuns') + '</th><th>GP</th></tr>';
+      const list = getSortedQualifyingStandings();
+      list.sort((a, b) => (b.sprintPts !== a.sprintPts) ? (b.sprintPts - a.sprintPts) : (b.total - a.total));
+      document.querySelector('#standings-table tbody').innerHTML = list.map((st, idx) =>
+        '<tr><td><strong>' + (idx + 1) + '</strong></td><td class="name-col">#' + st.id + ' ' + st.name + '</td><td>(' + (st.runs.filter(r => r !== '-').join(',') || '-') + ')</td><td class="sgp-col">' + (st.sprintPts > 0 ? st.sprintPts : '-') + '</td></tr>'
+      ).join('');
+      return;
+    }
+
+    stSwitch.style.display = 'flex';
+    stLeg.innerHTML =
+      '<span><i class="legend-dot" style="background:var(--yellow)"></i>' + t('legFinalDirect') + '</span>' +
+      '<span><i class="legend-dot" style="background:var(--accent)"></i>' + t('legLcq') + '</span>' +
+      '<span><strong>' + t('legPtsInfo') + '</strong></span>';
+    thead.innerHTML = '<tr><th>' + t('thPos') + '</th><th style="text-align:left;padding-left:7px;">' + t('thRider') + '</th><th>1°</th><th>2°</th><th>3°</th><th>4°(R/X)</th><th>' + t('thRuns') + '</th><th>' + t('thTot') + '</th><th>LCQ</th><th>FIN</th><th>GP</th></tr>';
+
+    syncSpecialHeatsWithQualifiers();
+    const finalStandings = getFinalGpStandings();
+    const sgpMap = {};
+    finalStandings.forEach(st => { sgpMap[st.id] = { total: st.sgpPts }; });
+    const list = standingsMode === 'final' ? finalStandings : getSortedQualifyingStandings();
+
+    document.querySelector('#standings-table tbody').innerHTML = list.map((st, idx) => {
+      const rowCls = cfg.is14Format ? (idx === 1 ? 'final-line' : (idx === 5 ? 'qual-line' : '')) : (idx === 1 ? 'final-line' : (idx === 9 ? 'qual-line' : ''));
+      const sgpVal = sgpMap[st.id] ? sgpMap[st.id].total : '-';
+      const nextSt = list[idx + 1];
+      const canSwap = nextSt && st.total === nextSt.total && st.ones === nextSt.ones && st.twos === nextSt.twos && st.threes === nextSt.threes && st.finishedZeros === nextSt.finishedZeros;
+      const swapBtn = canSwap ? '<button type="button" class="btn-tie-swap" onclick="swapTiedRiders(' + st.id + ', ' + nextSt.id + ')">⇅</button>' : '';
+
+      return '<tr class="' + rowCls + '"><td><strong>' + (idx + 1) + '</strong>' + swapBtn + '</td>' +
+        '<td class="name-col">#' + st.id + ' ' + st.name + '</td>' +
+        '<td>' + st.ones + '</td><td>' + st.twos + '</td><td>' + st.threes + '</td>' +
+        '<td>' + formatZerosCell(st) + '</td>' +
+        '<td>(' + (st.runs.filter(r => r !== '-').join(',') || '-') + ')</td>' +
+        '<td class="tot-col">' + st.total + '</td><td class="sf-col">' + st.sfScore + '</td><td class="fin-col">' + st.finScore + '</td><td class="sgp-col">' + sgpVal + '</td></tr>';
+    }).join('');
+  }
+
+  function renderScorecard() {
+    const cfg = getModeConfig();
+    const thead = document.getElementById('scorecard-thead');
+    const tbody = document.querySelector('#scorecard-table tbody');
+    const allStats = computeStats();
+
+    if (cfg.isTeam) {
+      const maxCols = isDkMode() ? 7 : 6;
+      let seriesHeaders = '';
+      for (let s = 1; s <= maxCols; s++) seriesHeaders += '<th>S' + s + '</th>';
+      thead.innerHTML = '<tr><th>#</th><th style="text-align:left;padding-left:7px;">' + t('thRider') + '</th>' + seriesHeaders + '<th>' + t('thTot') + '</th></tr>';
+      const totals = computeTeamTotals();
+
+      function renderTeamRows(list) {
+        return list.map(st => {
+          const r = st.runs.filter(x => x !== '-');
+          let cells = '';
+          for (let c = 0; c < maxCols; c++) cells += '<td>' + (r[c] ?? '-') + '</td>';
+          return '<tr><td><strong>' + formatRiderNum(st.id) + '</strong></td><td class="name-col">' + st.name + '</td>' + cells + '<td class="tot-col">' + st.total + '</td></tr>';
+        }).join('');
+      }
+
+      const colSpanCount = maxCols + 3;
+      if (cfg.teamsCount === 4) {
+        tbody.innerHTML =
+          '<tr class="team-sep-row"><td colspan="' + colSpanCount + '">🔴 ' + state.teamNames.a + ' — ' + t('totalLbl') + ' ' + totals.a + ' pt</td></tr>' + renderTeamRows(allStats.filter(s => s.team === 'A')) +
+          '<tr class="team-sep-row"><td colspan="' + colSpanCount + '">🔵 ' + state.teamNames.b + ' — ' + t('totalLbl') + ' ' + totals.b + ' pt</td></tr>' + renderTeamRows(allStats.filter(s => s.team === 'B')) +
+          '<tr class="team-sep-row"><td colspan="' + colSpanCount + '">⚪ ' + state.teamNames.c + ' — ' + t('totalLbl') + ' ' + totals.c + ' pt</td></tr>' + renderTeamRows(allStats.filter(s => s.team === 'C')) +
+          '<tr class="team-sep-row"><td colspan="' + colSpanCount + '">🟡 ' + state.teamNames.d + ' — ' + t('totalLbl') + ' ' + totals.d + ' pt</td></tr>' + renderTeamRows(allStats.filter(s => s.team === 'D'));
+      } else {
+        tbody.innerHTML =
+          '<tr class="team-sep-row"><td colspan="' + colSpanCount + '">🔴🔵 ' + state.teamNames.a + ' — ' + t('totalLbl') + ' ' + totals.a + ' pt</td></tr>' + renderTeamRows(allStats.filter(s => s.team === 'A')) +
+          '<tr class="team-sep-row"><td colspan="' + colSpanCount + '">⚪🟡 ' + state.teamNames.b + ' — ' + t('totalLbl') + ' ' + totals.b + ' pt</td></tr>' + renderTeamRows(allStats.filter(s => s.team === 'B'));
+      }
+      return;
+    }
+
+    if (cfg.isSprint) {
+      thead.innerHTML = '<tr><th>#</th><th style="text-align:left;padding-left:7px;">' + t('thRider') + '</th><th>Q1</th><th>Q2</th><th>' + t('thFin') + '</th><th>GP</th></tr>';
+      tbody.innerHTML = allStats.map(st => {
+        const r = st.runs.filter(x => x !== '-');
+        return '<tr><td><strong>' + st.id + '</strong></td><td class="name-col">' + st.name + '</td><td>' + (r[0] ?? '-') + '</td><td>' + (r[1] ?? '-') + '</td><td>' + (r[2] ?? '-') + '</td><td class="sgp-col">' + (st.sprintPts > 0 ? st.sprintPts : '-') + '</td></tr>';
+      }).join('');
+      return;
+    }
+
+    thead.innerHTML = '<tr><th>#</th><th style="text-align:left;padding-left:7px;">' + t('thRider') + '</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>' + t('thTot') + '</th><th>' + (cfg.is14Format ? 'LC' : 'LCQ') + '</th><th>' + t('thFin') + '</th><th>GP</th></tr>';
+    syncSpecialHeatsWithQualifiers();
+    const finalStandings = getFinalGpStandings();
+    const sgpMap = {};
+    finalStandings.forEach(st => { sgpMap[st.id] = { total: st.sgpPts }; });
+
+    tbody.innerHTML = allStats.map(st => {
+      const r = st.runs;
+      const sgpVal = sgpMap[st.id] ? sgpMap[st.id].total : '-';
+      return '<tr><td><strong>' + st.id + '</strong></td><td class="name-col">' + st.name + '</td>' +
+        '<td>' + (r[0] ?? '-') + '</td><td>' + (r[1] ?? '-') + '</td><td>' + (r[2] ?? '-') + '</td><td>' + (r[3] ?? '-') + '</td><td>' + (r[4] ?? '-') + '</td>' +
+        '<td class="tot-col">' + st.total + '</td><td class="sf-col">' + st.sfScore + '</td><td class="fin-col">' + st.finScore + '</td><td class="sgp-col">' + sgpVal + '</td></tr>';
+    }).join('');
+  }
+
+  function renderRidersInputs() {
+    const cfg = getModeConfig();
+    const container = document.getElementById('riders-inputs');
+    const ocrTargetBar = document.getElementById('ocr-team-target-bar');
+
+    if (!cfg.isTeam) {
+      if (ocrTargetBar) ocrTargetBar.classList.remove('visible');
+      let html = '';
+      const limit = cfg.isSprint ? 16 : (cfg.is14Format ? 14 : 18);
+      for (let r = 1; r <= limit; r++) {
+        html += '<div class="rider-input-row"><span>#' + r + '</span>' +
+          '<input type="text" value="' + (state.riders[r] || '').replace(/"/g, '&quot;') + '" oninput="updateRiderName(' + r + ', this.value)"></div>';
+      }
+      container.innerHTML = html;
+      return;
+    }
+
+    if (ocrTargetBar) {
+      ocrTargetBar.classList.add('visible');
+      if (cfg.teamsCount === 4) {
+        ocrTargetBar.innerHTML =
+          `<button type="button" class="${ocrTeamTarget === 'both' ? 'active' : ''}" onclick="setOcrTarget('both')">${t('ocrTargetAll4')}</button>` +
+          `<button type="button" class="${ocrTeamTarget === 'a' ? 'active' : ''}" onclick="setOcrTarget('a')">${t('ocrTargetT1')}</button>` +
+          `<button type="button" class="${ocrTeamTarget === 'b' ? 'active' : ''}" onclick="setOcrTarget('b')">${t('ocrTargetT2')}</button>` +
+          `<button type="button" class="${ocrTeamTarget === 'c' ? 'active' : ''}" onclick="setOcrTarget('c')">${t('ocrTargetT3')}</button>` +
+          `<button type="button" class="${ocrTeamTarget === 'd' ? 'active' : ''}" onclick="setOcrTarget('d')">${t('ocrTargetT4')}</button>`;
+      } else {
+        ocrTargetBar.innerHTML =
+          `<button type="button" class="${ocrTeamTarget === 'both' ? 'active' : ''}" onclick="setOcrTarget('both')">${t('ocrTargetBoth')}</button>` +
+          `<button type="button" class="${ocrTeamTarget === 'a' ? 'active' : ''}" onclick="setOcrTarget('a')">${t('ocrTargetHome')}</button>` +
+          `<button type="button" class="${ocrTeamTarget === 'b' ? 'active' : ''}" onclick="setOcrTarget('b')">${t('ocrTargetAway')}</button>`;
+      }
+    }
+
+    if (cfg.teamsCount === 4) {
+      const blocks = [
+        { side: 'a', base: 0, cls: 'team-a', badge: '🔴', ph: 'team1Ph' },
+        { side: 'b', base: 100, cls: 'team-blue', badge: '🔵', ph: 'team2Ph' },
+        { side: 'c', base: 200, cls: 'team-white', badge: '⚪', ph: 'team3Ph' },
+        { side: 'd', base: 300, cls: 'team-yellow', badge: '🟡', ph: 'team4Ph' }
+      ];
+      container.innerHTML = blocks.map(b => {
+        let html = '<div class="team-riders-card ' + b.cls + '">' +
+          '<div class="team-name-input-row"><span>' + b.badge + '</span><input type="text" value="' + (state.teamNames[b.side] || '').replace(/"/g, '&quot;') + '" placeholder="' + t(b.ph) + '" oninput="updateTeamName(\'' + b.side + '\', this.value)"></div>';
+        for (let i = 1; i <= cfg.ridersPerTeam; i++) {
+          const rId = b.base + i;
+          const roleKey = cfg.roles && cfg.roles[i] ? cfg.roles[i] : null;
+          const roleTxt = roleKey ? ' (' + t(roleKey) + ')' : '';
+          html += '<div class="rider-input-row"><span>#' + i + roleTxt + '</span>' +
+            '<input type="text" value="' + (state.riders[rId] || '').replace(/"/g, '&quot;') + '" oninput="updateRiderName(' + rId + ', this.value)"></div>';
+        }
+        return html + '</div>';
+      }).join('');
+      return;
+    }
+
+    let htmlA = '<div class="team-riders-card team-a">' +
+      '<div class="team-name-input-row"><span>🔴🔵</span><input type="text" value="' + (state.teamNames.a || '').replace(/"/g, '&quot;') + '" placeholder="' + t('teamHomePh') + '" oninput="updateTeamName(\'a\', this.value)"></div>';
+    for (let i = 1; i <= cfg.ridersPerTeam; i++) {
+      const roleKey = cfg.roles && cfg.roles[i] ? cfg.roles[i] : null;
+      const roleTxt = roleKey ? ' (' + t(roleKey) + ')' : '';
+      htmlA += '<div class="rider-input-row"><span>#' + i + roleTxt + '</span>' +
+        '<input type="text" value="' + (state.riders[i] || '').replace(/"/g, '&quot;') + '" oninput="updateRiderName(' + i + ', this.value)"></div>';
+    }
+    htmlA += '</div>';
+
+    let htmlB = '<div class="team-riders-card team-b">' +
+      '<div class="team-name-input-row"><span>⚪🟡</span><input type="text" value="' + (state.teamNames.b || '').replace(/"/g, '&quot;') + '" placeholder="' + t('teamAwayPh') + '" oninput="updateTeamName(\'b\', this.value)"></div>';
+    for (let i = 1; i <= cfg.ridersPerTeam; i++) {
+      const rId = 100 + i;
+      const roleKey = cfg.roles && cfg.roles[i] ? cfg.roles[i] : null;
+      const roleTxt = roleKey ? ' (' + t(roleKey) + ')' : '';
+      htmlB += '<div class="rider-input-row"><span>#' + i + roleTxt + '</span>' +
+        '<input type="text" value="' + (state.riders[rId] || '').replace(/"/g, '&quot;') + '" oninput="updateRiderName(' + rId + ', this.value)"></div>';
+    }
+    htmlB += '</div>';
+
+    container.innerHTML = htmlA + htmlB;
+  }
+
+  function getPodiumSummary(raceState) {
+    if (isFourTeamMode(raceState)) {
+      const totals = computeTeamTotals(raceState);
+      const tn = raceState.teamNames || {};
+      return `🏆 ${tn.a || 'Sq.1'}: ${totals.a} • ${tn.b || 'Sq.2'}: ${totals.b} • ${tn.c || 'Sq.3'}: ${totals.c} • ${tn.d || 'Sq.4'}: ${totals.d}`;
+    }
+    if (isTeamMode(raceState)) {
+      const totals = computeTeamTotals(raceState);
+      return "👥 " + (raceState.teamNames ? raceState.teamNames.a : t('teamHomeDef')) + " " + totals.a + " : " + totals.b + " " + (raceState.teamNames ? raceState.teamNames.b : t('teamAwayDef'));
+    }
+    const cfg = getModeConfig(raceState);
+    const finalHeatIdx = cfg.isSprint ? 12 : (cfg.is14Format ? 19 : 22);
+    const finalSlots = raceState.heats[finalHeatIdx] ? raceState.heats[finalHeatIdx].slots : [];
+    const sWin = cfg.isSprint ? 4 : 3, sSec = cfg.isSprint ? 3 : 2, sTrd = cfg.isSprint ? 2 : 1;
+    const p1 = finalSlots.find(s => s.score === sWin && s.riderId);
+    const p2 = finalSlots.find(s => s.score === sSec && s.riderId);
+    const p3 = finalSlots.find(s => s.score === sTrd && s.riderId);
+    if (p1) {
+      return "🥇 1° " + raceState.riders[p1.riderId] +
+        (p2 ? " • 🥈 2° " + raceState.riders[p2.riderId] : "") +
+        (p3 ? " • 🥉 3° " + raceState.riders[p3.riderId] : "");
+    }
+    return t('raceInProgress');
+  }
+
+  function setOcrTarget(target) {
+    ocrTeamTarget = target;
+    renderRidersInputs();
+  }
+
+  function parseAndAssignRiders(rawText) {
+    const cfg = getModeConfig();
+    const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 2);
+    const extractedNames = [];
+    const nameRegex = /^[\d\W_]*([A-Za-zÀ-ÖØ-öø-ÿĀ-ž][A-Za-zÀ-ÖØ-öø-ÿĀ-ž\s\-\']{2,})/;
+    const bannedWords = ["team", "rider", "riders", "heat", "total", "speedway", "manager", "pt", "pts"];
+
+    lines.forEach(line => {
+      const match = line.match(nameRegex);
+      if (match && match[1]) {
+        let cleanName = match[1].trim();
+        let lowerName = cleanName.toLowerCase();
+        const isBanned = bannedWords.some(bw => lowerName === bw || lowerName.includes(" " + bw + " "));
+        if (!isBanned && cleanName.length >= 4) {
+          cleanName = cleanName.toLowerCase().replace(/\b\w/g, s => s.toUpperCase());
+          extractedNames.push(cleanName);
+        }
+      }
+    });
+
+    if (extractedNames.length === 0) {
+      alert("⚠️ Nessun nome valido trovato. L'immagine è mossa o illeggibile.");
+      return;
+    }
+
+    if (!cfg.isTeam) {
+      let limit = cfg.isSprint ? 16 : (cfg.is14Format ? 14 : 18);
+      for (let i = 0; i < Math.min(extractedNames.length, limit); i++) {
+        updateRiderName(i + 1, extractedNames[i]);
+      }
+    } else if (cfg.teamsCount === 4) {
+      const max = cfg.ridersPerTeam;
+      const baseMap = { a: 0, b: 100, c: 200, d: 300 };
+      if (baseMap[ocrTeamTarget] !== undefined) {
+        const base = baseMap[ocrTeamTarget];
+        for (let i = 0; i < Math.min(extractedNames.length, max); i++) {
+          updateRiderName(base + i + 1, extractedNames[i]);
+        }
+      } else {
+        [0, 100, 200, 300].forEach((base, tIdx) => {
+          const offset = tIdx * max;
+          for (let i = 0; i < Math.min(extractedNames.length - offset, max); i++) {
+            if (extractedNames[i + offset]) updateRiderName(base + i + 1, extractedNames[i + offset]);
+          }
+        });
+      }
+    } else {
+      const max = cfg.ridersPerTeam;
+      if (ocrTeamTarget === 'a') {
+        for (let i = 0; i < Math.min(extractedNames.length, max); i++) updateRiderName(i + 1, extractedNames[i]);
+      } else if (ocrTeamTarget === 'b') {
+        for (let i = 0; i < Math.min(extractedNames.length, max); i++) updateRiderName(100 + i + 1, extractedNames[i]);
+      } else {
+        for (let i = 0; i < Math.min(extractedNames.length, max); i++) updateRiderName(i + 1, extractedNames[i]);
+        const offset = max;
+        for (let i = 0; i < Math.min(extractedNames.length - offset, max); i++) updateRiderName(100 + i + 1, extractedNames[i + offset]);
+      }
+    }
+
+    renderRidersInputs();
+    renderCurrentHeat();
+  }
 
   initState();
   renderCurrentHeat();
 </script>
 </body>
 </html>
+
