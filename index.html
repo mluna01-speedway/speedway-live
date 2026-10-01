@@ -4902,6 +4902,108 @@ Object.assign(I18N.it, {
       }
     }
   };
+/* =========================================================================
+     MODULO SIGLE UFFICIALI POLACCHE (D, U, W, T, NS, !) PER LINGUA/LEGA PL
+     ========================================================================= */
+
+  function usePolishCodes() {
+    return currentLang === 'pl' || (state && state.mode === 'pl');
+  }
+
+  function getDisplayCode(rawCode) {
+    if (!usePolishCodes()) return rawCode;
+    const map = { R: 'D', F: 'U', X: 'W', T: 'T', NS: 'NS', W: '!' };
+    return map[rawCode] || rawCode;
+  }
+
+  // 1. Aggiorna l'elenco codici con l'etichetta visiva corretta (R->D, F->U, X->W, W->!)
+  function getSpecialCodes() {
+    return [
+      { code: 'R',  disp: getDisplayCode('R'),  short: t('codeR'),  full: getDisplayCode('R') + ': ' + t('codeR') },
+      { code: 'F',  disp: getDisplayCode('F'),  short: t('codeF'),  full: getDisplayCode('F') + ': ' + t('codeF') },
+      { code: 'X',  disp: getDisplayCode('X'),  short: t('codeX'),  full: getDisplayCode('X') + ': ' + t('codeX') },
+      { code: 'T',  disp: getDisplayCode('T'),  short: t('codeT'),  full: getDisplayCode('T') + ': ' + t('codeT') },
+      { code: 'NS', disp: getDisplayCode('NS'), short: t('codeNS'), full: getDisplayCode('NS') + ': ' + t('codeNS') },
+      { code: 'W',  disp: getDisplayCode('W'),  short: t('codeW'),  full: getDisplayCode('W') + ': ' + t('codeW') }
+    ];
+  }
+
+  // 2. Aggiorna le 3 barre legenda in fondo a Batterie, Tabellone e Classifica
+  function refreshCodesLegends() {
+    const wDisp = getDisplayCode('W');
+    const codesHtml = getSpecialCodes()
+      .filter(c => c.code !== 'W')
+      .map(c => '<span><strong>' + c.disp + '</strong>: ' + c.short + '</span>')
+      .join('');
+    ['heats-codes-legend', 'card-codes-legend', 'standings-codes-legend'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = codesHtml + '<span><strong>' + wDisp + '</strong>: ' + t('codeW') + '</span>';
+    });
+  }
+
+  const _codesPrevApplyTranslations = applyTranslations;
+  applyTranslations = function() {
+    _codesPrevApplyTranslations();
+    refreshCodesLegends();
+  };
+
+  // 3. Converte automaticamente i codici nelle serie del pilota (Tabellone, Classifica e Locandina PNG)
+  const _codesPrevComputeStats = computeStats;
+  computeStats = function(raceObj) {
+    const stats = _codesPrevComputeStats(raceObj);
+    if (!usePolishCodes()) return stats;
+    stats.forEach(st => {
+      st.runs = st.runs.map(r => {
+        if (r === '-') return '-';
+        if (r === 'W') return '!';
+        const hasWarn = r.endsWith('W') && r.length > 1;
+        const base = hasWarn ? r.slice(0, -1) : r;
+        const mappedBase = (base === 'R' ? 'D' : (base === 'F' ? 'U' : (base === 'X' ? 'W' : base)));
+        return mappedBase + (hasWarn ? '!' : '');
+      });
+      st.nonFinished = st.nonFinished.map(c => (c === 'R' ? 'D' : (c === 'F' ? 'U' : (c === 'X' ? 'W' : c))));
+    });
+    return stats;
+  };
+
+  // 4. Aggiorna i pulsanti nelle Batterie (mostra D, U, W, T, NS, ! quando attivo il Polacco)
+  const _codesPrevRenderCurrentHeat = renderCurrentHeat;
+  renderCurrentHeat = function() {
+    _codesPrevRenderCurrentHeat();
+    refreshCodesLegends();
+    if (!usePolishCodes()) return;
+
+    const specMap = { R: 'D', F: 'U', X: 'W', T: 'T', NS: 'NS' };
+    document.querySelectorAll('#gates-container .gate-card .special-btns button').forEach(btn => {
+      const onclickAttr = btn.getAttribute('onclick') || '';
+      const spanEl = btn.querySelector('span');
+      const smallEl = btn.querySelector('small');
+      if (!spanEl) return;
+
+      if (onclickAttr.includes('toggleWarning')) {
+        spanEl.textContent = '!';
+        if (smallEl && currentLang === 'pl') smallEl.textContent = 'Ostrzeżenie';
+      } else {
+        Object.keys(specMap).forEach(k => {
+          if (onclickAttr.includes("'" + k + "'")) {
+            spanEl.textContent = specMap[k];
+          }
+        });
+      }
+    });
+  };
+
+  // 5. Aggiorna l'intestazione colonna "4°(R/X)" -> "4°(D/W)" in Classifica e Locandina quando in Polacco
+  const _codesPrevRenderStandings = renderStandings;
+  renderStandings = function() {
+    _codesPrevRenderStandings();
+    if (usePolishCodes()) {
+      const ths = document.querySelectorAll('#standings-thead th');
+      ths.forEach(th => {
+        if (th.textContent === '4°(R/X)') th.textContent = '4°(D/W)';
+      });
+    }
+  };
 
   initState();
   renderCurrentHeat();
