@@ -578,9 +578,23 @@
 <!-- Banner informativo Lega Svedese nella scheda Piloti -->
     <div class="dk-info-banner" id="se-banner-riders" style="border-left-color: var(--yellow); border-color: rgba(253, 216, 53, 0.5);">
       <div class="dk-info-banner-top" style="color: var(--yellow);">
-        <span>🇸🇪 <span data-i18n="seNoticeTitle">Regolamento Dinamico Bauhaus-Ligan (SVEMO)</span></span>
+        <span>🇸🇪 <span data-i18n="seNoticeTitle">Regolamento Dinamico Lega Svedese  (Elitserien)</span></span>
       </div>
       <div data-i18n="seNoticeBody"></div>
+    </div>
+<!-- Banner informativo Lega Inglese nella scheda Piloti -->
+    <div class="dk-info-banner" id="uk-banner-riders" style="border-left-color: var(--blue); border-color: rgba(30, 136, 229, 0.5);">
+      <div class="dk-info-banner-top" style="color: #64b5f6;">
+        <span>🇬🇧 <span data-i18n="ukNoticeTitle">Regolamento Dinamico Lega Inglese (Formato Premiership)</span></span>
+      </div>
+      <div data-i18n="ukNoticeBody"></div>
+    </div>
+<!-- Banner informativo Lega Polacca nella scheda Piloti -->
+    <div class="dk-info-banner" id="pl-banner-riders" style="border-left-color: #ffffff; border-color: rgba(229, 57, 53, 0.65);">
+      <div class="dk-info-banner-top" style="color: #ff8a80;">
+        <span>🇵🇱 <span data-i18n="plNoticeTitle">Regolamento Dinamico Lega Polacca (Formato Ekstraliga)</span></span>
+      </div>
+      <div data-i18n="plNoticeBody"></div>
     </div>
 
     <div id="riders-inputs"></div>
@@ -601,9 +615,23 @@
 <!-- Banner informativo Lega Svedese nella scheda Batterie -->
     <div class="dk-info-banner" id="se-banner-heats" style="border-left-color: var(--yellow); border-color: rgba(253, 216, 53, 0.5);">
       <div class="dk-info-banner-top" style="color: var(--yellow);">
-        <span>🇸🇪 <span data-i18n="seNoticeTitle">Regolamento Dinamico Bauhaus-Ligan (SVEMO)</span></span>
+        <span>🇸🇪 <span data-i18n="seNoticeTitle">Regolamento Dinamico Lega Svedese (Eliteserien)</span></span>
       </div>
       <div data-i18n="seNoticeBody"></div>
+    </div>
+<!-- Banner informativo Lega Inglese nella scheda Batterie -->
+    <div class="dk-info-banner" id="uk-banner-heats" style="border-left-color: var(--blue); border-color: rgba(30, 136, 229, 0.5);">
+      <div class="dk-info-banner-top" style="color: #64b5f6;">
+        <span>🇬🇧 <span data-i18n="ukNoticeTitle">Regolamento Dinamico Lega Inglese (Formato Premiership)</span></span>
+      </div>
+      <div data-i18n="ukNoticeBody"></div>
+    </div>
+<!-- Banner informativo Lega Polacca nella scheda Batterie -->
+    <div class="dk-info-banner" id="pl-banner-heats" style="border-left-color: #ffffff; border-color: rgba(229, 57, 53, 0.65);">
+      <div class="dk-info-banner-top" style="color: #ff8a80;">
+        <span>🇵🇱 <span data-i18n="plNoticeTitle">Regolamento Dinamico Lega Polacca (Formato Ekstraliga)</span></span>
+      </div>
+      <div data-i18n="plNoticeBody"></div>
     </div>
 
     <!-- Barra Batterie di Spareggio (compare SOLO dall'ultima batteria in poi) -->
@@ -1585,9 +1613,9 @@
      MODULO LEGA SVEDESE (SVEMO BAUHAUS-LIGAN) + SPAREGGI MULTIPLI A FINE GARA
      ========================================================================= */
 
-  Object.assign(I18N.it, {
-    seNoticeTitle: "Regolamento Dinamico Bauhaus-Ligan (SVEMO)",
-    seNoticeBody: "Tabella ufficiale SVEMO a 15 batterie precaricata (Piloti #1–#5: 4 uscite, Riserve #6–#7: 3 uscite). Per gestire Riserve Tattiche (da -6 pt tra B5 e B13), Rider Replacement (R/R), cambi riserva e scelte nelle Nominate 14–15, usa liberamente i menù a tendina di piloti e corsie.",
+Object.assign(I18N.it, {
+    seNoticeTitle: "Regolamento Dinamico Lega Svedese (Formato Elitserien)",
+    seNoticeBody: "Tabella base a 15 batterie precaricata (Piloti #1–#5: 4 uscite, Riserve #6–#7: 3 uscite). Per gestire Riserve Tattiche (da -6 pt tra B5 e B13), Rider Replacement (R/R), cambi riserva e scelte nelle Nominate 14–15, usa liberamente i menù a tendina di piloti e corsie.",
     seHeat2Info: "Batteria 2 (Riserve #6–#7): Batteria riservata ai numeri #6 e #7 delle due squadre.",
     seHeat14Info: "Batteria 14 (Nominata): I Team Manager scelgono 2 piloti ciascuno (esclusi i 2 migliori punteggi destinati alla Batteria 15; in caso di parità decide il Manager). La squadra in svantaggio sceglie le corsie.",
     seHeat15Info: "Batteria 15 (Finale Nominata): Corrono i 2 piloti con il punteggio più alto di ogni squadra (in caso di parità per il 2° posto sceglie il Manager). Seleziona piloti e corsie dai menù.",
@@ -1600,8 +1628,8 @@
   });
 
   Object.assign(I18N.en, {
-    seNoticeTitle: "Dynamic Bauhaus-Ligan Rules (SVEMO)",
-    seNoticeBody: "Official 15-heat SVEMO schedule pre-loaded (Riders #1–#5: 4 rides, Reserves #6–#7: 3 rides). For Tactical Reserves (-6 pts in H5–H13), Rider Replacement (R/R), reserve switches and Nominated Heats 14–15, freely select riders and gates via the dropdowns.",
+    seNoticeTitle: "Dynamic Swedish League Rules (Elitserien Format)",
+    seNoticeBody: "Base 15-heat schedule pre-loaded (Riders #1–#5: 4 rides, Reserves #6–#7: 3 rides). For Tactical Reserves (-6 pts in H5–H13), Rider Replacement (R/R), reserve switches and Nominated Heats 14–15, freely select riders and gates via the dropdowns.",
     seHeat2Info: "Heat 2 (Reserves #6–#7): Dedicated heat for reserves #6 and #7 of both teams.",
     seHeat14Info: "Heat 14 (Nominated): Team Managers nominate 2 riders each (excluding the top 2 scorers reserved for Heat 15; ties decided by Manager). Trailing team chooses gates.",
     seHeat15Info: "Heat 15 (Final Nominated): Contested by the top 2 highest-scoring riders from each team (ties decided by Manager). Select riders and gates from the dropdowns.",
@@ -1614,22 +1642,22 @@
   });
 
   Object.assign(I18N.pl, {
-    seNoticeTitle: "Dynamiczny Regulamin Bauhaus-Ligan (SVEMO)",
-    seNoticeBody: "Oficjalna tabela SVEMO (15 biegów: #1–#5 po 4 starty, rezerwy #6–#7 po 3 starty). Dla rezerw taktycznych (-6 pkt w biegach 5–13), Zastępstwa Zawodnika (R/R) oraz biegów nominowanych 14–15 użyj list rozwijanych zawodników i pól startowych.",
+    seNoticeTitle: "Dynamiczny Regulamin Ligi Szwedzkiej (Format Elitserien)",
+    seNoticeBody: "Tabela podstawowa (15 biegów: #1–#5 po 4 starty, rezerwy #6–#7 po 3 starty). Dla rezerw taktycznych (-6 pkt w biegach 5–13), Zastępstwa Zawodnika (R/R) oraz biegów nominowanych 14–15 użyj list rozwijanych zawodników i pól startowych.",
     seHeat2Info: "Bieg 2 (Rezerwy #6–#7): Bieg przeznaczony dla zawodników rezerwowych nr 6 i 7 obu drużyn.",
     seHeat14Info: "Bieg 14 (Nominowany): Menedżerowie wybierają po 2 zawodników (z wyłączeniem 2 najlepiej punktujących przeznaczonych do Biegu 15).",
     seHeat15Info: "Bieg 15 (Nominowany Finałowy): Startuje 2 najlepiej punktujących zawodników z każdej drużyny. Wybierz zawodników i pola z list.",
     tieBreakLbl: "Bieg Dodatkowy",
     btnAddTieBreak: "➕ Dodaj Bieg Dodatkowy (Spareggio)",
-    btnRemoveTieBreak: "🗑 Usuń Ostatni Bieg Dodatkowy",
+    btnRemoveTieBreak: "🗑️ Usuń Ostatni Bieg Dodatkowy",
     tieBreakCardTitle: "⚡ BIEG DODATKOWY / SUPER HEAT",
     tieBreakCardSub: "Wybierz zawodników i pola startowe z list rozwijanych. Możesz wybrać punktację 3-2-1-0 lub Super Heat 4-3-2-0:",
     scoringModeLbl: "Punktacja biegu:"
   });
 
   Object.assign(I18N.da, {
-    seNoticeTitle: "Dynamiske Regler Bauhaus-Ligan (SVEMO)",
-    seNoticeBody: "Officielt SVEMO 15-heats skema indlæst (#1–#5: 4 heats, reserver #6–#7: 3 heats). Ved Taktisk Reserve (-6 pt i H5–H13), Rider Replacement (R/R) og Nominerede Heats 14–15 vælges kørere og startbaner frit i rullemenuerne.",
+    seNoticeTitle: "Dynamiske Regler Svensk Liga (Elitserien Format)",
+    seNoticeBody: "15-heats grundskema indlæst (#1–#5: 4 heats, reserver #6–#7: 3 heats). Ved Taktisk Reserve (-6 pt i H5–H13), Rider Replacement (R/R) og Nominerede Heats 14–15 vælges kørere og startbaner frit i rullemenuerne.",
     seHeat2Info: "Heat 2 (Reserver #6–#7): Reserveheat for nr. 6 og 7 fra begge hold.",
     seHeat14Info: "Heat 14 (Nomineret): Holdlederne vælger 2 kørere hver (undtagen de 2 højest scorende kørere, som kører Heat 15).",
     seHeat15Info: "Heat 15 (Nomineret Finale): De 2 højest scorende kørere fra hvert hold. Vælg kørere og startbaner i rullemenuerne.",
@@ -1642,8 +1670,8 @@
   });
 
   Object.assign(I18N.sv, {
-    seNoticeTitle: "Dynamiska Regler Bauhaus-Ligan (SVEMO)",
-    seNoticeBody: "Officiellt SVEMO 15-heatschema förladdat (Förare #1–#5: 4 heat, Reserver #6–#7: 3 heat). För Taktisk Reserv (-6 p i H5–H13), Riders Replacement (R/R), reservbyten och Nomineringsheat 14–15, välj fritt förare och startspår i rullgardinsmenyerna.",
+    seNoticeTitle: "Dynamiska Regler Svenska Ligan (Elitserien Format)",
+    seNoticeBody: "15-heats grundschema förladdat (Förare #1–#5: 4 heat, Reserver #6–#7: 3 heat). För Taktisk Reserv (-6 p i H5–H13), Riders Replacement (R/R), reservbyten och Nomineringsheat 14–15, välj fritt förare och startspår i rullgardinsmenyerna.",
     seHeat2Info: "Heat 2 (Reserver #6–#7): Reservheat för #6 och #7 i båda lagen.",
     seHeat14Info: "Heat 14 (Nomineringsheat): Lagledarna väljer 2 förare var (exklusive de 2 poängbästa förarna som kör Heat 15; vid lika poäng avgör lagledaren). Lag i underläge väljer spår.",
     seHeat15Info: "Heat 15 (Nomineringsheat Final): Körs av de 2 poängbästa förarna i respektive lag efter 13 heat. Välj förare och startspår i menyerna.",
@@ -1655,7 +1683,6 @@
     scoringModeLbl: "Poängsystem:"
   });
 
-  // Tabella Ufficiale SVEMO Bauhaus-Ligan (Elitserien) 15 Batterie corretta
   LEAGUE_CONFIGS.se.schedule = [
     [1, 2, 101, 102], // H1
     [6, 7, 106, 107], // H2 (Riserve #6-#7)
@@ -4538,6 +4565,343 @@
     renderRidersInputs();
     renderCurrentHeat();
   }
+/* =========================================================================
+     MODULO LEGA INGLESE (FORMATO PREMIERSHIP) - TABELLA CORRETTA & REGOLE UK
+     ========================================================================= */
+
+  Object.assign(I18N.it, {
+    ukNoticeTitle: "Regolamento Dinamico Lega Inglese (Formato Premiership)",
+    ukNoticeBody: "Tabella base a 15 batterie precaricata (Batterie 1–14 programmate con 4 uscite per ciascuno dei 7 piloti + Batteria 15 Nominata). Per gestire la Riserva Tattica (max 1 per squadra a -6 pt tra B5 e B14), Rider Replacement (R/R), scambi tra Riserve (#6 e #7 Rising Star) e scelte in Batteria 15, usa liberamente i menù a tendina di piloti e corsie.",
+    ukHeat2Info: "Batteria 2 (Riserve #6–#7): Batteria riservata alla Riserva #6 e al #7 (Rising Star) di entrambe le squadre.",
+    ukHeat14Info: "Batteria 14 (#4 + Riserve): Batteria programmata (#4 e #6 Casa vs #4 e #7 Ospiti). Verifica eventuali scambi tra riserve (#6/#7) o l'uso della Riserva Tattica (-6 pt).",
+    ukHeat15Info: "Batteria 15 (Unica Nominata Finale): I Team Manager scelgono liberamente 2 piloti ciascuno. Seleziona piloti e corsie (1-3 o 2-4) dai menù a tendina. In caso di 45-45 usa il pulsante Spareggio (Super Heat 4-3-2-0)."
+  });
+
+  Object.assign(I18N.en, {
+    ukNoticeTitle: "Dynamic British League Rules (Premiership Format)",
+    ukNoticeBody: "Base 15-heat schedule pre-loaded (Heats 1–14 programmed with 4 rides for each of the 7 riders + Heat 15 Nominated). To manage Tactical Substitute (max 1 per team at -6 pts in H5–H14), Rider Replacement (R/R), Reserve switches (#6 & #7 Rising Star) and Heat 15 nominations, freely use the rider and gate dropdowns.",
+    ukHeat2Info: "Heat 2 (Reserves #6–#7): Dedicated heat for Reserve #6 and #7 (Rising Star) of both teams.",
+    ukHeat14Info: "Heat 14 (#4 + Reserves): Programmed heat (Home #4 & #6 vs Away #4 & #7). Check for reserve switches (#6/#7) or Tactical Substitute (-6 pts).",
+    ukHeat15Info: "Heat 15 (Final Nominated Heat): Team Managers nominate 2 riders each. Select riders and gates (1-3 or 2-4) via dropdowns. If tied 45-45, use the Tie-Break button (Super Heat 4-3-2-0)."
+  });
+
+  Object.assign(I18N.pl, {
+    ukNoticeTitle: "Dynamiczny Regulamin Ligi Angielskiej (Format Premiership)",
+    ukNoticeBody: "Tabela podstawowa (15 biegów: Biegi 1–14 programowe po 4 starty dla każdego z 7 zawodników + Bieg 15 Nominowany). Dla Rezerwy Taktycznej (max 1 na mecz przy -6 pkt w biegach 5–14), Zastępstwa Zawodnika (R/R), zmian rezerwowych (#6 i #7 Rising Star) oraz Biegu 15 użyj list rozwijanych.",
+    ukHeat2Info: "Bieg 2 (Rezerwy #6–#7): Bieg dla zawodników rezerwowych nr 6 i 7 (Rising Star) obu drużyn.",
+    ukHeat14Info: "Bieg 14 (#4 + Rezerwy): Bieg programowy (Gospodarze #4 i #6 vs Goście #4 i #7). Sprawdź ewentualne zmiany rezerwowych (#6/#7) lub rezerwę taktyczną.",
+    ukHeat15Info: "Bieg 15 (Bieg Nominowany Finałowy): Menedżerowie nominują po 2 zawodników. Wybierz zawodników i pola z list. Przy remisie 45:45 dodaj Super Heat (4-3-2-0)."
+  });
+
+  Object.assign(I18N.da, {
+    ukNoticeTitle: "Dynamiske Regler Engelsk Liga (Premiership Format)",
+    ukNoticeBody: "15-heats grundskema indlæst (Heat 1–14 fastlagt med 4 heats pr. kører + Heat 15 Nomineret). Ved Taktisk Reserve (max 1 pr. hold ved -6 pt i H5–H14), Rider Replacement (R/R), reserveskift (#6 og #7 Rising Star) og Heat 15 vælges kørere og startbaner frit i rullemenuerne.",
+    ukHeat2Info: "Heat 2 (Reserver #6–#7): Reserveheat for nr. 6 og nr. 7 (Rising Star) fra begge hold.",
+    ukHeat14Info: "Heat 14 (#4 + Reserver): Fastlagt heat (Hjemme #4 & #6 mod Ude #4 & #7). Tjek eventuelle reserveskift (#6/#7) eller Taktisk Reserve.",
+    ukHeat15Info: "Heat 15 (Nomineret Finale): Holdlederne vælger 2 kørere hver. Vælg kørere og startbaner i rullemenuerne. Ved 45-45 bruges Ekstra Heat (Super Heat 4-3-2-0)."
+  });
+
+  Object.assign(I18N.sv, {
+    ukNoticeTitle: "Dynamiska Regler Engelska Ligan (Premiership Format)",
+    ukNoticeBody: "15-heats grundschema förladdat (Heat 1–14 fasta med 4 heat per förare + Heat 15 Nomineringsheat). För Taktisk Reserv (max 1 per lag vid -6 p i H5–H14), Riders Replacement (R/R), reservbyten (#6 och #7 Rising Star) och Heat 15, välj fritt förare och startspår i menyerna.",
+    ukHeat2Info: "Heat 2 (Reserver #6–#7): Reservheat för #6 och #7 (Rising Star) i båda lagen.",
+    ukHeat14Info: "Heat 14 (#4 + Reserver): Ordinarie heat (Hemma #4 & #6 mot Borta #4 & #7). Kontrollera eventuella reservbyten (#6/#7) eller Taktisk Reserv.",
+    ukHeat15Info: "Heat 15 (Nomineringsheat Final): Lagledarna väljer 2 förare var. Välj förare och startspår i menyerna. Vid 45-45 använd Avgörande Heat (Super Heat 4-3-2-0)."
+  });
+
+  // Tabella base Lega Inglese (Formato Premiership) 15 Batterie corretta (Batterie 6 e 7 corrette, 4 uscite esatte per tutti i 7 piloti)
+  LEAGUE_CONFIGS.uk.schedule = [
+    [1, 2, 101, 102], // H1
+    [6, 7, 106, 107], // H2 (Riserve #6-#7)
+    [3, 4, 103, 104], // H3
+    [5, 7, 105, 107], // H4
+    [3, 4, 101, 102], // H5
+    [1, 2, 105, 106], // H6 (Corretto: Casa 1-2 vs Ospiti 5-6)
+    [5, 6, 103, 104], // H7 (Corretto: Casa 5-6 vs Ospiti 3-4)
+    [2, 7, 102, 107], // H8
+    [3, 4, 105, 106], // H9
+    [1, 2, 103, 104], // H10
+    [5, 6, 101, 102], // H11
+    [3, 7, 103, 106], // H12
+    [1, 5, 101, 105], // H13
+    [4, 6, 104, 107], // H14 (Programmata: Casa 4-6 vs Ospiti 4-7)
+    [null, null, null, null] // H15 (Unica Nominata Finale)
+  ];
+
+  // Correzione etichetta Batteria 14 in UK (in Inghilterra solo la 15 è Nominata, la 14 è programmata)
+  const _ukPrevGetHeatLabel = getHeatLabel;
+  getHeatLabel = function(idx, includeTime) {
+    const cfg = getModeConfig();
+    const h = state.heats[idx];
+    if (state.mode === 'uk' && (!h || !h.isTieBreak) && idx < cfg.totalHeats) {
+      const hNum = idx + 1;
+      let base = t('heatLbl') + " " + hNum;
+      if (hNum === 2) base += " (" + t('roleReserve') + " #6-#7)";
+      else if (hNum === 15) base += " (" + t('nominatedLbl') + ")";
+      if (includeTime && h && h.time) base += " •⏱️ " + h.time + "s";
+      return base;
+    }
+    return _ukPrevGetHeatLabel(idx, includeTime);
+  };
+
+  // Mostra i banner della Lega Inglese quando la modalità attiva è 'uk'
+  const _ukPrevUpdateHeaderAndHero = updateHeaderAndHero;
+  updateHeaderAndHero = function() {
+    _ukPrevUpdateHeaderAndHero();
+    const isUk = state.mode === 'uk';
+    const ukBannerRiders = document.getElementById('uk-banner-riders');
+    const ukBannerHeats = document.getElementById('uk-banner-heats');
+    if (ukBannerRiders) ukBannerRiders.classList.toggle('visible', isUk);
+    if (ukBannerHeats) ukBannerHeats.classList.toggle('visible', isUk);
+  };
+
+  // Guida Live specifica per Lega Inglese su Batteria 2, Batteria 14 e Batteria 15 (Nominata)
+  const _ukPrevRenderCurrentHeat = renderCurrentHeat;
+  renderCurrentHeat = function() {
+    _ukPrevRenderCurrentHeat();
+    const heat = state.heats[state.currentHeat];
+    const autoBox = document.getElementById('auto-finals-box');
+
+    if (state.mode === 'uk' && (!heat || !heat.isTieBreak) && (state.currentHeat === 1 || state.currentHeat === 13 || state.currentHeat === 14)) {
+      const allTeamStats = computeStats();
+      const noteKey = state.currentHeat === 1 ? 'ukHeat2Info' : (state.currentHeat === 13 ? 'ukHeat14Info' : 'ukHeat15Info');
+      let rankPillsHtml = '';
+      if (state.currentHeat === 14) {
+        const homeTop = allTeamStats.filter(s => s.team === 'A').sort((a, b) => b.total - a.total).slice(0, 3);
+        const awayTop = allTeamStats.filter(s => s.team === 'B').sort((a, b) => b.total - a.total).slice(0, 3);
+        const hPills = homeTop.map(x => `<div class="qual-pill"><span>🔴 #${x.id}:</span>${x.name} (${x.total}pt)</div>`).join('');
+        const aPills = awayTop.map(x => `<div class="qual-pill"><span>🟡 #${x.id - 100}:</span>${x.name} (${x.total}pt)</div>`).join('');
+        rankPillsHtml = `<div class="qual-badges-list">${hPills}${aPills}</div>`;
+      }
+      if (autoBox) {
+        autoBox.innerHTML = '<div class="qual-info-card" style="border-color:#64b5f6;">' +
+          '<div class="qual-info-header"><span class="qual-info-title" style="color:#64b5f6;">🇬🇧 ' + getHeatLabel(state.currentHeat, false) + '</span>' +
+          '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button></div>' +
+          '<div class="qual-info-sub">' + t(noteKey) + '</div>' + rankPillsHtml + '</div>';
+      }
+    }
+  };
+/* =========================================================================
+     MODULO LEGA POLACCA (FORMATO EKSTRALIGA) - TABELLA UFFICIALE, #9-#16 & ZESTAW I/II
+     ========================================================================= */
+
+  Object.assign(I18N.it, {
+    plNoticeTitle: "Regolamento Dinamico Lega Polacca (Formato Ekstraliga)",
+    plNoticeBody: "Tabella ufficiale polacca a 15 batterie precaricata con numerazione ufficiale Casa #9–#16 (Rosso/Blu) e Ospiti #1–#8 (Bianco/Giallo). Puoi selezionare il Set Corsie sorteggiato dall'arbitro (Zestaw I o Zestaw II) e gestire liberamente Riserva Tattica (-6 pt), Zastępstwo Zawodnika (ZZ), ingressi del #16/#8, cambi Junior U21 e Batterie Nominate 14–15 tramite i menù a tendina.",
+    plSetLbl: "Sorteggio Corsie (Zestaw):",
+    plSet1Btn: "🎲 Zestaw I",
+    plSet2Btn: "🎲 Zestaw II",
+    plHeat2Info: "Batteria 2 (Bieg Młodzieżowy - Junior U21): Batteria riservata esclusivamente ai piloti Junior U21 (Casa #14–#15 vs Ospiti #6–#7).",
+    plHeat14Info: "Batteria 14 (Nominata): I Team Manager nominano 2 piloti ciascuno (esclusi i 2 migliori punteggi delle batterie 1–13 destinati alla Batteria 15; in caso di parità o Riserva Tattica decide il Manager).",
+    plHeat15Info: "Batteria 15 (Finale Nominata): Corrono i 2 piloti con il punteggio più alto di ogni squadra dopo 13 batterie (in caso di parità sceglie il Manager). Seleziona piloti e corsie dai menù a tendina."
+  });
+
+  Object.assign(I18N.en, {
+    plNoticeTitle: "Dynamic Polish League Rules (Ekstraliga Format)",
+    plNoticeBody: "Official 15-heat Polish schedule pre-loaded with official numbering: Home #9–#16 (Red/Blue) and Away #1–#8 (White/Yellow). You can switch between Referee Gate Sets (Zestaw I or Zestaw II) and freely manage Tactical Reserves (-6 pts), Rider Replacement (ZZ), #16/#8 reserve entries, U21 Junior switches and Nominated Heats 14–15 via the dropdowns.",
+    plSetLbl: "Gate Set (Zestaw):",
+    plSet1Btn: "🎲 Zestaw I",
+    plSet2Btn: "🎲 Zestaw II",
+    plHeat2Info: "Heat 2 (Junior U21 Heat): Dedicated exclusively to U21 Junior riders (Home #14–#15 vs Away #6–#7).",
+    plHeat14Info: "Heat 14 (Nominated): Team Managers nominate 2 riders each (excluding the top 2 scorers from Heats 1–13 reserved for Heat 15; ties or Tactical Reserves decided by Manager).",
+    plHeat15Info: "Heat 15 (Final Nominated): Contested by the 2 highest-scoring riders from each team after 13 heats. Select riders and gates from the dropdowns."
+  });
+
+  Object.assign(I18N.pl, {
+    plNoticeTitle: "Dynamiczny Regulamin Ligi Polskiej (Format Ekstraliga)",
+    plNoticeBody: "Oficjalna polska tabela 15-biegowa z oficjalną numeracją Gospodarze #9–#16 (Czerwony/Niebieski) oraz Goście #1–#8 (Biały/Żółty). Możesz przełączać wylosowany Zestaw Torów (Zestaw I lub Zestaw II) oraz swobodnie obsługiwać Rezerwę Taktyczną (-6 pkt), Zastępstwo Zawodnika (ZZ), zmiany #16/#8, juniorów U21 i Biegi Nominowane 14–15 z list rozwijanych.",
+    plSetLbl: "Wylosowany Zestaw Torów:",
+    plSet1Btn: "🎲 Zestaw I",
+    plSet2Btn: "🎲 Zestaw II",
+    plHeat2Info: "Bieg 2 (Bieg Młodzieżowy U21): Wyścig wyłącznie dla zawodników młodzieżowych U21 (Gospodarze #14–#15 vs Goście #6–#7).",
+    plHeat14Info: "Bieg 14 (Nominowany): Menedżerowie nominują po 2 zawodników (z wyłączeniem 2 najlepiej punktujących z biegów 1–13 przeznaczonych do Biegu 15; przy remisie pkt decyduje menedżer).",
+    plHeat15Info: "Bieg 15 (Nominowany Finałowy): Startuje po 2 najlepiej punktujących zawodników obu drużyn po 13 biegach. Wybierz zawodników i pola startowe z list rozwijanych."
+  });
+
+  Object.assign(I18N.da, {
+    plNoticeTitle: "Dynamiske Regler Polsk Liga (Ekstraliga Format)",
+    plNoticeBody: "Officielt polsk 15-heats skema med officiel nummerering: Hjemme #9–#16 (Rød/Blå) og Ude #1–#8 (Hvid/Gul). Skift mellem Banefordeling (Zestaw I / Zestaw II) og styr Taktisk Reserve (-6 pt), Rider Replacement (ZZ), #16/#8 reserver, U21 juniorer og Nominerede Heats 14–15 i rullemenuerne.",
+    plSetLbl: "Banefordeling (Zestaw):",
+    plSet1Btn: "🎲 Zestaw I",
+    plSet2Btn: "🎲 Zestaw II",
+    plHeat2Info: "Heat 2 (U21 Junior Heat): Kun for U21 juniorkørere (Hjemme #14–#15 mod Ude #6–#7).",
+    plHeat14Info: "Heat 14 (Nomineret): Holdlederne vælger 2 kørere hver (undtagen de 2 højest scorende kørere til Heat 15).",
+    plHeat15Info: "Heat 15 (Nomineret Finale): De 2 højest scorende kørere fra hvert hold efter 13 heats. Vælg kørere og baner i rullemenuerne."
+  });
+
+  Object.assign(I18N.sv, {
+    plNoticeTitle: "Dynamiska Regler Polska Ligan (Ekstraliga Format)",
+    plNoticeBody: "Officiellt polskt 15-heats körschema med officiell numrering: Hemma #9–#16 (Röd/Blå) och Borta #1–#8 (Vit/Gul). Välj lottat spårschema (Zestaw I / Zestaw II) och hantera Taktisk Reserv (-6 p), Riders Replacement (ZZ), #16/#8 reserver, U21 juniorer och Nomineringsheat 14–15 via menyerna.",
+    plSetLbl: "Spårschema (Zestaw):",
+    plSet1Btn: "🎲 Zestaw I",
+    plSet2Btn: "🎲 Zestaw II",
+    plHeat2Info: "Heat 2 (U21 Juniorheat): Endast för U21-juniorer (Hemma #14–#15 mot Borta #6–#7).",
+    plHeat14Info: "Heat 14 (Nomineringsheat): Lagledarna väljer 2 förare var (exklusive de 2 poängbästa förarna som kör Heat 15).",
+    plHeat15Info: "Heat 15 (Nomineringsheat Final): Körs av de 2 poängbästa förarna i respektive lag efter 13 heat. Välj förare och startspår i menyerna."
+  });
+
+  // Tabella Ufficiale Lega Polacca (15 Batterie: Casa 1..7 = #9..#15, Ospiti 101..107 = #1..#7)
+  // Ordine slot: [Casco Rosso (Casa), Casco Blu (Casa), Casco Bianco (Ospiti), Casco Giallo (Ospiti)]
+  LEAGUE_CONFIGS.pl.schedule = [
+    [1, 3, 103, 101], // Bieg 1:  Casa #9(R), #11(B) vs Ospiti #3(W), #1(Y)
+    [7, 6, 107, 106], // Bieg 2:  Juniorzy Casa #15(R), #14(B) vs Ospiti #7(W), #6(Y)
+    [5, 4, 102, 105], // Bieg 3:  Casa #13(R), #12(B) vs Ospiti #2(W), #5(Y)
+    [2, 6, 106, 104], // Bieg 4:  Casa #10(R), #14(B) vs Ospiti #6(W), #4(Y)
+    [3, 4, 103, 104], // Bieg 5:  Casa #11(R), #12(B) vs Ospiti #3(W), #4(Y)
+    [5, 7, 101, 105], // Bieg 6:  Casa #13(R), #15(B) vs Ospiti #1(W), #5(Y)
+    [1, 2, 107, 102], // Bieg 7:  Casa #9(R),  #10(B) vs Ospiti #7(W), #2(Y)
+    [5, 6, 104, 103], // Bieg 8:  Casa #13(R), #14(B) vs Ospiti #4(W), #3(Y)
+    [1, 2, 101, 102], // Bieg 9:  Casa #9(R),  #10(B) vs Ospiti #1(W), #2(Y)
+    [3, 4, 106, 105], // Bieg 10: Casa #11(R), #12(B) vs Ospiti #6(W), #5(Y)
+    [1, 4, 104, 101], // Bieg 11: Casa #9(R),  #12(B) vs Ospiti #4(W), #1(Y)
+    [3, 7, 107, 102], // Bieg 12: Casa #11(R), #15(B) vs Ospiti #7(W), #2(Y)
+    [2, 5, 103, 105], // Bieg 13: Casa #10(R), #13(B) vs Ospiti #3(W), #5(Y)
+    [null, null, null, null], // Bieg 14 (Nominowany)
+    [null, null, null, null]  // Bieg 15 (Nominowany Finałowy)
+  ];
+
+  // Corsie ufficiali [Gate Rosso, Gate Blu, Gate Bianco, Gate Giallo] per Zestaw I e Zestaw II
+  const PL_GATES_ZESTAW_1 = [
+    [2, 4, 3, 1], // Bieg 1
+    [1, 3, 4, 2], // Bieg 2
+    [2, 4, 3, 1], // Bieg 3
+    [3, 1, 4, 2], // Bieg 4
+    [1, 3, 2, 4], // Bieg 5
+    [1, 3, 2, 4], // Bieg 6
+    [4, 2, 1, 3], // Bieg 7
+    [2, 4, 3, 1], // Bieg 8
+    [1, 3, 2, 4], // Bieg 9
+    [2, 4, 1, 3], // Bieg 10
+    [3, 1, 2, 4], // Bieg 11
+    [4, 2, 3, 1], // Bieg 12
+    [1, 3, 4, 2], // Bieg 13
+    [2, 4, 1, 3], // Bieg 14
+    [3, 1, 4, 2]  // Bieg 15
+  ];
+
+  const PL_GATES_ZESTAW_2 = PL_GATES_ZESTAW_1.map(row =>
+    row.map(g => (g === 1 ? 2 : (g === 2 ? 1 : (g === 3 ? 4 : 3))))
+  );
+
+  function applyPolishZestawGates(zestawNum) {
+    if (state.mode !== 'pl') return;
+    state.plZestaw = zestawNum === 2 ? 2 : 1;
+    const gateMatrix = state.plZestaw === 2 ? PL_GATES_ZESTAW_2 : PL_GATES_ZESTAW_1;
+    state.heats.forEach((h, idx) => {
+      if (idx < 15 && gateMatrix[idx]) {
+        h.slots.forEach((s, sIdx) => {
+          s.gate = gateMatrix[idx][sIdx];
+        });
+      }
+    });
+    saveState();
+    renderCurrentHeat();
+  }
+
+  // Applica Zestaw I di default quando si crea una nuova gara Polacca
+  const _plPrevCreateDefaultState = createDefaultState;
+  createDefaultState = function(modeKey) {
+    const st = _plPrevCreateDefaultState(modeKey);
+    if (modeKey === 'pl') {
+      st.plZestaw = 1;
+      st.heats.forEach((h, idx) => {
+        if (idx < 15 && PL_GATES_ZESTAW_1[idx]) {
+          h.slots.forEach((s, sIdx) => {
+            s.gate = PL_GATES_ZESTAW_1[idx][sIdx];
+          });
+        }
+      });
+    }
+    return st;
+  };
+
+  // Numerazione Ufficiale Polacca: Casa = #9..#16, Ospiti = #1..#8
+  const _plPrevFormatRiderNum = formatRiderNum;
+  formatRiderNum = function(rId) {
+    if (!rId) return "";
+    if (state && state.mode === 'pl') {
+      if (rId <= 8) return "#" + (rId + 8);
+      if (rId > 100) return "#" + (rId - 100);
+    }
+    return _plPrevFormatRiderNum(rId);
+  };
+
+  // Nella scheda Piloti, mostra #9..#16 per la squadra di Casa quando siamo in Lega Polacca
+  const _plPrevRenderRidersInputs = renderRidersInputs;
+  renderRidersInputs = function() {
+    _plPrevRenderRidersInputs();
+    if (state && state.mode === 'pl') {
+      const homeSpans = document.querySelectorAll('#riders-inputs .team-riders-card.team-a .rider-input-row span');
+      const cfg = getModeConfig();
+      homeSpans.forEach((sp, idx) => {
+        const localNum = idx + 1;
+        const plHomeNum = localNum + 8; // #9..#16
+        const roleKey = cfg.roles && cfg.roles[localNum] ? cfg.roles[localNum] : null;
+        const roleTxt = roleKey ? ' (' + t(roleKey) + ')' : '';
+        sp.textContent = '#' + plHomeNum + roleTxt;
+      });
+    }
+  };
+
+  // Mostra i banner della Lega Polacca quando la modalità attiva è 'pl'
+  const _plPrevUpdateHeaderAndHero = updateHeaderAndHero;
+  updateHeaderAndHero = function() {
+    _plPrevUpdateHeaderAndHero();
+    const isPl = state.mode === 'pl';
+    const plBannerRiders = document.getElementById('pl-banner-riders');
+    const plBannerHeats = document.getElementById('pl-banner-heats');
+    if (plBannerRiders) plBannerRiders.classList.toggle('visible', isPl);
+    if (plBannerHeats) plBannerHeats.classList.toggle('visible', isPl);
+  };
+
+  // Guida Live Lega Polacca: Selettore Zestaw I/II + Info Bieg 2 (Juniorzy) + Nominate 14 e 15
+  const _plPrevRenderCurrentHeat = renderCurrentHeat;
+  renderCurrentHeat = function() {
+    _plPrevRenderCurrentHeat();
+    if (state.mode !== 'pl') return;
+
+    const heat = state.heats[state.currentHeat];
+    const autoBox = document.getElementById('auto-finals-box');
+    const swapBox = document.getElementById('team-swap-lanes-box');
+    const curZestaw = state.plZestaw || 1;
+
+    // Barra rapida Zestaw I / Zestaw II
+    if (swapBox && (!heat || !heat.isTieBreak)) {
+      swapBox.innerHTML =
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px 10px;margin-bottom:8px;">' +
+          '<span style="font-size:0.73rem;font-weight:800;color:var(--muted);">🇵🇱 ' + t('plSetLbl') + '</span>' +
+          '<div style="display:flex;gap:6px;">' +
+            `<button type="button" class="btn-mini" style="${curZestaw === 1 ? 'border-color:var(--accent);color:var(--accent);background:rgba(0,230,118,0.12);' : ''}" onclick="applyPolishZestawGates(1)">${t('plSet1Btn')}</button>` +
+            `<button type="button" class="btn-mini" style="${curZestaw === 2 ? 'border-color:var(--accent);color:var(--accent);background:rgba(0,230,118,0.12);' : ''}" onclick="applyPolishZestawGates(2)">${t('plSet2Btn')}</button>` +
+          '</div>' +
+        '</div>';
+    }
+
+    // Schede guida su Batteria 2 (Junior U21), Batteria 14 e Batteria 15 (Nominate)
+    if ((!heat || !heat.isTieBreak) && (state.currentHeat === 1 || state.currentHeat === 13 || state.currentHeat === 14)) {
+      const allTeamStats = computeStats();
+      const noteKey = state.currentHeat === 1 ? 'plHeat2Info' : (state.currentHeat === 13 ? 'plHeat14Info' : 'plHeat15Info');
+      let rankPillsHtml = '';
+
+      if (state.currentHeat === 13 || state.currentHeat === 14) {
+        const isH15 = state.currentHeat === 14;
+        const homeSorted = allTeamStats.filter(s => s.team === 'A').sort((a, b) => b.total - a.total);
+        const awaySorted = allTeamStats.filter(s => s.team === 'B').sort((a, b) => b.total - a.total);
+        const hSuggested = isH15 ? homeSorted.slice(0, 2) : homeSorted.slice(2, 6);
+        const aSuggested = isH15 ? awaySorted.slice(0, 2) : awaySorted.slice(2, 6);
+        const hPills = hSuggested.map(x => `<div class="qual-pill"><span>🔴 ${formatRiderNum(x.id)}:</span>${x.name} (${x.total}pt)</div>`).join('');
+        const aPills = aSuggested.map(x => `<div class="qual-pill"><span>🟡 ${formatRiderNum(x.id)}:</span>${x.name} (${x.total}pt)</div>`).join('');
+        rankPillsHtml = `<div class="qual-badges-list">${hPills}${aPills}</div>`;
+      }
+
+      if (autoBox) {
+        autoBox.innerHTML = '<div class="qual-info-card" style="border-color:#ff8a80;">' +
+          '<div class="qual-info-header"><span class="qual-info-title" style="color:#ff8a80;">🇵🇱 ' + getHeatLabel(state.currentHeat, false) + '</span>' +
+          '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button></div>' +
+          '<div class="qual-info-sub">' + t(noteKey) + '</div>' + rankPillsHtml + '</div>';
+      }
+    }
+  };
 
   initState();
   renderCurrentHeat();
