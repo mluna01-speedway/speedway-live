@@ -575,6 +575,13 @@
       </div>
       <div id="ocr-status"></div>
     </div>
+<!-- Banner informativo Lega Svedese nella scheda Piloti -->
+    <div class="dk-info-banner" id="se-banner-riders" style="border-left-color: var(--yellow); border-color: rgba(253, 216, 53, 0.5);">
+      <div class="dk-info-banner-top" style="color: var(--yellow);">
+        <span>🇸🇪 <span data-i18n="seNoticeTitle">Regolamento Dinamico Bauhaus-Ligan (SVEMO)</span></span>
+      </div>
+      <div data-i18n="seNoticeBody"></div>
+    </div>
 
     <div id="riders-inputs"></div>
     <button type="button" class="btn-primary" onclick="goToHeats()" data-i18n="btnGoToHeats">Vai alle Batterie ▶</button>
@@ -591,6 +598,16 @@
       </div>
       <div data-i18n="dkNoticeBody"></div>
     </div>
+<!-- Banner informativo Lega Svedese nella scheda Batterie -->
+    <div class="dk-info-banner" id="se-banner-heats" style="border-left-color: var(--yellow); border-color: rgba(253, 216, 53, 0.5);">
+      <div class="dk-info-banner-top" style="color: var(--yellow);">
+        <span>🇸🇪 <span data-i18n="seNoticeTitle">Regolamento Dinamico Bauhaus-Ligan (SVEMO)</span></span>
+      </div>
+      <div data-i18n="seNoticeBody"></div>
+    </div>
+
+    <!-- Barra Batterie di Spareggio (compare SOLO dall'ultima batteria in poi) -->
+    <div id="tiebreak-controls-bar" style="display:none; gap:6px; margin-bottom:8px; flex-wrap:wrap;"></div>
 
     <div class="heat-nav">
       <button type="button" onclick="changeHeat(-1)" data-i18n="btnPrev">◀ Prec</button>
@@ -1564,6 +1581,305 @@
     updateHeaderAndHero();
     updateProgressBadge();
   }
+/* =========================================================================
+     MODULO LEGA SVEDESE (SVEMO BAUHAUS-LIGAN) + SPAREGGI MULTIPLI A FINE GARA
+     ========================================================================= */
+
+  Object.assign(I18N.it, {
+    seNoticeTitle: "Regolamento Dinamico Bauhaus-Ligan (SVEMO)",
+    seNoticeBody: "Tabella ufficiale SVEMO a 15 batterie precaricata (Piloti #1–#5: 4 uscite, Riserve #6–#7: 3 uscite). Per gestire Riserve Tattiche (da -6 pt tra B5 e B13), Rider Replacement (R/R), cambi riserva e scelte nelle Nominate 14–15, usa liberamente i menù a tendina di piloti e corsie.",
+    seHeat2Info: "Batteria 2 (Riserve #6–#7): Batteria riservata ai numeri #6 e #7 delle due squadre.",
+    seHeat14Info: "Batteria 14 (Nominata): I Team Manager scelgono 2 piloti ciascuno (esclusi i 2 migliori punteggi destinati alla Batteria 15; in caso di parità decide il Manager). La squadra in svantaggio sceglie le corsie.",
+    seHeat15Info: "Batteria 15 (Finale Nominata): Corrono i 2 piloti con il punteggio più alto di ogni squadra (in caso di parità per il 2° posto sceglie il Manager). Seleziona piloti e corsie dai menù.",
+    tieBreakLbl: "Spareggio",
+    btnAddTieBreak: "➕ Aggiungi Batteria di Spareggio",
+    btnRemoveTieBreak: "🗑️ Rimuovi Ultimo Spareggio",
+    tieBreakCardTitle: "⚡ BATTERIA DI SPAREGGIO",
+    tieBreakCardSub: "Seleziona dai menù a tendina i piloti schierati e le corsie di partenza scelte dai Team Manager. Puoi usare il punteggio classico (3-2-1-0) o Super Heat (4-3-2-0):",
+    scoringModeLbl: "Punteggio Batteria:"
+  });
+
+  Object.assign(I18N.en, {
+    seNoticeTitle: "Dynamic Bauhaus-Ligan Rules (SVEMO)",
+    seNoticeBody: "Official 15-heat SVEMO schedule pre-loaded (Riders #1–#5: 4 rides, Reserves #6–#7: 3 rides). For Tactical Reserves (-6 pts in H5–H13), Rider Replacement (R/R), reserve switches and Nominated Heats 14–15, freely select riders and gates via the dropdowns.",
+    seHeat2Info: "Heat 2 (Reserves #6–#7): Dedicated heat for reserves #6 and #7 of both teams.",
+    seHeat14Info: "Heat 14 (Nominated): Team Managers nominate 2 riders each (excluding the top 2 scorers reserved for Heat 15; ties decided by Manager). Trailing team chooses gates.",
+    seHeat15Info: "Heat 15 (Final Nominated): Contested by the top 2 highest-scoring riders from each team (ties decided by Manager). Select riders and gates from the dropdowns.",
+    tieBreakLbl: "Tie-Break",
+    btnAddTieBreak: "➕ Add Tie-Break Heat",
+    btnRemoveTieBreak: "🗑️ Remove Last Tie-Break",
+    tieBreakCardTitle: "⚡ TIE-BREAK HEAT / SUPER HEAT",
+    tieBreakCardSub: "Select the nominated riders and starting gates from the dropdowns. You can switch between standard scoring (3-2-1-0) and Super Heat scoring (4-3-2-0):",
+    scoringModeLbl: "Heat Scoring:"
+  });
+
+  Object.assign(I18N.pl, {
+    seNoticeTitle: "Dynamiczny Regulamin Bauhaus-Ligan (SVEMO)",
+    seNoticeBody: "Oficjalna tabela SVEMO (15 biegów: #1–#5 po 4 starty, rezerwy #6–#7 po 3 starty). Dla rezerw taktycznych (-6 pkt w biegach 5–13), Zastępstwa Zawodnika (R/R) oraz biegów nominowanych 14–15 użyj list rozwijanych zawodników i pól startowych.",
+    seHeat2Info: "Bieg 2 (Rezerwy #6–#7): Bieg przeznaczony dla zawodników rezerwowych nr 6 i 7 obu drużyn.",
+    seHeat14Info: "Bieg 14 (Nominowany): Menedżerowie wybierają po 2 zawodników (z wyłączeniem 2 najlepiej punktujących przeznaczonych do Biegu 15).",
+    seHeat15Info: "Bieg 15 (Nominowany Finałowy): Startuje 2 najlepiej punktujących zawodników z każdej drużyny. Wybierz zawodników i pola z list.",
+    tieBreakLbl: "Bieg Dodatkowy",
+    btnAddTieBreak: "➕ Dodaj Bieg Dodatkowy (Spareggio)",
+    btnRemoveTieBreak: "🗑 Usuń Ostatni Bieg Dodatkowy",
+    tieBreakCardTitle: "⚡ BIEG DODATKOWY / SUPER HEAT",
+    tieBreakCardSub: "Wybierz zawodników i pola startowe z list rozwijanych. Możesz wybrać punktację 3-2-1-0 lub Super Heat 4-3-2-0:",
+    scoringModeLbl: "Punktacja biegu:"
+  });
+
+  Object.assign(I18N.da, {
+    seNoticeTitle: "Dynamiske Regler Bauhaus-Ligan (SVEMO)",
+    seNoticeBody: "Officielt SVEMO 15-heats skema indlæst (#1–#5: 4 heats, reserver #6–#7: 3 heats). Ved Taktisk Reserve (-6 pt i H5–H13), Rider Replacement (R/R) og Nominerede Heats 14–15 vælges kørere og startbaner frit i rullemenuerne.",
+    seHeat2Info: "Heat 2 (Reserver #6–#7): Reserveheat for nr. 6 og 7 fra begge hold.",
+    seHeat14Info: "Heat 14 (Nomineret): Holdlederne vælger 2 kørere hver (undtagen de 2 højest scorende kørere, som kører Heat 15).",
+    seHeat15Info: "Heat 15 (Nomineret Finale): De 2 højest scorende kørere fra hvert hold. Vælg kørere og startbaner i rullemenuerne.",
+    tieBreakLbl: "Omkørsel",
+    btnAddTieBreak: "➕ Tilføj Ekstra Heat (Omkørsel)",
+    btnRemoveTieBreak: "🗑️ Fjern Sidste Ekstra Heat",
+    tieBreakCardTitle: "⚡ EKSTRA HEAT / SUPER HEAT",
+    tieBreakCardSub: "Vælg kørere og startbaner i rullemenuerne. Vælg mellem 3-2-1-0 eller Super Heat 4-3-2-0 point:",
+    scoringModeLbl: "Pointsystem:"
+  });
+
+  Object.assign(I18N.sv, {
+    seNoticeTitle: "Dynamiska Regler Bauhaus-Ligan (SVEMO)",
+    seNoticeBody: "Officiellt SVEMO 15-heatschema förladdat (Förare #1–#5: 4 heat, Reserver #6–#7: 3 heat). För Taktisk Reserv (-6 p i H5–H13), Riders Replacement (R/R), reservbyten och Nomineringsheat 14–15, välj fritt förare och startspår i rullgardinsmenyerna.",
+    seHeat2Info: "Heat 2 (Reserver #6–#7): Reservheat för #6 och #7 i båda lagen.",
+    seHeat14Info: "Heat 14 (Nomineringsheat): Lagledarna väljer 2 förare var (exklusive de 2 poängbästa förarna som kör Heat 15; vid lika poäng avgör lagledaren). Lag i underläge väljer spår.",
+    seHeat15Info: "Heat 15 (Nomineringsheat Final): Körs av de 2 poängbästa förarna i respektive lag efter 13 heat. Välj förare och startspår i menyerna.",
+    tieBreakLbl: "Avgörande Heat",
+    btnAddTieBreak: "➕ Lägg till Avgörande Heat (Tie-Break)",
+    btnRemoveTieBreak: "🗑️ Ta bort Sista Avgörande Heat",
+    tieBreakCardTitle: "⚡ AVGÖRANDE HEAT / SUPER HEAT",
+    tieBreakCardSub: "Välj förare och startspår i menyerna. Du kan växla mellan 3-2-1-0 och Super Heat 4-3-2-0:",
+    scoringModeLbl: "Poängsystem:"
+  });
+
+  // Tabella Ufficiale SVEMO Bauhaus-Ligan (Elitserien) 15 Batterie corretta
+  LEAGUE_CONFIGS.se.schedule = [
+    [1, 2, 101, 102], // H1
+    [6, 7, 106, 107], // H2 (Riserve #6-#7)
+    [3, 4, 103, 104], // H3
+    [5, 6, 105, 106], // H4
+    [2, 3, 104, 105], // H5
+    [4, 5, 101, 102], // H6
+    [1, 7, 103, 107], // H7
+    [3, 4, 105, 107], // H8
+    [5, 6, 103, 104], // H9
+    [1, 2, 101, 106], // H10
+    [3, 7, 102, 104], // H11
+    [1, 4, 101, 103], // H12
+    [2, 5, 102, 105], // H13
+    [null, null, null, null], // H14 (Nominata)
+    [null, null, null, null]  // H15 (Nominata Finale)
+  ];
+
+  // Mantiene tutte le batterie di spareggio aggiunte quando si ricarica o si apre dallo storico
+  const _origNormalizeLoadedState = normalizeLoadedState;
+  normalizeLoadedState = function(saved) {
+    const extraTieHeats = (saved && Array.isArray(saved.heats))
+      ? saved.heats.filter(h => h && h.isTieBreak)
+      : [];
+    const merged = _origNormalizeLoadedState(saved);
+    const cfg = getModeConfig(merged);
+    if (cfg.isTeam && extraTieHeats.length > 0 && merged.heats.length === cfg.totalHeats) {
+      extraTieHeats.forEach((th, idx) => {
+        th.heatNumber = cfg.totalHeats + idx + 1;
+        th.isTieBreak = true;
+        merged.heats.push(th);
+      });
+    }
+    return merged;
+  };
+
+  // Aggiunge una nuova Batteria di Spareggio (se ne possono aggiungere infinite: Spareggio 1, 2, 3...)
+  function addTieBreakHeat() {
+    if (!isTeamMode()) return;
+    const newHeatNum = state.heats.length + 1;
+    const defaultSuperScore = (state.mode === 'son' || state.mode === 'uk') ? '4320' : '3210';
+    state.heats.push({
+      heatNumber: newHeatNum,
+      time: "",
+      isTieBreak: true,
+      tieScoreMode: defaultSuperScore,
+      slots: [
+        { helmet: 'R', riderId: null, gate: 1, score: null, warning: false },
+        { helmet: 'B', riderId: null, gate: 3, score: null, warning: false },
+        { helmet: 'W', riderId: null, gate: 2, score: null, warning: false },
+        { helmet: 'Y', riderId: null, gate: 4, score: null, warning: false }
+      ]
+    });
+    state.currentHeat = state.heats.length - 1;
+    saveState();
+    renderCurrentHeat();
+  }
+
+  // Rimuove l'ultima Batteria di Spareggio aggiunta
+  function removeLastTieBreakHeat() {
+    const cfg = getModeConfig();
+    if (!cfg.isTeam || state.heats.length <= cfg.totalHeats) return;
+    state.heats.pop();
+    if (state.currentHeat >= state.heats.length) {
+      state.currentHeat = state.heats.length - 1;
+    }
+    saveState();
+    renderCurrentHeat();
+  }
+
+  // Cambia il punteggio della Batteria di Spareggio (3-2-1-0 oppure 4-3-2-0 Super Heat)
+  function setTieBreakScoreMode(modeStr) {
+    const heat = state.heats[state.currentHeat];
+    if (!heat || !heat.isTieBreak) return;
+    heat.tieScoreMode = modeStr;
+    heat.slots.forEach(s => { s.score = null; });
+    saveState();
+    renderCurrentHeat();
+  }
+
+  // Etichetta numerata per ogni Batteria di Spareggio (es. Batteria 16 (Spareggio #1), Batteria 17 (Spareggio #2)...)
+  const _prevGetHeatLabel = getHeatLabel;
+  getHeatLabel = function(idx, includeTime) {
+    const cfg = getModeConfig();
+    const h = state.heats[idx];
+    if (cfg.isTeam && ((h && h.isTieBreak) || idx >= cfg.totalHeats)) {
+      const tieNum = (idx - cfg.totalHeats) + 1;
+      let lbl = t('heatLbl') + " " + (idx + 1) + " (" + t('tieBreakLbl') + " #" + tieNum + ")";
+      if (includeTime && h && h.time) lbl += " •⏱️ " + h.time + "s";
+      return lbl;
+    }
+    return _prevGetHeatLabel(idx, includeTime);
+  };
+
+  // Mostra i banner svedesi quando il formato selezionato è 'se'
+  const _prevUpdateHeaderAndHero = updateHeaderAndHero;
+  updateHeaderAndHero = function() {
+    _prevUpdateHeaderAndHero();
+    const isSe = state.mode === 'se';
+    const seBannerRiders = document.getElementById('se-banner-riders');
+    const seBannerHeats = document.getElementById('se-banner-heats');
+    if (seBannerRiders) seBannerRiders.classList.toggle('visible', isSe);
+    if (seBannerHeats) seBannerHeats.classList.toggle('visible', isSe);
+  };
+
+  // Renderizza guida Svezia + Pulsante Spareggio SOLO sull'ultima batteria (e sugli spareggi successivi)
+  const _prevRenderCurrentHeat = renderCurrentHeat;
+  renderCurrentHeat = function() {
+    _prevRenderCurrentHeat();
+    const cfg = getModeConfig();
+    const heat = state.heats[state.currentHeat];
+    const autoBox = document.getElementById('auto-finals-box');
+    const tieBar = document.getElementById('tiebreak-controls-bar');
+
+    // 1. Il pulsante "Aggiungi Batteria di Spareggio" compare SOLO quando sei sull'ultima batteria regolamentare o su uno spareggio già creato
+    if (tieBar) {
+      const isAtEndOfMatch = cfg.isTeam && (state.currentHeat >= cfg.totalHeats - 1);
+      if (isAtEndOfMatch) {
+        tieBar.style.display = 'flex';
+        const extraCount = state.heats.length - cfg.totalHeats;
+        const nextTieNum = extraCount + 1;
+        tieBar.innerHTML =
+          `<button type="button" class="btn-secondary" style="padding:8px 10px;font-size:0.76rem;flex:1;" onclick="addTieBreakHeat()">${t('btnAddTieBreak')} (#${nextTieNum})</button>` +
+          (extraCount > 0 ? `<button type="button" class="btn-outline-danger" style="margin-top:0;padding:8px 10px;font-size:0.75rem;width:auto;" onclick="removeLastTieBreakHeat()">${t('btnRemoveTieBreak')} (#${extraCount})</button>` : '');
+      } else {
+        tieBar.style.display = 'none';
+        tieBar.innerHTML = '';
+      }
+    }
+
+    // 2. Guida Live specifica per Lega Svedese (Batteria 2 Riserve, Batteria 14 e Batteria 15 Nominate)
+    if (state.mode === 'se' && (state.currentHeat === 1 || state.currentHeat === 13 || state.currentHeat === 14)) {
+      const allTeamStats = computeStats();
+      const noteKey = state.currentHeat === 1 ? 'seHeat2Info' : (state.currentHeat === 13 ? 'seHeat14Info' : 'seHeat15Info');
+      let rankPillsHtml = '';
+      if (state.currentHeat === 13 || state.currentHeat === 14) {
+        const isH15 = state.currentHeat === 14;
+        const homeSorted = allTeamStats.filter(s => s.team === 'A').sort((a, b) => b.total - a.total);
+        const awaySorted = allTeamStats.filter(s => s.team === 'B').sort((a, b) => b.total - a.total);
+        const hSuggested = isH15 ? homeSorted.slice(0, 2) : homeSorted.slice(2);
+        const aSuggested = isH15 ? awaySorted.slice(0, 2) : awaySorted.slice(2);
+        const hPills = hSuggested.map(x => `<div class="qual-pill"><span>🔴 #${x.id}:</span>${x.name} (${x.total}pt)</div>`).join('');
+        const aPills = aSuggested.map(x => `<div class="qual-pill"><span>🟡 #${x.id - 100}:</span>${x.name} (${x.total}pt)</div>`).join('');
+        rankPillsHtml = `<div class="qual-badges-list">${hPills}${aPills}</div>`;
+      }
+      if (autoBox) {
+        autoBox.innerHTML = '<div class="qual-info-card" style="border-color:var(--yellow);">' +
+          '<div class="qual-info-header"><span class="qual-info-title" style="color:var(--yellow);">🇸🇪 ' + getHeatLabel(state.currentHeat, false) + '</span>' +
+          '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button></div>' +
+          '<div class="qual-info-sub">' + t(noteKey) + '</div>' + rankPillsHtml + '</div>';
+      }
+    }
+
+    // 3. Pannello gestione quando ci si trova dentro una Batteria di Spareggio (#1, #2, #3...)
+    if (cfg.isTeam && ((heat && heat.isTieBreak) || state.currentHeat >= cfg.totalHeats)) {
+      const sMode = heat.tieScoreMode || '3210';
+      if (autoBox) {
+        autoBox.innerHTML = '<div class="qual-info-card" style="border-color:var(--accent);">' +
+          '<div class="qual-info-header"><span class="qual-info-title">' + t('tieBreakCardTitle') + ' — ' + getHeatLabel(state.currentHeat, false) + '</span>' +
+          '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button></div>' +
+          '<div class="qual-info-sub">' + t('tieBreakCardSub') + '</div>' +
+          '<div style="display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap;">' +
+            '<span style="font-size:0.72rem;font-weight:800;color:var(--text);">' + t('scoringModeLbl') + '</span>' +
+            `<button type="button" class="btn-mini" style="${sMode === '3210' ? 'border-color:var(--accent);color:var(--accent);' : ''}" onclick="setTieBreakScoreMode('3210')">3 - 2 - 1 - 0</button>` +
+            `<button type="button" class="btn-mini" style="${sMode === '4320' ? 'border-color:var(--accent);color:var(--accent);' : ''}" onclick="setTieBreakScoreMode('4320')">4 - 3 - 2 - 0 (Super Heat)</button>` +
+          '</div></div>';
+      }
+
+      if (sMode === '4320') {
+        const customScores = [4, 3, 2, 0];
+        const scoreGrids = document.querySelectorAll('#gates-container .gate-card .score-btns');
+        scoreGrids.forEach((grid, sIdx) => {
+          const slot = heat.slots[sIdx];
+          const hasRider = Boolean(slot && slot.riderId);
+          const sc = slot ? slot.score : null;
+          grid.innerHTML = customScores.map(val =>
+            `<button type="button" ${!hasRider ? 'disabled' : ''} class="score-btn ${sc === val ? 'selected-' + val : ''}" onclick="setScore(${sIdx}, ${val})">${val} pt</button>`
+          ).join('');
+        });
+      }
+    }
+  };
+
+  // Colonne serie dinamiche nel Tabellone (si allarga in automatico se un pilota fa più di 6/7 uscite con gli spareggi)
+  const _prevRenderScorecard = renderScorecard;
+  renderScorecard = function() {
+    const cfg = getModeConfig();
+    if (!cfg.isTeam) {
+      _prevRenderScorecard();
+      return;
+    }
+    const thead = document.getElementById('scorecard-thead');
+    const tbody = document.querySelector('#scorecard-table tbody');
+    const allStats = computeStats();
+    const maxRidesDone = allStats.reduce((max, st) => Math.max(max, st.runs.filter(x => x !== '-').length), 0);
+    const maxCols = Math.max(isDkMode() ? 7 : 6, maxRidesDone);
+
+    let seriesHeaders = '';
+    for (let s = 1; s <= maxCols; s++) seriesHeaders += '<th>S' + s + '</th>';
+    thead.innerHTML = '<tr><th>#</th><th style="text-align:left;padding-left:7px;">' + t('thRider') + '</th>' + seriesHeaders + '<th>' + t('thTot') + '</th></tr>';
+    const totals = computeTeamTotals();
+
+    function renderTeamRows(list) {
+      return list.map(st => {
+        const r = st.runs.filter(x => x !== '-');
+        let cells = '';
+        for (let c = 0; c < maxCols; c++) cells += '<td>' + (r[c] ?? '-') + '</td>';
+        return '<tr><td><strong>' + formatRiderNum(st.id) + '</strong></td><td class="name-col">' + st.name + '</td>' + cells + '<td class="tot-col">' + st.total + '</td></tr>';
+      }).join('');
+    }
+
+    const colSpanCount = maxCols + 3;
+    if (cfg.teamsCount === 4) {
+      tbody.innerHTML =
+        '<tr class="team-sep-row"><td colspan="' + colSpanCount + '">🔴 ' + state.teamNames.a + ' — ' + t('totalLbl') + ' ' + totals.a + ' pt</td></tr>' + renderTeamRows(allStats.filter(s => s.team === 'A')) +
+        '<tr class="team-sep-row"><td colspan="' + colSpanCount + '">🔵 ' + state.teamNames.b + ' — ' + t('totalLbl') + ' ' + totals.b + ' pt</td></tr>' + renderTeamRows(allStats.filter(s => s.team === 'B')) +
+        '<tr class="team-sep-row"><td colspan="' + colSpanCount + '">⚪ ' + state.teamNames.c + ' — ' + t('totalLbl') + ' ' + totals.c + ' pt</td></tr>' + renderTeamRows(allStats.filter(s => s.team === 'C')) +
+        '<tr class="team-sep-row"><td colspan="' + colSpanCount + '">🟡 ' + state.teamNames.d + ' — ' + t('totalLbl') + ' ' + totals.d + ' pt</td></tr>' + renderTeamRows(allStats.filter(s => s.team === 'D'));
+    } else {
+      tbody.innerHTML =
+        '<tr class="team-sep-row"><td colspan="' + colSpanCount + '">🔴🔵 ' + state.teamNames.a + ' — ' + t('totalLbl') + ' ' + totals.a + ' pt</td></tr>' + renderTeamRows(allStats.filter(s => s.team === 'A')) +
+        '<tr class="team-sep-row"><td colspan="' + colSpanCount + '">⚪🟡 ' + state.teamNames.b + ' — ' + t('totalLbl') + ' ' + totals.b + ' pt</td></tr>' + renderTeamRows(allStats.filter(s => s.team === 'B'));
+    }
+  };
 
   function initState() {
     const saved = safeLoad();
