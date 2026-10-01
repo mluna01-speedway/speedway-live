@@ -303,6 +303,8 @@
     <div class="t4-pts" id="t4-pts-d">0</div>
   </div>
 </div>
+<!-- Banner Punteggio 7 Nazioni (Torneo Nazioni a Coppie 23 Batterie) -->
+<div class="team4-score-banner" id="team7-score-banner" style="grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 6px;"></div>
 <!-- Modal Scelta Formato -->
 <div class="modal-backdrop" id="mode-modal">
   <div class="modal-box">
@@ -400,7 +402,7 @@
         </div>
         <span>▶</span>
       </button>
-      <button type="button" class="mode-choice-btn" onclick="selectAppMode('son')">
+      <button type="button" class="mode-choice-btn" onclick="openSonEntryFlow()">
         <div class="mode-choice-left">
           <span class="mode-choice-ico">🌍</span>
           <div>
@@ -448,6 +450,40 @@
     </button>
 
     <button type="button" class="qr-btn-close" style="width:100%;padding:10px;border-radius:8px;border:none;font-weight:800;margin-top:4px;cursor:pointer;" onclick="closeDkInfoModal()" data-i18n="dkNoticeBtn">Ho capito, procedi ▶</button>
+  </div>
+</div>
+<!-- Modal Informativo + Scelta 7 Nazioni / 2 Nazioni (Formato SON) -->
+<div class="modal-backdrop" id="son-info-modal" onclick="if(event.target===this)closeSonInfoModal()">
+  <div class="modal-box" style="border-color: var(--accent);">
+    <div style="font-size: 2.1rem; margin-bottom: 4px;">🌍</div>
+    <h3 style="color: var(--accent);" data-i18n="sonNoticeTitle">Regolamento Torneo Nazioni a Coppie (Formato SON)</h3>
+    <p style="text-align: left; font-size: 0.8rem; color: var(--text); line-height: 1.46; background: #15181f; padding: 11px 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 12px;" data-i18n="sonNoticeBody"></p>
+
+    <div style="text-align: left; font-size: 0.74rem; font-weight: 900; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.3px;" data-i18n="sonChooseCompTitle">Scegli il formato della competizione a coppie:</div>
+
+    <button type="button" class="mode-choice-btn" id="btn-son-choice-7" onclick="chooseSonCompetition('son7')">
+      <div class="mode-choice-left">
+        <span class="mode-choice-ico">🏆</span>
+        <div>
+          <div class="mode-choice-title" data-i18n="sonMode7Title">Torneo a 7 Nazioni • Semifinale / Finale (23 Batterie)</div>
+          <div class="mode-choice-sub" data-i18n="sonMode7Sub">7 Nazioni (3 Piloti ciascuna: #1, #2 + #3 Riserva) • 21 Batterie Regolari + B22 Grand Final Qualifier (2ª vs 3ª) + B23 Grand Final • Pt 4-3-2-0</div>
+        </div>
+      </div>
+      <span>▶</span>
+    </button>
+
+    <button type="button" class="mode-choice-btn" id="btn-son-choice-2" onclick="chooseSonCompetition('son')">
+      <div class="mode-choice-left">
+        <span class="mode-choice-ico">⚔️</span>
+        <div>
+          <div class="mode-choice-title" data-i18n="sonMode2Title">Sfida Diretta a Coppie • 2 Nazioni (15 Batterie)</div>
+          <div class="mode-choice-sub" data-i18n="sonMode2Sub">Test Match 2 Nazioni (Rosso/Blu vs Bianco/Giallo) • 3 Piloti per Nazione (#1, #2 + #3 Riserva) • 15 Batterie • Pt 4-3-2-0</div>
+        </div>
+      </div>
+      <span>▶</span>
+    </button>
+
+    <button type="button" class="qr-btn-close" style="width:100%;padding:10px;border-radius:8px;border:none;font-weight:800;margin-top:4px;cursor:pointer;" onclick="closeSonInfoModal()" data-i18n="dkNoticeBtn">Ho capito, procedi ▶</button>
   </div>
 </div>
 
@@ -596,6 +632,14 @@
       </div>
       <div data-i18n="plNoticeBody"></div>
     </div>
+<!-- Banner informativo Torneo Nazioni a Coppie (SON) nella scheda Piloti -->
+    <div class="dk-info-banner" id="son-banner-riders" style="border-left-color: var(--accent); border-color: rgba(0, 230, 118, 0.5);">
+      <div class="dk-info-banner-top" style="color: var(--accent);">
+        <span>🌍 <span data-i18n="sonNoticeTitle">Regolamento Torneo Nazioni a Coppie (Formato SON)</span></span>
+        <button type="button" class="btn-mini" onclick="openSonInfoModal()">⚙️ 7 / 2 Nazioni</button>
+      </div>
+      <div data-i18n="sonNoticeBody"></div>
+    </div>
 
     <div id="riders-inputs"></div>
     <button type="button" class="btn-primary" onclick="goToHeats()" data-i18n="btnGoToHeats">Vai alle Batterie ▶</button>
@@ -632,6 +676,14 @@
         <span>🇵🇱 <span data-i18n="plNoticeTitle">Regolamento Dinamico Lega Polacca (Formato Ekstraliga)</span></span>
       </div>
       <div data-i18n="plNoticeBody"></div>
+    </div>
+<!-- Banner informativo Torneo Nazioni a Coppie (SON) nella scheda Batterie -->
+    <div class="dk-info-banner" id="son-banner-heats" style="border-left-color: var(--accent); border-color: rgba(0, 230, 118, 0.5);">
+      <div class="dk-info-banner-top" style="color: var(--accent);">
+        <span>🌍 <span data-i18n="sonNoticeTitle">Regolamento Torneo Nazioni a Coppie (Formato SON)</span></span>
+        <button type="button" class="btn-mini" onclick="openSonInfoModal()">ℹ️ 7 / 2 Nazioni</button>
+      </div>
+      <div data-i18n="sonNoticeBody"></div>
     </div>
 
     <!-- Barra Batterie di Spareggio (compare SOLO dall'ultima batteria in poi) -->
@@ -5002,6 +5054,612 @@ Object.assign(I18N.it, {
       ths.forEach(th => {
         if (th.textContent === '4°(R/X)') th.textContent = '4°(D/W)';
       });
+    }
+  };
+/* =========================================================================
+     MODULO TORNEO NAZIONI A COPPIE (FORMATO SON): 7 NAZIONI (23B) & 2 NAZIONI (15B)
+     ========================================================================= */
+
+  Object.assign(I18N.it, {
+    roleU21: "Riserva #3 (Tattica / U21)",
+    leagueSonSub: "Torneo a 7 Nazioni (23 Batterie) oppure Sfida a 2 Nazioni (15 Batterie) • 3 Piloti per Nazione • Punteggio 4-3-2-0",
+    sonNoticeTitle: "Regolamento Dinamico Torneo Nazioni a Coppie (Formato SON)",
+    sonNoticeBody: "Punteggio ufficiale 4-3-2-0 (3+2=5 pt batte 4+0=4 pt). Ogni Nazione schiera i titolari #1 e #2 più la Riserva #3 (inseribile liberamente in qualsiasi batteria dal Team Manager tramite il menù a tendina). In ogni batteria la prima Nazione veste i caschi Rosso/Blu e la seconda Bianco/Giallo, con corsie selezionabili dai menù.",
+    sonChooseCompTitle: "Scegli il formato della competizione a coppie:",
+    sonMode7Title: "Torneo a 7 Nazioni • Semifinale / Finale (23 Batterie)",
+    sonMode7Sub: "7 Nazioni (3 Piloti ciascuna: #1, #2 + #3 Riserva) • 21 Batterie Regolari + B22 Grand Final Qualifier (2ª vs 3ª) + B23 Grand Final • Pt 4-3-2-0",
+    sonMode2Title: "Sfida Diretta a Coppie • 2 Nazioni (15 Batterie)",
+    sonMode2Sub: "Test Match 2 Nazioni (Rosso/Blu vs Bianco/Giallo) • 3 Piloti per Nazione (#1, #2 + #3 Riserva) • 15 Batterie • Pt 4-3-2-0",
+    nationDefPrefix: "Nazione",
+    sonLoadQualBtn: "⚡ Carica Nazioni Qualificate",
+    sonH22Title: "🔥 BATTERIA 22 — GRAND FINAL QUALIFIER (2ª vs 3ª Classificata)",
+    sonH22Sub: "Si sfidano la 2ª Nazione classificata (Rosso/Blu) e la 3ª Nazione classificata (Bianco/Giallo) dopo le 21 batterie. Chi vince accede alla Grand Final (Batteria 23).",
+    sonH23Title: "🏆 BATTERIA 23 — GRAND FINAL (1ª Classificata vs Vincente B22)",
+    sonH23Sub: "La 1ª Nazione classificata dopo le 21 batterie (Rosso/Blu) sfida la Nazione vincente della Batteria 22 (Bianco/Giallo) per il titolo."
+  });
+
+  Object.assign(I18N.en, {
+    roleU21: "Reserve #3 (Tactical / U21)",
+    leagueSonSub: "7-Nation Tournament (23 Heats) or 2-Nation Pairs Match (15 Heats) • 3 Riders per Nation • Scoring 4-3-2-0",
+    sonNoticeTitle: "Dynamic Nations Pairs Rules (SON Format)",
+    sonNoticeBody: "Official 4-3-2-0 scoring (3+2=5 pts beats 4+0=4 pts). Each Nation fields starters #1 & #2 plus Reserve #3 (who can be freely substituted into any heat by the Team Manager via dropdown). In each heat the first Nation wears Red/Blue and the second wears White/Yellow, with selectable gates.",
+    sonChooseCompTitle: "Select Nations Pairs competition format:",
+    sonMode7Title: "7-Nation Tournament • Semifinal / Final (23 Heats)",
+    sonMode7Sub: "7 Nations (3 Riders each: #1, #2 + #3 Reserve) • 21 Regular Heats + H22 Grand Final Qualifier (2nd vs 3rd) + H23 Grand Final • Pts 4-3-2-0",
+    sonMode2Title: "2-Nation Pairs Match (15 Heats)",
+    sonMode2Sub: "2-Nation Test Match (Red/Blue vs White/Yellow) • 3 Riders per Nation (#1, #2 + #3 Reserve) • 15 Heats • Pts 4-3-2-0",
+    nationDefPrefix: "Nation",
+    sonLoadQualBtn: "⚡ Load Qualified Nations",
+    sonH22Title: "🔥 HEAT 22 — GRAND FINAL QUALIFIER (2nd vs 3rd Place)",
+    sonH22Sub: "2nd placed Nation (Red/Blue) faces 3rd placed Nation (White/Yellow) after 21 heats. Winner advances to the Grand Final (Heat 23).",
+    sonH23Title: "🏆 HEAT 23 — GRAND FINAL (1st Place vs Winner H22)",
+    sonH23Sub: "1st placed Nation after 21 heats (Red/Blue) faces the Winner of Heat 22 (White/Yellow) for the title."
+  });
+
+  Object.assign(I18N.pl, {
+    roleU21: "Rezerwa #3 (Taktyczna / U21)",
+    leagueSonSub: "Turniej 7 Reprezentacji (23 Biegi) lub Mecz Parowy 2 Drużyn (15 Biegów) • 3 Zawodników • Punktacja 4-3-2-0",
+    sonNoticeTitle: "Dynamiczny Regulamin Turnieju Par Narodowych (Format SON)",
+    sonNoticeBody: "Punktacja 4-3-2-0 (3+2=5 pkt pokonuje 4+0=4 pkt). Każda reprezentacja wystawia zawodników #1 i #2 oraz Rezerwowego #3 (może zastąpić dowolnego zawodnika w każdym biegu z listy rozwijanej). Pierwsza drużyna jedzie w kaskach Czerwonym/Niebieskim, druga w Białym/Żółtym.",
+    sonChooseCompTitle: "Wybierz format zawodów parowych:",
+    sonMode7Title: "Turniej 7 Reprezentacji • Półfinał / Finał (23 Biegi)",
+    sonMode7Sub: "7 Reprezentacji (po 3 Zawodników: #1, #2 + #3 Rezerwa) • 21 Biegów + B22 Baraż (2. vs 3.) + B23 Wielki Finał • Pkt 4-3-2-0",
+    sonMode2Title: "Mecz Parowy 2 Reprezentacji (15 Biegów)",
+    sonMode2Sub: "Mecz 2 Drużyn (Czerw./Nieb. vs Biały/Żółty) • 3 Zawodników (#1, #2 + #3 Rezerwa) • 15 Biegów • Pkt 4-3-2-0",
+    nationDefPrefix: "Reprezentacja",
+    sonLoadQualBtn: "⚡ Załaduj Zakwalifikowane Drużyny",
+    sonH22Title: "🔥 BIEG 22 — BARAŻ O FINAŁ (2. vs 3. Miejsce)",
+    sonH22Sub: "2. drużyna po 21 biegach (Czerwony/Niebieski) przeciwko 3. drużynie (Biały/Żółty). Zwycięzca awansuje do Wielkiego Finału (Bieg 23).",
+    sonH23Title: "🏆 BIEG 23 — WIELKI FINAŁ (1. Miejsce vs Zwycięzca B22)",
+    sonH23Sub: "1. drużyna po 21 biegach (Czerwony/Niebieski) przeciwko zwycięzcy Biegu 22 (Biały/Żółty)."
+  });
+
+  Object.assign(I18N.da, {
+    roleU21: "Reserve #3 (Taktisk / U21)",
+    leagueSonSub: "7-Nations Turnering (23 Heats) eller 2-Nations Parløb (15 Heats) • 3 Kørere pr. Nation • Point 4-3-2-0",
+    sonNoticeTitle: "Dynamiske Regler Nations Parløb (SON Format)",
+    sonNoticeBody: "4-3-2-0 pointsystem (3+2=5 pt slår 4+0=4 pt). Hver nation stiller med #1 og #2 samt Reserve #3 (kan frit skiftes ind via rullemenuen). Første nation i Rød/Blå, anden nation i Hvid/Gul.",
+    sonChooseCompTitle: "Vælg parløbsformat:",
+    sonMode7Title: "7-Nations Turnering • Semifinale / Finale (23 Heats)",
+    sonMode7Sub: "7 Nationer (3 Kørere hver: #1, #2 + #3 Reserve) • 21 Heats + H22 Qualifier (nr. 2 mod nr. 3) + H23 Grand Final • Pt 4-3-2-0",
+    sonMode2Title: "2-Nations Parløb (15 Heats)",
+    sonMode2Sub: "2 Nationer (Rød/Blå mod Hvid/Gul) • 3 Kørere pr. Nation (#1, #2 + #3 Reserve) • 15 Heats • Pt 4-3-2-0",
+    nationDefPrefix: "Nation",
+    sonLoadQualBtn: "⚡ Indlæs Kvalificerede Nationer",
+    sonH22Title: "🔥 HEAT 22 — GRAND FINAL QUALIFIER (Nr. 2 mod Nr. 3)",
+    sonH22Sub: "Nr. 2 efter 21 heats (Rød/Blå) møder nr. 3 (Hvid/Gul). Vinderen går i Grand Final (Heat 23).",
+    sonH23Title: "🏆 HEAT 23 — GRAND FINAL (Nr. 1 mod Vinder H22)",
+    sonH23Sub: "Nr. 1 efter 21 heats (Rød/Blå) møder vinderen af Heat 22 (Hvid/Gul)."
+  });
+
+  Object.assign(I18N.sv, {
+    roleU21: "Reserv #3 (Taktisk / U21)",
+    leagueSonSub: "7-Nationers Turnering (23 Heat) eller 2-Nationers Parmatch (15 Heat) • 3 Förare per Nation • Poäng 4-3-2-0",
+    sonNoticeTitle: "Dynamiska Regler Nations Partävling (SON Format)",
+    sonNoticeBody: "Poängsystem 4-3-2-0 (3+2=5 p slår 4+0=4 p). Varje nation ställer upp med #1 och #2 samt Reserv #3 (kan bytas in fritt i alla heat via menyn). Första nationen kör i Röd/Blå, andra i Vit/Gul.",
+    sonChooseCompTitle: "Välj format för partävlingen:",
+    sonMode7Title: "7-Nationers Turnering • Semifinal / Final (23 Heat)",
+    sonMode7Sub: "7 Nationer (3 Förare var: #1, #2 + #3 Reserv) • 21 Heat + H22 Qualifier (2:a mot 3:a) + H23 Grand Final • Poäng 4-3-2-0",
+    sonMode2Title: "2-Nationers Parmatch (15 Heat)",
+    sonMode2Sub: "2 Nationer (Röd/Blå mot Vit/Gul) • 3 Förare per Nation (#1, #2 + #3 Reserv) • 15 Heat • Poäng 4-3-2-0",
+    nationDefPrefix: "Nation",
+    sonLoadQualBtn: "⚡ Ladda Kvalificerade Nationer",
+    sonH22Title: "🔥 HEAT 22 — GRAND FINAL QUALIFIER (2:a mot 3:a)",
+    sonH22Sub: "2:a placerade nation efter 21 heat (Röd/Blå) möter 3:e placerade nation (Vit/Gul). Vinnaren går till Grand Final (Heat 23).",
+    sonH23Title: "🏆 HEAT 23 — GRAND FINAL (1:a mot Vinnare H22)",
+    sonH23Sub: "1:a placerade nation efter 21 heat (Röd/Blå) möter vinnaren från Heat 22 (Vit/Gul)."
+  });
+
+  // 1. Correzione SON 2 Nazioni (15 Batterie): titolari #1 e #2 precaricati, #3 Riserva sempre selezionabile dal menù
+  LEAGUE_CONFIGS.son.titleKey = "sonMode2Title";
+  LEAGUE_CONFIGS.son.teamsCount = 2;
+  LEAGUE_CONFIGS.son.schedule = Array.from({ length: 15 }, () => [1, 2, 101, 102]);
+
+  // 2. Configurazione Ufficiale SON 7 Nazioni (23 Batterie: 21 Regolari + B22 Qualifier + B23 Grand Final)
+  const SON7_PAIRINGS = [
+    ['a', 'b'], ['c', 'd'], ['e', 'f'], // Serie 1 (G riposa)
+    ['g', 'a'], ['b', 'c'], ['d', 'e'], // Serie 2 (F riposa)
+    ['f', 'g'], ['a', 'c'], ['b', 'd'], // Serie 3 (E riposa)
+    ['e', 'g'], ['f', 'a'], ['c', 'e'], // Serie 4
+    ['d', 'f'], ['g', 'b'], ['a', 'd'], // Serie 5
+    ['b', 'e'], ['c', 'f'], ['d', 'g'], // Serie 6
+    ['e', 'a'], ['f', 'b'], ['g', 'c'], // Serie 7
+    [null, null], // B22: Grand Final Qualifier (2ª vs 3ª)
+    [null, null]  // B23: Grand Final (1ª vs Vincente B22)
+  ];
+
+  const SON7_TEAM_KEYS = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+  const SON7_BASES = { a: 0, b: 100, c: 200, d: 300, e: 400, f: 500, g: 600 };
+
+  LEAGUE_CONFIGS.son7 = {
+    titleKey: "sonMode7Title",
+    isTeam: true,
+    teamsCount: 7,
+    ridersPerTeam: 3,
+    totalHeats: 23,
+    scores: [4, 3, 2, 0],
+    roles: { 1: "roleCapt", 2: "roleMain", 3: "roleU21" },
+    schedule: SON7_PAIRINGS.map(pair => {
+      if (!pair[0] || !pair[1]) return [null, null, null, null];
+      const b1 = SON7_BASES[pair[0]], b2 = SON7_BASES[pair[1]];
+      return [b1 + 1, b1 + 2, b2 + 1, b2 + 2];
+    })
+  };
+
+  function isSevenTeamMode(stObj) {
+    const s = stObj || state;
+    return Boolean(s && s.mode === 'son7');
+  }
+
+  function isSonMode(stObj) {
+    const s = stObj || state;
+    return Boolean(s && (s.mode === 'son' || s.mode === 'son7'));
+  }
+
+  function openSonEntryFlow() {
+    closeModeModal();
+    openSonInfoModal();
+  }
+
+  function openSonInfoModal() {
+    const b7 = document.getElementById('btn-son-choice-7');
+    const b2 = document.getElementById('btn-son-choice-2');
+    if (b7) b7.classList.toggle('active', state.mode === 'son7');
+    if (b2) b2.classList.toggle('active', state.mode === 'son');
+    document.getElementById('son-info-modal').classList.add('open');
+  }
+
+  function closeSonInfoModal() {
+    document.getElementById('son-info-modal').classList.remove('open');
+  }
+
+  function chooseSonCompetition(sonModeKey) {
+    const targetMode = sonModeKey === 'son7' ? 'son7' : 'son';
+    const hasScores = state.heats && state.heats.some(h => h.slots.some(s => s.score !== null));
+    if (hasScores && state.mode !== targetMode) {
+      if (!confirm(t('confirmChangeMode'))) return;
+    }
+    if (state.mode !== targetMode || hasScores) {
+      state = createDefaultState(targetMode);
+      ocrTeamTarget = 'both';
+      populateEventForm();
+      saveState();
+    }
+    closeSonInfoModal();
+    renderRidersInputs();
+    renderCurrentHeat();
+    switchTab('riders', document.getElementById('nav-riders'));
+  }
+
+  const _sonPrevSelectAppMode = selectAppMode;
+  selectAppMode = function(newMode) {
+    if (newMode === 'son' || newMode === 'son7') {
+      openSonEntryFlow();
+      return;
+    }
+    _sonPrevSelectAppMode(newMode);
+  };
+
+  const _sonPrevGetDefaultTeamName = getDefaultTeamName;
+  getDefaultTeamName = function(side, mode) {
+    if (mode === 'son7' || ['e', 'f', 'g'].includes(side)) {
+      const letters = { a: 'A', b: 'B', c: 'C', d: 'D', e: 'E', f: 'F', g: 'G' };
+      return (t('nationDefPrefix') || 'Nazione') + " " + (letters[side] || side.toUpperCase());
+    }
+    return _sonPrevGetDefaultTeamName(side, mode);
+  };
+
+  const _sonPrevIsDefaultTeamName = isDefaultTeamName;
+  isDefaultTeamName = function(name) {
+    if (!name) return true;
+    if (/^(Nazione|Nation|Reprezentacja)\s+[A-G]$/i.test(name.trim())) return true;
+    return _sonPrevIsDefaultTeamName(name);
+  };
+
+  const _sonPrevGetRiderTeamSide = getRiderTeamSide;
+  getRiderTeamSide = function(rId, helmetFallback, stObj) {
+    if (isSevenTeamMode(stObj)) {
+      if (rId >= 601) return 'G';
+      if (rId >= 501) return 'F';
+      if (rId >= 401) return 'E';
+      if (rId >= 301) return 'D';
+      if (rId >= 201) return 'C';
+      if (rId >= 101) return 'B';
+      if (rId >= 1) return 'A';
+      return 'A';
+    }
+    return _sonPrevGetRiderTeamSide(rId, helmetFallback, stObj);
+  };
+
+  const _sonPrevCreateDefaultState = createDefaultState;
+  createDefaultState = function(modeKey) {
+    if (modeKey !== 'son7') return _sonPrevCreateDefaultState(modeKey);
+    const cfg = LEAGUE_CONFIGS.son7;
+    const today = new Date().toISOString().split('T')[0];
+    const riders = {};
+    SON7_TEAM_KEYS.forEach(k => {
+      const base = SON7_BASES[k];
+      for (let i = 1; i <= 3; i++) {
+        riders[base + i] = getDefaultRiderName(base + i, 'son7');
+      }
+    });
+    const heats = cfg.schedule.map((row, idx) => {
+      const hGates = idx % 2 === 0 ? [1, 3] : [2, 4];
+      const aGates = idx % 2 === 0 ? [2, 4] : [1, 3];
+      return {
+        heatNumber: idx + 1,
+        time: "",
+        slots: [
+          { helmet: 'R', riderId: row[0] || null, gate: hGates[0], score: null, warning: false },
+          { helmet: 'B', riderId: row[1] || null, gate: hGates[1], score: null, warning: false },
+          { helmet: 'W', riderId: row[2] || null, gate: aGates[0], score: null, warning: false },
+          { helmet: 'Y', riderId: row[3] || null, gate: aGates[1], score: null, warning: false }
+        ]
+      };
+    });
+    return {
+      id: Date.now(),
+      mode: 'son7',
+      teamNames: {
+        a: getDefaultTeamName('a', 'son7'), b: getDefaultTeamName('b', 'son7'),
+        c: getDefaultTeamName('c', 'son7'), d: getDefaultTeamName('d', 'son7'),
+        e: getDefaultTeamName('e', 'son7'), f: getDefaultTeamName('f', 'son7'),
+        g: getDefaultTeamName('g', 'son7')
+      },
+      eventMeta: { name: "", date: today, track: "", city: "", country: "", length: "", notes: "", photoDataUrl: "" },
+      currentHeat: 0,
+      riders: riders,
+      heats: heats,
+      tieOrder: []
+    };
+  };
+
+  // Calcolo totali per 7 Nazioni (nelle Batterie 1–21 per la classifica, più totale generale)
+  const _sonPrevComputeTeamTotals = computeTeamTotals;
+  computeTeamTotals = function(raceObj, regularOnly) {
+    const rState = raceObj || state;
+    if (!isSevenTeamMode(rState)) return _sonPrevComputeTeamTotals(raceObj);
+    const totals = { a: 0, b: 0, c: 0, d: 0, e: 0, f: 0, g: 0 };
+    const heatsToScan = regularOnly ? rState.heats.slice(0, 21) : rState.heats;
+    heatsToScan.forEach(h => {
+      h.slots.forEach(s => {
+        if (typeof s.score === 'number' && s.riderId) {
+          const side = getRiderTeamSide(s.riderId, s.helmet, rState).toLowerCase();
+          if (totals[side] !== undefined) totals[side] += s.score;
+        }
+      });
+    });
+    return totals;
+  };
+
+  // Classifica ordinata delle 7 Nazioni (con scontro diretto in caso di parità punti dopo 21 batterie)
+  function getSon7Standings(raceObj) {
+    const rState = raceObj || state;
+    const regTotals = computeTeamTotals(rState, true);
+    const list = SON7_TEAM_KEYS.map(k => ({
+      key: k,
+      code: k.toUpperCase(),
+      base: SON7_BASES[k],
+      name: (rState.teamNames && rState.teamNames[k]) || getDefaultTeamName(k, 'son7'),
+      pts: regTotals[k] || 0
+    }));
+    list.sort((t1, t2) => {
+      if (t2.pts !== t1.pts) return t2.pts - t1.pts;
+      // Scontro diretto nelle prime 21 batterie
+      for (let i = 0; i < 21; i++) {
+        const pair = SON7_PAIRINGS[i];
+        if ((pair[0] === t1.key && pair[1] === t2.key) || (pair[0] === t2.key && pair[1] === t1.key)) {
+          const h = rState.heats[i];
+          if (h) {
+            let p1 = 0, p2 = 0;
+            h.slots.forEach(s => {
+              if (typeof s.score === 'number' && s.riderId) {
+                const sd = getRiderTeamSide(s.riderId, s.helmet, rState).toLowerCase();
+                if (sd === t1.key) p1 += s.score;
+                if (sd === t2.key) p2 += s.score;
+              }
+            });
+            if (p1 !== p2) return p2 - p1;
+          }
+        }
+      }
+      return t1.base - t2.base;
+    });
+    return list;
+  }
+
+  // Carica con 1 clic le Nazioni qualificate in Batteria 22 (2ª vs 3ª) o Batteria 23 (1ª vs Vincente B22)
+  function autoFillSon7FinalHeat(heatIdx) {
+    if (!isSevenTeamMode()) return;
+    const ranked = getSon7Standings();
+    const heat = state.heats[heatIdx];
+    if (!heat || ranked.length < 3) return;
+
+    if (heatIdx === 21) {
+      // Batteria 22: 2ª classificata (R/B) vs 3ª classificata (W/Y)
+      const b2 = ranked[1].base, b3 = ranked[2].base;
+      heat.slots[0].riderId = b2 + 1;
+      heat.slots[1].riderId = b2 + 2;
+      heat.slots[2].riderId = b3 + 1;
+      heat.slots[3].riderId = b3 + 2;
+    } else if (heatIdx === 22) {
+      // Batteria 23: 1ª classificata (R/B) vs Vincente B22 (W/Y)
+      const b1 = ranked[0].base;
+      let winB22Base = ranked[1].base;
+      const h22 = state.heats[21];
+      if (h22) {
+        let ptsRB = 0, ptsWY = 0;
+        h22.slots.forEach((s, idx) => {
+          if (typeof s.score === 'number') {
+            if (idx < 2) ptsRB += s.score;
+            else ptsWY += s.score;
+          }
+        });
+        if (ptsWY > ptsRB && h22.slots[2].riderId) {
+          winB22Base = Math.floor((h22.slots[2].riderId - 1) / 100) * 100;
+        } else if (ptsRB > ptsWY && h22.slots[0].riderId) {
+          winB22Base = Math.floor((h22.slots[0].riderId - 1) / 100) * 100;
+        }
+      }
+      heat.slots[0].riderId = b1 + 1;
+      heat.slots[1].riderId = b1 + 2;
+      heat.slots[2].riderId = winB22Base + 1;
+      heat.slots[3].riderId = winB22Base + 2;
+    }
+    saveState();
+    renderCurrentHeat();
+  }
+
+  // Etichette Batterie per SON 7 Nazioni (mostra le 2 Nazioni che si sfidano in ogni batteria!)
+  const _sonPrevGetHeatLabel = getHeatLabel;
+  getHeatLabel = function(idx, includeTime) {
+    const cfg = getModeConfig();
+    const h = state.heats[idx];
+    if (isSevenTeamMode() && (!h || !h.isTieBreak) && idx < 23) {
+      const hNum = idx + 1;
+      let base = "";
+      if (idx < 21) {
+        const pair = SON7_PAIRINGS[idx];
+        const n1 = (state.teamNames && state.teamNames[pair[0]]) || pair[0].toUpperCase();
+        const n2 = (state.teamNames && state.teamNames[pair[1]]) || pair[1].toUpperCase();
+        base = t('heatLbl') + " " + hNum + " (" + n1 + " vs " + n2 + ")";
+      } else if (idx === 21) {
+        base = t('heatLbl') + " 22 (Grand Final Qualifier)";
+      } else {
+        base = t('heatLbl') + " 23 (GRAND FINAL)";
+      }
+      if (includeTime && h && h.time) base += " •⏱️️ " + h.time + "s";
+      return base;
+    }
+    return _sonPrevGetHeatLabel(idx, includeTime);
+  };
+
+  // Parziale batteria per SON 7 Nazioni (Somma Rosso+Blu vs Somma Bianco+Giallo)
+  const _sonPrevComputeHeatTeamPartial = computeHeatTeamPartial;
+  computeHeatTeamPartial = function(heat, stObj) {
+    const rState = stObj || state;
+    if (isSevenTeamMode(rState)) {
+      let rb = 0, wy = 0, done = false;
+      heat.slots.forEach((s, idx) => {
+        if (s.score !== null) done = true;
+        if (typeof s.score === 'number') {
+          if (idx < 2) rb += s.score;
+          else wy += s.score;
+        }
+      });
+      return done ? (rb + " : " + wy) : null;
+    }
+    return _sonPrevComputeHeatTeamPartial(heat, stObj);
+  };
+
+  // Aggiorna Banner Punteggio 7 Nazioni e visibilità Banner SON
+  const _sonPrevUpdateHeaderAndHero = updateHeaderAndHero;
+  updateHeaderAndHero = function() {
+    _sonPrevUpdateHeaderAndHero();
+    const sonActive = isSonMode();
+    const sonBannerRiders = document.getElementById('son-banner-riders');
+    const sonBannerHeats = document.getElementById('son-banner-heats');
+    if (sonBannerRiders) sonBannerRiders.classList.toggle('visible', sonActive);
+    if (sonBannerHeats) sonBannerHeats.classList.toggle('visible', sonActive);
+
+    const tsBanner2 = document.getElementById('team-score-banner');
+    const tsBanner7 = document.getElementById('team7-score-banner');
+    if (tsBanner7) {
+      if (isSevenTeamMode()) {
+        if (tsBanner2) tsBanner2.classList.remove('visible');
+        tsBanner7.classList.add('visible');
+        const ranked = getSon7Standings();
+        tsBanner7.innerHTML = ranked.map((item, idx) => {
+          const borderCol = idx === 0 ? 'var(--yellow)' : (idx <= 2 ? 'var(--accent)' : 'var(--border)');
+          return `<div class="t4-box" style="border-color:${borderCol};padding:4px 3px;">` +
+            `<div style="font-size:0.58rem;color:var(--muted);font-weight:900;">${idx + 1}°</div>` +
+            `<div class="t4-name" style="font-size:0.62rem;">${item.name}</div>` +
+            `<div class="t4-pts" style="font-size:0.88rem;">${item.pts}</div>` +
+          `</div>`;
+        }).join('');
+      } else {
+        tsBanner7.classList.remove('visible');
+      }
+    }
+  };
+
+  // Renderizza Input Piloti per tutte le 7 Nazioni
+  const _sonPrevRenderRidersInputs = renderRidersInputs;
+  renderRidersInputs = function() {
+    if (!isSevenTeamMode()) {
+      _sonPrevRenderRidersInputs();
+      return;
+    }
+    const cfg = getModeConfig();
+    const container = document.getElementById('riders-inputs');
+    const ocrTargetBar = document.getElementById('ocr-team-target-bar');
+
+    if (ocrTargetBar) {
+      ocrTargetBar.classList.add('visible');
+      ocrTargetBar.innerHTML =
+        `<button type="button" class="${ocrTeamTarget === 'both' ? 'active' : ''}" onclick="setOcrTarget('both')">Tutte (7)</button>` +
+        SON7_TEAM_KEYS.map(k =>
+          `<button type="button" class="${ocrTeamTarget === k ? 'active' : ''}" onclick="setOcrTarget('${k}')">${k.toUpperCase()}</button>`
+        ).join('');
+    }
+
+    container.innerHTML = SON7_TEAM_KEYS.map((k, tIdx) => {
+      const base = SON7_BASES[k];
+      const cls = tIdx % 2 === 0 ? 'team-a' : 'team-b';
+      let html = `<div class="team-riders-card ${cls}">` +
+        `<div class="team-name-input-row"><span>🌍 <strong>${k.toUpperCase()}</strong></span>` +
+        `<input type="text" value="${(state.teamNames[k] || '').replace(/"/g, '&quot;')}" oninput="updateTeamName('${k}', this.value)"></div>`;
+      for (let i = 1; i <= 3; i++) {
+        const rId = base + i;
+        const roleKey = cfg.roles && cfg.roles[i] ? cfg.roles[i] : null;
+        const roleTxt = roleKey ? ' (' + t(roleKey) + ')' : '';
+        html += `<div class="rider-input-row"><span>#${i}${roleTxt}</span>` +
+          `<input type="text" value="${(state.riders[rId] || '').replace(/"/g, '&quot;')}" oninput="updateRiderName(${rId}, this.value)"></div>`;
+      }
+      return html + `</div>`;
+    }).join('');
+  };
+
+  // Renderizza Batteria Corrente per SON 7 Nazioni + Correzione colori pulsanti 4-3-2-0
+  const _sonPrevRenderCurrentHeat = renderCurrentHeat;
+  renderCurrentHeat = function() {
+    _sonPrevRenderCurrentHeat();
+    const cfg = getModeConfig();
+    const heat = state.heats[state.currentHeat];
+    const autoBox = document.getElementById('auto-finals-box');
+
+    if (isSevenTeamMode() && heat) {
+      const allStats = computeStats();
+      const liveStatsMap = {};
+      allStats.forEach(st => {
+        liveStatsMap[st.id] = { rides: st.runs.filter(r => r !== '-').length, pts: st.total };
+      });
+
+      // Box Guida per Batteria 22 (Qualifier 2ª vs 3ª) e Batteria 23 (Grand Final 1ª vs Vincente B22)
+      if (state.currentHeat === 21 || state.currentHeat === 22) {
+        const ranked = getSon7Standings();
+        const isH22 = state.currentHeat === 21;
+        const titleTxt = isH22 ? t('sonH22Title') : t('sonH23Title');
+        const subTxt = isH22 ? t('sonH22Sub') : t('sonH23Sub');
+        const pills = ranked.slice(0, 3).map((item, i) =>
+          `<div class="qual-pill"><span>${i + 1}°:</span>${item.name} (${item.pts} pt)</div>`
+        ).join('');
+        if (autoBox) {
+          autoBox.innerHTML = `<div class="qual-info-card" style="border-color:var(--yellow);">` +
+            `<div class="qual-info-header"><span class="qual-info-title" style="color:var(--yellow);">${titleTxt}</span>` +
+            `<div style="display:flex;gap:5px;">` +
+              `<button type="button" class="btn-mini" style="border-color:var(--accent);color:var(--accent);" onclick="autoFillSon7FinalHeat(${state.currentHeat})">${t('sonLoadQualBtn')}</button>` +
+              `<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">${t('clearGatesBtn')}</button>` +
+            `</div></div>` +
+            `<div class="qual-info-sub">${subTxt}</div>` +
+            `<div class="qual-badges-list">${pills}</div></div>`;
+        }
+      }
+
+      // Popola i menù a tendina di ogni corsia con la Nazione di competenza (Batterie 1-21) o tutte le 7 Nazioni (Batterie 22-23 / Spareggio)
+      const pair = state.currentHeat < 21 ? SON7_PAIRINGS[state.currentHeat] : [null, null];
+      const fixedColors = ['R', 'B', 'W', 'Y'];
+      const selects = document.querySelectorAll('#gates-container .gate-card .sub-select');
+      const teamTags = document.querySelectorAll('#gates-container .gate-card .rider-team-tag');
+
+      selects.forEach((sel, sIdx) => {
+        const slot = heat.slots[sIdx];
+        const isFirstNationSlot = (sIdx === 0 || sIdx === 1);
+        const assignedKey = isFirstNationSlot ? pair[0] : pair[1];
+        const keysToList = assignedKey ? [assignedKey] : SON7_TEAM_KEYS;
+
+        let opts = `<option value="" ${!slot.riderId ? 'selected' : ''}>${t('selectQualRider')}</option>`;
+        keysToList.forEach(k => {
+          const tName = state.teamNames[k] || getDefaultTeamName(k, 'son7');
+          const base = SON7_BASES[k];
+          opts += `<optgroup label="${tName}">`;
+          for (let i = 1; i <= 3; i++) {
+            const rId = base + i;
+            const roleKey = cfg.roles && cfg.roles[i] ? cfg.roles[i] : null;
+            const roleTxt = roleKey ? ` [${t(roleKey)}]` : '';
+            const stInfo = liveStatsMap[rId] ? ` (${liveStatsMap[rId].pts}pt • ${liveStatsMap[rId].rides}H)` : '';
+            opts += `<option value="${rId}" ${slot.riderId == rId ? 'selected' : ''}>#${i} ${state.riders[rId]}${roleTxt}${stInfo}</option>`;
+          }
+          opts += `</optgroup>`;
+        });
+        sel.innerHTML = opts;
+
+        if (teamTags[sIdx]) {
+          if (slot.riderId) {
+            const rKey = getRiderTeamSide(slot.riderId, fixedColors[sIdx], state).toLowerCase();
+            teamTags[sIdx].textContent = state.teamNames[rKey] || '';
+          } else if (assignedKey) {
+            teamTags[sIdx].textContent = state.teamNames[assignedKey] || '';
+          } else {
+            teamTags[sIdx].textContent = '';
+          }
+        }
+      });
+    }
+
+    // Correzione colori pulsanti per il sistema 4-3-2-0 (4pt=Verde, 3pt=Azzurro, 2pt=Arancio, 0pt=Grigio)
+    const is4320 = isSonMode() || (heat && heat.isTieBreak && heat.tieScoreMode === '4320');
+    if (is4320) {
+      document.querySelectorAll('#gates-container .gate-card .score-btns .score-btn').forEach(btn => {
+        if (btn.classList.contains('selected-3')) {
+          btn.style.background = '#29b6f6';
+          btn.style.borderColor = '#4fc3f7';
+        } else if (btn.classList.contains('selected-2')) {
+          btn.style.background = '#ffa726';
+          btn.style.borderColor = '#ffb74d';
+        } else {
+          btn.style.background = '';
+          btn.style.borderColor = '';
+        }
+      });
+    }
+  };
+
+  // Tabellone e Classifica per SON 7 Nazioni
+  const _sonPrevRenderScorecard = renderScorecard;
+  renderScorecard = function() {
+    if (!isSevenTeamMode()) {
+      _sonPrevRenderScorecard();
+      return;
+    }
+    const thead = document.getElementById('scorecard-thead');
+    const tbody = document.querySelector('#scorecard-table tbody');
+    const allStats = computeStats();
+    const maxRidesDone = allStats.reduce((max, st) => Math.max(max, st.runs.filter(x => x !== '-').length), 0);
+    const maxCols = Math.max(7, maxRidesDone);
+
+    let seriesHeaders = '';
+    for (let s = 1; s <= maxCols; s++) seriesHeaders += '<th>S' + s + '</th>';
+    thead.innerHTML = '<tr><th>#</th><th style="text-align:left;padding-left:7px;">' + t('thRider') + '</th>' + seriesHeaders + '<th>' + t('thTot') + '</th></tr>';
+
+    const totals = computeTeamTotals();
+    const colSpanCount = maxCols + 3;
+
+    tbody.innerHTML = SON7_TEAM_KEYS.map(k => {
+      const code = k.toUpperCase();
+      const tName = state.teamNames[k] || getDefaultTeamName(k, 'son7');
+      const teamStats = allStats.filter(s => s.team === code);
+      const rowsHtml = teamStats.map(st => {
+        const r = st.runs.filter(x => x !== '-');
+        let cells = '';
+        for (let c = 0; c < maxCols; c++) cells += '<td>' + (r[c] ?? '-') + '</td>';
+        return '<tr><td><strong>' + formatRiderNum(st.id) + '</strong></td><td class="name-col">' + st.name + '</td>' + cells + '<td class="tot-col">' + st.total + '</td></tr>';
+      }).join('');
+      return '<tr class="team-sep-row"><td colspan="' + colSpanCount + '">🌍 ' + tName + ' — ' + t('totalLbl') + ' ' + (totals[k] || 0) + ' pt</td></tr>' + rowsHtml;
+    }).join('');
+  };
+
+  const _sonPrevRenderStandings = renderStandings;
+  renderStandings = function() {
+    _sonPrevRenderStandings();
+    if (isSevenTeamMode()) {
+      const stLeg = document.getElementById('standings-legend-bar');
+      const ranked = getSon7Standings();
+      if (stLeg) {
+        stLeg.innerHTML = ranked.map((item, i) =>
+          `<span><strong>${i + 1}°. ${item.name}: ${item.pts} pt</strong></span>`
+        ).join(' • ');
+      }
     }
   };
 
