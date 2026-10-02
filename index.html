@@ -6206,15 +6206,18 @@ Object.assign(I18N.it, {
   };
 
 /* =========================================================================
-     MODULO LINGUA CECA (ČEŠTINA) + CASCO D'ORO DI PARDUBICE (ZLATÁ PŘILBA 6 MOTO)
+     MODULO LINGUA CECA (ČEŠTINA) + CASCO D'ORO DI PARDUBICE + SUPER-OCR BLINDATO
      ========================================================================= */
 
-  // 1. Aggiunta Lingua Ceca (Čeština 🇨🇿) al selettore lingue
-  if (!LANGUAGES.some(l => l.code === 'cs')) {
+  // Protezione immediata lingua: se in localStorage era rimasto 'cs' prima della creazione di I18N.cs
+  if (!I18N[currentLang]) {
+    currentLang = 'it';
+  }
+
+  if (typeof LANGUAGES !== 'undefined' && !LANGUAGES.some(l => l.code === 'cs')) {
     LANGUAGES.push({ code: 'cs', name: 'Čeština', flag: '🇨🇿' });
   }
 
-  // Dizionario Completo Lingua Ceca (cs)
   I18N.cs = Object.assign({}, I18N.en, {
     navEvent: "Závod", navRiders: "Jezdci", navHeats: "Jízdy", navCard: "Tabulka", navStandings: "Pořadí", navHistory: "Historie", navSettings: "Nastavení",
     btnTopFormat: "Formát", homeBadge: "DOMÁCÍ", awayBadge: "HOSTÉ",
@@ -6261,7 +6264,7 @@ Object.assign(I18N.it, {
     selectQualRider: "— Vyberte jezdce —", selectRiderUp: "Vyberte jezdce z menu", clearGatesBtn: "🔄 Vymazat dráhy", waitingResults: "Čeká se na výsledky předchozích jízd",
     btnAutoFillQual: "⚡ Nasadit postupující podle klíče",
     btnShareCard: "📲 Sdílet / Stáhnout tabulku závodu (PNG)", btnShareStandings: "📲 Sdílet / Stáhnout pořadí (PNG)",
-    btnModeFinal: "🏆 Konečné pořadí", btnModeQual: "⏱️️ Pořadí ve skupinách",
+    btnModeFinal: "🏆 Konečné pořadí", btnModeQual: "⏱️ Pořadí ve skupinách",
     thPos: "Poř.", thRider: "Jezdec", thRuns: "Jízdy", thTot: "BODY", thFin: "FIN",
     codeR: "Defekt", codeF: "Pád", codeX: "Vyloučen", codeT: "Páska", codeNS: "Nestartoval", codeW: "Napomenutí (Warning)",
     histSectionTitle: "💾 Archiv závodů a záloha", btnSaveArchive: "📥 Uložit aktuální závod do historie",
@@ -6269,8 +6272,8 @@ Object.assign(I18N.it, {
     emptyHistory: "Žádné uložené závody v historii.", btnOpenRace: "📂 Otevřít", btnDelRace: "🗑️ Smazat",
     raceInProgress: "Závod probíhá", setSectionTitle: "⚙️ Nastavení a jazyk",
     setLangDesc: "Vyberte jazyk aplikace. Všechny obrazovky, tabulky a plakáty PNG se automaticky přeloží.",
-    legalTitle: "⚖️️ Právní upozornění",
-    legalText: "Tato aplikace je nezávislý sportovní nástroj pro počítání bodů a není přidružena ani schválena FIM, AMK Zlatá přilba Pardubice ani jinými oficiálními organizacemi. Odkazy na formáty závodů slouží pouze k popisným účelům.",
+    legalTitle: "⚖️ Právní upozornění",
+    legalText: "Tato aplikace je nezávislý sportovní nástroj pro počítání bodů a není přidružena ani schválena FIM ani jinými oficiálními organizacemi. Odkazy na formáty závodů slouží pouze k popisným účelům.",
     qrTitle: "📲 Sdílet Speedway Live", qrDesc: "Naskenujte tento QR kód fotoaparátem telefonu:",
     qrShareBtn: "📤 Sdílet odkaz", qrCloseBtn: "Zavřít", riderDefault: "Jezdec", reserveDefault: "Náhradník",
     posterStandings: "OFICIÁLNÍ POŘADÍ", posterCard: "TABULKA ZÁVODU", posterPodium: "🏆 VÝSLEDKY VELKÉHO FINÁLE", posterTeamRes: "🏆 VÝSLEDEK DRUŽSTEV",
@@ -6281,20 +6284,28 @@ Object.assign(I18N.it, {
     zpNoticeBody: "6 jezdců v každé jízdě (Červená, Modrá, Bílá, Žlutá, Zelená, Černobílá), bodování 5-4-3-2-1-0. Ve vylučovacích skupinách (Jízdy 1–12, jezdci #1–#24), čtvrtfinále (Jízdy 13–24, 12 postupujících + 12 nasazených #25–#36) a semifinále (Jízdy 25–30) se započítávají 2 nejlepší výsledky ze 3 jízd (max 10 b.). Ze semifinále jdou 1.–3. do Velkého finále (o 1.–6. místo) a 4.–6. do Malého finále (o 7.–12. místo).",
     zpStageElim: "Vylučovací skupina", zpStageQF: "Čtvrtfinálová skupina", zpStageSF: "Semifinálová skupina",
     zpSmallFinal: "Malé finále (o 7. – 12. místo)", zpGrandFinal: "VELKÉ FINÁLE (o 1. – 6. místo)",
-    zpBest2Rule: "Započítávají se 2 nejlepší výsledky ze 3 jízd (Top 3 postupují)"
+    zpBest2Rule: "Započítávají se 2 nejlepší výsledky ze 3 jízd (Top 3 postupují)",
+    ocrPrepImg: "Zvyšování ostrosti a kontrastu snímku...",
+    ocrLoadingLangs: "Načítání plochodrážních slovníků (CZ / PL / SE / DK / EN)...",
+    ocrScanning: "Skenování startovní listiny",
+    ocrSuccessMsg: "✅ Startovní listina načtena!",
+    ocrNoRidersMsg: "⚠️ Nebyli rozpoznáni žádní jezdci. Zkuste oříznout snímek blíže ke jménům."
   });
 
-  // Traduzioni Casco d'Oro di Pardubice + Caschi Verde/Nero-Bianco per IT, EN, PL, DA, SV
   Object.assign(I18N.it, {
     modeZpTitle: "Casco d'Oro di Pardubice (Zlatá přilba • 6 Piloti)",
     modeZpSub: "36 Piloti + 2 Riserve • 6 Moto in pista (Pt 5-4-3-2-1-0) • 32 Batterie (Eliminatorie, Quarti, Semifinali, Piccola & Grande Finale)",
     helmetGreen: "Verde", helmetBlack: "Nero/Bianco", gate5: "Corsia 5", gate6: "Corsia 6",
     roleSeededQuarter: "Testa di Serie QF", roleElimGroup: "Gruppo Elim.",
     zpNoticeTitle: "Regolamento Ufficiale Casco d'Oro di Pardubice (Zlatá přilba • 6 Piloti)",
-    zpNoticeBody: "6 piloti in pista per batteria (Rosso, Blu, Bianco, Giallo, Verde, Nero-Bianco) con punteggio 5-4-3-2-1-0. Nelle Eliminatorie (B1–12, piloti #1–#24), nei Quarti di Finale (B13–24, 12 qualificati + 12 Teste di Serie #25–#36) e nelle Semifinali (B25–30) ogni gruppo disputa 3 batterie e CONTANO I 2 MIGLIORI RISULTATI SU 3 (max 10 pt). I primi 3 di ogni gruppo avanzano; dalle Semifinali i primi 3 (1°–3°) vanno alla Grande Finale (1°–6° posto, B32) e gli altri (4°–6°) alla Piccola Finale (7°–12° posto, B31). Usa il pulsante '⚡ Schiera Qualificati' per comporre automaticamente Quarti, Semifinali e Finali secondo la chiave ufficiale ceca!",
+    zpNoticeBody: "6 piloti in pista per batteria (Rosso, Blu, Bianco, Giallo, Verde, Nero-Bianco) con punteggio 5-4-3-2-1-0. Nelle Eliminatorie (B1–12, piloti #1–#24), nei Quarti di Finale (B13–24, 12 qualificati + 12 Teste di Serie #25–#36) e nelle Semifinali (B25–30) ogni gruppo disputa 3 batterie e CONTANO I 2 MIGLIORI RISULTATI SU 3 (max 10 pt). I primi 3 di ogni gruppo avanzano; dalle Semifinali i primi 3 (1°–3°) vanno alla Grande Finale (1°–6° posto, B32) e gli altri (4°–6°) alla Piccola Finale (7°–12° posto, B31). Usa il pulsante '⚡ Schiera Qualificati' per comporre automaticamente Quarti, Semifinali e Finali!",
     zpStageElim: "Gruppo Eliminatorio", zpStageQF: "Quarto di Finale", zpStageSF: "Semifinale",
     zpSmallFinal: "Piccola Finale (7° – 12° posto)", zpGrandFinal: "GRANDE FINALE CASCO D'ORO (1° – 6° posto)",
-    zpBest2Rule: "Contano i 2 migliori risultati su 3 batterie (I primi 3 avanzano)"
+    zpBest2Rule: "Contano i 2 migliori risultati su 3 batterie (I primi 3 avanzano)",
+    ocrPrepImg: "Ottimizzazione nitidezza immagine e contrasto...",
+    ocrLoadingLangs: "Caricamento dizionari Speedway (PL / CZ / SE / DK / EN / IT)...",
+    ocrScanning: "Lettura Starter Grid in corso",
+    ocrNoRidersMsg: "⚠️ Nessun pilota valido riconosciuto. Prova a ritagliare solo l'elenco dei nomi o usa il box 'Incolla / Controlla Lista Piloti'."
   });
 
   Object.assign(I18N.en, {
@@ -6303,10 +6314,14 @@ Object.assign(I18N.it, {
     helmetGreen: "Green", helmetBlack: "Black/White", gate5: "Gate 5", gate6: "Gate 6",
     roleSeededQuarter: "Seeded QF", roleElimGroup: "Elim. Group",
     zpNoticeTitle: "Official Golden Helmet of Pardubice Rules (Zlatá přilba • 6 Riders)",
-    zpNoticeBody: "6 riders per heat (Red, Blue, White, Yellow, Green, Black/White), scoring 5-4-3-2-1-0. In Elimination Groups (H1–12, riders #1–#24), Quarterfinals (H13–24, 12 qualifiers + 12 Seeded riders #25–#36) and Semifinals (H25–30), each group races 3 heats and the BEST 2 OUT OF 3 RESULTS COUNT (max 10 pts). Top 3 from each group advance; in Semifinals 1st–3rd go to the Grand Final (1st–6th place, H32) and 4th–6th go to the Small Final (7th–12th place, H31). Use '⚡ Auto-Fill Qualifiers' to populate Quarterfinals, Semifinals and Finals automatically!",
+    zpNoticeBody: "6 riders per heat (Red, Blue, White, Yellow, Green, Black/White), scoring 5-4-3-2-1-0. In Elimination Groups (H1–12, riders #1–#24), Quarterfinals (H13–24, 12 qualifiers + 12 Seeded riders #25–#36) and Semifinals (H25–30), each group races 3 heats and the BEST 2 OUT OF 3 RESULTS COUNT (max 10 pts). Top 3 advance; in Semifinals 1st–3rd go to the Grand Final (H32) and 4th–6th go to the Small Final (H31).",
     zpStageElim: "Elimination Group", zpStageQF: "Quarterfinal Group", zpStageSF: "Semifinal Group",
     zpSmallFinal: "Small Final (7th – 12th Place)", zpGrandFinal: "GRAND FINAL GOLDEN HELMET (1st – 6th Place)",
-    zpBest2Rule: "Best 2 of 3 heats count (Top 3 advance)"
+    zpBest2Rule: "Best 2 of 3 heats count (Top 3 advance)",
+    ocrPrepImg: "Enhancing image sharpness and contrast...",
+    ocrLoadingLangs: "Loading Speedway dictionaries (PL / CZ / SE / DK / EN / IT)...",
+    ocrScanning: "Scanning Starter Grid",
+    ocrNoRidersMsg: "⚠️ No valid riders found. Try cropping closer to the rider list or use the 'Paste / Check Rider List' box."
   });
 
   Object.assign(I18N.pl, {
@@ -6318,7 +6333,11 @@ Object.assign(I18N.it, {
     zpNoticeBody: "6 zawodników w każdym biegu (Czerwony, Niebieski, Biały, Żółty, Zielony, Czarno-biały), punktacja 5-4-3-2-1-0. W grupach eliminacyjnych (B1–12, #1–#24), ćwierćfinałach (B13–24, 12 z awansu + 12 rozstawionych #25–#36) i półfinałach (B25–30) liczą się 2 NAJLEPSZE WYNIKI Z 3 BIEGÓW (max 10 pkt). Top 3 awansuje dalej; z półfinałów miejsca 1–3 jadą w Dużym Finale (B32), a 4–6 w Małym Finale (B31).",
     zpStageElim: "Grupa Eliminacyjna", zpStageQF: "Grupa Ćwierćfinałowa", zpStageSF: "Grupa Półfinałowa",
     zpSmallFinal: "Mały Finał (o miejsca 7–12)", zpGrandFinal: "DUŻY FINAŁ ZŁOTEGO KASKU (o miejsca 1–6)",
-    zpBest2Rule: "Liczą się 2 najlepsze wyniki z 3 biegów (Top 3 awansuje)"
+    zpBest2Rule: "Liczą się 2 najlepsze wyniki z 3 biegów (Top 3 awansuje)",
+    ocrPrepImg: "Wyostrzanie obrazu i poprawa kontrastu...",
+    ocrLoadingLangs: "Ładowanie słowników żużlowych (PL / CZ / SE / DK / EN)...",
+    ocrScanning: "Skanowanie programu zawodów",
+    ocrNoRidersMsg: "⚠️ Nie rozpoznano zawodników. Przytnij zdjęcie bliżej nazwisk lub użyj pola wklejania tekstu."
   });
 
   Object.assign(I18N.da, {
@@ -6327,10 +6346,14 @@ Object.assign(I18N.it, {
     helmetGreen: "Grøn", helmetBlack: "Sort/Hvid", gate5: "Bane 5", gate6: "Bane 6",
     roleSeededQuarter: "Seedet KF", roleElimGroup: "Indl. Gruppe",
     zpNoticeTitle: "Officielle Regler Den Gyldne Hjelm i Pardubice (6 Kørere)",
-    zpNoticeBody: "6 kørere pr. heat (Rød, Blå, Hvid, Gul, Grøn, Sort/Hvid), point 5-4-3-2-1-0. I indledende grupper (H1–12, #1–#24), kvartfinaler (H13–24, 12 kvalificerede + 12 seedede #25–#36) og semifinaler (H25–30) tæller DE 2 BEDSTE RESULTATER AF 3 HEATS (max 10 pt). Top 3 går videre til næste runde; fra semifinalerne går 1.–3. i Store Finale (H32) og 4.–6. i Lille Finale (H31).",
+    zpNoticeBody: "6 kørere pr. heat (Rød, Blå, Hvid, Gul, Grøn, Sort/Hvid), point 5-4-3-2-1-0. I indledende grupper (H1–12, #1–#24), kvartfinaler (H13–24, 12 kvalificerede + 12 seedede #25–#36) og semifinaler (H25–30) tæller DE 2 BEDSTE RESULTATER AF 3 HEATS (max 10 pt). Top 3 går videre; fra semifinalerne går 1.–3. i Store Finale (H32) og 4.–6. i Lille Finale (H31).",
     zpStageElim: "Indledende Gruppe", zpStageQF: "Kvartfinalegruppe", zpStageSF: "Semifinalegruppe",
     zpSmallFinal: "Lille Finale (7. – 12. plads)", zpGrandFinal: "STOR FINALE GYLDNE HJELM (1. – 6. plads)",
-    zpBest2Rule: "De 2 bedste resultater ud af 3 heats tæller (Top 3 går videre)"
+    zpBest2Rule: "De 2 bedste resultater ud af 3 heats tæller (Top 3 går videre)",
+    ocrPrepImg: "Forbedrer billedskarphed og kontrast...",
+    ocrLoadingLangs: "Indlæser speedway-ordbøger (DK / SE / PL / CZ / EN)...",
+    ocrScanning: "Scanner startliste",
+    ocrNoRidersMsg: "⚠️ Ingen gyldige kørere fundet. Prøv at beskære tættere på navnene."
   });
 
   Object.assign(I18N.sv, {
@@ -6342,10 +6365,19 @@ Object.assign(I18N.it, {
     zpNoticeBody: "6 förare per heat (Röd, Blå, Vit, Gul, Grön, Svart/Vit), poäng 5-4-3-2-1-0. I kvalgrupper (H1–12, #1–#24), kvartsfinaler (H13–24, 12 kvalificerade + 12 seedade #25–#36) och semifinaler (H25–30) räknas DE 2 BÄSTA RESULTATEN AV 3 HEAT (max 10 p). Topp 3 går vidare; från semifinalerna går 1–3 till Stora Finalen (H32) och 4–6 till Lilla Finalen (H31).",
     zpStageElim: "Kvalgrupp", zpStageQF: "Kvartsfinalgrupp", zpStageSF: "Semifinalgrupp",
     zpSmallFinal: "Lilla Finalen (7:e – 12:e plats)", zpGrandFinal: "STORA FINALEN GULDHJÄLMEN (1:a – 6:e plats)",
-    zpBest2Rule: "De 2 bästa resultaten av 3 heat räknas (Topp 3 går vidare)"
+    zpBest2Rule: "De 2 bästa resultaten av 3 heat räknas (Topp 3 går vidare)",
+    ocrPrepImg: "Förbättrar bildskärpa och kontrast...",
+    ocrLoadingLangs: "Laddar speedway-ordböcker (SE / DK / PL / CZ / EN)...",
+    ocrScanning: "Skannar startlista",
+    ocrNoRidersMsg: "⚠️ Inga giltiga förare hittades. Försök beskära närmare namnen."
   });
 
-  // 2. Registrazione 5° e 6° Casco (Verde 'G' e Nero/Bianco 'K') in HELMET_META e GATE_STYLE
+  // Se l'utente aveva selezionato Ceco prima del refresh, ripristiniamolo ora che I18N.cs è caricato
+  try {
+    const savedL = localStorage.getItem('speedway_gp_lang_v1');
+    if (savedL && I18N[savedL]) currentLang = savedL;
+  } catch (e) {}
+
   HELMET_META.G = { cls: "gate-green", nameKey: "helmetGreen", color: "#00c853" };
   HELMET_META.K = { cls: "gate-black", nameKey: "helmetBlack", color: "#b0bec5" };
   if (GATE_STYLE.length < 6) {
@@ -6353,10 +6385,6 @@ Object.assign(I18N.it, {
     GATE_STYLE.push({ key: "gate6", helmet: "K" });
   }
 
-  // Rotazione ufficiale 3 serie su 6 corsie per un gruppo da 6 piloti (indici 0..5 del gruppo):
-  // Jízda 1: [0, 1, 2, 3, 4, 5] (Corsie 1..6)
-  // Jízda 2: [2, 4, 0, 5, 1, 3] (Chi era interno passa esterno e viceversa)
-  // Jízda 3: [4, 5, 3, 1, 2, 0] (Completa rotazione simmetrica interna/centrale/esterna)
   function buildZpGroup3Heats(groupArr) {
     const r = groupArr;
     return [
@@ -6366,25 +6394,14 @@ Object.assign(I18N.it, {
     ];
   }
 
-  // Costruzione 32 Batterie Ufficiali Zlatá přilba:
-  // - Batterie 1-12 (Serie 1: H1-4, Serie 2: H5-8, Serie 3: H9-12) per i 4 Gruppi Eliminatori (Piloti #1-#24)
-  // - Batterie 13-24 (Serie 1: H13-16, Serie 2: H17-20, Serie 3: H21-24) per i 4 Quarti di Finale (12 qualificati + 12 Teste di Serie #25-#36 pre-posizionate secondo la chiave ufficiale AMK Pardubice!)
-  // - Batterie 25-30 (Serie 1: H25-26, Serie 2: H27-28, Serie 3: H29-30) per le 2 Semifinali
-  // - Batteria 31: Malé finále (7°–12° posto)
-  // - Batteria 32: Velké finále (1°–6° posto)
-  const ZP_ELIM_GROUPS = [
-    [1, 2, 3, 4, 5, 6],       // Gruppo Eliminatorio I
-    [7, 8, 9, 10, 11, 12],    // Gruppo Eliminatorio II
-    [13, 14, 15, 16, 17, 18], // Gruppo Eliminatorio III
-    [19, 20, 21, 22, 23, 24]  // Gruppo Eliminatorio IV
+  var ZP_ELIM_GROUPS = [
+    [1, 2, 3, 4, 5, 6],
+    [7, 8, 9, 10, 11, 12],
+    [13, 14, 15, 16, 17, 18],
+    [19, 20, 21, 22, 23, 24]
   ];
 
-  // Nei Quarti di Finale, le 12 Teste di Serie (#25..#36) sono già nelle posizioni ufficiali NJ della chiave AMK Pardubice:
-  // QF1: [1°E1, #25, 2°E2, #26, 3°E3, #27]
-  // QF2: [#28, 2°E1, #29, 3°E2, #30, 1°E4]
-  // QF3: [2°E4, #31, 3°E1, #32, #33, 1°E3]
-  // QF4: [2°E3, 3°E4, #34, #35, #36, 1°E2]
-  const ZP_QF_SEEDED_TEMPLATE = [
+  var ZP_QF_SEEDED_TEMPLATE = [
     [null, 25, null, 26, null, 27],
     [28, null, 29, null, 30, null],
     [null, 31, null, 32, 33, null],
@@ -6395,17 +6412,13 @@ Object.assign(I18N.it, {
     const elimByGroup = ZP_ELIM_GROUPS.map(g => buildZpGroup3Heats(g));
     const qfByGroup = ZP_QF_SEEDED_TEMPLATE.map(g => buildZpGroup3Heats(g));
     const heats = [];
-    // H1..H12: 3 serie dei 4 Gruppi Eliminatori
     for (let s = 0; s < 3; s++) {
       for (let g = 0; g < 4; g++) heats.push(elimByGroup[g][s]);
     }
-    // H13..H24: 3 serie dei 4 Gruppi Quarti di Finale
     for (let s = 0; s < 3; s++) {
       for (let g = 0; g < 4; g++) heats.push(qfByGroup[g][s]);
     }
-    // H25..H30: 3 serie delle 2 Semifinali
     for (let i = 0; i < 6; i++) heats.push([null, null, null, null, null, null]);
-    // H31 (Malé finále) & H32 (Velké finále)
     heats.push([null, null, null, null, null, null]);
     heats.push([null, null, null, null, null, null]);
     return heats;
@@ -6417,7 +6430,7 @@ Object.assign(I18N.it, {
     is14Format: false,
     isSprint: false,
     isPardubice: true,
-    ridersCount: 38, // 36 Piloti (#1-#24 Eliminatorie, #25-#36 Teste di Serie Quarti) + 2 Riserve (#37-#38)
+    ridersCount: 38,
     totalHeats: 32,
     scores: [5, 4, 3, 2, 1, 0],
     schedule: generateZpSchedule()
@@ -6428,8 +6441,7 @@ Object.assign(I18N.it, {
     return Boolean(s && s.mode === 'pardubice');
   }
 
-  // Creazione stato iniziale per Pardubice (38 piloti + 32 batterie a 6 slot: R, B, W, Y, G, K)
-  const _zpPrevCreateDefaultState = createDefaultState;
+  var _zpPrevCreateDefaultState = createDefaultState;
   createDefaultState = function(modeKey) {
     if (modeKey !== 'pardubice') return _zpPrevCreateDefaultState(modeKey);
     const cfg = LEAGUE_CONFIGS.pardubice;
@@ -6461,7 +6473,7 @@ Object.assign(I18N.it, {
     };
   };
 
-  const _zpPrevNormalize = normalizeLoadedState;
+  var _zpPrevNormalize = normalizeLoadedState;
   normalizeLoadedState = function(saved) {
     const merged = _zpPrevNormalize(saved);
     if (merged && merged.mode === 'pardubice') {
@@ -6483,8 +6495,6 @@ Object.assign(I18N.it, {
     return merged;
   };
 
-  // Calcola la classifica di un singolo Gruppo di Pardubice (3 batterie del gruppo) con la regola ufficiale:
-  // SOMMA DEI 2 MIGLIORI RISULTATI SU 3 BATTERIE (in caso di parità: miglior 3° risultato, numero di vittorie da 5 pt, 4 pt, 3 pt, migliore ultima batteria)
   function computeZpGroupStandings(heatIndices, rState) {
     const stObj = rState || state;
     const riderMap = {};
@@ -6516,15 +6526,9 @@ Object.assign(I18N.it, {
       const fours = r.numScores.filter(x => x === 4).length;
       const threes = r.numScores.filter(x => x === 3).length;
       return {
-        id: r.id,
-        name: r.name,
-        runs: r.rawRuns,
-        best2: best2,
-        thirdScore: thirdScore,
-        fives: fives,
-        fours: fours,
-        threes: threes,
-        lastScore: r.lastScore
+        id: r.id, name: r.name, runs: r.rawRuns,
+        best2: best2, thirdScore: thirdScore,
+        fives: fives, fours: fours, threes: threes, lastScore: r.lastScore
       };
     });
 
@@ -6540,40 +6544,27 @@ Object.assign(I18N.it, {
     return list;
   }
 
-  // Restituisce i 3 gruppi della fase corrente (Eliminatorie, Quarti, Semifinali)
   function getZpGroupHeatIndices(stage, groupZeroIdx) {
-    if (stage === 'elim') {
-      return [groupZeroIdx, groupZeroIdx + 4, groupZeroIdx + 8]; // es. Gruppo I: H1(0), H5(4), H9(8)
-    }
-    if (stage === 'qf') {
-      return [12 + groupZeroIdx, 16 + groupZeroIdx, 20 + groupZeroIdx]; // es. QF I: H13(12), H17(16), H21(20)
-    }
-    if (stage === 'sf') {
-      return [24 + groupZeroIdx, 26 + groupZeroIdx, 28 + groupZeroIdx]; // es. SF 1: H25(24), H27(26), H29(28)
-    }
+    if (stage === 'elim') return [groupZeroIdx, groupZeroIdx + 4, groupZeroIdx + 8];
+    if (stage === 'qf') return [12 + groupZeroIdx, 16 + groupZeroIdx, 20 + groupZeroIdx];
+    if (stage === 'sf') return [24 + groupZeroIdx, 26 + groupZeroIdx, 28 + groupZeroIdx];
     return [];
   }
 
-  // Popola automaticamente Quarti di Finale (H13-24), Semifinali (H25-30), Piccola Finale (H31) e Grande Finale (H32)
-  // seguendo alla lettera la chiave d'incrocio ufficiale di AMK Zlatá přilba Pardubice!
   function autoFillPardubiceStage(heatIdx) {
     if (!isPardubiceMode()) return;
-
     if (heatIdx >= 12 && heatIdx < 24) {
-      // Quarti di Finale (H13..H24): incrocia i primi 3 di E1..E4 con le 12 Teste di Serie (#25..#36)
       const E1 = computeZpGroupStandings(getZpGroupHeatIndices('elim', 0));
       const E2 = computeZpGroupStandings(getZpGroupHeatIndices('elim', 1));
       const E3 = computeZpGroupStandings(getZpGroupHeatIndices('elim', 2));
       const E4 = computeZpGroupStandings(getZpGroupHeatIndices('elim', 3));
       const gId = (arr, pos) => (arr[pos - 1] ? arr[pos - 1].id : null);
-
       const qfGroups = [
-        [gId(E1, 1), 25, gId(E2, 2), 26, gId(E3, 3), 27], // ČF 1: 1./1VS, NJ, 2./2VS, NJ, 3./3VS, NJ
-        [28, gId(E1, 2), 29, gId(E2, 3), 30, gId(E4, 1)], // ČF 2: NJ, 2./1VS, NJ, 3./2VS, NJ, 1./4VS
-        [gId(E4, 2), 31, gId(E1, 3), 32, 33, gId(E3, 1)], // ČF 3: 2./4VS, NJ, 3./1VS, NJ, NJ, 1./3VS
-        [gId(E3, 2), gId(E4, 3), 34, 35, 36, gId(E2, 1)]  // ČF 4: 2./3VS, 3./4VS, NJ, NJ, NJ, 1./2VS
+        [gId(E1, 1), 25, gId(E2, 2), 26, gId(E3, 3), 27],
+        [28, gId(E1, 2), 29, gId(E2, 3), 30, gId(E4, 1)],
+        [gId(E4, 2), 31, gId(E1, 3), 32, 33, gId(E3, 1)],
+        [gId(E3, 2), gId(E4, 3), 34, 35, 36, gId(E2, 1)]
       ];
-
       qfGroups.forEach((grp, gIdx) => {
         const threeHeats = buildZpGroup3Heats(grp);
         const hIndices = getZpGroupHeatIndices('qf', gIdx);
@@ -6584,18 +6575,15 @@ Object.assign(I18N.it, {
         });
       });
     } else if (heatIdx >= 24 && heatIdx < 30) {
-      // Semifinali (H25..H30): incrocia i primi 3 di ČF1..ČF4 secondo la chiave ufficiale AMK Pardubice
       const QF1 = computeZpGroupStandings(getZpGroupHeatIndices('qf', 0));
       const QF2 = computeZpGroupStandings(getZpGroupHeatIndices('qf', 1));
       const QF3 = computeZpGroupStandings(getZpGroupHeatIndices('qf', 2));
       const QF4 = computeZpGroupStandings(getZpGroupHeatIndices('qf', 3));
       const gId = (arr, pos) => (arr[pos - 1] ? arr[pos - 1].id : null);
-
       const sfGroups = [
-        [gId(QF1, 1), gId(QF2, 2), gId(QF1, 3), gId(QF4, 1), gId(QF3, 2), gId(QF4, 3)], // 1. SF: 1./1ČF, 2./2ČF, 3./1ČF, 1./4ČF, 2./3ČF, 3./4ČF
-        [gId(QF2, 1), gId(QF3, 3), gId(QF1, 2), gId(QF3, 1), gId(QF2, 3), gId(QF4, 2)]  // 2. SF: 1./2ČF, 3./3ČF, 2./1ČF, 1./3ČF, 3./2ČF, 2./4ČF
+        [gId(QF1, 1), gId(QF2, 2), gId(QF1, 3), gId(QF4, 1), gId(QF3, 2), gId(QF4, 3)],
+        [gId(QF2, 1), gId(QF3, 3), gId(QF1, 2), gId(QF3, 1), gId(QF2, 3), gId(QF4, 2)]
       ];
-
       sfGroups.forEach((grp, gIdx) => {
         const threeHeats = buildZpGroup3Heats(grp);
         const hIndices = getZpGroupHeatIndices('sf', gIdx);
@@ -6606,26 +6594,19 @@ Object.assign(I18N.it, {
         });
       });
     } else if (heatIdx === 30 || heatIdx === 31) {
-      // H31 Malé finále (7°–12° posto) & H32 Velké finále (1°–6° posto) secondo la chiave ufficiale AMK Pardubice
       const SF1 = computeZpGroupStandings(getZpGroupHeatIndices('sf', 0));
       const SF2 = computeZpGroupStandings(getZpGroupHeatIndices('sf', 1));
       const gId = (arr, pos) => (arr[pos - 1] ? arr[pos - 1].id : null);
-
-      // MF: 5./1SF, 5./2SF, 4./1SF, 4./2SF, 6./1SF, 6./2SF
       const mfLineup = [gId(SF1, 5), gId(SF2, 5), gId(SF1, 4), gId(SF2, 4), gId(SF1, 6), gId(SF2, 6)];
-      // VF: 2./1SF, 2./2SF, 1./1SF, 1./2SF, 3./1SF, 3./2SF
       const vfLineup = [gId(SF1, 2), gId(SF2, 2), gId(SF1, 1), gId(SF2, 1), gId(SF1, 3), gId(SF2, 3)];
-
       state.heats[30].slots.forEach((s, idx) => { s.riderId = mfLineup[idx] || null; });
       state.heats[31].slots.forEach((s, idx) => { s.riderId = vfLineup[idx] || null; });
     }
-
     saveState();
     renderCurrentHeat();
   }
 
-  // Etichetta Batterie per il Casco d'Oro di Pardubice (32 Batterie)
-  const _zpPrevGetHeatLabel = getHeatLabel;
+  var _zpPrevGetHeatLabel = getHeatLabel;
   getHeatLabel = function(idx, includeTime) {
     if (isPardubiceMode()) {
       const h = state.heats[idx];
@@ -6648,14 +6629,13 @@ Object.assign(I18N.it, {
       } else {
         base = `${t('heatLbl')} 32 (${t('zpGrandFinal')})`;
       }
-      if (includeTime && h && h.time) base += " •⏱️ " + h.time + "s";
+      if (includeTime && h && h.time) base += " •⏱️️ " + h.time + "s";
       return base;
     }
     return _zpPrevGetHeatLabel(idx, includeTime);
   };
 
-  // Mostra i banner di Pardubice quando la modalità attiva è 'pardubice'
-  const _zpPrevUpdateHeaderAndHero = updateHeaderAndHero;
+  var _zpPrevUpdateHeaderAndHero = updateHeaderAndHero;
   updateHeaderAndHero = function() {
     _zpPrevUpdateHeaderAndHero();
     const isZp = isPardubiceMode();
@@ -6665,11 +6645,7 @@ Object.assign(I18N.it, {
     if (zpBannerHeats) zpBannerHeats.classList.toggle('visible', isZp);
   };
 
-  // Scheda Piloti per Pardubice: 38 piloti divisi chiaramente in:
-  // - #1..#24 (Gruppi Eliminatori I-IV)
-  // - #25..#36 (Teste di Serie Quarti di Finale I-IV)
-  // - #37..#38 (Riserve di Pista)
-  const _zpPrevRenderRidersInputs = renderRidersInputs;
+  var _zpPrevRenderRidersInputs = renderRidersInputs;
   renderRidersInputs = function() {
     if (!isPardubiceMode()) {
       _zpPrevRenderRidersInputs();
@@ -6697,15 +6673,13 @@ Object.assign(I18N.it, {
     container.innerHTML = html;
   };
 
-  // Renderizza la Batteria Corrente per Pardubice (6 Corsie: Rosso, Blu, Bianco, Giallo, Verde, Nero/Bianco + Punteggi 5-4-3-2-1-0 + Classifica Live del Gruppo con regola "Migliori 2 su 3")
-  const _zpPrevRenderCurrentHeat = renderCurrentHeat;
+  var _zpPrevRenderCurrentHeat = renderCurrentHeat;
   renderCurrentHeat = function() {
     if (!isPardubiceMode()) {
       _zpPrevRenderCurrentHeat();
       return;
     }
     renderHeatSelect();
-    const cfg = LEAGUE_CONFIGS.pardubice;
     const heat = state.heats[state.currentHeat];
     const timeInput = document.getElementById('heat-time-input');
     if (timeInput) timeInput.value = heat.time || "";
@@ -6716,7 +6690,6 @@ Object.assign(I18N.it, {
     const tieBar = document.getElementById('tiebreak-controls-bar');
     if (tieBar) tieBar.style.display = 'none';
 
-    // Pannello Live del Gruppo Corrente (mostra la classifica in tempo reale del gruppo con i 2 migliori risultati su 3 + bottone Auto-Fill per Quarti, Semifinali e Finali)
     const autoBox = document.getElementById('auto-finals-box');
     const idx = state.currentHeat;
     let stage = 'final', grpIdx = 0, stageTitle = '';
@@ -6802,15 +6775,15 @@ Object.assign(I18N.it, {
             ${mainButtons.map(btn => `<button type="button" ${!hasRider ? 'disabled' : ''} class="score-btn ${sc === btn.val ? 'selected-' + btn.val : ''}" onclick="setScore(${sIdx}, ${btn.val})">${btn.label}</button>`).join('')}
           </div>
           <div class="special-btns">
-            ${specialCodes.map(item => `<button type="button" ${!hasRider ? 'disabled' : ''} title="${item.full}" class="spec-btn ${sc === item.code ? 'selected-spec' : ''}" onclick="setScore(${sIdx}, '${item.code}')"><span>${item.disp \vert{}\vert{} item.code}</span><small>${item.short}</small></button>`).join('')}
+            ${specialCodes.map(item => `<button type="button" ${!hasRider ? 'disabled' : ''} title="${item.full}" class="spec-btn ${sc === item.code ? 'selected-spec' : ''}" onclick="setScore(${sIdx}, '${item.code}')"><span>${item.disp || item.code}</span><small>${item.short}</small></button>`).join('')}
             ${wBtn}
           </div>
         </div>`;
     }).join('');
+    refreshCodesLegends();
   };
 
-  // Gestione esclusività punteggi (5, 4, 3, 2, 1, 0) nelle batterie a 6 piloti di Pardubice
-  const _zpPrevSetScore = setScore;
+  var _zpPrevSetScore = setScore;
   setScore = function(gateIdx, val) {
     if (isPardubiceMode()) {
       const heat = state.heats[state.currentHeat];
@@ -6830,41 +6803,33 @@ Object.assign(I18N.it, {
     _zpPrevSetScore(gateIdx, val);
   };
 
-  // Calcolo Statistiche e Classifica Ufficiale per il Casco d'Oro di Pardubice (Ordinata per Grande Finale 1°–6°, Piccola Finale 7°–12°, Semifinalisti, Quarti ed Eliminatorie)
   function computePardubiceFullStandings(rState) {
     const stObj = rState || state;
     const stats = [];
     for (let r = 1; r <= 38; r++) {
       stats.push({
-        id: r,
-        name: stObj.riders[r] || ('#' + r),
-        runs: [],
-        total: 0,
+        id: r, name: stObj.riders[r] || ('#' + r), runs: [], total: 0,
         fives: 0, fours: 0, threes: 0, twos: 0, ones: 0, finishedZeros: 0, nonFinished: [],
         elimPts: '-', qfPts: '-', sfPts: '-', mfPlace: '-', vfPlace: '-',
         stageReached: 0, stageRankScore: -1
       });
     }
-
-    // Calcola i punti Best-2-of-3 in ogni fase
     for (let g = 0; g < 4; g++) {
-      computeZpGroupStandings(getZpGroupHeatIndices('elim', g), stObj).forEach((x, idx) => {
+      computeZpGroupStandings(getZpGroupHeatIndices('elim', g), stObj).forEach(x => {
         const st = stats.find(s => s.id === x.id);
         if (st && x.runs.some(r => r !== '-')) { st.elimPts = x.best2; st.stageReached = Math.max(st.stageReached, 1); st.stageRankScore = x.best2; }
       });
-      computeZpGroupStandings(getZpGroupHeatIndices('qf', g), stObj).forEach((x, idx) => {
+      computeZpGroupStandings(getZpGroupHeatIndices('qf', g), stObj).forEach(x => {
         const st = stats.find(s => s.id === x.id);
         if (st && x.runs.some(r => r !== '-')) { st.qfPts = x.best2; st.stageReached = Math.max(st.stageReached, 2); st.stageRankScore = x.best2; }
       });
     }
     for (let g = 0; g < 2; g++) {
-      computeZpGroupStandings(getZpGroupHeatIndices('sf', g), stObj).forEach((x, idx) => {
+      computeZpGroupStandings(getZpGroupHeatIndices('sf', g), stObj).forEach(x => {
         const st = stats.find(s => s.id === x.id);
         if (st && x.runs.some(r => r !== '-')) { st.sfPts = x.best2; st.stageReached = Math.max(st.stageReached, 3); st.stageRankScore = x.best2; }
       });
     }
-
-    // Tutte le uscite effettuate nelle 32 batterie
     stObj.heats.forEach((h, hIdx) => {
       h.slots.forEach(s => {
         if (!s.riderId || s.score === null) return;
@@ -6879,18 +6844,8 @@ Object.assign(I18N.it, {
           else if (s.score === 2) st.twos++;
           else if (s.score === 1) st.ones++;
           else st.finishedZeros++;
-
-          if (hIdx === 30) { // Malé finále (7°–12° posto)
-            const place = 7 + (5 - s.score);
-            st.mfPlace = place + '°';
-            st.stageReached = 4;
-            st.stageRankScore = s.score;
-          } else if (hIdx === 31) { // Velké finále (1°–6° posto)
-            const place = 1 + (5 - s.score);
-            st.vfPlace = place + '°';
-            st.stageReached = 5;
-            st.stageRankScore = s.score;
-          }
+          if (hIdx === 30) { st.mfPlace = (7 + (5 - s.score)) + '°'; st.stageReached = 4; st.stageRankScore = s.score; }
+          else if (hIdx === 31) { st.vfPlace = (1 + (5 - s.score)) + '°'; st.stageReached = 5; st.stageRankScore = s.score; }
         } else {
           const c = String(s.score).toUpperCase();
           st.runs.push(c + (s.warning ? 'W' : ''));
@@ -6900,7 +6855,6 @@ Object.assign(I18N.it, {
         }
       });
     });
-
     const activeStats = stats.filter(s => s.id <= 36 || s.runs.length > 0);
     activeStats.sort((a, b) => {
       if (b.stageReached !== a.stageReached) return b.stageReached - a.stageReached;
@@ -6913,8 +6867,7 @@ Object.assign(I18N.it, {
     return activeStats;
   }
 
-  // Tabellone e Classifica dedicati per il Casco d'Oro di Pardubice
-  const _zpPrevRenderStandings = renderStandings;
+  var _zpPrevRenderStandings = renderStandings;
   renderStandings = function() {
     if (!isPardubiceMode()) {
       _zpPrevRenderStandings();
@@ -6930,7 +6883,6 @@ Object.assign(I18N.it, {
         `<span><strong>${t('zpBest2Rule')}</strong></span>`;
     }
     thead.innerHTML = `<tr><th>${t('thPos')}</th><th style="text-align:left;padding-left:7px;">${t('thRider')}</th><th>EL</th><th>QF</th><th>SF</th><th>MF</th><th>VF</th><th>${t('thRuns')}</th><th>${t('thTot')}</th></tr>`;
-
     const list = computePardubiceFullStandings();
     document.querySelector('#standings-table tbody').innerHTML = list.map((st, idx) => {
       const rowCls = idx === 5 ? 'final-line' : (idx === 11 ? 'qual-line' : '');
@@ -6943,7 +6895,7 @@ Object.assign(I18N.it, {
     }).join('');
   };
 
-  const _zpPrevRenderScorecard = renderScorecard;
+  var _zpPrevRenderScorecard = renderScorecard;
   renderScorecard = function() {
     if (!isPardubiceMode()) {
       _zpPrevRenderScorecard();
@@ -6961,8 +6913,7 @@ Object.assign(I18N.it, {
     ).join('');
   };
 
-  // Riepilogo Podio Grande Finale (Batteria 32) nello Storico e nella Locandina PNG per Pardubice
-  const _zpPrevGetPodiumSummary = getPodiumSummary;
+  var _zpPrevGetPodiumSummary = getPodiumSummary;
   getPodiumSummary = function(raceState) {
     if (isPardubiceMode(raceState)) {
       const vf = raceState.heats && raceState.heats[31];
@@ -6981,60 +6932,7 @@ Object.assign(I18N.it, {
     return _zpPrevGetPodiumSummary(raceState);
   };
 
-/* =========================================================================
-     MODULO SUPER-OCR MULTILINGUE & PARSER INTELLIGENTE STARTER GRID
-     (Supporta Polacco, Ceco, Svedese, Danese, Inglese, Italiano + Doppia Colonna + #9-#16)
-     ========================================================================= */
-
-  Object.assign(I18N.it, {
-    ocrPrepImg: "Ottimizzazione nitidezza immagine e contrasto...",
-    ocrLoadingLangs: "Caricamento dizionari Speedway (PL / CZ / SE / DK / EN / IT)...",
-    ocrScanning: "Lettura Starter Grid in corso",
-    ocrSuccessMsg: "✅ Starter Grid caricata: {n} piloti riconosciuti!",
-    ocrNoRidersMsg: "⚠️ Nessun pilota valido riconosciuto. Prova a ritagliare solo l'elenco dei nomi o usa il box 'Incolla / Controlla Lista Piloti'."
-  });
-
-  Object.assign(I18N.en, {
-    ocrPrepImg: "Enhancing image sharpness and contrast...",
-    ocrLoadingLangs: "Loading Speedway dictionaries (PL / CZ / SE / DK / EN / IT)...",
-    ocrScanning: "Scanning Starter Grid",
-    ocrSuccessMsg: "✅ Starter Grid loaded: {n} riders recognized!",
-    ocrNoRidersMsg: "⚠️ No valid riders found. Try cropping closer to the rider list or use the 'Paste / Check Rider List' box."
-  });
-
-  Object.assign(I18N.pl, {
-    ocrPrepImg: "Wyostrzanie obrazu i poprawa kontrastu...",
-    ocrLoadingLangs: "Ładowanie słowników żużlowych (PL / CZ / SE / DK / EN)...",
-    ocrScanning: "Skanowanie programu zawodów",
-    ocrSuccessMsg: "✅ Program załadowany: rozpoznano {n} zawodników!",
-    ocrNoRidersMsg: "⚠️ Nie rozpoznano zawodników. Przytnij zdjęcie bliżej nazwisk lub użyj pola wklejania tekstu."
-  });
-
-  Object.assign(I18N.da, {
-    ocrPrepImg: "Forbedrer billedskarphed og kontrast...",
-    ocrLoadingLangs: "Indlæser speedway-ordbøger (DK / SE / PL / CZ / EN)...",
-    ocrScanning: "Scanner startliste",
-    ocrSuccessMsg: "✅ Startliste indlæst: {n} kørere genkendt!",
-    ocrNoRidersMsg: "⚠️ Ingen gyldige kørere fundet. Prøv at beskære tættere på navnene."
-  });
-
-  Object.assign(I18N.sv, {
-    ocrPrepImg: "Förbättrar bildskärpa och kontrast...",
-    ocrLoadingLangs: "Laddar speedway-ordböcker (SE / DK / PL / CZ / EN)...",
-    ocrScanning: "Skannar startlista",
-    ocrSuccessMsg: "✅ Startlista inläst: {n} förare identifierade!",
-    ocrNoRidersMsg: "⚠️ Inga giltiga förare hittades. Försök beskära närmare namnen."
-  });
-
-  Object.assign(I18N.cs, {
-    ocrPrepImg: "Zvyšování ostrosti a kontrastu snímku...",
-    ocrLoadingLangs: "Načítání plochodrážních slovníků (CZ / PL / SE / DK / EN)...",
-    ocrScanning: "Skenování startovní listiny",
-    ocrSuccessMsg: "✅ Startovní listina načtena: rozpoznáno {n} jezdců!",
-    ocrNoRidersMsg: "⚠️ Nebyli rozpoznáni žádní jezdci. Zkuste oříznout snímek blíže ke jménům."
-  });
-
-  // 1. Pre-elaborazione avanzata immagine su Canvas (Upscaling + Rimozione ombre + Contrasto adattivo per programmi gara e schermi)
+  // --- SUPER-OCR MULTILINGUE & PARSER INTELLIGENTE ---
   function preprocessImageForSpeedwayOcr(sourceCanvas) {
     const outCanvas = document.createElement('canvas');
     const maxDim = 2200;
@@ -7056,17 +6954,13 @@ Object.assign(I18N.it, {
 
     const imgData = ctx.getImageData(0, 0, w, h);
     const d = imgData.data;
-
-    // Calcola luminosità media per capire se l'immagine ha sfondo scuro (grafica social/TV) o chiaro (programma cartaceo)
     let lumSum = 0;
     const totalPx = d.length / 4;
     for (let i = 0; i < d.length; i += 4) {
       lumSum += (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]);
     }
-    const avgLum = lumSum / totalPx;
-    const isDarkBg = avgLum < 118;
+    const isDarkBg = (lumSum / totalPx) < 118;
 
-    // Applica curva di contrasto morbida + inversione automatica se sfondo scuro (Tesseract legge molto meglio testo scuro su fondo chiaro!)
     let minG = 255, maxG = 0;
     const gray = new Uint8ClampedArray(totalPx);
     for (let i = 0, p = 0; i < d.length; i += 4, p++) {
@@ -7080,7 +6974,6 @@ Object.assign(I18N.it, {
     const range = Math.max(1, maxG - minG);
     for (let i = 0, p = 0; i < d.length; i += 4, p++) {
       let norm = ((gray[p] - minG) / range) * 255;
-      // Curva S per scurire i caratteri e schiarire la carta senza bruciare gli accenti (ł, č, ř, ś, ż)
       let contrasted = norm < 145 ? Math.max(0, norm * 0.68) : Math.min(255, 190 + (norm - 145) * 0.6);
       d[i] = d[i + 1] = d[i + 2] = contrasted;
     }
@@ -7088,7 +6981,6 @@ Object.assign(I18N.it, {
     return outCanvas;
   }
 
-  // 2. Sovrascrive confirmCropAndRunOcr per usare il pacchetto multilingue europeo e il pre-processing nitido
   confirmCropAndRunOcr = async function() {
     if (!cropImg.src) return;
     closeCropModal();
@@ -7128,7 +7020,6 @@ Object.assign(I18N.it, {
       statusText.textContent = t('ocrLoadingLangs');
       progressFill.style.width = "24%";
 
-      // Seleziona i dizionari ottimali in base alla competizione e alla lingua corrente
       let langCombo = 'eng+pol+ces+swe+dan';
       if (currentLang === 'it' || state.mode === 'ita_indiv') langCombo = 'eng+ita+pol+ces';
 
@@ -7144,7 +7035,6 @@ Object.assign(I18N.it, {
           }
         });
       } catch (langErr) {
-        // Fallback automatico su inglese se l'utente è offline e ha in cache solo 'eng'
         result = await Tesseract.recognize(cleanCanvas, 'eng');
       }
 
@@ -7161,12 +7051,7 @@ Object.assign(I18N.it, {
     }
   };
 
-  // 3. Super-Parser Starter Grid:
-  // - Riconosce tutti gli alfabeti europei (Polacco: ą,ć,ę,ł,ń,ó,ś,ź,ż / Ceco: á,č,ď,é,ě,í,ň,ó,ř,š,ť,ú,ů,ý,ž / Nordico: å,ä,ö,ø,æ)
-  // - Riconosce il numero di gara esplicito davanti al pilota (es. "9. Bartosz Zmarzlik", "#14 Wiktor Przyjemski", "25 Jan Kvěch")
-  // - Divide automaticamente le righe a 2 colonne (es. "9. Bartosz Zmarzlik   1. Artem Laguta")
-  // - Scarta intestazioni, club, nazionalità tra parentesi (POL, CZE, SWE, DEN, GBR, AUS, U21, U24, Kat. A..E), medie e punteggi
-  const _superOcrBannedWords = new Set([
+  var _superOcrBannedWords = new Set([
     "team", "teams", "rider", "riders", "heat", "heats", "total", "points", "score", "scores",
     "speedway", "grand", "prix", "final", "semifinal", "qualifying", "standings", "results",
     "home", "away", "referee", "stadium", "track", "date", "time", "attendance", "manager",
@@ -7185,7 +7070,6 @@ Object.assign(I18N.it, {
     let s = rawSegment.trim();
     if (s.length < 3) return null;
 
-    // Estrae l'eventuale numero di pettorale all'inizio (es. "9.", "#14", "1)", "10 -")
     let explicitNum = null;
     const numMatch = s.match(/^\s*#?(\d{1,2})\s*[\.\)\-\:\s]+\s*(.+)$/);
     if (numMatch) {
@@ -7196,33 +7080,26 @@ Object.assign(I18N.it, {
       }
     }
 
-    // Rimuove parentesi con nazionalità, età, categorie o punteggi es. (POL), (U21), (Kat. A), (3,2,1,0), [R/R]
     s = s.replace(/\([^\)]*\)/g, ' ').replace(/\[[^\]]*\]/g, ' ');
-    // Rimuove medie o punteggi finali tipo "12+2", "2,450", "8.50", "(3,3,2,1)"
     s = s.replace(/\b\d+[\.,]\d+\b/g, ' ');
     s = s.replace(/\b\d+\s*\+\s*\d+\b/g, ' ');
-    // Rimuove sigle ruolo isolate a fine/inizio riga (U21, U24, R/R, ZZ, Kat A, C, K, G)
     s = s.replace(/\b(U-?21|U-?24|U-?19|R\/R|Z\/Z|ZZ|Kat\.?\s*[A-E]|Rising\s+Star)\b/gi, ' ');
-    // Rimuove codici nazionalità a 3 lettere maiuscole isolati (POL, CZE, SWE, DEN, GBR, AUS, GER, LAT, SLO, ITA...)
     s = s.replace(/\b(POL|CZE|SWE|DEN|GBR|AUS|USA|GER|LAT|SLO|UKR|ITA|FRA|NOR|FIN|SVK|HUN|CRO|ARG)\b/g, ' ');
 
-    // Mantiene solo lettere (inclusi tutti i caratteri speciali polacchi, cechi, nordici, tedeschi e italiani), spazi, trattini e apostrofi
-    const letterMatch = s.match(/([A-Za-zÀ-ÖØ-öø-ÿĀ-žŁłŚśŹźŻżĆćŃńĄąĘęČčŘřŠšŽžĚěĎďŤťŇňŮůÝýÅåÄäÖöØøÆæ][A-Za-zÀ-ÖØ-öø-ÿĀ-žŁłŚśŹźŻżĆćŃńĄąĘęČčŘřŠšŽžĚěĎďŤťŇňŮůÝýÅåÄäÖöØøÆæ\s\-\'\.]{2,})/u);
+    const letterMatch = s.match(/([A-Za-zÀ-ÖØ-öø-ÿĀ-žŁłŚśŹźŻżĆćŃńĄąĘęČčŘřŠšŽžĚěĎďŤťŇňŮůÝýÅåÄäÖöØøÆæ][A-Za-zÀ-ÖØ-öø-ÿĀ-žŁłŚśŹźŻżĆćŃńĄąĘęČčŘřŠšŽžĚěĎďŤťŇňŮůÝýÅåÄäÖöØøÆæ\s\-\'\.]{2,})/);
     if (!letterMatch) return null;
 
     let name = letterMatch[1].replace(/\./g, ' ').replace(/\s+/g, ' ').trim();
     const words = name.split(' ').filter(w => w.length >= 2 || /^[A-ZÀ-ÖØ-ÞĀ-Ž]$/.test(w));
     if (words.length === 0 || words.length > 4) return null;
 
-    // Scarta se è una parola del dizionario tecnico/intruso
     const lowerAll = words.join(' ').toLowerCase();
     if (_superOcrBannedWords.has(lowerAll)) return null;
     if (words.every(w => _superOcrBannedWords.has(w.toLowerCase()))) return null;
 
-    // Formattazione elegante Title Case che rispetta tutte le lettere accentate polacche/ceche/nordiche (es. "BARTOSZ ZMARZLIK" -> "Bartosz Zmarzlik")
     const formattedWords = words.map(w =>
       w.split('-').map(part =>
-        part ? (part.charAt(0).toLocaleUpperCase() + part.slice(1).toLocaleLowerCase()) : ''
+        part ? (part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()) : ''
       ).join('-')
     );
     const finalName = formattedWords.join(' ');
@@ -7231,7 +7108,6 @@ Object.assign(I18N.it, {
     return { num: explicitNum, name: finalName };
   }
 
-  // Divide una riga in 2 colonne se contiene due piloti affiancati (es. "9. Bartosz Zmarzlik   1. Leon Madsen" oppure separati da tab / spazi lunghi)
   function extractEntriesFromRawText(rawText) {
     const rawLines = rawText.split(/\r?\n/);
     const leftOrSingle = [];
@@ -7241,7 +7117,6 @@ Object.assign(I18N.it, {
       const trimmed = line.trim();
       if (!trimmed) return;
 
-      // Caso A: Due piloti numerati sulla stessa riga (es. "9. Zmarzlik  1. Laguta" o "1. Zmarzlik  9. Laguta")
       const twoNumPattern = trimmed.match(/^#?(\d{1,2}[\.\)\-\:]?\s+[^\d]{3,}?)\s+#?(\d{1,2}[\.\)\-\:]?\s+.+)$/);
       if (twoNumPattern) {
         const leftItem = cleanSingleRiderSegment(twoNumPattern[1]);
@@ -7251,7 +7126,6 @@ Object.assign(I18N.it, {
         return;
       }
 
-      // Caso B: Due colonne separate da barra verticale '|', tabulazione o 3+ spazi
       const cols = trimmed.split(/\s*\|\s*|\t+|\s{3,}/).filter(Boolean);
       if (cols.length === 2) {
         const c1 = cleanSingleRiderSegment(cols[0]);
@@ -7263,7 +7137,6 @@ Object.assign(I18N.it, {
         }
       }
 
-      // Caso C: Riga singola standard
       const single = cleanSingleRiderSegment(trimmed);
       if (single) leftOrSingle.push(single);
     });
@@ -7271,7 +7144,6 @@ Object.assign(I18N.it, {
     return { leftOrSingle, rightColumn, allSequential: [...leftOrSingle, ...rightColumn] };
   }
 
-  // 4. Assegnazione Intelligente per OGNI competizione (SGP, Sprint, 14 Piloti, Pardubice 38 Piloti, Leghe 2 Squadre, Polonia #9-#16, Danimarca 4 Squadre, SON 7 Nazioni)
   parseAndAssignRiders = function(rawText) {
     const parsed = extractEntriesFromRawText(rawText);
     const allItems = parsed.allSequential;
@@ -7282,23 +7154,18 @@ Object.assign(I18N.it, {
     }
 
     const cfg = getModeConfig();
-    let assignedCount = 0;
 
-    // A. GARE INDIVIDUALI (SGP 18 piloti, Sprint 16 piloti, Individuale 14+2 piloti, Casco d'Oro di Pardubice 38 piloti)
     if (!cfg.isTeam) {
       const maxR = isPardubiceMode() ? 38 : (cfg.isSprint ? 16 : (cfg.is14Format ? 16 : 18));
       const usedSlots = new Set();
 
-      // Prima assegna chi ha già il numero esplicito letto dall'OCR (es. #1..#38)
       allItems.forEach(item => {
         if (item.num && item.num >= 1 && item.num <= maxR && !usedSlots.has(item.num)) {
           updateRiderName(item.num, item.name);
           usedSlots.add(item.num);
-          assignedCount++;
         }
       });
 
-      // Poi assegna in ordine sequenziale gli eventuali nomi senza numero
       let nextSlot = 1;
       allItems.forEach(item => {
         if (!item.num || item.num > maxR) {
@@ -7306,109 +7173,61 @@ Object.assign(I18N.it, {
           if (nextSlot <= maxR) {
             updateRiderName(nextSlot, item.name);
             usedSlots.add(nextSlot);
-            assignedCount++;
             nextSlot++;
           }
         }
       });
-    }
-
-    // B. TORNEO NAZIONI A COPPIE 7 NAZIONI (SON7: 7 squadre x 3 piloti)
-    else if (isSevenTeamMode()) {
+    } else if (isSevenTeamMode()) {
       if (SON7_BASES[ocrTeamTarget] !== undefined) {
         const base = SON7_BASES[ocrTeamTarget];
         for (let i = 0; i < Math.min(allItems.length, 3); i++) {
           updateRiderName(base + i + 1, allItems[i].name);
-          assignedCount++;
         }
       } else {
         SON7_TEAM_KEYS.forEach((k, tIdx) => {
           const base = SON7_BASES[k];
           const offset = tIdx * 3;
           for (let i = 0; i < 3; i++) {
-            if (allItems[offset + i]) {
-              updateRiderName(base + i + 1, allItems[offset + i].name);
-              assignedCount++;
-            }
+            if (allItems[offset + i]) updateRiderName(base + i + 1, allItems[offset + i].name);
           }
         });
       }
-    }
-
-    // C. LEGA DANESE 4 SQUADRE (DK4: 4 squadre x 5 piloti)
-    else if (isFourTeamMode()) {
+    } else if (isFourTeamMode()) {
       const count = cfg.ridersPerTeam;
       const bases = { home: 0, away: 100, teamc: 200, teamd: 300 };
       if (bases[ocrTeamTarget] !== undefined) {
         const base = bases[ocrTeamTarget];
         for (let i = 0; i < Math.min(allItems.length, count); i++) {
           updateRiderName(base + i + 1, allItems[i].name);
-          assignedCount++;
         }
       } else {
         [0, 100, 200, 300].forEach((base, tIdx) => {
           const offset = tIdx * count;
           for (let i = 0; i < count; i++) {
-            if (allItems[offset + i]) {
-              updateRiderName(base + i + 1, allItems[offset + i].name);
-              assignedCount++;
-            }
+            if (allItems[offset + i]) updateRiderName(base + i + 1, allItems[offset + i].name);
           }
         });
       }
-    }
-
-    // D. LEGHE A 2 SQUADRE (Polonia 8+8 con #9-#16 Casa / #1-#8 Ospiti, Svezia 7+7, UK 7+7, Danimarca 5+5, SON 2 Nazioni 3+3)
-    else {
+    } else {
       const count = cfg.ridersPerTeam;
-
-      // Caso 1: L'utente ha selezionato espressamente "Solo Casa" o "Solo Ospiti"
       if (ocrTeamTarget === 'home') {
-        for (let i = 0; i < Math.min(allItems.length, count); i++) {
-          updateRiderName(i + 1, allItems[i].name);
-          assignedCount++;
-        }
+        for (let i = 0; i < Math.min(allItems.length, count); i++) updateRiderName(i + 1, allItems[i].name);
       } else if (ocrTeamTarget === 'away') {
-        for (let i = 0; i < Math.min(allItems.length, count); i++) {
-          updateRiderName(101 + i, allItems[i].name);
-          assignedCount++;
-        }
+        for (let i = 0; i < Math.min(allItems.length, count); i++) updateRiderName(101 + i, allItems[i].name);
       } else {
-        // Caso 2 ("Entrambe"): Controlla se ci sono i numeri ufficiali Polacchi (#9..#16 = Casa, #1..#8 = Ospiti)
         const hasPolishHomeNums = allItems.some(x => x.num >= 9 && x.num <= (8 + count));
         if (hasPolishHomeNums) {
           allItems.forEach(item => {
-            if (item.num >= 9 && item.num <= (8 + count)) {
-              updateRiderName(item.num - 8, item.name); // #9..#16 -> Casa (1..8)
-              assignedCount++;
-            } else if (item.num >= 1 && item.num <= count) {
-              updateRiderName(100 + item.num, item.name); // #1..#8 -> Ospiti (101..108)
-              assignedCount++;
-            }
+            if (item.num >= 9 && item.num <= (8 + count)) updateRiderName(item.num - 8, item.name);
+            else if (item.num >= 1 && item.num <= count) updateRiderName(100 + item.num, item.name);
           });
-        }
-        // Caso 3: L'immagine aveva 2 colonne affiancate (Colonna Sinistra = Casa, Colonna Destra = Ospiti)
-        else if (parsed.leftColumn && parsed.rightColumn.length >= 2 && parsed.leftOrSingle.length >= 2) {
-          for (let i = 0; i < Math.min(parsed.leftOrSingle.length, count); i++) {
-            updateRiderName(i + 1, parsed.leftOrSingle[i].name);
-            assignedCount++;
-          }
-          for (let i = 0; i < Math.min(parsed.rightColumn.length, count); i++) {
-            updateRiderName(101 + i, parsed.rightColumn[i].name);
-            assignedCount++;
-          }
-        }
-        // Caso 4: Lista sequenziale (primi N = Casa, successivi N = Ospiti)
-        else {
-          for (let i = 0; i < Math.min(allItems.length, count); i++) {
-            updateRiderName(i + 1, allItems[i].name);
-            assignedCount++;
-          }
+        } else if (parsed.leftOrSingle.length >= 2 && parsed.rightColumn.length >= 2) {
+          for (let i = 0; i < Math.min(parsed.leftOrSingle.length, count); i++) updateRiderName(i + 1, parsed.leftOrSingle[i].name);
+          for (let i = 0; i < Math.min(parsed.rightColumn.length, count); i++) updateRiderName(101 + i, parsed.rightColumn[i].name);
+        } else {
+          for (let i = 0; i < Math.min(allItems.length, count); i++) updateRiderName(i + 1, allItems[i].name);
           for (let i = 0; i < count; i++) {
-            if (allItems[count + i]) {
-              updateRiderName(101 + i, allItems[count + i].name);
-              assignedCount++;
-            }
+            if (allItems[count + i]) updateRiderName(101 + i, allItems[count + i].name);
           }
         }
       }
