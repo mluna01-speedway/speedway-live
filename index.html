@@ -6932,14 +6932,14 @@ Object.assign(I18N.it, {
     return _zpPrevGetPodiumSummary(raceState);
   };
 
-  // --- SUPER-OCR MULTILINGUE & PARSER INTELLIGENTE ---
+// --- SUPER-OCR MULTILINGUE & PARSER INTELLIGENTE (CON FILTRO ANTI-OMBRA SU CARTA BIANCA) ---
   function preprocessImageForSpeedwayOcr(sourceCanvas) {
     const outCanvas = document.createElement('canvas');
-    const maxDim = 2200;
+    const maxDim = 2400;
     let w = sourceCanvas.width;
     let h = sourceCanvas.height;
-    if (w < 1200 && w > 0) {
-      const scale = Math.min(2.0, 1400 / w);
+    if (w < 1400 && w > 0) {
+      const scale = Math.min(2.2, 1600 / w);
       w = Math.round(w * scale);
       h = Math.round(h * scale);
     } else if (w > maxDim || h > maxDim) {
@@ -6950,33 +6950,76 @@ Object.assign(I18N.it, {
     outCanvas.width = w;
     outCanvas.height = h;
     const ctx = outCanvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(sourceCanvas, 0, 0, w, h);
 
     const imgData = ctx.getImageData(0, 0, w, h);
     const d = imgData.data;
-    let lumSum = 0;
-    const totalPx = d.length / 4;
-    for (let i = 0; i < d.length; i += 4) {
-      lumSum += (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]);
-    }
-    const isDarkBg = (lumSum / totalPx) < 118;
-
-    let minG = 255, maxG = 0;
+    const totalPx = w * h;
     const gray = new Uint8ClampedArray(totalPx);
+
+    let lumSum = 0;
     for (let i = 0, p = 0; i < d.length; i += 4, p++) {
-      let g = Math.round(0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]);
-      if (isDarkBg) g = 255 - g;
+      const g = Math.round(0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]);
       gray[p] = g;
-      if (g < minG) minG = g;
-      if (g > maxG) maxG = g;
+      lumSum += g;
     }
 
-    const range = Math.max(1, maxG - minG);
-    for (let i = 0, p = 0; i < d.length; i += 4, p++) {
-      let norm = ((gray[p] - minG) / range) * 255;
-      let contrasted = norm < 145 ? Math.max(0, norm * 0.68) : Math.min(255, 190 + (norm - 145) * 0.6);
-      d[i] = d[i + 1] = d[i + 2] = contrasted;
+    // Se è uno screenshot a sfondo scuro (grafica social nera con scritte bianche), inverte in testo nero su fondo bianco
+    const isDarkBg = (lumSum / totalPx) < 110;
+    if (isDarkBg) {
+      for (let p = 0; p < totalPx; p++) gray[p] = 255 - gray[p];
     }
+
+    // Calcolo sfondo locale a blocchi (elimina l'ombra del telefono/dita sulla carta bianca!)
+    const blockSize = Math.max(24, Math.round(Math.min(w, h) / 16));
+    const cols = Math.ceil(w / blockSize);
+    const rows = Math.ceil(h / blockSize);
+    const blockPaper = new Uint8ClampedArray(cols * rows);
+
+    for (let br = 0; br < rows; br++) {
+      for (let bc = 0; bc < cols; bc++) {
+        let maxVal = 160;
+        const yStart = br * blockSize, yEnd = Math.min(h, yStart + blockSize);
+        const xStart = bc * blockSize, xEnd = Math.min(w, xStart + blockSize);
+        // Campionamento veloce della luminosità della carta nel blocco
+        for (let y = yStart; y < yEnd; y += 2) {
+          const rowOff = y * w;
+          for (let x = xStart; x < xEnd; x += 2) {
+            const v = gray[rowOff + x];
+            if (v > maxVal) maxVal = v;
+          }
+        }
+        blockPaper[br * cols + bc] = maxVal;
+      }
+    }
+
+    // Normalizza ogni pixel rispetto al bianco locale della carta in quel punto
+    for (let y = 0; y < h; y++) {
+      const br = Math.min(rows - 1, Math.floor(y / blockSize));
+      const rowOff = y * w;
+      for (let x = 0; x < w; x++) {
+        const bc = Math.min(cols - 1, Math.floor(x / blockSize));
+        const localWhite = Math.max(120, blockPaper[br * cols + bc]);
+        const p = rowOff + x;
+        const idx = p * 4;
+
+        // Rapporto tra pixel e carta bianca locale (1.0 = carta bianca, < 0.72 = inchiostro nero)
+        const ratio = gray[p] / localWhite;
+        let outVal;
+        if (ratio > 0.84) {
+          outVal = 255; // Carta perfettamente bianca (anche se era in ombra!)
+        } else if (ratio < 0.58) {
+          outVal = 0;   // Inchiostro nero pieno e nitido
+        } else {
+          // Transizione morbida sui bordi delle lettere per non sgranare gli accenti
+          outVal = Math.round(((ratio - 0.58) / 0.26) * 255);
+        }
+        d[idx] = d[idx + 1] = d[idx + 2] = outVal;
+      }
+    }
+
     ctx.putImageData(imgData, 0, 0);
     return outCanvas;
   }
