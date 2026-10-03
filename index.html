@@ -7178,6 +7178,256 @@ Object.assign(I18N.it, {
     input.value = '';
   };
 
+// --- SISTEMA FREEMIUM & ABBONAMENTO ANNUALE (GOOGLE PLAY BILLING + VIP CODE) ---
+
+  var PLAY_STORE_SUBSCRIPTION_SKU = 'speedway_pro_yearly'; // ID abbonamento nella Google Play Console
+  var SECRET_ADMIN_VIP_CODES = ['LUNA-VIP-2026', 'SPEEDWAY-VIP-PRO']; // Codici segreti per te e i tuoi tester
+
+  function isProUser() {
+    return localStorage.getItem('speedway_pro_active') === 'true';
+  }
+
+  function getFreeAiScansUsed() {
+    return parseInt(localStorage.getItem('speedway_free_ai_used') || '0', 10);
+  }
+
+  function incrementFreeAiScansUsed() {
+    var used = getFreeAiScansUsed() + 1;
+    localStorage.setItem('speedway_free_ai_used', String(used));
+    updateProUiBadges();
+    return used;
+  }
+
+  function setProStatus(active, sourceLabel) {
+    localStorage.setItem('speedway_pro_active', active ? 'true' : 'false');
+    if (sourceLabel) localStorage.setItem('speedway_pro_source', sourceLabel);
+    updateProUiBadges();
+    var modal = document.getElementById('pro-paywall-modal');
+    if (modal && active) modal.style.display = 'none';
+  }
+
+  // Controllo automatico abbonamento su Google Play Store (TWA / Android)
+  async function checkPlayStoreEntitlements(silent) {
+    if (!('getDigitalGoodsService' in window)) {
+      if (!silent) alert('ℹ️ Il collegamento diretto al Google Play Store è attivo dentro l\'app ufficiale Android scaricata da Google Play.');
+      return false;
+    }
+    try {
+      var service = await window.getDigitalGoodsService('https://play.google.com/billing');
+      if (!service) return false;
+      var purchases = await service.listPurchases();
+      var hasActiveSub = Array.isArray(purchases) && purchases.some(function(p) {
+        return p.itemId === PLAY_STORE_SUBSCRIPTION_SKU;
+      });
+      if (hasActiveSub) {
+        setProStatus(true, 'Google Play Store');
+        if (!silent) alert('✅ Abbonamento Speedway Live PRO ripristinato con successo!');
+        return true;
+      } else if (!silent) {
+        alert('⚠️ Nessun abbonamento attivo trovato su questo account Google Play.');
+      }
+    } catch (err) {
+      console.warn('Play Billing check:', err);
+    }
+    return false;
+  }
+
+  // Avvia la finestra di pagamento nativa di Google Play Store
+  async function startPlayStoreSubscription() {
+    if ('getDigitalGoodsService' in window && window.PaymentRequest) {
+      try {
+        var service = await window.getDigitalGoodsService('https://play.google.com/billing');
+        var request = new PaymentRequest([{
+          supportedMethods: 'https://play.google.com/billing',
+          data: { sku: PLAY_STORE_SUBSCRIPTION_SKU }
+        }], {
+          total: { label: 'Speedway Live PRO (Annuale)', amount: { currency: 'EUR', value: '9.99' } }
+        });
+        var response = await request.show();
+        await response.complete('success');
+        setProStatus(true, 'Google Play Store');
+        alert('🎉 Benvenuto in Speedway Live PRO! Tutte le funzioni sono ora sbloccate.');
+        return;
+      } catch (err) {
+        console.warn('Pagamento Play Store annullato o non disponibile:', err);
+        return;
+      }
+    }
+    // Se aperto da browser normale fuori dal Play Store, mostra istruzioni o inserimento codice VIP
+    var code = prompt('👑 SPEEDWAY LIVE PRO\n\nL\'abbonamento diretto si attiva dall\'app ufficiale Google Play Store.\nSe possiedi già un Codice Licenza / VIP, inseriscilo qui sotto:');
+    if (code) redeemVipCode(code);
+  }
+
+  function redeemVipCode(rawCode) {
+    var clean = (rawCode || '').trim().toUpperCase();
+    if (!clean) return;
+    if (SECRET_ADMIN_VIP_CODES.indexOf(clean) !== -1) {
+      setProStatus(true, 'Codice VIP');
+      alert('👑 Codice VIP riconosciuto! Speedway Live PRO è ora ATTIVO senza limiti.');
+    } else {
+      alert('❌ Codice non valido. Verifica di averlo scritto correttamente.');
+    }
+  }
+
+  // Mostra il Popup Paywall quando un utente FREE tocca una funzione PRO
+  function showProPaywallModal(featureName) {
+    var modal = document.getElementById('pro-paywall-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'pro-paywall-modal';
+      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);';
+      modal.innerHTML = [
+        '<div style="background:#111927;border:2px solid #10b981;border-radius:16px;max-width:420px;width:100%;padding:22px;color:#fff;box-shadow:0 20px 50px rgba(0,0,0,0.7);text-align:center;font-family:inherit;">',
+        '  <div style="font-size:38px;margin-bottom:6px;">👑</div>',
+        '  <h3 style="margin:0 0 6px 0;font-size:20px;color:#10b981;">Speedway Live PRO</h3>',
+        '  <p id="pro-paywall-reason" style="margin:0 0 14px 0;font-size:13.5px;color:#fbbf24;font-weight:600;"></p>',
+        '  <div style="text-align:left;background:#1e293b;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:13px;line-height:1.65;color:#e2e8f0;">',
+        '    <div>✅ <b>AI Vision Illimitata:</b> carica formazioni da foto e social in 2 secondi</div>',
+        '    <div>✅ <b>Tutti i Campionati:</b> Lega Polacca Ekstraliga, UK, Svezia, Danimarca, SON (7 Nazioni) e Casco d\'Oro Pardubice</div>',
+        '    <div>✅ <b>Strumenti Avanzati:</b> Salvataggio Storico Gare, Locandina Poster HD, QR Code e Backup</div>',
+        '  </div>',
+        '  <button type="button" onclick="startPlayStoreSubscription()" style="width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:700;font-size:15px;cursor:pointer;margin-bottom:8px;">🚀 Sblocca Speedway Live PRO (Abbonamento Annuale)</button>',
+        '  <div style="display:flex;gap:8px;margin-top:4px;">',
+        '    <button type="button" onclick="checkPlayStoreEntitlements(false)" style="flex:1;padding:9px;border:1px solid #334155;border-radius:8px;background:#1e293b;color:#cbd5e1;font-size:12px;cursor:pointer;">🔄 Ripristina Acquisto</button>',
+        '    <button type="button" onclick="document.getElementById(\'pro-paywall-modal\').style.display=\'none\'" style="flex:1;padding:9px;border:1px solid #334155;border-radius:8px;background:transparent;color:#94a3b8;font-size:12px;cursor:pointer;">Continua in versione Free</button>',
+        '  </div>',
+        '</div>'
+      ].join('');
+      document.body.appendChild(modal);
+    }
+    var reasonEl = document.getElementById('pro-paywall-reason');
+    if (reasonEl) {
+      reasonEl.textContent = featureName ? ('La funzione "' + featureName + '" è riservata agli utenti PRO.') : 'Sblocca tutte le funzioni professionali di Speedway Live.';
+    }
+    modal.style.display = 'flex';
+  }
+
+  // Inserisce il pannello Abbonamento in cima alla scheda Setting (tab-settings)
+  function injectProSettingsCard() {
+    var settingsTab = document.getElementById('tab-settings');
+    if (!settingsTab || document.getElementById('pro-settings-card')) return;
+
+    var card = document.createElement('div');
+    card.id = 'pro-settings-card';
+    card.style.cssText = 'background:#111927;border:1px solid #10b981;border-radius:12px;padding:16px;margin-bottom:16px;';
+    settingsTab.insertBefore(card, settingsTab.firstChild);
+    updateProUiBadges();
+  }
+
+  function updateProUiBadges() {
+    var pro = isProUser();
+    var usedScans = getFreeAiScansUsed();
+    var leftScans = Math.max(0, 1 - usedScans);
+
+    // Aggiorna contatore prova gratuita sotto i bottoni Foto Piloti
+    var trialBadge = document.getElementById('ai-trial-badge');
+    var galleryInput = document.getElementById('ocr-gallery-input');
+    if (!trialBadge && galleryInput && galleryInput.parentElement && galleryInput.parentElement.parentElement) {
+      trialBadge = document.createElement('div');
+      trialBadge.id = 'ai-trial-badge';
+      trialBadge.style.cssText = 'margin-top:8px;margin-bottom:4px;padding:6px 10px;border-radius:8px;font-size:12px;text-align:center;font-weight:600;';
+      galleryInput.parentElement.parentElement.insertAdjacentElement('afterend', trialBadge);
+    }
+    if (trialBadge) {
+      if (pro) {
+        trialBadge.style.background = 'rgba(16,185,129,0.12)';
+        trialBadge.style.color = '#10b981';
+        trialBadge.innerHTML = '👑 <b>Speedway Live PRO attivo:</b> Scansioni AI Vision illimitate';
+      } else if (leftScans > 0) {
+        trialBadge.style.background = 'rgba(251,191,36,0.12)';
+        trialBadge.style.color = '#fbbf24';
+        trialBadge.innerHTML = '🎁 <b>Versione Free:</b> Hai <b>1 scansione AI Vision gratuita</b> di prova disponibile!';
+      } else {
+        trialBadge.style.background = 'rgba(239,68,68,0.12)';
+        trialBadge.style.color = '#f87171';
+        trialBadge.innerHTML = '🔒 Prova gratuita AI esaurita — <span style="text-decoration:underline;cursor:pointer;" onclick="showProPaywallModal(\'Scansione Foto AI Vision\')">Passa a PRO per scansioni illimitate</span>';
+      }
+    }
+
+    // Aggiorna la card nella scheda Setting
+    var card = document.getElementById('pro-settings-card');
+    if (card) {
+      var source = localStorage.getItem('speedway_pro_source') || 'Abbonamento Annuale';
+      if (pro) {
+        card.innerHTML = [
+          '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">',
+          '  <div>',
+          '    <div style="font-size:16px;font-weight:700;color:#10b981;">👑 Speedway Live PRO — ATTIVO</div>',
+          '    <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Licenza attiva (' + source + ') • Tutte le competizioni e AI Vision illimitata sbloccate</div>',
+          '  </div>',
+          '  <button type="button" onclick="if(confirm(\'Vuoi disattivare la modalità PRO su questo dispositivo?\')) setProStatus(false)" style="padding:6px 10px;border-radius:6px;border:1px solid #334155;background:#1e293b;color:#94a3b8;font-size:11px;cursor:pointer;">Disattiva</button>',
+          '</div>'
+        ].join('');
+      } else {
+        card.innerHTML = [
+          '<div style="margin-bottom:10px;">',
+          '  <div style="font-size:16px;font-weight:700;color:#fbbf24;">🔒 Piano Attuale: FREE (Funzioni Base)</div>',
+          '  <div style="font-size:12.5px;color:#cbd5e1;margin-top:4px;">Scansioni AI Vision di prova rimaste: <b>' + leftScans + ' / 1</b>. Passa a PRO per sbloccare tutti i campionati (Polonia, UK, Svezia, Danimarca, SON, Pardubice), AI illimitata, Storico e Locandine.</div>',
+          '</div>',
+          '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">',
+          '  <button type="button" onclick="startPlayStoreSubscription()" style="flex:2;min-width:180px;padding:10px;border:none;border-radius:8px;background:#10b981;color:#fff;font-weight:700;font-size:13px;cursor:pointer;">👑 Attiva Abbonamento Annuale PRO</button>',
+          '  <button type="button" onclick="checkPlayStoreEntitlements(false)" style="flex:1;min-width:120px;padding:10px;border:1px solid #334155;border-radius:8px;background:#1e293b;color:#cbd5e1;font-size:12px;cursor:pointer;">🔄 Ripristina da Play Store</button>',
+          '</div>',
+          '<div style="display:flex;gap:6px;align-items:center;">',
+          '  <input type="text" id="vip-code-input" placeholder="Hai un codice Promo / VIP?" style="flex:1;padding:8px 10px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:#fff;font-size:12px;">',
+          '  <button type="button" onclick="redeemVipCode(document.getElementById(\'vip-code-input\').value)" style="padding:8px 14px;border-radius:6px;border:1px solid #10b981;background:transparent;color:#10b981;font-weight:600;font-size:12px;cursor:pointer;">Attiva Codice</button>',
+          '</div>'
+        ].join('');
+      }
+    }
+  }
+
+  // --- LUCCHETTI SULLE FUNZIONI PRO ---
+
+  // 1. Lucchetto su Scansione Foto AI Vision (1 prova gratis, poi richiede PRO)
+  var _proBaseProcessRiderListPhoto = window.processRiderListPhoto;
+  window.processRiderListPhoto = async function(input) {
+    if (!isProUser() && getFreeAiScansUsed() >= 1) {
+      input.value = '';
+      showProPaywallModal('Scansioni AI Vision Illimitate (hai già usato la tua 1ª prova gratuita)');
+      return;
+    }
+    await _proBaseProcessRiderListPhoto(input);
+    if (!isProUser()) {
+      incrementFreeAiScansUsed();
+    }
+  };
+
+  // 2. Lucchetto sui Formati Gara Avanzati (Free = 'sgp' e 'ita14'; tutti gli altri sono PRO)
+  if (typeof window.selectAppMode === 'function') {
+    var _origSelectAppMode = window.selectAppMode;
+    window.selectAppMode = function(mode) {
+      var freeModes = ['sgp', 'ita14', 'ind14'];
+      if (!isProUser() && freeModes.indexOf(mode) === -1) {
+        if (typeof closeModeModal === 'function') closeModeModal();
+        showProPaywallModal('Formato Gara Internazionale / Squadre');
+        return;
+      }
+      return _origSelectAppMode.apply(this, arguments);
+    };
+  }
+
+  // 3. Lucchetto su Locandina Poster, QR Code, Salvataggio Storico e Backup
+  ['exportRacePoster', 'openQrModal', 'saveCurrentToArchive', 'exportBackupJson'].forEach(function(fnName) {
+    if (typeof window[fnName] === 'function') {
+      var origFn = window[fnName];
+      window[fnName] = function() {
+        if (!isProUser()) {
+          showProPaywallModal('Esportazione, QR Code e Storico Gare');
+          return;
+        }
+        return origFn.apply(this, arguments);
+      };
+    }
+  });
+
+  // Inizializza badge e controllo Play Store all'avvio
+  setTimeout(function() {
+    injectProSettingsCard();
+    updateProUiBadges();
+    checkPlayStoreEntitlements(true);
+  }, 300);
+
   initState();
   renderCurrentHeat();
 </script>
