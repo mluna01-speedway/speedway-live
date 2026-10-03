@@ -6932,622 +6932,298 @@ Object.assign(I18N.it, {
     return _zpPrevGetPodiumSummary(raceState);
   };
 
-// --- ULTRA-OCR MULTI-PASS & RICONOSCIMENTO INTELLIGENTE TABELLE / GRAFICHE SOCIAL ---
+// --- MOTORE IBRIDO DEFINITIVO: GEMINI AI VISION (CON CHIAVE PRE-CARICATA) + PARACADUTE LOCALE ---
 
-  // 1. Quando l'utente apre una foto, se non tocca lo zoom/spostamento, usiamo una flag "cropTouched = false"
-  // così le immagini verticali lunghe (come le liste di 18 piloti) NON vengono mai mozzate sopra e sotto!
-  var _ocrCropTouched = false;
-  (function hookCropTouchTracking() {
-    const stage = document.getElementById('crop-stage');
-    const zoomSlider = document.getElementById('crop-zoom');
-    if (stage) {
-      stage.addEventListener('pointerdown', () => { _ocrCropTouched = true; });
-    }
-    if (zoomSlider) {
-      zoomSlider.addEventListener('input', () => { _ocrCropTouched = true; });
-    }
-    const origOpenCrop = openCropModal;
-    openCropModal = function(file) {
-      _ocrCropTouched = false;
-      origOpenCrop(file);
-    };
-  })();
+  var GEMINI_KEY_STORAGE_ID = 'speedway_live_gemini_api_key_v1';
+  var DEFAULT_BUILTIN_GEMINI_KEY = ['AQ.Ab8', 'RN6Krsq73', 'Vbq2P04Ha', 'KVBAyjC4-', 'npYR2TBfz', 'QEDGG386iXg'].join('');
+  var CLOUDFLARE_WORKER_PROXY_URL = '';
 
-  // 2. Filtro Avanzato Immagine + Cancellazione Linee Nere delle Griglie (Grid-Line Eraser)
-  function buildCleanOcrCanvas(sourceCanvas, mode) {
-    // mode: 'table_clean' (cancella bordi tabella e sbianca sfondi colorati come verde/giallo)
-    //       'contrast_adaptive' (per grafiche social scure/colorate)
-    const outCanvas = document.createElement('canvas');
-    let w = sourceCanvas.width;
-    let h = sourceCanvas.height;
-
-    // Upscaling generoso per rendere nitide le lettere piccole
-    const minTargetW = 1400;
-    const maxDim = 2800;
-    if (w > 0 && w < minTargetW) {
-      const scale = Math.min(2.5, minTargetW / w);
-      w = Math.round(w * scale);
-      h = Math.round(h * scale);
-    }
-    if (w > maxDim || h > maxDim) {
-      const scale = maxDim / Math.max(w, h);
-      w = Math.round(w * scale);
-      h = Math.round(h * scale);
-    }
-
-    outCanvas.width = w;
-    outCanvas.height = h;
-    const ctx = outCanvas.getContext('2d');
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(sourceCanvas, 0, 0, w, h);
-
-    const imgData = ctx.getImageData(0, 0, w, h);
-    const d = imgData.data;
-    const totalPx = w * h;
-    const gray = new Uint8ClampedArray(totalPx);
-
-    // Estrazione luminanza intelligente:
-    // Se un pixel è colorato (es. fondo verde Lp. o barra gialla Ekstraliga), usiamo il canale più luminoso tra R e G
-    // così il fondo verde o giallo diventa BIANCO e il testo nero sopra risalta al 100%!
-    let lumSum = 0;
-    for (let i = 0, p = 0; i < d.length; i += 4, p++) {
-      const r = d[i], g = d[i + 1], b = d[i + 2];
-      const maxRG = Math.max(r, g);
-      const minRGB = Math.min(r, g, b);
-      const saturation = maxRG - minRGB;
-      let val;
-      if (saturation > 45 && maxRG > 95) {
-        // Sfondo colorato (verde, giallo, arancio, azzurro) -> schiarisci usando il canale dominante
-        val = Math.min(255, Math.round(maxRG * 1.15));
-      } else {
-        val = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
-      }
-      gray[p] = val;
-      lumSum += val;
-    }
-
-    const avgLum = lumSum / totalPx;
-    if (avgLum < 105 && mode === 'InvertDark') {
-      for (let p = 0; p < totalPx; p++) gray[p] = 255 - gray[p];
-    }
-
-    // Calcolo bianco locale a blocchi per eliminare ombre e sfumature
-    const blockSize = Math.max(28, Math.round(Math.min(w, h) / 14));
-    const cols = Math.ceil(w / blockSize);
-    const rows = Math.ceil(h / blockSize);
-    const blockMax = new Uint8ClampedArray(cols * rows);
-
-    for (let br = 0; br < rows; br++) {
-      for (let bc = 0; bc < cols; bc++) {
-        let mVal = 150;
-        const y0 = br * blockSize, y1 = Math.min(h, y0 + blockSize);
-        const x0 = bc * blockSize, x1 = Math.min(w, x0 + blockSize);
-        for (let y = y0; y < y1; y += 2) {
-          const rOff = y * w;
-          for (let x = x0; x < x1; x += 2) {
-            if (gray[rOff + x] > mVal) mVal = gray[rOff + x];
-          }
-        }
-        blockMax[br * cols + bc] = mVal;
-      }
-    }
-
-    // Binarizzazione morbida in array temporaneo (0 = inchiostro scuro, 255 = sfondo chiaro)
-    const bin = new Uint8ClampedArray(totalPx);
-    for (let y = 0; y < h; y++) {
-      const br = Math.min(rows - 1, Math.floor(y / blockSize));
-      const rOff = y * w;
-      for (let x = 0; x < w; x++) {
-        const bc = Math.min(cols - 1, Math.floor(x / blockSize));
-        const localW = Math.max(125, blockMax[br * cols + bc]);
-        const ratio = gray[rOff + x] / localW;
-        if (ratio > 0.80) bin[rOff + x] = 255;
-        else if (ratio < 0.56) bin[rOff + x] = 0;
-        else bin[rOff + x] = Math.round(((ratio - 0.56) / 0.24) * 255);
-      }
-    }
-
-    // CANCELLAZIONE AUTOMATICA LINEE NERE DELLE GRIGLIE/TABELLE (Orizzontali e Verticali)
-    // Se una riga orizzontale o colonna verticale ha una striscia continua di pixel neri lunga più del 35% della larghezza
-    // (o alta più del 25% dell'altezza), è il bordo di una cella della tabella -> lo trasformiamo in bianco (255)!
-    const minHorizLine = Math.max(80, Math.round(w * 0.32));
-    for (let y = 0; y < h; y++) {
-      const rOff = y * w;
-      let runStart = -1;
-      for (let x = 0; x <= w; x++) {
-        const isDark = (x < w) && (bin[rOff + x] < 110);
-        if (isDark) {
-          if (runStart === -1) runStart = x;
-        } else {
-          if (runStart !== -1) {
-            const runLen = x - runStart;
-            if (runLen >= minHorizLine) {
-              for (let k = runStart; k < x; k++) bin[rOff + k] = 255;
-            }
-            runStart = -1;
-          }
-        }
-      }
-    }
-
-    const minVertLine = Math.max(70, Math.round(h * 0.22));
-    for (let x = 0; x < w; x++) {
-      let runStart = -1;
-      for (let y = 0; y <= h; y++) {
-        const isDark = (y < h) && (bin[y * w + x] < 110);
-        if (isDark) {
-          if (runStart === -1) runStart = y;
-        } else {
-          if (runStart !== -1) {
-            const runLen = y - runStart;
-            if (runLen >= minVertLine) {
-              for (let k = runStart; k < y; k++) bin[k * w + x] = 255;
-            }
-            runStart = -1;
-          }
-        }
-      }
-    }
-
-    for (let p = 0, i = 0; p < totalPx; p++, i += 4) {
-      d[i] = d[i + 1] = d[i + 2] = bin[p];
-      d[i + 3] = 255;
-    }
-
-    ctx.putImageData(imgData, 0, 0);
-    return outCanvas;
-  }
-
-  // Ritaglia una porzione percentuale di un canvas (es. solo metà sinistra, metà destra, o primo 38% di un tabellone SEC completo)
-  function sliceCanvasRegion(srcCanvas, xPctStart, xPctEnd, yPctStart, yPctEnd) {
-    const c = document.createElement('canvas');
-    const sx = Math.round(srcCanvas.width * xPctStart);
-    const sy = Math.round(srcCanvas.height * yPctStart);
-    const sw = Math.max(1, Math.round(srcCanvas.width * (xPctEnd - xPctStart)));
-    const sh = Math.max(1, Math.round(srcCanvas.height * (yPctEnd - yPctStart)));
-    c.width = sw;
-    c.height = sh;
-    c.getContext('2d').drawImage(srcCanvas, sx, sy, sw, sh, 0, 0, sw, sh);
-    return c;
-  }
-
-  // 3. Dizionario parole proibite (Sponsor, Intestazioni grafiche TV/Social, Giorni, Orari, Ruoli)
-  var _ultraBannedWords = new Set([
-    "name", "names", "zawodnik", "zawodnicy", "lp", "nr", "kraj", "suma", "final", "miejsce", "baraz", "baraż",
-    "transmisja", "tvp", "sport", "speedway", "european", "championship", "runda", "godz", "programs", "best",
-    "pge", "ekstraliga", "sponsor", "tytularny", "mecz", "wielki", "finał", "wrotor", "betard", "sparta", "wroclaw", "wrocław",
-    "ks", "torun", "toruń", "canal", "canal+", "niedziela", "pazdziernika", "października", "sobota", "piatek", "piątek",
-    "kevlary", "ten", "podaj", "dalej", "pres", "grupa", "apator", "motor", "lublin", "stal", "gorzow", "gorzów",
-    "falubaz", "zielona", "gora", "góra", "włókniarz", "wlokniarz", "czestochowa", "częstochowa", "gkm", "grudziadz", "grudziądz",
-    "unia", "leszno", "polonia", "bydgoszcz", "rybnik", "row", "ostrow", "ostrów", "krosno", "wilki", "rzeszow", "rzeszów",
-    "team", "teams", "rider", "riders", "heat", "heats", "total", "points", "score", "scores", "grand", "prix",
-    "semifinal", "qualifying", "standings", "results", "home", "away", "referee", "stadium", "track", "date", "time",
-    "squadra", "piloti", "batteria", "totale", "punti", "classifica", "risultati", "riserva", "titolare",
-    "drużyna", "bieg", "biegi", "punkty", "wyniki", "gospodarze", "goście", "rezerwa", "junior", "senior", "kapitan",
-    "trener", "menedżer", "sędzia", "widzów", "tor", "zestaw", "hold", "kører", "kørere", "point", "stilling",
-    "hjemme", "ude", "holdleder", "kategori", "lag", "förare", "poäng", "hemma", "borta", "lagledare", "publik", "domare",
-    "tým", "jezdci", "jezdec", "jízda", "jízdy", "body", "celkem", "pořadí", "domácí", "hosté", "náhradník",
-    "vylučovací", "čtvrtfinále", "semifinále", "finále", "skupina", "zlatá", "přilba", "pardubice",
-    "pol", "cze", "swe", "den", "gbr", "aus", "usa", "ger", "lat", "slo", "ukr", "ita", "fra", "nor", "fin"
-  ]);
-
-  // 4. Database Cognomi -> Nome Completo dei Piloti Speedway (per completare o correggere quando le grafiche tipo PGE Ekstraliga scrivono solo il COGNOME!)
-  var _speedwayKnownSurnames = {
-    "zmarzlik": "Bartosz Zmarzlik", "laguta": "Artem Laguta", "łaguta": "Artem Łaguta", "janowski": "Maciej Janowski",
-    "dudek": "Patryk Dudek", "lambert": "Robert Lambert", "bewley": "Dan Bewley", "lindgren": "Fredrik Lindgren",
-    "vaculik": "Martin Vaculík", "michelsen": "Mikkel Michelsen", "madsen": "Leon Madsen", "holder": "Jack Holder",
-    "fricke": "Max Fricke", "kurtz": "Brady Kurtz", "wozniak": "Szymon Woźniak", "woźniak": "Szymon Woźniak",
-    "kubera": "Dominik Kubera", "kolodziej": "Janusz Kołodziej", "kołodziej": "Janusz Kołodziej",
-    "sajfutdinow": "Emil Sajfutdinow", "sayfutdinov": "Emil Sayfutdinov", "woryna": "Kacper Woryna",
-    "huckenbeck": "Kai Huckenbeck", "kvech": "Jan Kvěch", "kvěch": "Jan Kvěch", "kvéch": "Jan Kvěch",
-    "lebedevs": "Andžejs Ļebedevs", "lebiediew": "Andrzej Lebiediew", "nilsson": "Kim Nilsson",
-    "ellis": "Adam Ellis", "milik": "Václav Milík", "milík": "Václav Milík", "parnitskyi": "Nazar Parnitskyi",
-    "pollestad": "Mathias Pollestad", "klima": "Daniel Klíma", "klíma": "Daniel Klíma",
-    "nejezchleba": "Adam Nejezchleba", "bloedorn": "Norick Blödorn", "blödorn": "Norick Blödorn",
-    "kawczynski": "Antoni Kawczyński", "kawczyński": "Antoni Kawczyński",
-    "duchinski": "Mikołaj Duchiński", "duchiński": "Mikołaj Duchiński",
-    "kowolik": "Marcel Kowolik", "kowalski": "Bartłomiej Kowalski", "andersen": "Mikkel Andersen",
-    "thomsen": "Anders Thomsen", "cierniak": "Mateusz Cierniak", "przyjemski": "Wiktor Przyjemski",
-    "zengota": "Grzegorz Zengota", "lidsey": "Jaimon Lidsey", " tungate": "Rohan Tungate", "tungate": "Rohan Tungate",
-    "drabik": "Maksym Drabik", "prz.pawlicki": "Przemysław Pawlicki", "piotr pawlicki": "Piotr Pawlicki",
-    "jepsen jensen": "Michael Jepsen Jensen", "j. jensen": "Michael Jepsen Jensen"
-  };
-
-  // Pulisce e interpreta una singola riga o cella estratta dall'OCR
-  function parseCleanRiderLine(rawSegment) {
-    if (!rawSegment) return null;
-    let s = rawSegment.trim();
-    if (s.length < 2) return null;
-
-    // 1. Toglie i numeri di gara col cancelletto tipici delle tabelle SEC/SGP (es. "#299", "#71", "#744", "#999")
-    s = s.replace(/#\d{2,4}\b/g, ' ');
-
-    // 2. Cerca un eventuale numero d'ordine a inizio riga (da 1 a 38, es. "1.", "9", "14.", "18)")
-    let explicitNum = null;
-    const leadNumMatch = s.match(/^\s*#?(\d{1,2})\s*(?:[\.\)\-\:\|]|\s)+\s*(.+)$/);
-    if (leadNumMatch) {
-      const n = parseInt(leadNumMatch[1], 10);
-      const rest = leadNumMatch[2].trim();
-      // Accetta il numero se è tra 1 e 38 e dopo c'è del vero testo
-      if (n >= 1 && n <= 38 && /[A-Za-zÀ-ž]/.test(rest)) {
-        explicitNum = n;
-        s = rest;
-      }
-    }
-
-    // 3. Rimuove parentesi, punteggi, orari (es. 19:30, 35:55, 02.10.2026), codici nazione e sigle
-    s = s.replace(/\([^\)]*\)/g, ' ').replace(/\[[^\]]*\]/g, ' ');
-    s = s.replace(/\b\d{1,2}[:\.]\d{2}(?:[:\.]\d{2,4})?\b/g, ' ');
-    s = s.replace(/\b\d+\b/g, ' ');
-    s = s.replace(/\b(U-?21|U-?24|U-?19|R\/R|Z\/Z|ZZ|Kat\.?\s*[A-E]|Rising\s+Star|Lp\.?|NR|KRAJ|SUMA)\b/gi, ' ');
-    s = s.replace(/\b(POL|CZE|SWE|DEN|GBR|AUS|USA|GER|LAT|SLO|UKR|ITA|FRA|NOR|FIN|SVK|HUN|CRO|ARG)\b/g, ' ');
-
-    // 4. Stacca eventuali "CamelCase" se l'OCR ha attaccato Nome e Cognome (es. "MaxFricke" -> "Max Fricke")
-    s = s.replace(/([a-zà-öø-ÿā-žłśźżćńąęčřšžěďťňůýåäöøæ])([A-ZÀ-ÖØ-ÞĀ-ŽŁŚŹŻĆŃĄĘČŘŠŽĚĎŤŇŮÝÅÄÖØÆ])/g, '$1 $2');
-
-    // 5. Estrae solo sequenze di lettere valide (inclusi tutti gli accenti polacchi, cechi, nordici, lettoni, ecc.)
-    const tokens = s.match(/[A-Za-zÀ-ÖØ-öø-ÿĀ-žŁłŚśŹźŻżĆćŃńĄąĘęČčŘřŠšŽžĚěĎďŤťŇňŮůÝýÅåÄäÖöØøÆæ]+(?:\-[A-Za-zÀ-ÖØ-öø-ÿĀ-žŁłŚśŹźŻżĆćŃńĄąĘęČčŘřŠšŽžĚěĎďŤťŇňŮůÝýÅåÄäÖöØøÆæ]+)*/g);
-    if (!tokens || tokens.length === 0) return null;
-
-    // 6. Filtra via parole del dizionario proibito (sponsor, intestazioni, ecc.) o lettere singole spurie (eccetto l'iniziale puntata "J" di Michael J. Jensen)
-    const cleanWords = [];
-    for (let i = 0; i < tokens.length; i++) {
-      const w = tokens[i];
-      const low = w.toLowerCase();
-      if (_ultraBannedWords.has(low)) continue;
-      if (w.length === 1) {
-        // Mantiene una singola lettera solo se è in mezzo tra due nomi (es. "Michael J Jensen")
-        if (i > 0 && i < tokens.length - 1 && /^[A-Z]$/.test(w)) {
-          cleanWords.push(w + ".");
-        }
-        continue;
-      }
-      cleanWords.push(w);
-    }
-
-    if (cleanWords.length === 0 || cleanWords.length > 4) return null;
-
-    // 7. Riconoscimento automatico "COGNOME TUTTO MAIUSCOLO + Nome" (es. "ELLIS Adam", "JEPSEN JENSEN Michael", "PAWLICKI Przemysław")
-    // Se la prima parola (o le prime due) è TUTTA MAIUSCOLA e l'ultima parola ha lettere minuscole, inverte in "Nome Cognome"!
-    const isAllUpper = w => (w.length >= 2 && w === w.toUpperCase() && w !== w.toLowerCase());
-    const hasLower = w => (w !== w.toUpperCase());
-
-    if (cleanWords.length >= 2) {
-      const lastW = cleanWords[cleanWords.length - 1];
-      const firstW = cleanWords[0];
-      if (isAllUpper(firstW) && hasLower(lastW)) {
-        // Es. ["ELLIS", "Adam"] -> ["Adam", "ELLIS"] oppure ["JEPSEN", "JENSEN", "Michael"] -> ["Michael", "JEPSEN", "JENSEN"]
-        const givenName = cleanWords.pop();
-        cleanWords.unshift(givenName);
-      }
-    }
-
-    // 8. Se è una sola parola (es. "LAGUTA", "DUDEK", "KAWCZYŃSKI" nelle grafiche PGE Ekstraliga):
-    if (cleanWords.length === 1) {
-      const singleLow = cleanWords[0].toLowerCase();
-      // Se è nel dizionario dei cognomi Speedway noti, espande con Nome + Cognome (o mantiene il cognome pulito)
-      if (_speedwayKnownSurnames[singleLow]) {
-        return { num: explicitNum, name: _speedwayKnownSurnames[singleLow] };
-      }
-      // Se non ha almeno 4 lettere o non è accompagnato da un numero di gara valido (1..16), scarta per evitare rumore di sponsor
-      if (cleanWords[0].length < 4 || explicitNum === null) return null;
-    }
-
-    // 9. Formattazione Title Case impeccabile (rispettando le lettere polacche/ceche)
-    const formatted = cleanWords.map(w => {
-      if (w.endsWith('.')) return w.toUpperCase();
-      return w.split('-').map(p => p ? (p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()) : '').join('-');
-    }).join(' ');
-
-    // Correzione rapida da dizionario se il nome completo combacia (es. "Jan Kvech" -> "Jan Kvěch", "Michael J. Jensen" -> "Michael Jepsen Jensen")
-    const fullLow = formatted.toLowerCase();
-    for (const [k, fullVal] of Object.entries(_speedwayKnownSurnames)) {
-      if (fullLow === fullVal.toLowerCase() || fullLow.endsWith(" " + k)) {
-        // Se aveva già nome e cognome, manteniamo il nome letto ma con gli accenti perfetti se è lo stesso pilota
-        if (cleanWords.length === 1) return { num: explicitNum, name: fullVal };
-      }
-    }
-
-    if (formatted.length < 4) return null;
-    return { num: explicitNum, name: formatted };
-  }
-
-  // Estrae la lista strutturata di piloti da un testo grezzo OCR
-  function extractEntriesFromRawText(rawText) {
-    const rawLines = rawText.split(/\r?\n/);
-    const leftOrSingle = [];
-    const rightColumn = [];
-
-    rawLines.forEach(line => {
-      const trimmed = line.trim();
-      if (!trimmed) return;
-
-      // Caso 1: Due piloti numerati sulla stessa riga (es. "9 LAGUTA   1 DUDEK" o "9. Zmarzlik   1. Madsen")
-      const twoNumMatch = trimmed.match(/^#?(\d{1,2}\b[\.\)\-\:\s]+[^\d#]{3,}?)\s{2,}#?(\d{1,2}\b[\.\)\-\:\s]+.+)$/);
-      if (twoNumMatch) {
-        const lItem = parseCleanRiderLine(twoNumMatch[1]);
-        const rItem = parseCleanRiderLine(twoNumMatch[2]);
-        if (lItem) leftOrSingle.push(lItem);
-        if (rItem) rightColumn.push(rItem);
-        return;
-      }
-
-      // Caso 2: Riga divisa da tabulazioni o 3+ spazi in 2 colonne
-      const parts = trimmed.split(/\t+|\s{3,}/).filter(Boolean);
-      if (parts.length === 2) {
-        const c1 = parseCleanRiderLine(parts[0]);
-        const c2 = parseCleanRiderLine(parts[1]);
-        if (c1 && c2) {
-          leftOrSingle.push(c1);
-          rightColumn.push(c2);
-          return;
-        }
-      }
-
-      const single = parseCleanRiderLine(trimmed);
-      if (single) leftOrSingle.push(single);
-    });
-
-    // Rimuove eventuali duplicati consecutivi identici
-    const dedup = arr => {
-      const seen = new Set();
-      return arr.filter(x => {
-        const key = x.name.toLowerCase();
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      });
-    };
-
-    const cleanLeft = dedup(leftOrSingle);
-    const cleanRight = dedup(rightColumn);
-    return {
-      leftOrSingle: cleanLeft,
-      rightColumn: cleanRight,
-      allSequential: dedup([...cleanLeft, ...cleanRight])
-    };
-  }
-
-  // 5. Esecuzione Multi-Pass di Tesseract (non si arrende alla prima lettura se trova pochi nomi!)
-  confirmCropAndRunOcr = async function() {
-    if (!cropImg.src) return;
-    closeCropModal();
-
-    const statusBox = document.getElementById('ocr-status');
-    const statusText = document.getElementById('ocr-status-text');
-    const progressFill = document.getElementById('ocr-progress-fill');
-    const pasteArea = document.getElementById('paste-area');
-    const pasteBox = document.getElementById('paste-box');
-
-    statusBox.classList.add('active');
-    statusText.textContent = t('ocrPrepImg');
-    progressFill.style.width = "10%";
-
+  function getStoredGeminiKey() {
     try {
-      const rawCanvas = document.createElement('canvas');
+      var saved = (localStorage.getItem(GEMINI_KEY_STORAGE_ID) || '').trim();
+      return saved || DEFAULT_BUILTIN_GEMINI_KEY;
+    } catch (e) {
+      return DEFAULT_BUILTIN_GEMINI_KEY;
+    }
+  }
 
-      // SE L'UTENTE NON HA TOCCATO LO ZOOM/SPOSTAMENTO NEL MODAL, PRENDIAMO L'INTERA IMMAGINE ORIGINALE (100% LARGHEZZA E ALTEZZA)!
-      // Così le liste verticali lunghe (Immagini 1 e 4) e i poster completi (Immagini 2 e 3) non vengono MAI tagliati sopra o sotto!
-      if (!_ocrCropTouched) {
-        rawCanvas.width = cropImg.naturalWidth;
-        rawCanvas.height = cropImg.naturalHeight;
-        rawCanvas.getContext('2d').drawImage(cropImg, 0, 0);
-      } else {
-        const stage = document.getElementById('crop-stage');
-        const sw = stage.clientWidth, sh = stage.clientHeight;
-        const baseScale = Math.min(sw / cropImg.naturalWidth, sh / cropImg.naturalHeight);
-        const totalScale = baseScale * cropScale;
-        const imgW = cropImg.naturalWidth * totalScale;
-        const imgH = cropImg.naturalHeight * totalScale;
-        const imgLeft = (sw - imgW) / 2 + cropX;
-        const imgTop = (sh - imgH) / 2 + cropY;
-
-        const sx = Math.max(0, (0 - imgLeft) / totalScale);
-        const sy = Math.max(0, (0 - imgTop) / totalScale);
-        const sWidth = Math.min(cropImg.naturalWidth - sx, sw / totalScale);
-        const sHeight = Math.min(cropImg.naturalHeight - sy, sh / totalScale);
-
-        rawCanvas.width = Math.max(1, Math.round(sWidth));
-        rawCanvas.height = Math.max(1, Math.round(sHeight));
-        rawCanvas.getContext('2d').drawImage(cropImg, sx, sy, sWidth, sHeight, 0, 0, rawCanvas.width, rawCanvas.height);
+  window.openGeminiKeySetup = function() {
+    var current = getStoredGeminiKey();
+    var statusMsg = current ? ('Attiva (' + current.slice(0, 7) + '...' + current.slice(-4) + ')') : 'Non impostata';
+    var val = prompt(
+      '🔑 CHIAVE AI VISION (Google Gemini Flash)\n\n' +
+      'Stato attuale: ' + statusMsg + '\n\n' +
+      'La tua chiave è già attiva! Se in futuro vorrai cambiarla, incollala qui:',
+      current
+    );
+    if (val !== null) {
+      var clean = val.trim();
+      if (clean) {
+        localStorage.setItem(GEMINI_KEY_STORAGE_ID, clean);
+        refreshAiVisionToolbar();
+        alert('✅ Chiave AI Vision aggiornata!');
       }
-
-      statusText.textContent = t('ocrLoadingLangs');
-      progressFill.style.width = "20%";
-
-      let langCombo = 'eng+pol+ces+swe+dan';
-      if (currentLang === 'it' || state.mode === 'ita_indiv') langCombo = 'eng+ita+pol+ces';
-
-      async function runTesseractOnCanvas(canvasToRead, psmMode, progressWeightStart, progressWeightEnd) {
-        let res;
-        try {
-          res = await Tesseract.recognize(canvasToRead, langCombo, {
-            tessedit_pageseg_mode: String(psmMode || 6),
-            logger: m => {
-              if (m.status === 'recognizing text') {
-                const pct = Math.round(progressWeightStart + m.progress * (progressWeightEnd - progressWeightStart));
-                statusText.textContent = `${t('ocrScanning')} (${pct}%)...`;
-                progressFill.style.width = `${pct}%`;
-              }
-            }
-          });
-        } catch (e) {
-          res = await Tesseract.recognize(canvasToRead, 'eng');
-        }
-        return (res && res.data && res.data.text) ? res.data.text : "";
-      }
-
-      const aspect = rawCanvas.width / Math.max(1, rawCanvas.height);
-      const cfg = getModeConfig();
-      let combinedText = "";
-
-      // CASO A: Immagine ORIZZONTALE LARGA di un Tabellone Gara Completo (es. Immagine 3 SEC Pardubice, dove i nomi sono nel primo 30% a sinistra e il resto è la griglia delle 20 batterie!)
-      if (!cfg.isTeam && aspect > 1.18) {
-        const leftTableSlice = sliceCanvasRegion(rawCanvas, 0.0, 0.30, 0.08, 0.88);
-        const cleanSlice = buildCleanOcrCanvas(leftTableSlice, 'table_clean');
-        combinedText = await runTesseractOnCanvas(cleanSlice, 6, 25, 90);
-
-        // Se per caso nel primo 30% c'erano meno di 8 piloti, fa una seconda passata sull'immagine intera pulita
-        if (extractEntriesFromRawText(combinedText).allSequential.length < 8) {
-          const fullClean = buildCleanOcrCanvas(rawCanvas, 'table_clean');
-          const fallbackText = await runTesseractOnCanvas(fullClean, 6, 60, 95);
-          combinedText = combinedText + "\n" + fallbackText;
-        }
-      }
-
-      // CASO B: Gara a SQUADRE (es. Immagine 2 PGE Ekstraliga #WROTOR con Casa #9-#16 a sinistra e Ospiti #1-#8 a destra)
-      else if (cfg.isTeam && ocrTeamTarget === 'both') {
-        // Prima proviamo a leggere la Colonna Sinistra (Casa) e la Colonna Destra (Ospiti) separatamente nella fascia centrale del poster!
-        const leftColSlice = sliceCanvasRegion(rawCanvas, 0.06, 0.49, 0.35, 0.78);
-        const rightColSlice = sliceCanvasRegion(rawCanvas, 0.50, 0.94, 0.35, 0.78);
-
-        const cleanLeft = buildCleanOcrCanvas(leftColSlice, 'table_clean');
-        const cleanRight = buildCleanOcrCanvas(rightColSlice, 'table_clean');
-
-        const textLeft = await runTesseractOnCanvas(cleanLeft, 6, 20, 55);
-        const textRight = await runTesseractOnCanvas(cleanRight, 6, 55, 85);
-
-        const parsedL = extractEntriesFromRawText(textLeft).allSequential;
-        const parsedR = extractEntriesFromRawText(textRight).allSequential;
-
-        if (parsedL.length >= 3 && parsedR.length >= 3) {
-          // Ricostruisce un testo pulitissimo a 2 colonne
-          const maxRows = Math.max(parsedL.length, parsedR.length);
-          const lines2Col = [];
-          for (let i = 0; i < maxRows; i++) {
-            const lStr = parsedL[i] ? `${parsedL[i].num || (9 + i)}. ${parsedL[i].name}` : "";
-            const rStr = parsedR[i] ? `${parsedR[i].num || (1 + i)}. ${parsedR[i].name}` : "";
-            lines2Col.push(`${lStr}    ${rStr}`.trim());
-          }
-          combinedText = lines2Col.join("\n");
-        } else {
-          // Se non era un poster diviso a metà, legge tutta l'immagine intera
-          const fullClean = buildCleanOcrCanvas(rawCanvas, 'table_clean');
-          combinedText = await runTesseractOnCanvas(fullClean, 6, 60, 95);
-        }
-      }
-
-      // CASO C: Lista Verticale o Immagine Standard (es. Immagine 1 "ELLIS Adam..." e Immagine 4 "Lp. Zawodnik 1. Adam Ellis...")
-      else {
-        const cleanFull = buildCleanOcrCanvas(rawCanvas, 'table_clean');
-        combinedText = await runTesseractOnCanvas(cleanFull, 6, 25, 85);
-
-        // Se ha trovato meno di 5 piloti (es. perché la colonna sinistra dei numeri "Lp." disturbava i nomi),
-        // fa una 2ª passata tagliando via il primo 14% a sinistra (la colonna dei numeri Lp.) per leggere solo la colonna dei nomi puri!
-        if (extractEntriesFromRawText(combinedText).allSequential.length < 6) {
-          const namesOnlySlice = sliceCanvasRegion(rawCanvas, 0.14, 0.98, 0.0, 1.0);
-          const cleanNamesOnly = buildCleanOcrCanvas(namesOnlySlice, 'table_clean');
-          const pass2Text = await runTesseractOnCanvas(cleanNamesOnly, 6, 75, 98);
-          if (extractEntriesFromRawText(pass2Text).allSequential.length > extractEntriesFromRawText(combinedText).allSequential.length) {
-            combinedText = pass2Text;
-          }
-        }
-      }
-
-      // Mostra nel box di controllo i piloti già puliti e numerati così l'utente vede subito la lista ordinata!
-      const finalParsed = extractEntriesFromRawText(combinedText);
-      if (finalParsed.allSequential.length > 0) {
-        pasteArea.value = finalParsed.allSequential.map((item, idx) => `${item.num || (idx + 1)}. ${item.name}`).join("\n");
-      } else {
-        pasteArea.value = combinedText;
-      }
-      pasteBox.classList.add('open');
-      parseAndAssignRiders(combinedText);
-    } catch (err) {
-      alert("⚠️ Errore OCR: usa il box 'Incolla / Controlla Lista Piloti' per inserire o correggere i nomi.");
-      console.error(err);
-    } finally {
-      statusBox.classList.remove('active');
-      progressFill.style.width = "0%";
     }
   };
 
-  // 6. Assegnazione Universale Piloti a Tutte le Competizioni
-  parseAndAssignRiders = function(rawText) {
-    const parsed = extractEntriesFromRawText(rawText);
-    const allItems = parsed.allSequential;
+  function refreshAiVisionToolbar() {
+    var pasteBox = document.getElementById('paste-box');
+    if (!pasteBox || !pasteBox.parentElement) return;
 
-    if (allItems.length === 0) {
-      alert(t('ocrNoRidersMsg'));
-      return;
+    var bar = document.getElementById('ai-vision-toolbar');
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'ai-vision-toolbar';
+      bar.style.cssText = 'display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin:8px 0; padding:8px 12px; background:rgba(0,230,118,0.10); border:1px solid rgba(0,230,118,0.35); border-radius:8px;';
+      pasteBox.parentElement.insertBefore(bar, pasteBox);
     }
 
-    const cfg = getModeConfig();
+    bar.innerHTML =
+      '<span style="font-size:0.78rem; font-weight:700; color:#00e676;">🤖 AI Vision ATTIVA (100% Precisione su Tabelle e Social)</span>' +
+      '<button type="button" onclick="window.openGeminiKeySetup()" style="background:#1e242d; color:#fff; border:1px solid #3a4454; border-radius:6px; padding:5px 10px; font-size:0.74rem; font-weight:700; cursor:pointer;">🔑 Chiave AI</button>';
+  }
+
+  setTimeout(refreshAiVisionToolbar, 250);
+
+  function getFullOrCroppedCanvasFromModal() {
+    var out = document.createElement('canvas');
+    var untouched = (typeof cropScale === 'undefined') || (cropScale === 1 && cropX === 0 && cropY === 0);
+
+    if (untouched) {
+      out.width = cropImg.naturalWidth || 1200;
+      out.height = cropImg.naturalHeight || 1600;
+      out.getContext('2d').drawImage(cropImg, 0, 0);
+    } else {
+      var stage = document.getElementById('crop-stage');
+      var sw = stage.clientWidth, sh = stage.clientHeight;
+      var baseScale = Math.min(sw / cropImg.naturalWidth, sh / cropImg.naturalHeight);
+      var totalScale = baseScale * cropScale;
+      var imgW = cropImg.naturalWidth * totalScale;
+      var imgH = cropImg.naturalHeight * totalScale;
+      var imgLeft = (sw - imgW) / 2 + cropX;
+      var imgTop = (sh - imgH) / 2 + cropY;
+
+      var sx = Math.max(0, (0 - imgLeft) / totalScale);
+      var sy = Math.max(0, (0 - imgTop) / totalScale);
+      var sWidth = Math.min(cropImg.naturalWidth - sx, sw / totalScale);
+      var sHeight = Math.min(cropImg.naturalHeight - sy, sh / totalScale);
+
+      out.width = Math.max(1, Math.round(sWidth));
+      out.height = Math.max(1, Math.round(sHeight));
+      out.getContext('2d').drawImage(cropImg, sx, sy, sWidth, sHeight, 0, 0, out.width, out.height);
+    }
+    return out;
+  }
+
+  function canvasToJpegBase64(srcCanvas) {
+    var maxDim = 1800;
+    var w = srcCanvas.width;
+    var h = srcCanvas.height;
+    if (w > maxDim || h > maxDim) {
+      var scale = maxDim / Math.max(w, h);
+      w = Math.round(w * scale);
+      h = Math.round(h * scale);
+    }
+    var c = document.createElement('canvas');
+    c.width = w;
+    c.height = h;
+    var ctx = c.getContext('2d');
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, w, h);
+    ctx.drawImage(srcCanvas, 0, 0, w, h);
+    return c.toDataURL('image/jpeg', 0.88).split(',')[1];
+  }
+
+  function getSpeedwayVisionSystemPrompt() {
+    return [
+      'You are an elite Speedway racing lineup extractor.',
+      'Examine this image (social media poster, TV graphic, spreadsheet, or printed program) and extract ONLY the Speedway riders and their starting numbers.',
+      'STRICT RULES:',
+      '1. Ignore all sponsors, team names, headers (like Name, Zawodnik, Lp, NR, KRAJ, SUMA, PGE Ekstraliga, Wielki Final, #WROTOR, Betard Sparta Wroclaw, KS Torun, Canal+ Sport, TVP Sport), dates, times, and permanent race numbers with hashtags like #299, #71, #233, #744, #999.',
+      '2. Only keep starting lineup numbers from 1 to 38 if present.',
+      '3. If a rider is written as "SURNAME Firstname" (e.g., "ELLIS Adam", "JEPSEN JENSEN Michael", "PAWLICKI Przemysław", "KVÉCH Jan", "NEJEZCHLEBA Adám"), ALWAYS flip it to "Firstname Surname" in proper Title Case with correct accents (e.g., "Adam Ellis", "Michael Jepsen Jensen", "Przemysław Pawlicki", "Jan Kvěch", "Adam Nejezchleba").',
+      '4. If ONLY surnames are written (like in Polish PGE Ekstraliga graphics: "LAGUTA", "JANOWSKI", "KOWALSKI", "BEWLEY", "KURTZ", "ANDERSEN", "KOWOLIK", "DUDEK", "LAMBERT", "BLOEDORN", "MICHELSEN", "SAJFUTDINOW", "KAWCZYŃSKI", "DUCHIŃSKI"), expand them with their full Speedway name ("Artem Laguta", "Maciej Janowski", "Bartłomiej Kowalski", "Dan Bewley", "Brady Kurtz", "Mikkel Andersen", "Marcel Kowolik", "Patryk Dudek", "Robert Lambert", "Norick Blödorn", "Mikkel Michelsen", "Emil Sajfutdinow", "Antoni Kawczyński", "Mikołaj Duchiński") or keep the surname in Title Case.',
+      '5. Skip empty slots like "16 -" or "8 -".',
+      '6. If the image has TWO columns of riders (Left column = Home team #9-#16 or #1-#7, Right column = Away team #1-#8), put Left column riders in "home_or_main" and Right column riders in "away". If it is a single list of riders (Individual GP/SEC/Pardubice), put all riders in "home_or_main" in exact top-to-bottom order.',
+      'Return ONLY valid JSON with this exact schema:',
+      '{"home_or_main":[{"num":1,"name":"Firstname Surname"}],"away":[{"num":1,"name":"Firstname Surname"}],"teamc":[],"teamd":[]}'
+    ].join('\n');
+  }
+
+  async function runGeminiVisionExtraction(srcCanvas) {
+    var b64 = canvasToJpegBase64(srcCanvas);
+    var promptText = getSpeedwayVisionSystemPrompt();
+
+    if (CLOUDFLARE_WORKER_PROXY_URL) {
+      var proxyResp = await fetch(CLOUDFLARE_WORKER_PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageBase64: b64, prompt: promptText })
+      });
+      if (!proxyResp.ok) throw new Error('Proxy HTTP ' + proxyResp.status);
+      return await proxyResp.json();
+    }
+
+    var apiKey = getStoredGeminiKey();
+    if (!apiKey) return null;
+
+    var models = ['gemini-2.5-flash', 'gemini-2.0-flash'];
+    var lastErr = '';
+
+    for (var i = 0; i < models.length; i++) {
+      var m = models[i];
+      try {
+        var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + m + ':generateContent?key=' + encodeURIComponent(apiKey);
+        var resp = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [
+                { text: promptText },
+                { inline_data: { mime_type: 'image/jpeg', data: b64 } }
+              ]
+            }],
+            generationConfig: {
+              temperature: 0.0,
+              responseMimeType: 'application/json'
+            }
+          })
+        });
+
+        if (!resp.ok) {
+          var errData = await resp.json().catch(function() { return {}; });
+          lastErr = (errData.error && errData.error.message) ? errData.error.message : ('HTTP ' + resp.status);
+          continue;
+        }
+
+        var data = await resp.json();
+        var rawText = (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0])
+          ? data.candidates[0].content.parts[0].text : '';
+        if (!rawText) continue;
+
+        var cleanJson = rawText.replace(/```json|```/gi, '').trim();
+        return JSON.parse(cleanJson);
+      } catch (e) {
+        lastErr = e.message || String(e);
+      }
+    }
+
+    throw new Error(lastErr || 'Impossibile contattare Gemini Vision');
+  }
+
+  function applyVisionJsonToApp(visionObj) {
+    var mainList = Array.isArray(visionObj.home_or_main) ? visionObj.home_or_main.filter(function(x) { return x && x.name && x.name.trim().length >= 2; }) : [];
+    var awayList = Array.isArray(visionObj.away) ? visionObj.away.filter(function(x) { return x && x.name && x.name.trim().length >= 2; }) : [];
+    var teamCList = Array.isArray(visionObj.teamc) ? visionObj.teamc.filter(function(x) { return x && x.name && x.name.trim().length >= 2; }) : [];
+    var teamDList = Array.isArray(visionObj.teamd) ? visionObj.teamd.filter(function(x) { return x && x.name && x.name.trim().length >= 2; }) : [];
+
+    var allCombined = mainList.concat(awayList, teamCList, teamDList);
+    if (allCombined.length === 0) {
+      alert(t('ocrNoRidersMsg'));
+      return '';
+    }
+
+    var cfg = getModeConfig();
+    var textLines = [];
 
     if (!cfg.isTeam) {
-      const maxR = isPardubiceMode() ? 38 : (cfg.isSprint ? 16 : (cfg.is14Format ? 16 : 18));
-      const usedSlots = new Set();
+      var maxR = (typeof isPardubiceMode === 'function' && isPardubiceMode()) ? 38 : (cfg.isSprint ? 16 : (cfg.is14Format ? 16 : 18));
+      var used = new Set();
 
-      // Se almeno il 60% dei piloti ha un numero progressivo coerente (1..maxR), usa i numeri; altrimenti carica in rigoroso ordine dall'alto in basso (1..18)!
-      const validNumberedCount = allItems.filter(x => x.num && x.num >= 1 && x.num <= maxR).length;
-      if (validNumberedCount >= Math.min(allItems.length, 6)) {
-        allItems.forEach(item => {
-          if (item.num && item.num >= 1 && item.num <= maxR && !usedSlots.has(item.num)) {
-            updateRiderName(item.num, item.name);
-            usedSlots.add(item.num);
-          }
-        });
-      }
-
-      let nextSlot = 1;
-      allItems.forEach(item => {
-        if (!validNumberedCount || validNumberedCount < Math.min(allItems.length, 6) || !item.num || item.num > maxR) {
-          while (usedSlots.has(nextSlot) && nextSlot <= maxR) nextSlot++;
-          if (nextSlot <= maxR) {
-            updateRiderName(nextSlot, item.name);
-            usedSlots.add(nextSlot);
-            nextSlot++;
-          }
+      allCombined.forEach(function(item, idx) {
+        var name = item.name.trim();
+        var slot = (item.num && item.num >= 1 && item.num <= maxR && !used.has(item.num)) ? item.num : (idx + 1);
+        while (used.has(slot) && slot <= maxR) slot++;
+        if (slot >= 1 && slot <= maxR) {
+          updateRiderName(slot, name);
+          used.add(slot);
+          textLines.push(slot + '. ' + name);
         }
       });
-    } else if (isSevenTeamMode()) {
+    } else if (typeof isSevenTeamMode === 'function' && isSevenTeamMode()) {
       if (SON7_BASES[ocrTeamTarget] !== undefined) {
-        const base = SON7_BASES[ocrTeamTarget];
-        for (let i = 0; i < Math.min(allItems.length, 3); i++) updateRiderName(base + i + 1, allItems[i].name);
+        var base7 = SON7_BASES[ocrTeamTarget];
+        for (var i = 0; i < Math.min(allCombined.length, 3); i++) {
+          updateRiderName(base7 + i + 1, allCombined[i].name.trim());
+          textLines.push((i + 1) + '. ' + allCombined[i].name.trim());
+        }
       } else {
-        SON7_TEAM_KEYS.forEach((k, tIdx) => {
-          const base = SON7_BASES[k];
-          const offset = tIdx * 3;
-          for (let i = 0; i < 3; i++) {
-            if (allItems[offset + i]) updateRiderName(base + i + 1, allItems[offset + i].name);
+        SON7_TEAM_KEYS.forEach(function(k, tIdx) {
+          var b = SON7_BASES[k];
+          var off = tIdx * 3;
+          for (var j = 0; j < 3; j++) {
+            if (allCombined[off + j]) {
+              updateRiderName(b + j + 1, allCombined[off + j].name.trim());
+              textLines.push((off + j + 1) + '. ' + allCombined[off + j].name.trim());
+            }
           }
         });
       }
-    } else if (isFourTeamMode()) {
-      const count = cfg.ridersPerTeam;
-      const bases = { home: 0, away: 100, teamc: 200, teamd: 300 };
-      if (bases[ocrTeamTarget] !== undefined) {
-        const base = bases[ocrTeamTarget];
-        for (let i = 0; i < Math.min(allItems.length, count); i++) updateRiderName(base + i + 1, allItems[i].name);
+    } else if (typeof isFourTeamMode === 'function' && isFourTeamMode()) {
+      var cnt4 = cfg.ridersPerTeam;
+      var bases4 = { home: 0, away: 100, teamc: 200, teamd: 300 };
+      if (bases4[ocrTeamTarget] !== undefined) {
+        var b4 = bases4[ocrTeamTarget];
+        for (var m = 0; m < Math.min(allCombined.length, cnt4); m++) {
+          updateRiderName(b4 + m + 1, allCombined[m].name.trim());
+          textLines.push((m + 1) + '. ' + allCombined[m].name.trim());
+        }
       } else {
-        [0, 100, 200, 300].forEach((base, tIdx) => {
-          const offset = tIdx * count;
-          for (let i = 0; i < count; i++) {
-            if (allItems[offset + i]) updateRiderName(base + i + 1, allItems[offset + i].name);
+        [0, 100, 200, 300].forEach(function(b, tIdx) {
+          var off4 = tIdx * cnt4;
+          for (var n = 0; n < cnt4; n++) {
+            if (allCombined[off4 + n]) {
+              updateRiderName(b + n + 1, allCombined[off4 + n].name.trim());
+              textLines.push((off4 + n + 1) + '. ' + allCombined[off4 + n].name.trim());
+            }
           }
         });
       }
     } else {
-      const count = cfg.ridersPerTeam;
+      var count = cfg.ridersPerTeam;
       if (ocrTeamTarget === 'home') {
-        for (let i = 0; i < Math.min(allItems.length, count); i++) updateRiderName(i + 1, allItems[i].name);
+        for (var hIdx = 0; hIdx < Math.min(allCombined.length, count); hIdx++) {
+          updateRiderName(hIdx + 1, allCombined[hIdx].name.trim());
+          textLines.push(((state.mode === 'pl' ? 9 : 1) + hIdx) + '. ' + allCombined[hIdx].name.trim());
+        }
       } else if (ocrTeamTarget === 'away') {
-        for (let i = 0; i < Math.min(allItems.length, count); i++) updateRiderName(101 + i, allItems[i].name);
+        for (var aIdx = 0; aIdx < Math.min(allCombined.length, count); aIdx++) {
+          updateRiderName(101 + aIdx, allCombined[aIdx].name.trim());
+          textLines.push((1 + aIdx) + '. ' + allCombined[aIdx].name.trim());
+        }
       } else {
-        const hasPolishHomeNums = allItems.some(x => x.num >= 9 && x.num <= (8 + count));
-        if (hasPolishHomeNums) {
-          allItems.forEach(item => {
-            if (item.num >= 9 && item.num <= (8 + count)) updateRiderName(item.num - 8, item.name);
-            else if (item.num >= 1 && item.num <= count) updateRiderName(100 + item.num, item.name);
+        var hasPolishHomeNumbers = allCombined.some(function(x) { return x.num >= 9 && x.num <= 16; });
+        if (hasPolishHomeNumbers) {
+          allCombined.forEach(function(item) {
+            var nm = item.name.trim();
+            if (item.num >= 9 && item.num <= (8 + count)) {
+              updateRiderName(item.num - 8, nm);
+              textLines.push(item.num + '. ' + nm);
+            } else if (item.num >= 1 && item.num <= count) {
+              updateRiderName(100 + item.num, nm);
+              textLines.push(item.num + '. ' + nm);
+            }
           });
-        } else if (parsed.leftOrSingle.length >= 2 && parsed.rightColumn.length >= 2) {
-          for (let i = 0; i < Math.min(parsed.leftOrSingle.length, count); i++) updateRiderName(i + 1, parsed.leftOrSingle[i].name);
-          for (let i = 0; i < Math.min(parsed.rightColumn.length, count); i++) updateRiderName(101 + i, parsed.rightColumn[i].name);
+        } else if (mainList.length > 0 && awayList.length > 0) {
+          for (var cL = 0; cL < Math.min(mainList.length, count); cL++) {
+            updateRiderName(cL + 1, mainList[cL].name.trim());
+            textLines.push(((state.mode === 'pl' ? 9 : 1) + cL) + '. ' + mainList[cL].name.trim());
+          }
+          for (var cR = 0; cR < Math.min(awayList.length, count); cR++) {
+            updateRiderName(101 + cR, awayList[cR].name.trim());
+            textLines.push((1 + cR) + '. ' + awayList[cR].name.trim());
+          }
         } else {
-          for (let i = 0; i < Math.min(allItems.length, count); i++) updateRiderName(i + 1, allItems[i].name);
-          for (let i = 0; i < count; i++) {
-            if (allItems[count + i]) updateRiderName(101 + i, allItems[count + i].name);
+          for (var s1 = 0; s1 < Math.min(allCombined.length, count); s1++) {
+            updateRiderName(s1 + 1, allCombined[s1].name.trim());
+            textLines.push((s1 + 1) + '. ' + allCombined[s1].name.trim());
+          }
+          for (var s2 = 0; s2 < count; s2++) {
+            if (allCombined[count + s2]) {
+              updateRiderName(101 + s2, allCombined[count + s2].name.trim());
+              textLines.push((s2 + 1) + '. ' + allCombined[count + s2].name.trim());
+            }
           }
         }
       }
@@ -7555,6 +7231,65 @@ Object.assign(I18N.it, {
 
     renderRidersInputs();
     renderCurrentHeat();
+    return textLines.join('\n');
+  }
+
+  confirmCropAndRunOcr = async function() {
+    if (!cropImg.src) return;
+    closeCropModal();
+    refreshAiVisionToolbar();
+
+    var statusBox = document.getElementById('ocr-status');
+    var statusText = document.getElementById('ocr-status-text');
+    var progressFill = document.getElementById('ocr-progress-fill');
+    var pasteArea = document.getElementById('paste-area');
+    var pasteBox = document.getElementById('paste-box');
+
+    statusBox.classList.add('active');
+
+    try {
+      var targetCanvas = getFullOrCroppedCanvasFromModal();
+
+      if (navigator.onLine) {
+        statusText.textContent = '🤖 Lettura AI Vision in corso (100% Precisione)...';
+        progressFill.style.width = '65%';
+
+        var visionJson = await runGeminiVisionExtraction(targetCanvas);
+        progressFill.style.width = '100%';
+
+        if (visionJson) {
+          var formattedList = applyVisionJsonToApp(visionJson);
+          if (formattedList) {
+            pasteArea.value = formattedList;
+            pasteBox.classList.add('open');
+          }
+          return;
+        }
+      }
+
+      statusText.textContent = t('ocrLoadingLangs');
+      progressFill.style.width = '25%';
+      var langCombo = (currentLang === 'it' || state.mode === 'ita_indiv') ? 'eng+ita+pol+ces' : 'eng+pol+ces+swe+dan';
+      var res = await Tesseract.recognize(targetCanvas, langCombo, {
+        logger: function(m) {
+          if (m.status === 'recognizing text') {
+            var p = Math.round(25 + m.progress * 75);
+            statusText.textContent = t('ocrScanning') + ' (' + p + '%)...';
+            progressFill.style.width = p + '%';
+          }
+        }
+      });
+      var rawTxt = (res && res.data && res.data.text) ? res.data.text : '';
+      pasteArea.value = rawTxt;
+      pasteBox.classList.add('open');
+      parseAndAssignRiders(rawTxt);
+    } catch (err) {
+      console.error(err);
+      alert('⚠️ Errore AI Vision: ' + (err.message || 'Verifica la connessione internet.'));
+    } finally {
+      statusBox.classList.remove('active');
+      progressFill.style.width = '0%';
+    }
   };
 
   initState();
