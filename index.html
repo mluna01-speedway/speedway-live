@@ -6932,107 +6932,9 @@ Object.assign(I18N.it, {
     return _zpPrevGetPodiumSummary(raceState);
   };
 
-// --- MOTORE IBRIDO DEFINITIVO: GEMINI AI VISION (CON CHIAVE PRE-CARICATA) + PARACADUTE LOCALE ---
+// --- MOTORE AI VISION DEFINITIVO (GEMINI 3.0 FLASH) PER processRiderListPhoto ---
 
-  var GEMINI_KEY_STORAGE_ID = 'speedway_live_gemini_api_key_v1';
-  var DEFAULT_BUILTIN_GEMINI_KEY = ['AQ.Ab8', 'RN6Krsq73', 'Vbq2P04Ha', 'KVBAyjC4-', 'npYR2TBfz', 'QEDGG386iXg'].join('');
-  var CLOUDFLARE_WORKER_PROXY_URL = '';
-
-  function getStoredGeminiKey() {
-    try {
-      var saved = (localStorage.getItem(GEMINI_KEY_STORAGE_ID) || '').trim();
-      return saved || DEFAULT_BUILTIN_GEMINI_KEY;
-    } catch (e) {
-      return DEFAULT_BUILTIN_GEMINI_KEY;
-    }
-  }
-
-  window.openGeminiKeySetup = function() {
-    var current = getStoredGeminiKey();
-    var statusMsg = current ? ('Attiva (' + current.slice(0, 7) + '...' + current.slice(-4) + ')') : 'Non impostata';
-    var val = prompt(
-      '🔑 CHIAVE AI VISION (Google Gemini Flash)\n\n' +
-      'Stato attuale: ' + statusMsg + '\n\n' +
-      'La tua chiave è già attiva! Se in futuro vorrai cambiarla, incollala qui:',
-      current
-    );
-    if (val !== null) {
-      var clean = val.trim();
-      if (clean) {
-        localStorage.setItem(GEMINI_KEY_STORAGE_ID, clean);
-        refreshAiVisionToolbar();
-        alert('✅ Chiave AI Vision aggiornata!');
-      }
-    }
-  };
-
-  function refreshAiVisionToolbar() {
-    var pasteBox = document.getElementById('paste-box');
-    if (!pasteBox || !pasteBox.parentElement) return;
-
-    var bar = document.getElementById('ai-vision-toolbar');
-    if (!bar) {
-      bar = document.createElement('div');
-      bar.id = 'ai-vision-toolbar';
-      bar.style.cssText = 'display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin:8px 0; padding:8px 12px; background:rgba(0,230,118,0.10); border:1px solid rgba(0,230,118,0.35); border-radius:8px;';
-      pasteBox.parentElement.insertBefore(bar, pasteBox);
-    }
-
-    bar.innerHTML =
-      '<span style="font-size:0.78rem; font-weight:700; color:#00e676;">🤖 AI Vision ATTIVA (100% Precisione su Tabelle e Social)</span>' +
-      '<button type="button" onclick="window.openGeminiKeySetup()" style="background:#1e242d; color:#fff; border:1px solid #3a4454; border-radius:6px; padding:5px 10px; font-size:0.74rem; font-weight:700; cursor:pointer;">🔑 Chiave AI</button>';
-  }
-
-  setTimeout(refreshAiVisionToolbar, 250);
-
-  function getFullOrCroppedCanvasFromModal() {
-    var out = document.createElement('canvas');
-    var untouched = (typeof cropScale === 'undefined') || (cropScale === 1 && cropX === 0 && cropY === 0);
-
-    if (untouched) {
-      out.width = cropImg.naturalWidth || 1200;
-      out.height = cropImg.naturalHeight || 1600;
-      out.getContext('2d').drawImage(cropImg, 0, 0);
-    } else {
-      var stage = document.getElementById('crop-stage');
-      var sw = stage.clientWidth, sh = stage.clientHeight;
-      var baseScale = Math.min(sw / cropImg.naturalWidth, sh / cropImg.naturalHeight);
-      var totalScale = baseScale * cropScale;
-      var imgW = cropImg.naturalWidth * totalScale;
-      var imgH = cropImg.naturalHeight * totalScale;
-      var imgLeft = (sw - imgW) / 2 + cropX;
-      var imgTop = (sh - imgH) / 2 + cropY;
-
-      var sx = Math.max(0, (0 - imgLeft) / totalScale);
-      var sy = Math.max(0, (0 - imgTop) / totalScale);
-      var sWidth = Math.min(cropImg.naturalWidth - sx, sw / totalScale);
-      var sHeight = Math.min(cropImg.naturalHeight - sy, sh / totalScale);
-
-      out.width = Math.max(1, Math.round(sWidth));
-      out.height = Math.max(1, Math.round(sHeight));
-      out.getContext('2d').drawImage(cropImg, sx, sy, sWidth, sHeight, 0, 0, out.width, out.height);
-    }
-    return out;
-  }
-
-  function canvasToJpegBase64(srcCanvas) {
-    var maxDim = 1800;
-    var w = srcCanvas.width;
-    var h = srcCanvas.height;
-    if (w > maxDim || h > maxDim) {
-      var scale = maxDim / Math.max(w, h);
-      w = Math.round(w * scale);
-      h = Math.round(h * scale);
-    }
-    var c = document.createElement('canvas');
-    c.width = w;
-    c.height = h;
-    var ctx = c.getContext('2d');
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, w, h);
-    ctx.drawImage(srcCanvas, 0, 0, w, h);
-    return c.toDataURL('image/jpeg', 0.88).split(',')[1];
-  }
+  var BUILTIN_GEMINI_VISION_KEY = ['AQ.Ab8', 'RN6Krsq73', 'Vbq2P04Ha', 'KVBAyjC4-', 'npYR2TBfz', 'QEDGG386iXg'].join('');
 
   function getSpeedwayVisionSystemPrompt() {
     return [
@@ -7043,90 +6945,34 @@ Object.assign(I18N.it, {
       '2. Only keep starting lineup numbers from 1 to 38 if present.',
       '3. If a rider is written as "SURNAME Firstname" (e.g., "ELLIS Adam", "JEPSEN JENSEN Michael", "PAWLICKI Przemysław", "KVÉCH Jan", "NEJEZCHLEBA Adám"), ALWAYS flip it to "Firstname Surname" in proper Title Case with correct accents (e.g., "Adam Ellis", "Michael Jepsen Jensen", "Przemysław Pawlicki", "Jan Kvěch", "Adam Nejezchleba").',
       '4. If ONLY surnames are written (like in Polish PGE Ekstraliga graphics: "LAGUTA", "JANOWSKI", "KOWALSKI", "BEWLEY", "KURTZ", "ANDERSEN", "KOWOLIK", "DUDEK", "LAMBERT", "BLOEDORN", "MICHELSEN", "SAJFUTDINOW", "KAWCZYŃSKI", "DUCHIŃSKI"), expand them with their full Speedway name ("Artem Laguta", "Maciej Janowski", "Bartłomiej Kowalski", "Dan Bewley", "Brady Kurtz", "Mikkel Andersen", "Marcel Kowolik", "Patryk Dudek", "Robert Lambert", "Norick Blödorn", "Mikkel Michelsen", "Emil Sajfutdinow", "Antoni Kawczyński", "Mikołaj Duchiński") or keep the surname in Title Case.',
-      '5. Skip empty slots like "16 -" or "8 -".',
+      '5. Skip empty slots that only have a dash/hyphen like "16 -" or "8 -". Do NOT invent names for empty slots.',
       '6. If the image has TWO columns of riders (Left column = Home team #9-#16 or #1-#7, Right column = Away team #1-#8), put Left column riders in "home_or_main" and Right column riders in "away". If it is a single list of riders (Individual GP/SEC/Pardubice), put all riders in "home_or_main" in exact top-to-bottom order.',
       'Return ONLY valid JSON with this exact schema:',
       '{"home_or_main":[{"num":1,"name":"Firstname Surname"}],"away":[{"num":1,"name":"Firstname Surname"}],"teamc":[],"teamd":[]}'
     ].join('\n');
   }
 
-  async function runGeminiVisionExtraction(srcCanvas) {
-    var b64 = canvasToJpegBase64(srcCanvas);
-    var promptText = getSpeedwayVisionSystemPrompt();
-
-    if (CLOUDFLARE_WORKER_PROXY_URL) {
-      var proxyResp = await fetch(CLOUDFLARE_WORKER_PROXY_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageBase64: b64, prompt: promptText })
-      });
-      if (!proxyResp.ok) throw new Error('Proxy HTTP ' + proxyResp.status);
-      return await proxyResp.json();
-    }
-
-    var apiKey = getStoredGeminiKey();
-    if (!apiKey) return null;
-
-    var models = ['gemini-2.5-flash', 'gemini-2.0-flash'];
-    var lastErr = '';
-
-    for (var i = 0; i < models.length; i++) {
-      var m = models[i];
-      try {
-        var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + m + ':generateContent?key=' + encodeURIComponent(apiKey);
-        var resp = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{
-              parts: [
-                { text: promptText },
-                { inline_data: { mime_type: 'image/jpeg', data: b64 } }
-              ]
-            }],
-            generationConfig: {
-              temperature: 0.0,
-              responseMimeType: 'application/json'
-            }
-          })
-        });
-
-        if (!resp.ok) {
-          var errData = await resp.json().catch(function() { return {}; });
-          lastErr = (errData.error && errData.error.message) ? errData.error.message : ('HTTP ' + resp.status);
-          continue;
-        }
-
-        var data = await resp.json();
-        var rawText = (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0])
-          ? data.candidates[0].content.parts[0].text : '';
-        if (!rawText) continue;
-
-        var cleanJson = rawText.replace(/```json|```/gi, '').trim();
-        return JSON.parse(cleanJson);
-      } catch (e) {
-        lastErr = e.message || String(e);
-      }
-    }
-
-    throw new Error(lastErr || 'Impossibile contattare Gemini Vision');
-  }
-
   function applyVisionJsonToApp(visionObj) {
-    var mainList = Array.isArray(visionObj.home_or_main) ? visionObj.home_or_main.filter(function(x) { return x && x.name && x.name.trim().length >= 2; }) : [];
-    var awayList = Array.isArray(visionObj.away) ? visionObj.away.filter(function(x) { return x && x.name && x.name.trim().length >= 2; }) : [];
-    var teamCList = Array.isArray(visionObj.teamc) ? visionObj.teamc.filter(function(x) { return x && x.name && x.name.trim().length >= 2; }) : [];
-    var teamDList = Array.isArray(visionObj.teamd) ? visionObj.teamd.filter(function(x) { return x && x.name && x.name.trim().length >= 2; }) : [];
+    var isValidSlotName = function(x) {
+      if (!x || !x.name) return false;
+      var n = x.name.trim();
+      return n.length >= 2 && !/^[-–—_.\s]+$/.test(n) && n.toLowerCase() !== 'null' && n.toLowerCase() !== 'none';
+    };
+
+    var mainList = Array.isArray(visionObj.home_or_main) ? visionObj.home_or_main.filter(isValidSlotName) : [];
+    var awayList = Array.isArray(visionObj.away) ? visionObj.away.filter(isValidSlotName) : [];
+    var teamCList = Array.isArray(visionObj.teamc) ? visionObj.teamc.filter(isValidSlotName) : [];
+    var teamDList = Array.isArray(visionObj.teamd) ? visionObj.teamd.filter(isValidSlotName) : [];
 
     var allCombined = mainList.concat(awayList, teamCList, teamDList);
     if (allCombined.length === 0) {
-      alert(t('ocrNoRidersMsg'));
-      return '';
+      throw new Error('Nessun pilota trovato nell\'immagine.');
     }
 
     var cfg = getModeConfig();
     var textLines = [];
 
+    // 1. GARE INDIVIDUALI (18, 16, 14+2, Casco d'Oro Pardubice 36+2)
     if (!cfg.isTeam) {
       var maxR = (typeof isPardubiceMode === 'function' && isPardubiceMode()) ? 38 : (cfg.isSprint ? 16 : (cfg.is14Format ? 16 : 18));
       var used = new Set();
@@ -7141,7 +6987,9 @@ Object.assign(I18N.it, {
           textLines.push(slot + '. ' + name);
         }
       });
-    } else if (typeof isSevenTeamMode === 'function' && isSevenTeamMode()) {
+    }
+    // 2. SPEEDWAY OF NATIONS A 7 SQUADRE
+    else if (typeof isSevenTeamMode === 'function' && isSevenTeamMode()) {
       if (SON7_BASES[ocrTeamTarget] !== undefined) {
         var base7 = SON7_BASES[ocrTeamTarget];
         for (var i = 0; i < Math.min(allCombined.length, 3); i++) {
@@ -7160,7 +7008,9 @@ Object.assign(I18N.it, {
           }
         });
       }
-    } else if (typeof isFourTeamMode === 'function' && isFourTeamMode()) {
+    }
+    // 3. DANIMARCA 4 SQUADRE
+    else if (typeof isFourTeamMode === 'function' && isFourTeamMode()) {
       var cnt4 = cfg.ridersPerTeam;
       var bases4 = { home: 0, away: 100, teamc: 200, teamd: 300 };
       if (bases4[ocrTeamTarget] !== undefined) {
@@ -7180,8 +7030,19 @@ Object.assign(I18N.it, {
           }
         });
       }
-    } else {
+    }
+    // 4. LEGHE A 2 SQUADRE (Polonia #9-#16 vs #1-#8, UK, Svezia, Danimarca, SON)
+    else {
       var count = cfg.ridersPerTeam;
+
+      // Prima puliamo gli slot target così se #16 o #8 hanno "-" nella grafica non resta sporcizia vecchia!
+      if (ocrTeamTarget === 'home' || ocrTeamTarget === 'both') {
+        for (var ch = 1; ch <= count; ch++) updateRiderName(ch, '');
+      }
+      if (ocrTeamTarget === 'away' || ocrTeamTarget === 'both') {
+        for (var ca = 1; ca <= count; ca++) updateRiderName(100 + ca, '');
+      }
+
       if (ocrTeamTarget === 'home') {
         for (var hIdx = 0; hIdx < Math.min(allCombined.length, count); hIdx++) {
           updateRiderName(hIdx + 1, allCombined[hIdx].name.trim());
@@ -7229,67 +7090,109 @@ Object.assign(I18N.it, {
       }
     }
 
+    var pasteInput = document.getElementById('rider-paste-input') || document.getElementById('paste-area');
+    if (pasteInput && textLines.length > 0) {
+      pasteInput.value = textLines.join('\n');
+    }
+
     renderRidersInputs();
     renderCurrentHeat();
-    return textLines.join('\n');
+    if (typeof saveState === 'function') saveState();
   }
 
-  confirmCropAndRunOcr = async function() {
-    if (!cropImg.src) return;
-    closeCropModal();
-    refreshAiVisionToolbar();
+  window.processRiderListPhoto = async function(input) {
+    var file = input.files && input.files[0];
+    if (!file) return;
 
-    var statusBox = document.getElementById('ocr-status');
-    var statusText = document.getElementById('ocr-status-text');
-    var progressFill = document.getElementById('ocr-progress-fill');
-    var pasteArea = document.getElementById('paste-area');
-    var pasteBox = document.getElementById('paste-box');
-
-    statusBox.classList.add('active');
+    var statusEl = document.getElementById('ocr-status');
+    statusEl.style.display = 'block';
+    statusEl.style.color = 'var(--yellow)';
+    statusEl.innerHTML = '🤖 <b>AI Vision:</b> Lettura intelligente piloti in corso...';
 
     try {
-      var targetCanvas = getFullOrCroppedCanvasFromModal();
+      var imgCanvas = await new Promise(function(resolve, reject) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var img = new Image();
+          img.onload = function() {
+            var maxDim = 1800;
+            var w = img.naturalWidth || img.width;
+            var h = img.naturalHeight || img.height;
+            if (w > maxDim || h > maxDim) {
+              var s = maxDim / Math.max(w, h);
+              w = Math.round(w * s);
+              h = Math.round(h * s);
+            }
+            var c = document.createElement('canvas');
+            c.width = w;
+            c.height = h;
+            var ctx = c.getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, w, h);
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(c);
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
 
       if (navigator.onLine) {
-        statusText.textContent = '🤖 Lettura AI Vision in corso (100% Precisione)...';
-        progressFill.style.width = '65%';
+        var b64 = imgCanvas.toDataURL('image/jpeg', 0.88).split(',')[1];
+        var promptText = getSpeedwayVisionSystemPrompt();
+        var models = ['gemini-3.0-flash', 'gemini-3-flash-preview', 'gemini-flash-latest'];
+        var geminiData = null;
 
-        var visionJson = await runGeminiVisionExtraction(targetCanvas);
-        progressFill.style.width = '100%';
+        for (var i = 0; i < models.length; i++) {
+          try {
+            var resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + models[i] + ':generateContent?key=' + encodeURIComponent(BUILTIN_GEMINI_VISION_KEY), {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: promptText }, { inline_data: { mime_type: 'image/jpeg', data: b64 } }] }],
+                generationConfig: { temperature: 0.0, responseMimeType: 'application/json' }
+              })
+            });
+            var json = await resp.json();
+            if (resp.ok && json.candidates && json.candidates[0]) {
+              geminiData = json;
+              break;
+            }
+          } catch (e) {}
+        }
 
-        if (visionJson) {
-          var formattedList = applyVisionJsonToApp(visionJson);
-          if (formattedList) {
-            pasteArea.value = formattedList;
-            pasteBox.classList.add('open');
-          }
+        if (geminiData) {
+          var rawJson = geminiData.candidates[0].content.parts[0].text.replace(/```json|```/gi, '').trim();
+          var parsed = JSON.parse(rawJson);
+          applyVisionJsonToApp(parsed);
+
+          statusEl.style.color = 'var(--accent)';
+          statusEl.innerHTML = '✅ <b>Elenco Caricato con Successo!</b>';
+          setTimeout(function() { statusEl.style.display = 'none'; }, 4000);
+          input.value = '';
           return;
         }
       }
 
-      statusText.textContent = t('ocrLoadingLangs');
-      progressFill.style.width = '25%';
-      var langCombo = (currentLang === 'it' || state.mode === 'ita_indiv') ? 'eng+ita+pol+ces' : 'eng+pol+ces+swe+dan';
-      var res = await Tesseract.recognize(targetCanvas, langCombo, {
-        logger: function(m) {
-          if (m.status === 'recognizing text') {
-            var p = Math.round(25 + m.progress * 75);
-            statusText.textContent = t('ocrScanning') + ' (' + p + '%)...';
-            progressFill.style.width = p + '%';
-          }
-        }
-      });
-      var rawTxt = (res && res.data && res.data.text) ? res.data.text : '';
-      pasteArea.value = rawTxt;
-      pasteBox.classList.add('open');
-      parseAndAssignRiders(rawTxt);
-    } catch (err) {
-      console.error(err);
-      alert('⚠️ Errore AI Vision: ' + (err.message || 'Verifica la connessione internet.'));
-    } finally {
-      statusBox.classList.remove('active');
-      progressFill.style.width = '0%';
+      // Paracadute locale se lo smartphone è offline allo stadio
+      statusEl.innerHTML = '🔍 <b>Lettura Offline:</b> Scansione locale in corso...';
+      var worker = await Tesseract.createWorker('eng+pol+ita+swe+dan');
+      await worker.setParameters({ tessedit_pageseg_mode: 6 });
+      var res = await worker.recognize(imgCanvas.toDataURL('image/jpeg', 0.92));
+      await worker.terminate();
+      parseAndAssignRiders(res.data.text);
+
+      statusEl.style.color = 'var(--accent)';
+      statusEl.innerHTML = '✅ <b>Elenco Caricato con Successo!</b>';
+      setTimeout(function() { statusEl.style.display = 'none'; }, 4000);
+    } catch (error) {
+      console.error(error);
+      statusEl.style.color = 'var(--red)';
+      statusEl.innerHTML = '❌ <b>Errore OCR:</b> Impossibile leggere l\'immagine. Riprova.';
     }
+    input.value = '';
   };
 
   initState();
@@ -7297,3 +7200,4 @@ Object.assign(I18N.it, {
 </script>
 </body>
 </html>
+
