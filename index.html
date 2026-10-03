@@ -6932,9 +6932,9 @@ Object.assign(I18N.it, {
     return _zpPrevGetPodiumSummary(raceState);
   };
 
-// --- MOTORE AI VISION DEFINITIVO (GEMINI 3.0 FLASH) PER processRiderListPhoto ---
+// --- MOTORE AI VISION DEFINITIVO TRAMITE CLOUDFLARE WORKER (ZERO CHIAVI ESPOSTE) ---
 
-  var BUILTIN_GEMINI_VISION_KEY = ['AQ.Ab8', 'RN6Krsq73', 'Vbq2P04Ha', 'KVBAyjC4-', 'npYR2TBfz', 'QEDGG386iXg'].join('');
+  var CLOUDFLARE_VISION_URL = 'https://speedway-vision.m-lunardi01.workers.dev/';
 
   function getSpeedwayVisionSystemPrompt() {
     return [
@@ -6972,9 +6972,9 @@ Object.assign(I18N.it, {
     var cfg = getModeConfig();
     var textLines = [];
 
-    // 1. GARE INDIVIDUALI (18, 16, 14+2, Casco d'Oro Pardubice 36+2)
     if (!cfg.isTeam) {
       var maxR = (typeof isPardubiceMode === 'function' && isPardubiceMode()) ? 38 : (cfg.isSprint ? 16 : (cfg.is14Format ? 16 : 18));
+      for (var clr = 1; clr <= maxR; clr++) updateRiderName(clr, '');
       var used = new Set();
 
       allCombined.forEach(function(item, idx) {
@@ -6987,9 +6987,7 @@ Object.assign(I18N.it, {
           textLines.push(slot + '. ' + name);
         }
       });
-    }
-    // 2. SPEEDWAY OF NATIONS A 7 SQUADRE
-    else if (typeof isSevenTeamMode === 'function' && isSevenTeamMode()) {
+    } else if (typeof isSevenTeamMode === 'function' && isSevenTeamMode()) {
       if (SON7_BASES[ocrTeamTarget] !== undefined) {
         var base7 = SON7_BASES[ocrTeamTarget];
         for (var i = 0; i < Math.min(allCombined.length, 3); i++) {
@@ -7008,9 +7006,7 @@ Object.assign(I18N.it, {
           }
         });
       }
-    }
-    // 3. DANIMARCA 4 SQUADRE
-    else if (typeof isFourTeamMode === 'function' && isFourTeamMode()) {
+    } else if (typeof isFourTeamMode === 'function' && isFourTeamMode()) {
       var cnt4 = cfg.ridersPerTeam;
       var bases4 = { home: 0, away: 100, teamc: 200, teamd: 300 };
       if (bases4[ocrTeamTarget] !== undefined) {
@@ -7030,12 +7026,9 @@ Object.assign(I18N.it, {
           }
         });
       }
-    }
-    // 4. LEGHE A 2 SQUADRE (Polonia #9-#16 vs #1-#8, UK, Svezia, Danimarca, SON)
-    else {
+    } else {
       var count = cfg.ridersPerTeam;
 
-      // Prima puliamo gli slot target così se #16 o #8 hanno "-" nella grafica non resta sporcizia vecchia!
       if (ocrTeamTarget === 'home' || ocrTeamTarget === 'both') {
         for (var ch = 1; ch <= count; ch++) updateRiderName(ch, '');
       }
@@ -7140,43 +7133,33 @@ Object.assign(I18N.it, {
       });
 
       if (navigator.onLine) {
-        var b64 = imgCanvas.toDataURL('image/jpeg', 0.88).split(',')[1];
-        var promptText = getSpeedwayVisionSystemPrompt();
-        var models = ['gemini-3.0-flash', 'gemini-3-flash-preview', 'gemini-flash-latest'];
-        var geminiData = null;
+        try {
+          var b64 = imgCanvas.toDataURL('image/jpeg', 0.88).split(',')[1];
+          var resp = await fetch(CLOUDFLARE_VISION_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              imageBase64: b64,
+              prompt: getSpeedwayVisionSystemPrompt()
+            })
+          });
+          var geminiData = await resp.json();
+          if (resp.ok && geminiData.candidates && geminiData.candidates[0]) {
+            var rawJson = geminiData.candidates[0].content.parts[0].text.replace(/```json|```/gi, '').trim();
+            var parsed = JSON.parse(rawJson);
+            applyVisionJsonToApp(parsed);
 
-        for (var i = 0; i < models.length; i++) {
-          try {
-            var resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + models[i] + ':generateContent?key=' + encodeURIComponent(BUILTIN_GEMINI_VISION_KEY), {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }, { inline_data: { mime_type: 'image/jpeg', data: b64 } }] }],
-                generationConfig: { temperature: 0.0, responseMimeType: 'application/json' }
-              })
-            });
-            var json = await resp.json();
-            if (resp.ok && json.candidates && json.candidates[0]) {
-              geminiData = json;
-              break;
-            }
-          } catch (e) {}
-        }
-
-        if (geminiData) {
-          var rawJson = geminiData.candidates[0].content.parts[0].text.replace(/```json|```/gi, '').trim();
-          var parsed = JSON.parse(rawJson);
-          applyVisionJsonToApp(parsed);
-
-          statusEl.style.color = 'var(--accent)';
-          statusEl.innerHTML = '✅ <b>Elenco Caricato con Successo!</b>';
-          setTimeout(function() { statusEl.style.display = 'none'; }, 4000);
-          input.value = '';
-          return;
+            statusEl.style.color = 'var(--accent)';
+            statusEl.innerHTML = '✅ <b>Elenco Caricato con Successo!</b>';
+            setTimeout(function() { statusEl.style.display = 'none'; }, 4000);
+            input.value = '';
+            return;
+          }
+        } catch (workerErr) {
+          console.warn('Fallback a OCR locale:', workerErr);
         }
       }
 
-      // Paracadute locale se lo smartphone è offline allo stadio
       statusEl.innerHTML = '🔍 <b>Lettura Offline:</b> Scansione locale in corso...';
       var worker = await Tesseract.createWorker('eng+pol+ita+swe+dan');
       await worker.setParameters({ tessedit_pageseg_mode: 6 });
@@ -7200,4 +7183,3 @@ Object.assign(I18N.it, {
 </script>
 </body>
 </html>
-
