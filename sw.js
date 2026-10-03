@@ -1,4 +1,4 @@
-const CACHE_NAME = 'speedway-live-dynamic-v2';
+const CACHE_NAME = 'speedway-live-dynamic-v3';
 
 // Installazione immediata senza attese
 self.addEventListener('install', event => {
