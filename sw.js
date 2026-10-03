@@ -1,4 +1,4 @@
-const CACHE_NAME = 'speedway-live-dynamic-v1';
+const CACHE_NAME = 'speedway-live-dynamic-v2';
 
 // Installazione immediata senza attese
 self.addEventListener('install', event => {
@@ -22,7 +22,7 @@ self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
-    fetch(event.request)
+    fetch(event.request, { cache: 'no-store' })
       .then(networkResponse => {
         if (networkResponse && networkResponse.status === 200) {
           const responseClone = networkResponse.clone();
