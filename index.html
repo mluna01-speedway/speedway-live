@@ -7444,8 +7444,8 @@ Object.assign(I18N.it, {
       '  --accent: #059669 !important;',
       '  --red: #dc2626 !important;',
       '  --blue: #2563eb !important;',
-      '  --white: #64748b !important;',
-      '  --yellow: #d97706 !important;',
+      '  --white: #ffffff !important;',
+      '  --yellow: #eab308 !important;',
       '  background: #f1f5f9 !important;',
       '  background-color: #f1f5f9 !important;',
       '  color: #0f172a !important;',
@@ -7460,6 +7460,19 @@ Object.assign(I18N.it, {
       '  background: #ffffff !important;',
       '  color: #0f172a !important;',
       '  border-color: #94a3b8 !important;',
+      '}',
+      '/* Stile pulsanti nel popup Scegli il Tipo di Gara (Modal) */',
+      'body.light-theme .mode-choice-btn, body.light-theme [id*="modal"] button {',
+      '  background: #f8fafc !important;',
+      '  background-color: #f8fafc !important;',
+      '  color: #0f172a !important;',
+      '  border: 1px solid #cbd5e1 !important;',
+      '}',
+      'body.light-theme .mode-choice-title {',
+      '  color: #0f172a !important;',
+      '}',
+      'body.light-theme .mode-choice-sub {',
+      '  color: #475569 !important;',
       '}',
       '/* Intestazioni tabelle Tabellone e Classifica */',
       'body.light-theme th, body.light-theme thead tr {',
@@ -7477,7 +7490,7 @@ Object.assign(I18N.it, {
     ].join('\n');
     document.head.appendChild(styleEl);
 
-    // Scova e converte tutti gli sfondi neri/scuri cablati (Righe piloti, Bottoni 3-2-1-0, R-F-X-T, Lingue, Disclaimer, ecc.)
+    // Scova e converte tutti gli sfondi neri/scuri cablati (inclusi i popup Modal) e rifinisce il Casco BIANCO con bordo nero sottile
     function fixHardcodedDarkElements() {
       var isLight = document.body.classList.contains('light-theme');
       if (isLight) {
@@ -7488,45 +7501,68 @@ Object.assign(I18N.it, {
         document.documentElement.style.backgroundColor = '';
       }
 
-      var allEls = document.querySelectorAll('header *, [id^="tab-"] *');
+      var allEls = document.querySelectorAll('header *, [id^="tab-"] *, [id*="modal"] *, .mode-choice-btn, .mode-choice-btn *');
       allEls.forEach(function(el) {
         if (!isLight) {
           if (el.dataset.origBg !== undefined) {
             el.style.backgroundColor = el.dataset.origBg;
             el.style.color = el.dataset.origColor;
             el.style.borderColor = el.dataset.origBorder;
+            el.style.border = el.dataset.origFullBorder || '';
             delete el.dataset.origBg;
             delete el.dataset.origColor;
             delete el.dataset.origBorder;
+            delete el.dataset.origFullBorder;
           }
           return;
         }
 
-        // Ripristina prima di ricalcolare (utile quando un bottone punti o classifica cambia stato active)
         if (el.dataset.origBg !== undefined) {
           el.style.backgroundColor = el.dataset.origBg;
           el.style.color = el.dataset.origColor;
           el.style.borderColor = el.dataset.origBorder;
+          el.style.border = el.dataset.origFullBorder || '';
         }
 
         var cs = window.getComputedStyle(el);
+
+        // Gestione speciale Casco BIANCO in Tema Giorno: resta BIANCO PURO (#ffffff) con contorno nero sottile!
+        var inlineStyle = el.getAttribute('style') || '';
+        if (inlineStyle.indexOf('--white') !== -1 || (el.textContent && el.textContent.trim() === 'BIANCO' && el.children.length === 0)) {
+          if (el.dataset.origBg === undefined) {
+            el.dataset.origBg = el.style.backgroundColor || '';
+            el.dataset.origColor = el.style.color || '';
+            el.dataset.origBorder = el.style.borderColor || '';
+            el.dataset.origFullBorder = el.style.border || '';
+          }
+          if (el.textContent.trim() === 'BIANCO' && el.children.length === 0) {
+            el.style.setProperty('color', '#0f172a', 'important');
+          } else {
+            el.style.setProperty('background-color', '#ffffff', 'important');
+            el.style.setProperty('border', '1.5px solid #0f172a', 'important');
+          }
+          return;
+        }
+
         var bg = cs.backgroundColor;
         var m = bg && bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
         if (m) {
           var r = parseInt(m[1], 10), g = parseInt(m[2], 10), b = parseInt(m[3], 10);
           var a = m[4] !== undefined ? parseFloat(m[4]) : 1;
-          // Se ha uno sfondo scuro/nero (R<65, G<70, B<85) e non è trasparente
           if (a > 0.1 && r < 65 && g < 70 && b < 85) {
+            // Non toccare l'overlay trasparente scuro dietro al popup modal
+            if (el.id && el.id.indexOf('modal') !== -1 && cs.position === 'fixed') return;
+
             if (el.dataset.origBg === undefined) {
               el.dataset.origBg = el.style.backgroundColor || '';
               el.dataset.origColor = el.style.color || '';
               el.dataset.origBorder = el.style.borderColor || '';
+              el.dataset.origFullBorder = el.style.border || '';
             }
             var isBtn = el.tagName === 'BUTTON' || el.tagName === 'LABEL';
             el.style.setProperty('background-color', isBtn ? '#e2e8f0' : '#f1f5f9', 'important');
             el.style.setProperty('color', '#0f172a', 'important');
             el.style.setProperty('border-color', '#cbd5e1', 'important');
-            // Assicura che anche le scritte interne (es. nomi lingue o sottotitoli bottoni) siano scure e leggibili
             el.querySelectorAll('*').forEach(function(child) {
               var ccs = window.getComputedStyle(child).color;
               var cm = ccs && ccs.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
@@ -7535,6 +7571,18 @@ Object.assign(I18N.it, {
                 child.style.setProperty('color', '#0f172a', 'important');
               }
             });
+          }
+        }
+      });
+
+      // Contorno nero sottile sul quadratino Bianco e sulla banda laterale Bianca della scheda Batterie
+      document.querySelectorAll('#tab-heats *').forEach(function(el) {
+        if (!isLight) return;
+        if (el.children.length === 1 && el.textContent && el.textContent.indexOf('BIANCO') !== -1) {
+          var badge = el.firstElementChild;
+          if (badge) {
+            badge.style.setProperty('background-color', '#ffffff', 'important');
+            badge.style.setProperty('border', '1.5px solid #0f172a', 'important');
           }
         }
       });
