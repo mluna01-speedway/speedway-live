@@ -7428,10 +7428,275 @@ Object.assign(I18N.it, {
     checkPlayStoreEntitlements(true);
   }, 300);
 
-// --- PACCHETTO FUNZIONI PRO PISTA: TEMA GIORNO/NOTTE (FIX COMPLETO), TIMER 2 MIN, WAKE LOCK, VIBRAZIONE & STATISTICHE CORSIE ---
+// --- PACCHETTO DEFINITIVO MULTILINGUA (6 LINGUE), TEMA GIORNO CHIRURGICO, FIX JEZDEC, TIMER 2 MIN & OFFLINE ---
 
-  (function initTracksideEnhancements() {
-    // 1. Stili CSS completi per Tema Giorno (Sotto il Sole) e Componenti Pista
+  (function initTracksideMasterPatch() {
+    // 0. Registrazione blindata del Service Worker per apertura immediata in Modalità Aereo
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js', { scope: './' }).then(function(reg) {
+        reg.update();
+      }).catch(function(e) { console.warn('SW reg:', e); });
+    }
+
+    // 1. Dizionario Completo in tutte le 6 Lingue dell'App (IT, EN, PL, DA, SV, CS)
+    var TRACK_I18N = {
+      it: {
+        riderWord: 'Pilota',
+        reserveWord: 'Riserva',
+        timerTitle: 'Timer 2 Minuti',
+        timerStart: '▶ Avvia 2:00',
+        timerResume: '▶ Riprendi',
+        timerPause: '⏸ Pausa',
+        timerReset: '🔄 Reset',
+        trackOptsTitle: '⚡ Opzioni Pista & Visibilità',
+        themeDayTitle: '☀️ Tema Giorno (Sotto il Sole)',
+        themeNightTitle: '🌙 Tema Notte (Scuro Standard)',
+        themeSub: 'Perfetto per leggere il tabellone sotto la luce diretta del sole',
+        btnNight: '🌙 Notte',
+        btnDay: '☀️ Giorno',
+        wakeTitle: '📱 Schermo Sempre Acceso in Gara',
+        wakeSub: 'Impedisce al telefono di andare in standby tra una batteria e l\'altra',
+        hapticTitle: '📳 Feedback Vibrazione Tasti',
+        hapticSub: 'Micro-vibrazione di conferma quando assegni i punti batteria',
+        on: 'ATTIVO',
+        off: 'OFF',
+        gateStatsTitle: '📊 Rendimento Corsie di Partenza (Gate)',
+        gateStatsSub: 'Analisi live su {n} batterie disputate',
+        gateLabel: '🏁 Corsia {g} (Gate {g})',
+        topGate: '🔥 Corsia Top',
+        winsLabel: 'vittorie',
+        privacyLink: '🔒 Informativa sulla Privacy (Privacy Policy)',
+        proActiveTitle: '👑 Speedway Live PRO — ATTIVO',
+        proActiveSub: 'Licenza attiva • Tutte le competizioni e AI Vision illimitata sbloccate',
+        proFreeTitle: '🔓 Versione Base (Freemium)',
+        proFreeSub: '1 formato gara base + 1 scansione AI gratuita • Passa a PRO per sbloccare tutto',
+        proUnlockBtn: '👑 Sblocca PRO (3,99 € / anno)',
+        proVipBtn: '🔑 Codice VIP',
+        proDeactivateBtn: 'Disattiva'
+      },
+      en: {
+        riderWord: 'Rider',
+        reserveWord: 'Reserve',
+        timerTitle: '2-Minute Timer',
+        timerStart: '▶ Start 2:00',
+        timerResume: '▶ Resume',
+        timerPause: '⏸ Pause',
+        timerReset: '🔄 Reset',
+        trackOptsTitle: '⚡ Trackside & Visibility Options',
+        themeDayTitle: '☀️ Day Theme (Sunlight Mode)',
+        themeNightTitle: '🌙 Night Theme (Standard Dark)',
+        themeSub: 'High-contrast mode designed for direct stadium sunlight',
+        btnNight: '🌙 Night',
+        btnDay: '☀️ Day',
+        wakeTitle: '📱 Keep Screen Awake',
+        wakeSub: 'Prevents your phone from locking between heats',
+        hapticTitle: '📳 Haptic Button Feedback',
+        hapticSub: 'Short vibration when assigning heat points',
+        on: 'ACTIVE',
+        off: 'OFF',
+        gateStatsTitle: '📊 Starting Gate Performance',
+        gateStatsSub: 'Live analysis across {n} completed heats',
+        gateLabel: '🏁 Gate {g}',
+        topGate: '🔥 Top Gate',
+        winsLabel: 'wins',
+        privacyLink: '🔒 Privacy Policy',
+        proActiveTitle: '👑 Speedway Live PRO — ACTIVE',
+        proActiveSub: 'Active license • All tournament formats & unlimited AI Vision unlocked',
+        proFreeTitle: '🔓 Free Version (Freemium)',
+        proFreeSub: '1 base format + 1 free AI scan • Upgrade to PRO to unlock everything',
+        proUnlockBtn: '👑 Unlock PRO (€3.99 / year)',
+        proVipBtn: '🔑 VIP Code',
+        proDeactivateBtn: 'Deactivate'
+      },
+      pl: {
+        riderWord: 'Zawodnik',
+        reserveWord: 'Rezerwa',
+        timerTitle: 'Timer 2 Minuty',
+        timerStart: '▶ Start 2:00',
+        timerResume: '▶ Wznów',
+        timerPause: '⏸ Pauza',
+        timerReset: '🔄 Reset',
+        trackOptsTitle: '⚡ Opcje Torowe i Widoczność',
+        themeDayTitle: '☀️ Motyw Dzienny (W Słońcu)',
+        themeNightTitle: '🌙 Motyw Nocny (Ciemny)',
+        themeSub: 'Wysoki kontrast idealny do czytania programu w pełnym słońcu',
+        btnNight: '🌙 Noc',
+        btnDay: '☀️ Dzień',
+        wakeTitle: '📱 Ekran Zawsze Włączony',
+        wakeSub: 'Zapobiega wygaszaniu ekranu między biegami',
+        hapticTitle: '📳 Wibracja Przycisków',
+        hapticSub: 'Delikatna wibracja przy wpisywaniu punktów',
+        on: 'AKTYWNE',
+        off: 'WYŁ.',
+        gateStatsTitle: '📊 Statystyki Pól Startowych (Gate)',
+        gateStatsSub: 'Analiza na żywo z {n} rozegranych biegów',
+        gateLabel: '🏁 Pole {g} (Gate {g})',
+        topGate: '🔥 Najlepsze Pole',
+        winsLabel: 'zwycięstw',
+        privacyLink: '🔒 Polityka Prywatności (Privacy Policy)',
+        proActiveTitle: '👑 Speedway Live PRO — AKTYWNE',
+        proActiveSub: 'Licencja aktywna • Wszystkie formaty zawodów i skaner AI bez limitu',
+        proFreeTitle: '🔓 Wersja Podstawowa (Freemium)',
+        proFreeSub: '1 format podstawowy + 1 darmowy skan AI • Przejdź na PRO, aby odblokować wszystko',
+        proUnlockBtn: '👑 Odblokuj PRO (3,99 € / rok)',
+        proVipBtn: '🔑 Kod VIP',
+        proDeactivateBtn: 'Dezaktywuj'
+      },
+      da: {
+        riderWord: 'Kører',
+        reserveWord: 'Reserve',
+        timerTitle: '2-Minutters Timer',
+        timerStart: '▶ Start 2:00',
+        timerResume: '▶ Fortsæt',
+        timerPause: '⏸ Pause',
+        timerReset: '🔄 Nulstil',
+        trackOptsTitle: '⚡ Bane- & Synlighedsvalg',
+        themeDayTitle: '☀️ Dagstema (Sollys)',
+        themeNightTitle: '🌙 Nattetema (Mørk)',
+        themeSub: 'Perfekt til at læse skærmen i direkte sollys på stadion',
+        btnNight: '🌙 Nat',
+        btnDay: '☀️ Dag',
+        wakeTitle: '📱 Hold Skærmen Tændt',
+        wakeSub: 'Forhindrer telefonen i at gå på standby mellem heats',
+        hapticTitle: '📳 Vibrationsfeedback',
+        hapticSub: 'Kort vibration når du tildeler point',
+        on: 'AKTIV',
+        off: 'FRA',
+        gateStatsTitle: '📊 Startspor Statistik (Gate)',
+        gateStatsSub: 'Live analyse over {n} kørte heats',
+        gateLabel: '🏁 Spor {g} (Gate {g})',
+        topGate: '🔥 Bedste Spor',
+        winsLabel: 'sejre',
+        privacyLink: '🔒 Privatlivspolitik (Privacy Policy)',
+        proActiveTitle: '👑 Speedway Live PRO — AKTIV',
+        proActiveSub: 'Aktiv licens • Alle løbsformater og ubegrænset AI Vision låst op',
+        proFreeTitle: '🔓 Gratis Version (Freemium)',
+        proFreeSub: '1 basisformat + 1 gratis AI-scanning • Opgrader til PRO for fuld adgang',
+        proUnlockBtn: '👑 Lås PRO op (3,99 € / år)',
+        proVipBtn: '🔑 VIP-kode',
+        proDeactivateBtn: 'Deaktiver'
+      },
+      sv: {
+        riderWord: 'Förare',
+        reserveWord: 'Reserv',
+        timerTitle: '2-Minuterstimer',
+        timerStart: '▶ Starta 2:00',
+        timerResume: '▶ Fortsätt',
+        timerPause: '⏸ Paus',
+        timerReset: '🔄 Återställ',
+        trackOptsTitle: '⚡ Ban- & Synlighetsval',
+        themeDayTitle: '☀️ Dagstema (Solljus)',
+        themeNightTitle: '🌙 Nattema (Mörkt)',
+        themeSub: 'Hög kontrast för perfekt läsbarhet i direkt solljus',
+        btnNight: '🌙 Natt',
+        btnDay: '☀️ Dag',
+        wakeTitle: '📱 Håll Skärmen Vaken',
+        wakeSub: 'Förhindrar att skärmen släcks mellan heaten',
+        hapticTitle: '📳 Vibrationsfeedback',
+        hapticSub: 'Mikrovibration när du registrerar heatpoäng',
+        on: 'AKTIV',
+        off: 'AV',
+        gateStatsTitle: '📊 Startspårsstatistik (Gate)',
+        gateStatsSub: 'Liveanalys över {n} körda heat',
+        gateLabel: '🏁 Spår {g} (Gate {g})',
+        topGate: '🔥 Bästa Spår',
+        winsLabel: 'segrar',
+        privacyLink: '🔒 Integritetspolicy (Privacy Policy)',
+        proActiveTitle: '👑 Speedway Live PRO — AKTIV',
+        proActiveSub: 'Aktiv licens • Alla tävlingsformat och obegränsad AI Vision upplåst',
+        proFreeTitle: '🔓 Basversion (Freemium)',
+        proFreeSub: '1 basformat + 1 gratis AI-skanning • Uppgradera till PRO för att låsa upp allt',
+        proUnlockBtn: '👑 Lås upp PRO (3,99 € / år)',
+        proVipBtn: '🔑 VIP-kod',
+        proDeactivateBtn: 'Inaktivera'
+      },
+      cs: {
+        riderWord: 'Jezdec',
+        reserveWord: 'Náhradník',
+        timerTitle: 'Časovač 2 Minuty',
+        timerStart: '▶ Start 2:00',
+        timerResume: '▶ Pokračovat',
+        timerPause: '⏸ Pauza',
+        timerReset: '🔄 Reset',
+        trackOptsTitle: '⚡ Možnosti Dráhy a Viditelnost',
+        themeDayTitle: '☀️ Denní Motiv (Na Slunci)',
+        themeNightTitle: '🌙 Noční Motiv (Tmavý)',
+        themeSub: 'Vysoký kontrast pro čtení programu na přímém slunci',
+        btnNight: '🌙 Noc',
+        btnDay: '☀️ Den',
+        wakeTitle: '📱 Obrazovka Stále Zapnutá',
+        wakeSub: 'Zabraňuje zhasnutí displeje mezi jízdami',
+        hapticTitle: '📳 Vibrace Tlačítek',
+        hapticSub: 'Jemná vibrace při zadávání bodů v jízdě',
+        on: 'AKTIVNÍ',
+        off: 'VYP.',
+        gateStatsTitle: '📊 Statistika Startovních Kolejí (Gate)',
+        gateStatsSub: 'Živá analýza z {n} odjetých jízd',
+        gateLabel: '🏁 Kolej {g} (Gate {g})',
+        topGate: '🔥 Nejlepší Kolej',
+        winsLabel: 'vítězství',
+        privacyLink: '🔒 Zásady Ochrany Soukromí (Privacy Policy)',
+        proActiveTitle: '👑 Speedway Live PRO — AKTIVNÍ',
+        proActiveSub: 'Aktivní licence • Všechny formáty závodů a neomezené AI Vision odemčeny',
+        proFreeTitle: '🔓 Základní Verze (Freemium)',
+        proFreeSub: '1 základní formát + 1 AI sken zdarma • Přejděte na PRO pro odemčení všeho',
+        proUnlockBtn: '👑 Odemknout PRO (3,99 € / rok)',
+        proVipBtn: '🔑 VIP Kód',
+        proDeactivateBtn: 'Deaktivovat'
+      }
+    };
+
+    function getActiveLang() {
+      if (typeof currentLang === 'string' && TRACK_I18N[currentLang]) return currentLang;
+      var saved = localStorage.getItem('speedway_lang') || localStorage.getItem('lang') || 'it';
+      return TRACK_I18N[saved] ? saved : 'it';
+    }
+
+    function tr(key) {
+      var lang = getActiveLang();
+      return (TRACK_I18N[lang] && TRACK_I18N[lang][key]) || TRACK_I18N.it[key] || key;
+    }
+
+    // 2. Fix immediato "Jezdec": converte qualsiasi nome predefinito (Jezdec 1, Rider 1, Zawodnik 1...) nella lingua attiva!
+    function syncDefaultRiderNamesToCurrentLang() {
+      if (typeof state === 'undefined' || !state.riders) return;
+      var rw = tr('riderWord');
+      var resW = tr('reserveWord');
+      var genericRiderRegex = /^(Pilota|Rider|Zawodnik|Kører|Förare|Jezdec)\s+(\d+)$/i;
+      var genericResRegex = /^(Riserva|Reserve|Rezerwa|Reserv|Náhradník)\s+(\d+)$/i;
+      var changed = false;
+
+      Object.keys(state.riders).forEach(function(id) {
+        var val = String(state.riders[id] || '').trim();
+        var m1 = val.match(genericRiderRegex);
+        if (m1) {
+          var newName = rw + ' ' + m1[2];
+          if (state.riders[id] !== newName) {
+            state.riders[id] = newName;
+            changed = true;
+          }
+        } else {
+          var m2 = val.match(genericResRegex);
+          if (m2) {
+            var newRes = resW + ' ' + m2[2];
+            if (state.riders[id] !== newRes) {
+              state.riders[id] = newRes;
+              changed = true;
+            }
+          }
+        }
+      });
+
+      if (changed) {
+        try { localStorage.setItem('speedway_live_state_v4', JSON.stringify(state)); } catch (e) {}
+        if (typeof renderRidersList === 'function') renderRidersList();
+        if (typeof renderCurrentHeat === 'function') renderCurrentHeat();
+        if (typeof renderScorecard === 'function') renderScorecard();
+        if (typeof renderStandings === 'function') renderStandings();
+      }
+    }
+
+    // 3. Stili CSS chirurgici basati sulle VERE classi dell'app (.gate-card, .helmet-W, .score-btn, .spec-btn, .lang-btn)
     var styleEl = document.createElement('style');
     styleEl.id = 'speedway-trackside-styles';
     styleEl.innerHTML = [
@@ -7450,7 +7715,7 @@ Object.assign(I18N.it, {
       '  background-color: #f1f5f9 !important;',
       '  color: #0f172a !important;',
       '}',
-      'body.light-theme header, body.light-theme nav, body.light-theme .card {',
+      'body.light-theme header, body.light-theme nav, body.light-theme .card, body.light-theme .card-box {',
       '  background: #ffffff !important;',
       '  color: #0f172a !important;',
       '  border-color: #cbd5e1 !important;',
@@ -7461,28 +7726,82 @@ Object.assign(I18N.it, {
       '  color: #0f172a !important;',
       '  border-color: #94a3b8 !important;',
       '}',
-      '/* Stile pulsanti nel popup Scegli il Tipo di Gara (Modal) */',
-      'body.light-theme .mode-choice-btn, body.light-theme [id*="modal"] button {',
+      '/* PUNTO 3: CORSIA BIANCA (.gate-card + .helmet-W + scritta BIANCO) nel Tema Giorno */',
+      'body.light-theme .gate-card {',
+      '  background: #ffffff !important;',
+      '  border: 1px solid #cbd5e1 !important;',
+      '}',
+      '/* Linea verticale nera sottile che separa fisicamente la banda verticale bianca dal resto della card bianca */',
+      'body.light-theme .gate-card:has(.helmet-W) {',
+      '  border-left: 7px solid #ffffff !important;',
+      '  box-shadow: inset 7px 0 0 0 #ffffff, inset 8px 0 0 0 #0f172a, 0 0 0 1px #0f172a !important;',
+      '}',
+      '/* Quadratino Bianco con bordo nero stondato ben visibile */',
+      'body.light-theme .helmet-badge.helmet-W {',
+      '  background: #ffffff !important;',
+      '  background-color: #ffffff !important;',
+      '  border: 1.8px solid #0f172a !important;',
+      '  border-radius: 5px !important;',
+      '  box-shadow: 0 1px 2px rgba(0,0,0,0.12) !important;',
+      '}',
+      '/* Riquadro con bordo nero e scritta BIANCO (o traduzioni) in colore NERO dentro */',
+      'body.light-theme .gate-card:has(.helmet-W) .helmet-name-tag {',
+      '  color: #0f172a !important;',
+      '  background: #ffffff !important;',
+      '  border: 1.5px solid #0f172a !important;',
+      '  border-radius: 5px !important;',
+      '  padding: 1px 7px !important;',
+      '  font-weight: 800 !important;',
+      '}',
+      '/* Scritta GIALLO ben leggibile su sfondo bianco */',
+      'body.light-theme .gate-card:has(.helmet-Y) .helmet-name-tag {',
+      '  color: #b45309 !important;',
+      '}',
+      '/* PUNTO 4: PULSANTI PUNTEGGI (.score-btn) e STATI (.spec-btn) in puro CSS istantaneo senza mai illuminarsi di scuro */',
+      'body.light-theme .score-btn, body.light-theme .spec-btn {',
+      '  background: #f1f5f9 !important;',
+      '  background-color: #f1f5f9 !important;',
+      '  color: #0f172a !important;',
+      '  border: 1px solid #cbd5e1 !important;',
+      '}',
+      'body.light-theme .score-btn small, body.light-theme .spec-btn small, body.light-theme .spec-btn span {',
+      '  color: inherit !important;',
+      '}',
+      '/* Pulsante Punteggio SELEZIONATO (3pt, 2pt, 1pt, 0pt, ecc.): Verde Smeraldo acceso con testo Bianco */',
+      'body.light-theme .score-btn[class*="selected-"] {',
+      '  background: #059669 !important;',
+      '  background-color: #059669 !important;',
+      '  color: #ffffff !important;',
+      '  border-color: #047857 !important;',
+      '  box-shadow: 0 2px 6px rgba(5,150,105,0.35) !important;',
+      '}',
+      '/* Pulsante Stato SELEZIONATO (R, F, X, T, NS, W): Rosso/Ambra acceso con testo Bianco */',
+      'body.light-theme .spec-btn.selected-spec, body.light-theme .spec-btn.warning-active {',
+      '  background: #dc2626 !important;',
+      '  background-color: #dc2626 !important;',
+      '  color: #ffffff !important;',
+      '  border-color: #b91c1c !important;',
+      '}',
+      '/* Altri elementi dell\'interfaccia in Tema Giorno (Lingue, Note Legali, Modal, Piloti, Tabelle) */',
+      'body.light-theme .lang-btn, body.light-theme .legal-box, body.light-theme .mode-choice-btn {',
       '  background: #f8fafc !important;',
       '  background-color: #f8fafc !important;',
       '  color: #0f172a !important;',
       '  border: 1px solid #cbd5e1 !important;',
       '}',
-      'body.light-theme .mode-choice-title {',
+      'body.light-theme .lang-btn.active {',
+      '  background: #ecfdf5 !important;',
+      '  border-color: #059669 !important;',
+      '  color: #065f46 !important;',
+      '}',
+      'body.light-theme .mode-choice-title, body.light-theme .rider-name {',
       '  color: #0f172a !important;',
       '}',
       'body.light-theme .mode-choice-sub {',
       '  color: #475569 !important;',
       '}',
-      '/* Intestazioni tabelle Tabellone e Classifica */',
       'body.light-theme th, body.light-theme thead tr {',
       '  background: #e2e8f0 !important;',
-      '  background-color: #e2e8f0 !important;',
-      '  color: #0f172a !important;',
-      '  border-color: #cbd5e1 !important;',
-      '}',
-      'body.light-theme #pro-settings-card, body.light-theme #trackside-settings-card, body.light-theme #gate-stats-card, body.light-theme #two-min-timer-bar {',
-      '  background: #ffffff !important;',
       '  color: #0f172a !important;',
       '  border-color: #cbd5e1 !important;',
       '}',
@@ -7490,122 +7809,92 @@ Object.assign(I18N.it, {
     ].join('\n');
     document.head.appendChild(styleEl);
 
-    // Scova e converte tutti gli sfondi neri/scuri cablati e applica la grafica chirurgica al Casco BIANCO
-    function fixHardcodedDarkElements() {
+    // Schiarisce solo eventuali contenitori secondari rimasti scuri, IGNORANDO i pulsanti batteria (.score-btn / .spec-btn / .gate-card)
+    function cleanRemainingDarkBoxes() {
       var isLight = document.body.classList.contains('light-theme');
-      if (isLight) {
-        document.documentElement.classList.add('light-theme-root');
-        document.documentElement.style.backgroundColor = '#f1f5f9';
-      } else {
-        document.documentElement.classList.remove('light-theme-root');
-        document.documentElement.style.backgroundColor = '';
-      }
+      document.documentElement.classList.toggle('light-theme-root', isLight);
+      document.documentElement.style.backgroundColor = isLight ? '#f1f5f9' : '';
 
-      var allEls = document.querySelectorAll('header *, [id^="tab-"] *, [id*="modal"] *, .mode-choice-btn, .mode-choice-btn *');
-      allEls.forEach(function(el) {
+      var els = document.querySelectorAll('header *, #tab-event *, #tab-riders *, #tab-card *, #tab-standings *, #tab-history *, #tab-settings *, [id*="modal"] *');
+      els.forEach(function(el) {
         if (!isLight) {
-          if (el.dataset.origStyleSaved === '1') {
-            el.setAttribute('style', el.dataset.origInlineStyle || '');
-            delete el.dataset.origStyleSaved;
-            delete el.dataset.origInlineStyle;
+          if (el.dataset.lightFixed === '1') {
+            el.style.backgroundColor = el.dataset.origBg || '';
+            el.style.color = el.dataset.origCol || '';
+            delete el.dataset.lightFixed;
           }
           return;
         }
-
-        // Ripristina sempre lo stile inline originale prima di applicare le regole del Tema Giorno
-        if (el.dataset.origStyleSaved === '1') {
-          el.setAttribute('style', el.dataset.origInlineStyle || '');
-        }
-
-        var rawInline = el.getAttribute('style') || '';
-
-        // --- GESTIONE CHIRURGICA CASCO BIANCO (Banda verticale + Quadratino + Scritta BIANCO) ---
-        if (rawInline.indexOf('--white') !== -1 || rawInline.indexOf('#f5f5f5') !== -1) {
-          if (el.dataset.origStyleSaved !== '1') {
-            el.dataset.origStyleSaved = '1';
-            el.dataset.origInlineStyle = rawInline;
-          }
-
-          // CASO A: Card della Batteria con banda verticale sinistra bianca (border-left: ... var(--white))
-          if (rawInline.indexOf('border-left') !== -1) {
-            el.style.setProperty('border-left', '6px solid #ffffff', 'important');
-            // Crea una sottile linea verticale nera interna (1px) che delimita la banda bianca + profilo sottile
-            el.style.setProperty('box-shadow', 'inset 1px 0 0 0 #0f172a, -1px 0 0 0 #0f172a, 0 2px 6px rgba(15,23,42,0.06)', 'important');
-            return;
-          }
-
-          // CASO B: Quadratino del colore casco (non contiene testo ed ha background: var(--white))
-          var txt = (el.textContent || '').trim();
-          if (txt === '' && el.children.length === 0) {
-            el.style.setProperty('background', '#ffffff', 'important');
-            el.style.setProperty('background-color', '#ffffff', 'important');
-            el.style.setProperty('border', '1.5px solid #0f172a', 'important');
-            el.style.setProperty('display', 'inline-block', 'important');
-            return;
-          }
-
-          // CASO C: Scritta "BIANCO" (contiene il testo del colore casco) -> Riquadro bianco bordato di nero con scritta NERA
-          if (txt !== '' && el.children.length === 0) {
-            el.style.setProperty('color', '#0f172a', 'important');
-            el.style.setProperty('background-color', '#ffffff', 'important');
-            el.style.setProperty('border', '1.2px solid #0f172a', 'important');
-            el.style.setProperty('border-radius', '4px', 'important');
-            el.style.setProperty('padding', '1px 6px', 'important');
-            el.style.setProperty('font-weight', '800', 'important');
-            return;
-          }
-        }
-
-        // --- CONVERSIONE ELEMENTI SCURI CABLATI ---
         var cs = window.getComputedStyle(el);
-        var bg = cs.backgroundColor;
-        var m = bg && bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+        var m = cs.backgroundColor && cs.backgroundColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
         if (m) {
-          var r = parseInt(m[1], 10), g = parseInt(m[2], 10), b = parseInt(m[3], 10);
-          var a = m[4] !== undefined ? parseFloat(m[4]) : 1;
-          if (a > 0.1 && r < 65 && g < 70 && b < 85) {
+          var r = +m[1], g = +m[2], b = +m[3], a = m[4] !== undefined ? +m[4] : 1;
+          if (a > 0.1 && r < 60 && g < 65 && b < 80) {
             if (el.id && el.id.indexOf('modal') !== -1 && cs.position === 'fixed') return;
-
-            if (el.dataset.origStyleSaved !== '1') {
-              el.dataset.origStyleSaved = '1';
-              el.dataset.origInlineStyle = rawInline;
+            if (el.dataset.lightFixed !== '1') {
+              el.dataset.lightFixed = '1';
+              el.dataset.origBg = el.style.backgroundColor || '';
+              el.dataset.origCol = el.style.color || '';
             }
-            var isBtn = el.tagName === 'BUTTON' || el.tagName === 'LABEL';
-            el.style.setProperty('background-color', isBtn ? '#e2e8f0' : '#f1f5f9', 'important');
+            el.style.setProperty('background-color', '#e2e8f0', 'important');
             el.style.setProperty('color', '#0f172a', 'important');
-            el.style.setProperty('border-color', '#cbd5e1', 'important');
-            el.querySelectorAll('*').forEach(function(child) {
-              var ccs = window.getComputedStyle(child).color;
-              var cm = ccs && ccs.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-              if (cm && parseInt(cm[1], 10) > 180 && parseInt(cm[2], 10) > 180 && parseInt(cm[3], 10) > 180) {
-                if (child.dataset.origStyleSaved !== '1') {
-                  child.dataset.origStyleSaved = '1';
-                  child.dataset.origInlineStyle = child.getAttribute('style') || '';
-                }
-                child.style.setProperty('color', '#0f172a', 'important');
-              }
-            });
           }
         }
       });
     }
 
-    // 2. Gestione Preferenze (Tema, Vibrazione, Schermo Acceso)
+    // 4. Traduzione automatica della Card Licenza PRO e del Link Privacy Policy
+    function translateProCardAndPrivacy() {
+      var proCard = document.getElementById('pro-settings-card');
+      if (proCard) {
+        var isPro = typeof isProUser === 'function' && isProUser();
+        var titleEl = proCard.querySelector('div[style*="font-size:16px"], div[style*="font-size: 16px"], h3, strong');
+        if (isPro) {
+          proCard.innerHTML = [
+            '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">',
+            '  <div>',
+            '    <div style="font-size:16px;font-weight:800;color:var(--accent);">' + tr('proActiveTitle') + '</div>',
+            '    <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">' + tr('proActiveSub') + '</div>',
+            '  </div>',
+            '  <button type="button" onclick="deactivateProLicense()" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:12px;font-weight:600;cursor:pointer;">' + tr('proDeactivateBtn') + '</button>',
+            '</div>'
+          ].join('');
+        } else {
+          proCard.innerHTML = [
+            '<div style="font-size:16px;font-weight:800;color:var(--text);">' + tr('proFreeTitle') + '</div>',
+            '<div style="font-size:12.5px;color:var(--muted);margin-top:4px;margin-bottom:12px;">' + tr('proFreeSub') + '</div>',
+            '<div style="display:flex;gap:8px;flex-wrap:wrap;">',
+            '  <button type="button" onclick="buyProSubscription()" style="flex:1;padding:10px 14px;border:none;border-radius:8px;background:var(--accent);color:#000;font-weight:800;font-size:13px;cursor:pointer;">' + tr('proUnlockBtn') + '</button>',
+            '  <button type="button" onclick="promptVipCode()" style="padding:10px 14px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text);font-weight:700;font-size:13px;cursor:pointer;">' + tr('proVipBtn') + '</button>',
+            '</div>'
+          ].join('');
+        }
+      }
+
+      var st = document.getElementById('tab-settings');
+      if (st) {
+        var pBox = document.getElementById('privacy-policy-link-box');
+        if (!pBox) {
+          pBox = document.createElement('div');
+          pBox.id = 'privacy-policy-link-box';
+          pBox.style.cssText = 'text-align:center;padding:14px 8px;margin-top:8px;font-size:12.5px;';
+          st.appendChild(pBox);
+        }
+        pBox.innerHTML = '<a href="./privacy.html" target="_blank" style="color:var(--muted);text-decoration:underline;">' + tr('privacyLink') + '</a>';
+      }
+    }
+
+    // 5. Gestione Preferenze Pista (Tema, WakeLock, Vibrazione)
     window.isLightThemeEnabled = function() {
       return localStorage.getItem('speedway_theme_mode') === 'light';
     };
 
     window.setAppThemeMode = function(mode) {
       localStorage.setItem('speedway_theme_mode', mode);
-      if (mode === 'light') {
-        document.body.classList.add('light-theme');
-      } else {
-        document.body.classList.remove('light-theme');
-      }
+      document.body.classList.toggle('light-theme', mode === 'light');
       renderTracksideSettingsCard();
       renderGateStatsWidget();
-      fixHardcodedDarkElements();
-      setTimeout(fixHardcodedDarkElements, 60);
+      cleanRemainingDarkBoxes();
     };
 
     window.isHapticEnabled = function() {
@@ -7617,7 +7906,6 @@ Object.assign(I18N.it, {
       localStorage.setItem('speedway_haptic_off', nextOff ? 'true' : 'false');
       if (!nextOff && navigator.vibrate) navigator.vibrate(40);
       renderTracksideSettingsCard();
-      fixHardcodedDarkElements();
     };
 
     var wakeLockSentinel = null;
@@ -7631,17 +7919,13 @@ Object.assign(I18N.it, {
         if (isWakeLockEnabled() && document.visibilityState === 'visible') {
           if (!wakeLockSentinel) {
             wakeLockSentinel = await navigator.wakeLock.request('screen');
-            wakeLockSentinel.addEventListener('release', function() {
-              wakeLockSentinel = null;
-            });
+            wakeLockSentinel.addEventListener('release', function() { wakeLockSentinel = null; });
           }
         } else if (wakeLockSentinel) {
           await wakeLockSentinel.release();
           wakeLockSentinel = null;
         }
-      } catch (e) {
-        console.warn('WakeLock info:', e);
-      }
+      } catch (e) {}
     }
 
     window.toggleWakeLockSetting = async function() {
@@ -7649,27 +7933,16 @@ Object.assign(I18N.it, {
       localStorage.setItem('speedway_wakelock_on', nextOn ? 'true' : 'false');
       await applyWakeLockState();
       renderTracksideSettingsCard();
-      fixHardcodedDarkElements();
     };
 
-    document.addEventListener('visibilitychange', function() {
-      if (document.visibilityState === 'visible' && isWakeLockEnabled()) {
-        applyWakeLockState();
-      }
-    });
-
-    // 3. Feedback Tattile + Ricalcolo colori su pressione pulsanti
     document.addEventListener('click', function(ev) {
       if (isHapticEnabled() && navigator.vibrate) {
         var btn = ev.target && ev.target.closest ? ev.target.closest('#tab-heats button, #two-min-timer-bar button') : null;
         if (btn) navigator.vibrate(25);
       }
-      if (isLightThemeEnabled()) {
-        setTimeout(fixHardcodedDarkElements, 30);
-      }
     }, true);
 
-    // 4. Cronometro Ufficiale dei "2 Minuti" (120s) in cima a tab-heats
+    // 6. Timer 2 Minuti Multilingua in tab-heats
     var timerSeconds = 120;
     var timerInterval = null;
 
@@ -7680,17 +7953,19 @@ Object.assign(I18N.it, {
     }
 
     function updateTimerUi() {
+      var titleEl = document.getElementById('two-min-title-lbl');
       var disp = document.getElementById('two-min-display');
       var toggleBtn = document.getElementById('two-min-toggle-btn');
+      var resetBtn = document.getElementById('two-min-reset-btn');
       if (!disp || !toggleBtn) return;
 
+      if (titleEl) titleEl.textContent = tr('timerTitle');
+      if (resetBtn) resetBtn.innerHTML = tr('timerReset');
+
       disp.textContent = formatTwoMin(timerSeconds);
-      if (timerSeconds === 0) {
+      if (timerSeconds <= 15) {
         disp.style.color = 'var(--red)';
-        disp.style.animation = 'pulseRedTimer 0.6s infinite';
-      } else if (timerSeconds <= 15) {
-        disp.style.color = 'var(--red)';
-        disp.style.animation = 'pulseRedTimer 0.9s infinite';
+        disp.style.animation = 'pulseRedTimer 0.8s infinite';
       } else if (timerSeconds <= 30) {
         disp.style.color = 'var(--yellow)';
         disp.style.animation = 'none';
@@ -7700,10 +7975,10 @@ Object.assign(I18N.it, {
       }
 
       if (timerInterval) {
-        toggleBtn.innerHTML = '⏸ Pausa';
+        toggleBtn.innerHTML = tr('timerPause');
         toggleBtn.style.background = '#f59e0b';
       } else {
-        toggleBtn.innerHTML = timerSeconds < 120 && timerSeconds > 0 ? '▶ Riprendi' : '▶ Avvia 2:00';
+        toggleBtn.innerHTML = (timerSeconds < 120 && timerSeconds > 0) ? tr('timerResume') : tr('timerStart');
         toggleBtn.style.background = '#10b981';
       }
     }
@@ -7742,29 +8017,31 @@ Object.assign(I18N.it, {
 
     function injectTwoMinTimerBar() {
       var heatsTab = document.getElementById('tab-heats');
-      if (!heatsTab || document.getElementById('two-min-timer-bar')) return;
-
-      var bar = document.createElement('div');
-      bar.id = 'two-min-timer-bar';
-      bar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:12px;';
-      bar.innerHTML = [
-        '<div style="display:flex;align-items:center;gap:8px;">',
-        '  <span style="font-size:18px;">⏱️️</span>',
-        '  <div>',
-        '    <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">Timer 2 Minuti</div>',
-        '    <div id="two-min-display" style="font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent);line-height:1.1;">02:00</div>',
-        '  </div>',
-        '</div>',
-        '<div style="display:flex;gap:8px;">',
-        '  <button type="button" id="two-min-toggle-btn" onclick="toggleTwoMinTimer()" style="padding:8px 14px;border:none;border-radius:8px;background:#10b981;color:#fff;font-weight:700;font-size:13px;cursor:pointer;">▶ Avvia 2:00</button>',
-        '  <button type="button" onclick="resetTwoMinTimer()" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text);font-weight:600;font-size:13px;cursor:pointer;">🔄 Reset</button>',
-        '</div>'
-      ].join('');
-      heatsTab.insertBefore(bar, heatsTab.firstChild);
+      if (!heatsTab) return;
+      var bar = document.getElementById('two-min-timer-bar');
+      if (!bar) {
+        bar = document.createElement('div');
+        bar.id = 'two-min-timer-bar';
+        bar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:12px;';
+        bar.innerHTML = [
+          '<div style="display:flex;align-items:center;gap:8px;">',
+          '  <span style="font-size:18px;">⏱️</span>',
+          '  <div>',
+          '    <div id="two-min-title-lbl" style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;"></div>',
+          '    <div id="two-min-display" style="font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent);line-height:1.1;">02:00</div>',
+          '  </div>',
+          '</div>',
+          '<div style="display:flex;gap:8px;">',
+          '  <button type="button" id="two-min-toggle-btn" onclick="toggleTwoMinTimer()" style="padding:8px 14px;border:none;border-radius:8px;background:#10b981;color:#fff;font-weight:700;font-size:13px;cursor:pointer;"></button>',
+          '  <button type="button" id="two-min-reset-btn" onclick="resetTwoMinTimer()" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text);font-weight:600;font-size:13px;cursor:pointer;"></button>',
+          '</div>'
+        ].join('');
+        heatsTab.insertBefore(bar, heatsTab.firstChild);
+      }
       updateTimerUi();
     }
 
-    // 5. Statistica Live "Rendimento Corsie / Gate" in fondo a tab-standings
+    // 7. Statistica Live "Rendimento Corsie" Multilingua
     function renderGateStatsWidget() {
       var standingsTab = document.getElementById('tab-standings');
       if (!standingsTab || typeof state === 'undefined' || !Array.isArray(state.heats)) return;
@@ -7780,9 +8057,7 @@ Object.assign(I18N.it, {
       var maxGates = (typeof isPardubiceMode === 'function' && isPardubiceMode()) ? 6 : 4;
       var winScore = maxGates === 6 ? 5 : 3;
       var stats = {};
-      for (var g = 1; g <= maxGates; g++) {
-        stats[g] = { pts: 0, wins: 0, rides: 0 };
-      }
+      for (var g = 1; g <= maxGates; g++) stats[g] = { pts: 0, wins: 0 };
 
       var totalPointsAllGates = 0;
       var completedHeatsCount = 0;
@@ -7795,20 +8070,17 @@ Object.assign(I18N.it, {
           if (!stats[gateNum]) return;
           if (typeof s.score === 'number' && !isNaN(s.score)) {
             stats[gateNum].pts += s.score;
-            stats[gateNum].rides += 1;
             if (s.score === winScore) stats[gateNum].wins += 1;
             totalPointsAllGates += s.score;
             heatHasScore = true;
           } else if (typeof s.score === 'string' && s.score.trim() !== '') {
-            stats[gateNum].rides += 1;
             heatHasScore = true;
           }
         });
         if (heatHasScore) completedHeatsCount++;
       });
 
-      var bestGate = null;
-      var bestPts = -1;
+      var bestGate = null, bestPts = -1;
       for (var k = 1; k <= maxGates; k++) {
         if (stats[k].pts > bestPts && stats[k].pts > 0) {
           bestPts = stats[k].pts;
@@ -7818,7 +8090,6 @@ Object.assign(I18N.it, {
 
       var gateColors = ['#e53935', '#1e88e5', '#94a3b8', '#f59e0b', '#10b981', '#8b5cf6'];
       var rowsHtml = [];
-
       for (var i = 1; i <= maxGates; i++) {
         var st = stats[i];
         var pct = totalPointsAllGates > 0 ? Math.round((st.pts / totalPointsAllGates) * 100) : 0;
@@ -7826,8 +8097,8 @@ Object.assign(I18N.it, {
         rowsHtml.push(
           '<div style="margin-bottom:10px;">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:4px;">' +
-              '<span style="font-weight:700;color:var(--text);">🏁 Corsia ' + i + ' (Gate ' + i + ')' + (isTop ? ' <span style="color:var(--accent);font-size:11px;margin-left:6px;">🔥 Corsia Top</span>' : '') + '</span>' +
-              '<span style="font-weight:600;color:var(--muted);"><b style="color:var(--text);">' + st.pts + ' pt</b> • ' + st.wins + ' vittorie (' + pct + '%)</span>' +
+              '<span style="font-weight:700;color:var(--text);">' + tr('gateLabel').replace(/\{g\}/g, i) + (isTop ? ' <span style="color:var(--accent);font-size:11px;margin-left:6px;">' + tr('topGate') + '</span>' : '') + '</span>' +
+              '<span style="font-weight:600;color:var(--muted);"><b style="color:var(--text);">' + st.pts + ' pt</b> • ' + st.wins + ' ' + tr('winsLabel') + ' (' + pct + '%)</span>' +
             '</div>' +
             '<div style="height:8px;background:rgba(148,163,184,0.2);border-radius:99px;overflow:hidden;">' +
               '<div style="height:100%;width:' + pct + '%;background:' + gateColors[i - 1] + ';border-radius:99px;transition:width 0.3s;"></div>' +
@@ -7837,17 +8108,15 @@ Object.assign(I18N.it, {
       }
 
       card.innerHTML = [
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">',
-        '  <div>',
-        '    <div style="font-size:15px;font-weight:800;color:var(--text);">📊 Rendimento Corsie di Partenza (Gate)</div>',
-        '    <div style="font-size:12px;color:var(--muted);">Analisi live su ' + completedHeatsCount + ' batterie disputate</div>',
-        '  </div>',
+        '<div style="margin-bottom:12px;">',
+        '  <div style="font-size:15px;font-weight:800;color:var(--text);">' + tr('gateStatsTitle') + '</div>',
+        '  <div style="font-size:12px;color:var(--muted);">' + tr('gateStatsSub').replace('{n}', completedHeatsCount) + '</div>',
         '</div>',
         rowsHtml.join('')
       ].join('');
     }
 
-    // 6. Card Impostazioni Pista dentro tab-settings
+    // 8. Card Opzioni Pista Multilingua in tab-settings
     function renderTracksideSettingsCard() {
       var settingsTab = document.getElementById('tab-settings');
       if (!settingsTab) return;
@@ -7870,42 +8139,58 @@ Object.assign(I18N.it, {
       var hapticOn = isHapticEnabled();
 
       card.innerHTML = [
-        '<div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:12px;">⚡ Opzioni Pista & Visibilità</div>',
+        '<div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:12px;">' + tr('trackOptsTitle') + '</div>',
         '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;">',
         '  <div>',
-        '    <div style="font-size:13.5px;font-weight:700;color:var(--text);">' + (isLight ? '☀️ Tema Giorno (Sotto il Sole)' : '🌙 Tema Notte (Scuro Standard)') + '</div>',
-        '    <div style="font-size:12px;color:var(--muted);">Perfetto per leggere il tabellone sotto la luce diretta del sole</div>',
+        '    <div style="font-size:13.5px;font-weight:700;color:var(--text);">' + (isLight ? tr('themeDayTitle') : tr('themeNightTitle')) + '</div>',
+        '    <div style="font-size:12px;color:var(--muted);">' + tr('themeSub') + '</div>',
         '  </div>',
         '  <div style="display:flex;gap:6px;">',
-        '    <button type="button" onclick="setAppThemeMode(\'dark\')" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:' + (!isLight ? 'var(--accent)' : 'transparent') + ';color:' + (!isLight ? '#fff' : 'var(--text)') + ';font-weight:700;font-size:12px;cursor:pointer;">🌙 Notte</button>',
-        '    <button type="button" onclick="setAppThemeMode(\'light\')" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:' + (isLight ? 'var(--accent)' : 'transparent') + ';color:' + (isLight ? '#fff' : 'var(--text)') + ';font-weight:700;font-size:12px;cursor:pointer;">☀️ Giorno</button>',
+        '    <button type="button" onclick="setAppThemeMode(\'dark\')" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:' + (!isLight ? 'var(--accent)' : 'transparent') + ';color:' + (!isLight ? '#fff' : 'var(--text)') + ';font-weight:700;font-size:12px;cursor:pointer;">' + tr('btnNight') + '</button>',
+        '    <button type="button" onclick="setAppThemeMode(\'light\')" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:' + (isLight ? 'var(--accent)' : 'transparent') + ';color:' + (isLight ? '#fff' : 'var(--text)') + ';font-weight:700;font-size:12px;cursor:pointer;">' + tr('btnDay') + '</button>',
         '  </div>',
         '</div>',
         '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">',
         '  <div>',
-        '    <div style="font-size:13.5px;font-weight:700;color:var(--text);">📱 Schermo Sempre Acceso in Gara</div>',
-        '    <div style="font-size:12px;color:var(--muted);">Impedisce al telefono di andare in standby tra una batteria e l\'altra</div>',
+        '    <div style="font-size:13.5px;font-weight:700;color:var(--text);">' + tr('wakeTitle') + '</div>',
+        '    <div style="font-size:12px;color:var(--muted);">' + tr('wakeSub') + '</div>',
         '  </div>',
-        '  <button type="button" onclick="toggleWakeLockSetting()" style="padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:' + (wakeOn ? 'var(--accent)' : 'transparent') + ';color:' + (wakeOn ? '#fff' : 'var(--text)') + ';font-weight:700;font-size:12px;cursor:pointer;">' + (wakeOn ? 'ATTIVO' : 'OFF') + '</button>',
+        '  <button type="button" onclick="toggleWakeLockSetting()" style="padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:' + (wakeOn ? 'var(--accent)' : 'transparent') + ';color:' + (wakeOn ? '#fff' : 'var(--text)') + ';font-weight:700;font-size:12px;cursor:pointer;">' + (wakeOn ? tr('on') : tr('off')) + '</button>',
         '</div>',
         '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0 2px 0;">',
         '  <div>',
-        '    <div style="font-size:13.5px;font-weight:700;color:var(--text);">📳 Feedback Vibrazione Tasti</div>',
-        '    <div style="font-size:12px;color:var(--muted);">Micro-vibrazione di conferma quando assegni i punti batteria</div>',
+        '    <div style="font-size:13.5px;font-weight:700;color:var(--text);">' + tr('hapticTitle') + '</div>',
+        '    <div style="font-size:12px;color:var(--muted);">' + tr('hapticSub') + '</div>',
         '  </div>',
-        '  <button type="button" onclick="toggleHapticSetting()" style="padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:' + (hapticOn ? 'var(--accent)' : 'transparent') + ';color:' + (hapticOn ? '#fff' : 'var(--text)') + ';font-weight:700;font-size:12px;cursor:pointer;">' + (hapticOn ? 'ATTIVO' : 'OFF') + '</button>',
+        '  <button type="button" onclick="toggleHapticSetting()" style="padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:' + (hapticOn ? 'var(--accent)' : 'transparent') + ';color:' + (hapticOn ? '#fff' : 'var(--text)') + ';font-weight:700;font-size:12px;cursor:pointer;">' + (hapticOn ? tr('on') : tr('off')) + '</button>',
         '</div>'
       ].join('');
     }
 
-    // 7. Aggancio automatico ai cambi batteria, scheda e salvataggi
+    function refreshAllTranslatedWidgets() {
+      syncDefaultRiderNamesToCurrentLang();
+      injectTwoMinTimerBar();
+      renderTracksideSettingsCard();
+      renderGateStatsWidget();
+      translateProCardAndPrivacy();
+      cleanRemainingDarkBoxes();
+    }
+
+    // 9. Aggancio diretto a setLanguage, selectHeat, saveState e switchTab
+    if (typeof window.setLanguage === 'function') {
+      var _origSetLang = window.setLanguage;
+      window.setLanguage = function(lang) {
+        var res = _origSetLang.apply(this, arguments);
+        refreshAllTranslatedWidgets();
+        return res;
+      };
+    }
+
     if (typeof window.selectHeat === 'function') {
       var _origSelectHeat = window.selectHeat;
       window.selectHeat = function() {
         resetTwoMinTimer();
-        var res = _origSelectHeat.apply(this, arguments);
-        if (isLightThemeEnabled()) setTimeout(fixHardcodedDarkElements, 30);
-        return res;
+        return _origSelectHeat.apply(this, arguments);
       };
     }
 
@@ -7914,7 +8199,6 @@ Object.assign(I18N.it, {
       window.saveState = function() {
         var res = _origSaveState.apply(this, arguments);
         renderGateStatsWidget();
-        if (isLightThemeEnabled()) setTimeout(fixHardcodedDarkElements, 30);
         return res;
       };
     }
@@ -7923,36 +8207,17 @@ Object.assign(I18N.it, {
       var _origSwitchTab = window.switchTab;
       window.switchTab = function(tabId) {
         var res = _origSwitchTab.apply(this, arguments);
-        if (tabId === 'tab-standings') renderGateStatsWidget();
-        if (tabId === 'tab-settings') renderTracksideSettingsCard();
-        if (tabId === 'tab-heats') injectTwoMinTimerBar();
-        if (isLightThemeEnabled()) setTimeout(fixHardcodedDarkElements, 30);
+        refreshAllTranslatedWidgets();
         return res;
       };
     }
 
-    // Avvio iniziale
     setTimeout(function() {
       if (isLightThemeEnabled()) document.body.classList.add('light-theme');
-      injectTwoMinTimerBar();
-      renderTracksideSettingsCard();
-      renderGateStatsWidget();
-      fixHardcodedDarkElements();
+      refreshAllTranslatedWidgets();
       if (isWakeLockEnabled()) applyWakeLockState();
     }, 350);
   })();
-
-// Link Privacy Policy in fondo alla scheda Setting (richiesto da Google Play)
-  setTimeout(function() {
-    var st = document.getElementById('tab-settings');
-    if (st && !document.getElementById('privacy-policy-link-box')) {
-      var pBox = document.createElement('div');
-      pBox.id = 'privacy-policy-link-box';
-      pBox.style.cssText = 'text-align:center;padding:14px 8px;margin-top:8px;font-size:12.5px;';
-      pBox.innerHTML = '<a href="./privacy.html" target="_blank" style="color:var(--muted);text-decoration:underline;">🔒 Informativa sulla Privacy (Privacy Policy)</a>';
-      st.appendChild(pBox);
-    }
-  }, 500);
 
   initState();
   renderCurrentHeat();
