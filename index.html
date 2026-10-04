@@ -7814,6 +7814,18 @@ Object.assign(I18N.it, {
     }, 350);
   })();
 
+// Link Privacy Policy in fondo alla scheda Setting (richiesto da Google Play)
+  setTimeout(function() {
+    var st = document.getElementById('tab-settings');
+    if (st && !document.getElementById('privacy-policy-link-box')) {
+      var pBox = document.createElement('div');
+      pBox.id = 'privacy-policy-link-box';
+      pBox.style.cssText = 'text-align:center;padding:14px 8px;margin-top:8px;font-size:12.5px;';
+      pBox.innerHTML = '<a href="./privacy.html" target="_blank" style="color:var(--muted);text-decoration:underline;">🔒 Informativa sulla Privacy (Privacy Policy)</a>';
+      st.appendChild(pBox);
+    }
+  }, 500);
+
   initState();
   renderCurrentHeat();
 </script>
