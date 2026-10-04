@@ -7490,7 +7490,7 @@ Object.assign(I18N.it, {
     ].join('\n');
     document.head.appendChild(styleEl);
 
-    // Scova e converte tutti gli sfondi neri/scuri cablati (inclusi i popup Modal) e rifinisce il Casco BIANCO con bordo nero sottile
+    // Scova e converte tutti gli sfondi neri/scuri cablati e applica la grafica chirurgica al Casco BIANCO
     function fixHardcodedDarkElements() {
       var isLight = document.body.classList.contains('light-theme');
       if (isLight) {
@@ -7504,60 +7504,71 @@ Object.assign(I18N.it, {
       var allEls = document.querySelectorAll('header *, [id^="tab-"] *, [id*="modal"] *, .mode-choice-btn, .mode-choice-btn *');
       allEls.forEach(function(el) {
         if (!isLight) {
-          if (el.dataset.origBg !== undefined) {
-            el.style.backgroundColor = el.dataset.origBg;
-            el.style.color = el.dataset.origColor;
-            el.style.borderColor = el.dataset.origBorder;
-            el.style.border = el.dataset.origFullBorder || '';
-            delete el.dataset.origBg;
-            delete el.dataset.origColor;
-            delete el.dataset.origBorder;
-            delete el.dataset.origFullBorder;
+          if (el.dataset.origStyleSaved === '1') {
+            el.setAttribute('style', el.dataset.origInlineStyle || '');
+            delete el.dataset.origStyleSaved;
+            delete el.dataset.origInlineStyle;
           }
           return;
         }
 
-        if (el.dataset.origBg !== undefined) {
-          el.style.backgroundColor = el.dataset.origBg;
-          el.style.color = el.dataset.origColor;
-          el.style.borderColor = el.dataset.origBorder;
-          el.style.border = el.dataset.origFullBorder || '';
+        // Ripristina sempre lo stile inline originale prima di applicare le regole del Tema Giorno
+        if (el.dataset.origStyleSaved === '1') {
+          el.setAttribute('style', el.dataset.origInlineStyle || '');
         }
 
-        var cs = window.getComputedStyle(el);
+        var rawInline = el.getAttribute('style') || '';
 
-        // Gestione speciale Casco BIANCO in Tema Giorno: resta BIANCO PURO (#ffffff) con contorno nero sottile!
-        var inlineStyle = el.getAttribute('style') || '';
-        if (inlineStyle.indexOf('--white') !== -1 || (el.textContent && el.textContent.trim() === 'BIANCO' && el.children.length === 0)) {
-          if (el.dataset.origBg === undefined) {
-            el.dataset.origBg = el.style.backgroundColor || '';
-            el.dataset.origColor = el.style.color || '';
-            el.dataset.origBorder = el.style.borderColor || '';
-            el.dataset.origFullBorder = el.style.border || '';
+        // --- GESTIONE CHIRURGICA CASCO BIANCO (Banda verticale + Quadratino + Scritta BIANCO) ---
+        if (rawInline.indexOf('--white') !== -1 || rawInline.indexOf('#f5f5f5') !== -1) {
+          if (el.dataset.origStyleSaved !== '1') {
+            el.dataset.origStyleSaved = '1';
+            el.dataset.origInlineStyle = rawInline;
           }
-          if (el.textContent.trim() === 'BIANCO' && el.children.length === 0) {
-            el.style.setProperty('color', '#0f172a', 'important');
-          } else {
+
+          // CASO A: Card della Batteria con banda verticale sinistra bianca (border-left: ... var(--white))
+          if (rawInline.indexOf('border-left') !== -1) {
+            el.style.setProperty('border-left', '6px solid #ffffff', 'important');
+            // Crea una sottile linea verticale nera interna (1px) che delimita la banda bianca + profilo sottile
+            el.style.setProperty('box-shadow', 'inset 1px 0 0 0 #0f172a, -1px 0 0 0 #0f172a, 0 2px 6px rgba(15,23,42,0.06)', 'important');
+            return;
+          }
+
+          // CASO B: Quadratino del colore casco (non contiene testo ed ha background: var(--white))
+          var txt = (el.textContent || '').trim();
+          if (txt === '' && el.children.length === 0) {
+            el.style.setProperty('background', '#ffffff', 'important');
             el.style.setProperty('background-color', '#ffffff', 'important');
             el.style.setProperty('border', '1.5px solid #0f172a', 'important');
+            el.style.setProperty('display', 'inline-block', 'important');
+            return;
           }
-          return;
+
+          // CASO C: Scritta "BIANCO" (contiene il testo del colore casco) -> Riquadro bianco bordato di nero con scritta NERA
+          if (txt !== '' && el.children.length === 0) {
+            el.style.setProperty('color', '#0f172a', 'important');
+            el.style.setProperty('background-color', '#ffffff', 'important');
+            el.style.setProperty('border', '1.2px solid #0f172a', 'important');
+            el.style.setProperty('border-radius', '4px', 'important');
+            el.style.setProperty('padding', '1px 6px', 'important');
+            el.style.setProperty('font-weight', '800', 'important');
+            return;
+          }
         }
 
+        // --- CONVERSIONE ELEMENTI SCURI CABLATI ---
+        var cs = window.getComputedStyle(el);
         var bg = cs.backgroundColor;
         var m = bg && bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
         if (m) {
           var r = parseInt(m[1], 10), g = parseInt(m[2], 10), b = parseInt(m[3], 10);
           var a = m[4] !== undefined ? parseFloat(m[4]) : 1;
           if (a > 0.1 && r < 65 && g < 70 && b < 85) {
-            // Non toccare l'overlay trasparente scuro dietro al popup modal
             if (el.id && el.id.indexOf('modal') !== -1 && cs.position === 'fixed') return;
 
-            if (el.dataset.origBg === undefined) {
-              el.dataset.origBg = el.style.backgroundColor || '';
-              el.dataset.origColor = el.style.color || '';
-              el.dataset.origBorder = el.style.borderColor || '';
-              el.dataset.origFullBorder = el.style.border || '';
+            if (el.dataset.origStyleSaved !== '1') {
+              el.dataset.origStyleSaved = '1';
+              el.dataset.origInlineStyle = rawInline;
             }
             var isBtn = el.tagName === 'BUTTON' || el.tagName === 'LABEL';
             el.style.setProperty('background-color', isBtn ? '#e2e8f0' : '#f1f5f9', 'important');
@@ -7567,22 +7578,13 @@ Object.assign(I18N.it, {
               var ccs = window.getComputedStyle(child).color;
               var cm = ccs && ccs.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
               if (cm && parseInt(cm[1], 10) > 180 && parseInt(cm[2], 10) > 180 && parseInt(cm[3], 10) > 180) {
-                if (child.dataset.origColor === undefined) child.dataset.origColor = child.style.color || '';
+                if (child.dataset.origStyleSaved !== '1') {
+                  child.dataset.origStyleSaved = '1';
+                  child.dataset.origInlineStyle = child.getAttribute('style') || '';
+                }
                 child.style.setProperty('color', '#0f172a', 'important');
               }
             });
-          }
-        }
-      });
-
-      // Contorno nero sottile sul quadratino Bianco e sulla banda laterale Bianca della scheda Batterie
-      document.querySelectorAll('#tab-heats *').forEach(function(el) {
-        if (!isLight) return;
-        if (el.children.length === 1 && el.textContent && el.textContent.indexOf('BIANCO') !== -1) {
-          var badge = el.firstElementChild;
-          if (badge) {
-            badge.style.setProperty('background-color', '#ffffff', 'important');
-            badge.style.setProperty('border', '1.5px solid #0f172a', 'important');
           }
         }
       });
@@ -7747,7 +7749,7 @@ Object.assign(I18N.it, {
       bar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:12px;';
       bar.innerHTML = [
         '<div style="display:flex;align-items:center;gap:8px;">',
-        '  <span style="font-size:18px;">⏱️</span>',
+        '  <span style="font-size:18px;">⏱️️</span>',
         '  <div>',
         '    <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">Timer 2 Minuti</div>',
         '    <div id="two-min-display" style="font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent);line-height:1.1;">02:00</div>',
