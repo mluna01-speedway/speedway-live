@@ -7428,14 +7428,14 @@ Object.assign(I18N.it, {
     checkPlayStoreEntitlements(true);
   }, 300);
 
-// --- PACCHETTO FUNZIONI PRO PISTA: TEMA GIORNO/NOTTE, TIMER 2 MIN, WAKE LOCK, VIBRAZIONE & STATISTICHE CORSIE ---
+// --- PACCHETTO FUNZIONI PRO PISTA: TEMA GIORNO/NOTTE (FIX COMPLETO), TIMER 2 MIN, WAKE LOCK, VIBRAZIONE & STATISTICHE CORSIE ---
 
   (function initTracksideEnhancements() {
-    // 1. Stili CSS per Tema Giorno (Sotto il Sole) e Componenti Pista
+    // 1. Stili CSS completi per Tema Giorno (Sotto il Sole) e Componenti Pista
     var styleEl = document.createElement('style');
     styleEl.id = 'speedway-trackside-styles';
     styleEl.innerHTML = [
-      'body.light-theme {',
+      'html.light-theme-root, body.light-theme {',
       '  --bg: #f1f5f9 !important;',
       '  --card: #ffffff !important;',
       '  --border: #cbd5e1 !important;',
@@ -7447,6 +7447,7 @@ Object.assign(I18N.it, {
       '  --white: #64748b !important;',
       '  --yellow: #d97706 !important;',
       '  background: #f1f5f9 !important;',
+      '  background-color: #f1f5f9 !important;',
       '  color: #0f172a !important;',
       '}',
       'body.light-theme header, body.light-theme nav, body.light-theme .card {',
@@ -7456,9 +7457,16 @@ Object.assign(I18N.it, {
       '  box-shadow: 0 2px 6px rgba(15,23,42,0.06) !important;',
       '}',
       'body.light-theme input, body.light-theme select, body.light-theme textarea {',
-      '  background: #f8fafc !important;',
+      '  background: #ffffff !important;',
       '  color: #0f172a !important;',
       '  border-color: #94a3b8 !important;',
+      '}',
+      '/* Intestazioni tabelle Tabellone e Classifica */',
+      'body.light-theme th, body.light-theme thead tr {',
+      '  background: #e2e8f0 !important;',
+      '  background-color: #e2e8f0 !important;',
+      '  color: #0f172a !important;',
+      '  border-color: #cbd5e1 !important;',
       '}',
       'body.light-theme #pro-settings-card, body.light-theme #trackside-settings-card, body.light-theme #gate-stats-card, body.light-theme #two-min-timer-bar {',
       '  background: #ffffff !important;',
@@ -7468,6 +7476,69 @@ Object.assign(I18N.it, {
       '@keyframes pulseRedTimer { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }'
     ].join('\n');
     document.head.appendChild(styleEl);
+
+    // Scova e converte tutti gli sfondi neri/scuri cablati (Righe piloti, Bottoni 3-2-1-0, R-F-X-T, Lingue, Disclaimer, ecc.)
+    function fixHardcodedDarkElements() {
+      var isLight = document.body.classList.contains('light-theme');
+      if (isLight) {
+        document.documentElement.classList.add('light-theme-root');
+        document.documentElement.style.backgroundColor = '#f1f5f9';
+      } else {
+        document.documentElement.classList.remove('light-theme-root');
+        document.documentElement.style.backgroundColor = '';
+      }
+
+      var allEls = document.querySelectorAll('header *, [id^="tab-"] *');
+      allEls.forEach(function(el) {
+        if (!isLight) {
+          if (el.dataset.origBg !== undefined) {
+            el.style.backgroundColor = el.dataset.origBg;
+            el.style.color = el.dataset.origColor;
+            el.style.borderColor = el.dataset.origBorder;
+            delete el.dataset.origBg;
+            delete el.dataset.origColor;
+            delete el.dataset.origBorder;
+          }
+          return;
+        }
+
+        // Ripristina prima di ricalcolare (utile quando un bottone punti o classifica cambia stato active)
+        if (el.dataset.origBg !== undefined) {
+          el.style.backgroundColor = el.dataset.origBg;
+          el.style.color = el.dataset.origColor;
+          el.style.borderColor = el.dataset.origBorder;
+        }
+
+        var cs = window.getComputedStyle(el);
+        var bg = cs.backgroundColor;
+        var m = bg && bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+        if (m) {
+          var r = parseInt(m[1], 10), g = parseInt(m[2], 10), b = parseInt(m[3], 10);
+          var a = m[4] !== undefined ? parseFloat(m[4]) : 1;
+          // Se ha uno sfondo scuro/nero (R<65, G<70, B<85) e non è trasparente
+          if (a > 0.1 && r < 65 && g < 70 && b < 85) {
+            if (el.dataset.origBg === undefined) {
+              el.dataset.origBg = el.style.backgroundColor || '';
+              el.dataset.origColor = el.style.color || '';
+              el.dataset.origBorder = el.style.borderColor || '';
+            }
+            var isBtn = el.tagName === 'BUTTON' || el.tagName === 'LABEL';
+            el.style.setProperty('background-color', isBtn ? '#e2e8f0' : '#f1f5f9', 'important');
+            el.style.setProperty('color', '#0f172a', 'important');
+            el.style.setProperty('border-color', '#cbd5e1', 'important');
+            // Assicura che anche le scritte interne (es. nomi lingue o sottotitoli bottoni) siano scure e leggibili
+            el.querySelectorAll('*').forEach(function(child) {
+              var ccs = window.getComputedStyle(child).color;
+              var cm = ccs && ccs.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+              if (cm && parseInt(cm[1], 10) > 180 && parseInt(cm[2], 10) > 180 && parseInt(cm[3], 10) > 180) {
+                if (child.dataset.origColor === undefined) child.dataset.origColor = child.style.color || '';
+                child.style.setProperty('color', '#0f172a', 'important');
+              }
+            });
+          }
+        }
+      });
+    }
 
     // 2. Gestione Preferenze (Tema, Vibrazione, Schermo Acceso)
     window.isLightThemeEnabled = function() {
@@ -7483,6 +7554,8 @@ Object.assign(I18N.it, {
       }
       renderTracksideSettingsCard();
       renderGateStatsWidget();
+      fixHardcodedDarkElements();
+      setTimeout(fixHardcodedDarkElements, 60);
     };
 
     window.isHapticEnabled = function() {
@@ -7494,6 +7567,7 @@ Object.assign(I18N.it, {
       localStorage.setItem('speedway_haptic_off', nextOff ? 'true' : 'false');
       if (!nextOff && navigator.vibrate) navigator.vibrate(40);
       renderTracksideSettingsCard();
+      fixHardcodedDarkElements();
     };
 
     var wakeLockSentinel = null;
@@ -7525,6 +7599,7 @@ Object.assign(I18N.it, {
       localStorage.setItem('speedway_wakelock_on', nextOn ? 'true' : 'false');
       await applyWakeLockState();
       renderTracksideSettingsCard();
+      fixHardcodedDarkElements();
     };
 
     document.addEventListener('visibilitychange', function() {
@@ -7533,11 +7608,15 @@ Object.assign(I18N.it, {
       }
     });
 
-    // 3. Feedback Tattile automatico sui pulsanti della scheda Batterie
+    // 3. Feedback Tattile + Ricalcolo colori su pressione pulsanti
     document.addEventListener('click', function(ev) {
-      if (!isHapticEnabled() || !navigator.vibrate) return;
-      var btn = ev.target && ev.target.closest ? ev.target.closest('#tab-heats button, #two-min-timer-bar button') : null;
-      if (btn) navigator.vibrate(25);
+      if (isHapticEnabled() && navigator.vibrate) {
+        var btn = ev.target && ev.target.closest ? ev.target.closest('#tab-heats button, #two-min-timer-bar button') : null;
+        if (btn) navigator.vibrate(25);
+      }
+      if (isLightThemeEnabled()) {
+        setTimeout(fixHardcodedDarkElements, 30);
+      }
     }, true);
 
     // 4. Cronometro Ufficiale dei "2 Minuti" (120s) in cima a tab-heats
@@ -7718,7 +7797,7 @@ Object.assign(I18N.it, {
       ].join('');
     }
 
-    // 6. Card Impostazioni Pista dentro tab-settings (Tema Giorno/Notte, Schermo Acceso, Vibrazione)
+    // 6. Card Impostazioni Pista dentro tab-settings
     function renderTracksideSettingsCard() {
       var settingsTab = document.getElementById('tab-settings');
       if (!settingsTab) return;
@@ -7742,8 +7821,6 @@ Object.assign(I18N.it, {
 
       card.innerHTML = [
         '<div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:12px;">⚡ Opzioni Pista & Visibilità</div>',
-
-        // Selettore Tema Giorno / Notte
         '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;">',
         '  <div>',
         '    <div style="font-size:13.5px;font-weight:700;color:var(--text);">' + (isLight ? '☀️ Tema Giorno (Sotto il Sole)' : '🌙 Tema Notte (Scuro Standard)') + '</div>',
@@ -7754,8 +7831,6 @@ Object.assign(I18N.it, {
         '    <button type="button" onclick="setAppThemeMode(\'light\')" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:' + (isLight ? 'var(--accent)' : 'transparent') + ';color:' + (isLight ? '#fff' : 'var(--text)') + ';font-weight:700;font-size:12px;cursor:pointer;">☀️ Giorno</button>',
         '  </div>',
         '</div>',
-
-        // Interruttore Schermo Sempre Acceso
         '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">',
         '  <div>',
         '    <div style="font-size:13.5px;font-weight:700;color:var(--text);">📱 Schermo Sempre Acceso in Gara</div>',
@@ -7763,8 +7838,6 @@ Object.assign(I18N.it, {
         '  </div>',
         '  <button type="button" onclick="toggleWakeLockSetting()" style="padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:' + (wakeOn ? 'var(--accent)' : 'transparent') + ';color:' + (wakeOn ? '#fff' : 'var(--text)') + ';font-weight:700;font-size:12px;cursor:pointer;">' + (wakeOn ? 'ATTIVO' : 'OFF') + '</button>',
         '</div>',
-
-        // Interruttore Vibrazione Tasti
         '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0 2px 0;">',
         '  <div>',
         '    <div style="font-size:13.5px;font-weight:700;color:var(--text);">📳 Feedback Vibrazione Tasti</div>',
@@ -7775,12 +7848,14 @@ Object.assign(I18N.it, {
       ].join('');
     }
 
-    // 7. Aggancio automatico ai cambi batteria e salvataggi senza toccare le funzioni originali
+    // 7. Aggancio automatico ai cambi batteria, scheda e salvataggi
     if (typeof window.selectHeat === 'function') {
       var _origSelectHeat = window.selectHeat;
       window.selectHeat = function() {
         resetTwoMinTimer();
-        return _origSelectHeat.apply(this, arguments);
+        var res = _origSelectHeat.apply(this, arguments);
+        if (isLightThemeEnabled()) setTimeout(fixHardcodedDarkElements, 30);
+        return res;
       };
     }
 
@@ -7789,6 +7864,7 @@ Object.assign(I18N.it, {
       window.saveState = function() {
         var res = _origSaveState.apply(this, arguments);
         renderGateStatsWidget();
+        if (isLightThemeEnabled()) setTimeout(fixHardcodedDarkElements, 30);
         return res;
       };
     }
@@ -7800,6 +7876,7 @@ Object.assign(I18N.it, {
         if (tabId === 'tab-standings') renderGateStatsWidget();
         if (tabId === 'tab-settings') renderTracksideSettingsCard();
         if (tabId === 'tab-heats') injectTwoMinTimerBar();
+        if (isLightThemeEnabled()) setTimeout(fixHardcodedDarkElements, 30);
         return res;
       };
     }
@@ -7810,6 +7887,7 @@ Object.assign(I18N.it, {
       injectTwoMinTimerBar();
       renderTracksideSettingsCard();
       renderGateStatsWidget();
+      fixHardcodedDarkElements();
       if (isWakeLockEnabled()) applyWakeLockState();
     }, 350);
   })();
