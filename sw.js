@@ -1,4 +1,4 @@
-const CACHE_NAME = 'speedway-live-dynamic-v5';
+const CACHE_NAME = 'speedway-live-dynamic-v6';
 
 // File fondamentali salvati SUBITO in memoria appena il Service Worker si installa
 const CORE_ASSETS = [
