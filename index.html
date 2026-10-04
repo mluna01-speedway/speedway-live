@@ -7428,10 +7428,10 @@ Object.assign(I18N.it, {
     checkPlayStoreEntitlements(true);
   }, 300);
 
-// --- PACCHETTO DEFINITIVO: MULTILINGUA (6 LINGUE), FIX JEZDEC, TEMA GIORNO CHIRURGICO, CORSIA BIANCA, TIMER 2 MIN & STATISTICHE ---
+// --- PACCHETTO DEFINITIVO: MULTILINGUA (6 LINGUE), FIX JEZDEC, TEMA GIORNO TOTALE, CORSIA BIANCA, TIMER 2 MIN & STATISTICHE ---
 
   (function initTracksideEnhancements() {
-    // 1. Dizionario Completo 6 Lingue (IT, EN, PL, DA, SV, CS) per tutti i nuovi elementi
+    // 1. Dizionario Completo 6 Lingue (IT, EN, PL, DA, SV, CS)
     var I18N_EXT = {
       it: {
         riderWord: 'Pilota', reserveWord: 'Riserva',
@@ -7486,7 +7486,7 @@ Object.assign(I18N.it, {
         gateStatsSub: 'Analiza na żywo po {n} rozegranych biegach',
         gateLabel: '🏁 Pole {g} (Gate {g})', topGate: '🔥 Najlepsze Pole', ptsWins: '{p} pkt • {w} wygr. ({pct}%)',
         trackOptsTitle: '⚡ Opcje Torowe i Widoczność',
-        themeDayTitle: '☀️ Motyw Dzienny (W Słońcu)', themeNightTitle: '🌙 Motyw Nocny (Ciemny)',
+        themeDayTitle: '☀️️ Motyw Dzienny (W Słońcu)', themeNightTitle: '🌙 Motyw Nocny (Ciemny)',
         themeSub: 'Wysoki kontrast idealny do czytania programu w pełnym słońcu',
         btnNight: '🌙 Noc', btnDay: '☀️ Dzień',
         wakeTitle: '📱 Ekran Zawsze Włączony', wakeSub: 'Zapobiega wygaszaniu ekranu telefonu między biegami',
@@ -7583,7 +7583,7 @@ Object.assign(I18N.it, {
       return dict[key] || I18N_EXT.it[key] || key;
     }
 
-    // 2. Fix immediato nomi piloti "Jezdec X" -> Traduce automaticamente i nomi generici nella lingua scelta!
+    // 2. Fix immediato nomi piloti "Jezdec X" -> Traduce nella lingua attiva
     function syncDefaultRiderNamesToLang() {
       if (typeof state === 'undefined' || !state.riders) return;
       var dict = I18N_EXT[getActiveLang()] || I18N_EXT.it;
@@ -7621,7 +7621,7 @@ Object.assign(I18N.it, {
       }
     }
 
-    // 3. CSS Puro basato sulle classi reali dell'app
+    // 3. CSS Puro basato sulle classi esatte del DOM (.gate-card:has(.helmet-badge.helmet-W), .score-btn, .spec-btn)
     var styleEl = document.createElement('style');
     styleEl.id = 'speedway-trackside-styles';
     styleEl.innerHTML = [
@@ -7640,24 +7640,41 @@ Object.assign(I18N.it, {
       '  background-color: #f1f5f9 !important;',
       '  color: #0f172a !important;',
       '}',
-      'body.light-theme header, body.light-theme nav, body.light-theme .card, body.light-theme .card-box {',
+      'body.light-theme header, body.light-theme nav, body.light-theme .card, body.light-theme .card-box, body.light-theme #pro-settings-card, body.light-theme #trackside-settings-card, body.light-theme #gate-stats-card, body.light-theme #two-min-timer-bar {',
       '  background: #ffffff !important;',
+      '  background-color: #ffffff !important;',
       '  color: #0f172a !important;',
       '  border-color: #cbd5e1 !important;',
       '  box-shadow: 0 2px 6px rgba(15,23,42,0.06) !important;',
       '}',
       'body.light-theme input, body.light-theme select, body.light-theme textarea {',
       '  background: #ffffff !important;',
+      '  background-color: #ffffff !important;',
       '  color: #0f172a !important;',
       '  border-color: #94a3b8 !important;',
       '}',
-      '/* CORSIA BIANCA: Nessun bordo nero attorno alla card! Solo banda bianca a sinistra + 1 riga verticale nera dritta */',
-      'body.light-theme .gate-card.helmet-W {',
+      '/* === CORSIA BIANCA (.gate-card che contiene .helmet-badge.helmet-W) === */',
+      'body.light-theme .gate-card:has(.helmet-badge.helmet-W) {',
+      '  position: relative !important;',
+      '  overflow: hidden !important;',
       '  border: 1px solid #cbd5e1 !important;',
-      '  border-left: 6px solid #ffffff !important;',
-      '  background: linear-gradient(to right, #0f172a 0px, #0f172a 1.5px, #ffffff 1.5px, #ffffff 100%) !important;',
-      '  box-shadow: 0 2px 6px rgba(15,23,42,0.06) !important;',
+      '  border-left: none !important;',
+      '  padding-left: 16px !important;',
+      '  background: #ffffff !important;',
       '}',
+      '/* Barra verticale sinistra BIANCA con RIGA NERA VERTICALE che la divide dalla card */',
+      'body.light-theme .gate-card:has(.helmet-badge.helmet-W)::before {',
+      '  content: "" !important;',
+      '  position: absolute !important;',
+      '  top: 0 !important;',
+      '  bottom: 0 !important;',
+      '  left: 0 !important;',
+      '  width: 6px !important;',
+      '  background: #ffffff !important;',
+      '  border-right: 1.5px solid #0f172a !important;',
+      '  z-index: 2 !important;',
+      '}',
+      '/* Quadratino Bianco con bordo nero stondato */',
       'body.light-theme .helmet-badge.helmet-W {',
       '  background: #ffffff !important;',
       '  background-color: #ffffff !important;',
@@ -7665,15 +7682,18 @@ Object.assign(I18N.it, {
       '  border-radius: 5px !important;',
       '  box-sizing: border-box !important;',
       '}',
-      'body.light-theme .gate-card.helmet-W .helmet-name-tag {',
-      '  background: #ffffff !important;',
+      '/* Riquadro con scritta BIANCO in colore nero */',
+      'body.light-theme .gate-card:has(.helmet-badge.helmet-W) .helmet-name-tag {',
       '  color: #0f172a !important;',
+      '  background: #ffffff !important;',
+      '  background-color: #ffffff !important;',
       '  border: 1.5px solid #0f172a !important;',
       '  border-radius: 5px !important;',
       '  padding: 1px 7px !important;',
       '  font-weight: 800 !important;',
+      '  display: inline-block !important;',
       '}',
-      '/* PULSANTI PUNTEGGI E SPECIALI IN BATTERIA */',
+      '/* === PULSANTI PUNTEGGI E SPECIALI IN BATTERIA === */',
       'body.light-theme .score-btn, body.light-theme .spec-btn {',
       '  background: #e2e8f0 !important;',
       '  color: #0f172a !important;',
@@ -7692,55 +7712,83 @@ Object.assign(I18N.it, {
       'body.light-theme .spec-btn.selected-spec *, body.light-theme .spec-btn.warning-active * {',
       '  color: #ffffff !important;',
       '}',
-      '/* TUTTI I PULSANTI DI NAVIGAZIONE (inclusi ◄ Prec e Succ ►), HEADER E STORICO */',
-      'body.light-theme #tab-heats button:not(.score-btn):not(.spec-btn):not(#two-min-toggle-btn),',
-      'body.light-theme header button,',
-      'body.light-theme #tab-event button:not([style*="#"]),',
-      'body.light-theme #tab-history button:not([style*="#"]) {',
-      '  background: #e2e8f0 !important;',
-      '  background-color: #e2e8f0 !important;',
-      '  color: #0f172a !important;',
-      '  border: 1px solid #cbd5e1 !important;',
-      '}',
-      '/* Altri elementi in Tema Giorno (Righe piloti, Lingue, Disclaimer, Modal, Tabelle) */',
-      'body.light-theme .lang-btn, body.light-theme .legal-box, body.light-theme .mode-choice-btn {',
-      '  background: #f1f5f9 !important;',
-      '  color: #0f172a !important;',
-      '  border: 1px solid #cbd5e1 !important;',
-      '}',
-      'body.light-theme .lang-btn.active {',
-      '  background: #d1fae5 !important;',
-      '  border-color: #059669 !important;',
-      '  color: #065f46 !important;',
-      '}',
-      'body.light-theme .mode-choice-title, body.light-theme .lang-btn * {',
-      '  color: #0f172a !important;',
-      '}',
-      'body.light-theme .mode-choice-sub {',
-      '  color: #475569 !important;',
-      '}',
-      'body.light-theme #tab-riders [style*="background"], body.light-theme .rider-row {',
-      '  background: #e2e8f0 !important;',
-      '  color: #0f172a !important;',
-      '  border-color: #cbd5e1 !important;',
-      '}',
-      'body.light-theme th, body.light-theme thead tr {',
-      '  background: #e2e8f0 !important;',
-      '  color: #0f172a !important;',
-      '}',
       '@keyframes pulseRedTimer { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }'
     ].join('\n');
     document.head.appendChild(styleEl);
 
-    function syncRootThemeClass() {
-      if (document.body.classList.contains('light-theme')) {
+    // 4. Schiarisce TUTTI gli elementi scuri residui (Barre squadre, Righe piloti, Importa Backup, Modal Chiudi, ecc.)
+    //    MA ignora completamente i bottoni dei punti (.score-btn, .spec-btn) e la corsia bianca!
+    function cleanRemainingDarkBoxes() {
+      var isLight = document.body.classList.contains('light-theme');
+      if (isLight) {
         document.documentElement.classList.add('light-theme-root');
       } else {
         document.documentElement.classList.remove('light-theme-root');
       }
+
+      var allNodes = document.querySelectorAll('body *');
+      allNodes.forEach(function(el) {
+        // Non toccare MAI i pulsanti punti/speciali della batteria né la corsia bianca né l'overlay modale
+        if (el.classList.contains('score-btn') || el.classList.contains('spec-btn') ||
+            el.closest('.score-btns') || el.closest('.special-btns') ||
+            el.classList.contains('helmet-badge') || el.classList.contains('helmet-name-tag') ||
+            el.id === 'two-min-toggle-btn') {
+          return;
+        }
+
+        if (!isLight) {
+          if (el.dataset.lightCleaned === '1') {
+            el.style.backgroundColor = el.dataset.origBg || '';
+            el.style.background = el.dataset.origBgFull || '';
+            el.style.color = el.dataset.origCol || '';
+            el.style.borderColor = el.dataset.origBrd || '';
+            delete el.dataset.lightCleaned;
+          }
+          return;
+        }
+
+        var cs = window.getComputedStyle(el);
+        if (cs.position === 'fixed' && (el.id.indexOf('modal') !== -1 || cs.zIndex > 900)) return;
+
+        var bg = cs.backgroundColor;
+        var m = bg && bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+        if (m) {
+          var r = parseInt(m[1], 10), g = parseInt(m[2], 10), b = parseInt(m[3], 10);
+          var a = m[4] !== undefined ? parseFloat(m[4]) : 1;
+          // Se l'elemento ha uno sfondo nero/scuro (es. #121418, #1e2229, #252a34)
+          if (a > 0.15 && r < 65 && g < 70 && b < 85) {
+            if (el.dataset.lightCleaned !== '1') {
+              el.dataset.lightCleaned = '1';
+              el.dataset.origBg = el.style.backgroundColor || '';
+              el.dataset.origBgFull = el.style.background || '';
+              el.dataset.origCol = el.style.color || '';
+              el.dataset.origBrd = el.style.borderColor || '';
+            }
+            var isBtnOrRow = el.tagName === 'BUTTON' || el.tagName === 'LABEL' || el.tagName === 'TH' || el.tagName === 'TR';
+            el.style.setProperty('background', isBtnOrRow ? '#e2e8f0' : '#ffffff', 'important');
+            el.style.setProperty('background-color', isBtnOrRow ? '#e2e8f0' : '#ffffff', 'important');
+            el.style.setProperty('color', '#0f172a', 'important');
+            el.style.setProperty('border-color', '#cbd5e1', 'important');
+
+            // Rende scuri anche eventuali testi bianchi figli dentro l'elemento appena schiarito
+            el.querySelectorAll('*').forEach(function(ch) {
+              if (ch.classList.contains('score-btn') || ch.classList.contains('spec-btn') || ch.classList.contains('helmet-badge')) return;
+              var ccs = window.getComputedStyle(ch).color;
+              var cm = ccs && ccs.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+              if (cm && parseInt(cm[1], 10) > 185 && parseInt(cm[2], 10) > 185 && parseInt(cm[3], 10) > 185) {
+                if (ch.dataset.lightCleaned !== '1') {
+                  ch.dataset.lightCleaned = '1';
+                  ch.dataset.origCol = ch.style.color || '';
+                }
+                ch.style.setProperty('color', '#0f172a', 'important');
+              }
+            });
+          }
+        }
+      });
     }
 
-    // Traduce anche il box Licenza PRO in tab-settings nella lingua attiva
+    // Traduce il box Licenza PRO in tab-settings nella lingua attiva
     function translateProSettingsCard() {
       var proCard = document.getElementById('pro-settings-card');
       if (!proCard) return;
@@ -7785,7 +7833,7 @@ Object.assign(I18N.it, {
       pBox.innerHTML = '<a href="./privacy.html" target="_blank" style="color:var(--muted);text-decoration:underline;">' + trExt('privacyLink') + '</a>';
     }
 
-    // 4. Gestione Preferenze (Tema, Vibrazione, Schermo Acceso)
+    // 5. Gestione Preferenze (Tema, Vibrazione, Schermo Acceso)
     window.isLightThemeEnabled = function() {
       return localStorage.getItem('speedway_theme_mode') === 'light';
     };
@@ -7797,9 +7845,10 @@ Object.assign(I18N.it, {
       } else {
         document.body.classList.remove('light-theme');
       }
-      syncRootThemeClass();
       renderTracksideSettingsCard();
       renderGateStatsWidget();
+      cleanRemainingDarkBoxes();
+      setTimeout(cleanRemainingDarkBoxes, 60);
     };
 
     window.isHapticEnabled = function() {
@@ -7853,9 +7902,12 @@ Object.assign(I18N.it, {
         var btn = ev.target && ev.target.closest ? ev.target.closest('#tab-heats button, #two-min-timer-bar button') : null;
         if (btn) navigator.vibrate(25);
       }
+      if (isLightThemeEnabled()) {
+        setTimeout(cleanRemainingDarkBoxes, 40);
+      }
     }, true);
 
-    // 5. Cronometro Ufficiale dei "2 Minuti" (120s) Multilingua
+    // 6. Cronometro Ufficiale dei "2 Minuti" (120s) Multilingua
     var timerSeconds = 120;
     var timerInterval = null;
 
@@ -7959,7 +8011,7 @@ Object.assign(I18N.it, {
       updateTimerUi();
     }
 
-    // 6. Statistica Live "Rendimento Corsie / Gate" Multilingua
+    // 7. Statistica Live "Rendimento Corsie / Gate" Multilingua
     function renderGateStatsWidget() {
       var standingsTab = document.getElementById('tab-standings');
       if (!standingsTab || typeof state === 'undefined' || !Array.isArray(state.heats)) return;
@@ -8044,7 +8096,7 @@ Object.assign(I18N.it, {
       ].join('');
     }
 
-    // 7. Card Impostazioni Pista dentro tab-settings Multilingua
+    // 8. Card Impostazioni Pista dentro tab-settings Multilingua
     function renderTracksideSettingsCard() {
       var settingsTab = document.getElementById('tab-settings');
       if (!settingsTab) return;
@@ -8102,9 +8154,10 @@ Object.assign(I18N.it, {
       renderTracksideSettingsCard();
       translateProSettingsCard();
       renderPrivacyLinkBox();
+      cleanRemainingDarkBoxes();
     }
 
-    // 8. Aggancio automatico a setLanguage, selectHeat, saveState, switchTab e updateProUiBadges
+    // 9. Agganci automatici
     if (typeof window.setLanguage === 'function') {
       var _origSetLanguage = window.setLanguage;
       window.setLanguage = function(lang) {
@@ -8119,6 +8172,7 @@ Object.assign(I18N.it, {
       window.updateProUiBadges = function() {
         var res = _origUpdatePro.apply(this, arguments);
         translateProSettingsCard();
+        cleanRemainingDarkBoxes();
         return res;
       };
     }
@@ -8127,7 +8181,9 @@ Object.assign(I18N.it, {
       var _origSelectHeat = window.selectHeat;
       window.selectHeat = function() {
         resetTwoMinTimer();
-        return _origSelectHeat.apply(this, arguments);
+        var res = _origSelectHeat.apply(this, arguments);
+        cleanRemainingDarkBoxes();
+        return res;
       };
     }
 
@@ -8136,6 +8192,7 @@ Object.assign(I18N.it, {
       window.saveState = function() {
         var res = _origSaveState.apply(this, arguments);
         renderGateStatsWidget();
+        cleanRemainingDarkBoxes();
         return res;
       };
     }
@@ -8151,6 +8208,7 @@ Object.assign(I18N.it, {
           renderPrivacyLinkBox();
         }
         if (tabId === 'tab-heats') injectTwoMinTimerBar();
+        cleanRemainingDarkBoxes();
         return res;
       };
     }
@@ -8159,7 +8217,6 @@ Object.assign(I18N.it, {
     setTimeout(function() {
       if (isLightThemeEnabled()) {
         document.body.classList.add('light-theme');
-        syncRootThemeClass();
       }
       injectTwoMinTimerBar();
       refreshAllTranslatedWidgets();
