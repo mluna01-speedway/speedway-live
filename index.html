@@ -7428,6 +7428,392 @@ Object.assign(I18N.it, {
     checkPlayStoreEntitlements(true);
   }, 300);
 
+// --- PACCHETTO FUNZIONI PRO PISTA: TEMA GIORNO/NOTTE, TIMER 2 MIN, WAKE LOCK, VIBRAZIONE & STATISTICHE CORSIE ---
+
+  (function initTracksideEnhancements() {
+    // 1. Stili CSS per Tema Giorno (Sotto il Sole) e Componenti Pista
+    var styleEl = document.createElement('style');
+    styleEl.id = 'speedway-trackside-styles';
+    styleEl.innerHTML = [
+      'body.light-theme {',
+      '  --bg: #f1f5f9 !important;',
+      '  --card: #ffffff !important;',
+      '  --border: #cbd5e1 !important;',
+      '  --text: #0f172a !important;',
+      '  --muted: #475569 !important;',
+      '  --accent: #059669 !important;',
+      '  --red: #dc2626 !important;',
+      '  --blue: #2563eb !important;',
+      '  --white: #64748b !important;',
+      '  --yellow: #d97706 !important;',
+      '  background: #f1f5f9 !important;',
+      '  color: #0f172a !important;',
+      '}',
+      'body.light-theme header, body.light-theme nav, body.light-theme .card {',
+      '  background: #ffffff !important;',
+      '  color: #0f172a !important;',
+      '  border-color: #cbd5e1 !important;',
+      '  box-shadow: 0 2px 6px rgba(15,23,42,0.06) !important;',
+      '}',
+      'body.light-theme input, body.light-theme select, body.light-theme textarea {',
+      '  background: #f8fafc !important;',
+      '  color: #0f172a !important;',
+      '  border-color: #94a3b8 !important;',
+      '}',
+      'body.light-theme #pro-settings-card, body.light-theme #trackside-settings-card, body.light-theme #gate-stats-card, body.light-theme #two-min-timer-bar {',
+      '  background: #ffffff !important;',
+      '  color: #0f172a !important;',
+      '  border-color: #cbd5e1 !important;',
+      '}',
+      '@keyframes pulseRedTimer { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }'
+    ].join('\n');
+    document.head.appendChild(styleEl);
+
+    // 2. Gestione Preferenze (Tema, Vibrazione, Schermo Acceso)
+    window.isLightThemeEnabled = function() {
+      return localStorage.getItem('speedway_theme_mode') === 'light';
+    };
+
+    window.setAppThemeMode = function(mode) {
+      localStorage.setItem('speedway_theme_mode', mode);
+      if (mode === 'light') {
+        document.body.classList.add('light-theme');
+      } else {
+        document.body.classList.remove('light-theme');
+      }
+      renderTracksideSettingsCard();
+      renderGateStatsWidget();
+    };
+
+    window.isHapticEnabled = function() {
+      return localStorage.getItem('speedway_haptic_off') !== 'true';
+    };
+
+    window.toggleHapticSetting = function() {
+      var nextOff = isHapticEnabled();
+      localStorage.setItem('speedway_haptic_off', nextOff ? 'true' : 'false');
+      if (!nextOff && navigator.vibrate) navigator.vibrate(40);
+      renderTracksideSettingsCard();
+    };
+
+    var wakeLockSentinel = null;
+    window.isWakeLockEnabled = function() {
+      return localStorage.getItem('speedway_wakelock_on') === 'true';
+    };
+
+    async function applyWakeLockState() {
+      if (!('wakeLock' in navigator)) return;
+      try {
+        if (isWakeLockEnabled() && document.visibilityState === 'visible') {
+          if (!wakeLockSentinel) {
+            wakeLockSentinel = await navigator.wakeLock.request('screen');
+            wakeLockSentinel.addEventListener('release', function() {
+              wakeLockSentinel = null;
+            });
+          }
+        } else if (wakeLockSentinel) {
+          await wakeLockSentinel.release();
+          wakeLockSentinel = null;
+        }
+      } catch (e) {
+        console.warn('WakeLock info:', e);
+      }
+    }
+
+    window.toggleWakeLockSetting = async function() {
+      var nextOn = !isWakeLockEnabled();
+      localStorage.setItem('speedway_wakelock_on', nextOn ? 'true' : 'false');
+      await applyWakeLockState();
+      renderTracksideSettingsCard();
+    };
+
+    document.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'visible' && isWakeLockEnabled()) {
+        applyWakeLockState();
+      }
+    });
+
+    // 3. Feedback Tattile automatico sui pulsanti della scheda Batterie
+    document.addEventListener('click', function(ev) {
+      if (!isHapticEnabled() || !navigator.vibrate) return;
+      var btn = ev.target && ev.target.closest ? ev.target.closest('#tab-heats button, #two-min-timer-bar button') : null;
+      if (btn) navigator.vibrate(25);
+    }, true);
+
+    // 4. Cronometro Ufficiale dei "2 Minuti" (120s) in cima a tab-heats
+    var timerSeconds = 120;
+    var timerInterval = null;
+
+    function formatTwoMin(sec) {
+      var m = Math.floor(sec / 60);
+      var s = sec % 60;
+      return '0' + m + ':' + (s < 10 ? '0' + s : s);
+    }
+
+    function updateTimerUi() {
+      var disp = document.getElementById('two-min-display');
+      var toggleBtn = document.getElementById('two-min-toggle-btn');
+      if (!disp || !toggleBtn) return;
+
+      disp.textContent = formatTwoMin(timerSeconds);
+      if (timerSeconds === 0) {
+        disp.style.color = 'var(--red)';
+        disp.style.animation = 'pulseRedTimer 0.6s infinite';
+      } else if (timerSeconds <= 15) {
+        disp.style.color = 'var(--red)';
+        disp.style.animation = 'pulseRedTimer 0.9s infinite';
+      } else if (timerSeconds <= 30) {
+        disp.style.color = 'var(--yellow)';
+        disp.style.animation = 'none';
+      } else {
+        disp.style.color = 'var(--accent)';
+        disp.style.animation = 'none';
+      }
+
+      if (timerInterval) {
+        toggleBtn.innerHTML = '⏸ Pausa';
+        toggleBtn.style.background = '#f59e0b';
+      } else {
+        toggleBtn.innerHTML = timerSeconds < 120 && timerSeconds > 0 ? '▶ Riprendi' : '▶ Avvia 2:00';
+        toggleBtn.style.background = '#10b981';
+      }
+    }
+
+    window.toggleTwoMinTimer = function() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        updateTimerUi();
+        return;
+      }
+      if (timerSeconds <= 0) timerSeconds = 120;
+      timerInterval = setInterval(function() {
+        if (timerSeconds > 0) {
+          timerSeconds--;
+          updateTimerUi();
+          if (timerSeconds === 0) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            updateTimerUi();
+            if (navigator.vibrate) navigator.vibrate([250, 120, 250, 120, 500]);
+          }
+        }
+      }, 1000);
+      updateTimerUi();
+    };
+
+    window.resetTwoMinTimer = function() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      timerSeconds = 120;
+      updateTimerUi();
+    };
+
+    function injectTwoMinTimerBar() {
+      var heatsTab = document.getElementById('tab-heats');
+      if (!heatsTab || document.getElementById('two-min-timer-bar')) return;
+
+      var bar = document.createElement('div');
+      bar.id = 'two-min-timer-bar';
+      bar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:12px;';
+      bar.innerHTML = [
+        '<div style="display:flex;align-items:center;gap:8px;">',
+        '  <span style="font-size:18px;">⏱️</span>',
+        '  <div>',
+        '    <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">Timer 2 Minuti</div>',
+        '    <div id="two-min-display" style="font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent);line-height:1.1;">02:00</div>',
+        '  </div>',
+        '</div>',
+        '<div style="display:flex;gap:8px;">',
+        '  <button type="button" id="two-min-toggle-btn" onclick="toggleTwoMinTimer()" style="padding:8px 14px;border:none;border-radius:8px;background:#10b981;color:#fff;font-weight:700;font-size:13px;cursor:pointer;">▶ Avvia 2:00</button>',
+        '  <button type="button" onclick="resetTwoMinTimer()" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text);font-weight:600;font-size:13px;cursor:pointer;">🔄 Reset</button>',
+        '</div>'
+      ].join('');
+      heatsTab.insertBefore(bar, heatsTab.firstChild);
+      updateTimerUi();
+    }
+
+    // 5. Statistica Live "Rendimento Corsie / Gate" in fondo a tab-standings
+    function renderGateStatsWidget() {
+      var standingsTab = document.getElementById('tab-standings');
+      if (!standingsTab || typeof state === 'undefined' || !Array.isArray(state.heats)) return;
+
+      var card = document.getElementById('gate-stats-card');
+      if (!card) {
+        card = document.createElement('div');
+        card.id = 'gate-stats-card';
+        card.style.cssText = 'background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:16px;';
+        standingsTab.appendChild(card);
+      }
+
+      var maxGates = (typeof isPardubiceMode === 'function' && isPardubiceMode()) ? 6 : 4;
+      var winScore = maxGates === 6 ? 5 : 3;
+      var stats = {};
+      for (var g = 1; g <= maxGates; g++) {
+        stats[g] = { pts: 0, wins: 0, rides: 0 };
+      }
+
+      var totalPointsAllGates = 0;
+      var completedHeatsCount = 0;
+
+      state.heats.forEach(function(h) {
+        if (!h || !Array.isArray(h.slots)) return;
+        var heatHasScore = false;
+        h.slots.forEach(function(s) {
+          var gateNum = parseInt(s.gate, 10);
+          if (!stats[gateNum]) return;
+          if (typeof s.score === 'number' && !isNaN(s.score)) {
+            stats[gateNum].pts += s.score;
+            stats[gateNum].rides += 1;
+            if (s.score === winScore) stats[gateNum].wins += 1;
+            totalPointsAllGates += s.score;
+            heatHasScore = true;
+          } else if (typeof s.score === 'string' && s.score.trim() !== '') {
+            stats[gateNum].rides += 1;
+            heatHasScore = true;
+          }
+        });
+        if (heatHasScore) completedHeatsCount++;
+      });
+
+      var bestGate = null;
+      var bestPts = -1;
+      for (var k = 1; k <= maxGates; k++) {
+        if (stats[k].pts > bestPts && stats[k].pts > 0) {
+          bestPts = stats[k].pts;
+          bestGate = k;
+        }
+      }
+
+      var gateColors = ['#e53935', '#1e88e5', '#94a3b8', '#f59e0b', '#10b981', '#8b5cf6'];
+      var rowsHtml = [];
+
+      for (var i = 1; i <= maxGates; i++) {
+        var st = stats[i];
+        var pct = totalPointsAllGates > 0 ? Math.round((st.pts / totalPointsAllGates) * 100) : 0;
+        var isTop = (bestGate === i && totalPointsAllGates > 0);
+        rowsHtml.push(
+          '<div style="margin-bottom:10px;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:4px;">' +
+              '<span style="font-weight:700;color:var(--text);">🏁 Corsia ' + i + ' (Gate ' + i + ')' + (isTop ? ' <span style="color:var(--accent);font-size:11px;margin-left:6px;">🔥 Corsia Top</span>' : '') + '</span>' +
+              '<span style="font-weight:600;color:var(--muted);"><b style="color:var(--text);">' + st.pts + ' pt</b> • ' + st.wins + ' vittorie (' + pct + '%)</span>' +
+            '</div>' +
+            '<div style="height:8px;background:rgba(148,163,184,0.2);border-radius:99px;overflow:hidden;">' +
+              '<div style="height:100%;width:' + pct + '%;background:' + gateColors[i - 1] + ';border-radius:99px;transition:width 0.3s;"></div>' +
+            '</div>' +
+          '</div>'
+        );
+      }
+
+      card.innerHTML = [
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">',
+        '  <div>',
+        '    <div style="font-size:15px;font-weight:800;color:var(--text);">📊 Rendimento Corsie di Partenza (Gate)</div>',
+        '    <div style="font-size:12px;color:var(--muted);">Analisi live su ' + completedHeatsCount + ' batterie disputate</div>',
+        '  </div>',
+        '</div>',
+        rowsHtml.join('')
+      ].join('');
+    }
+
+    // 6. Card Impostazioni Pista dentro tab-settings (Tema Giorno/Notte, Schermo Acceso, Vibrazione)
+    function renderTracksideSettingsCard() {
+      var settingsTab = document.getElementById('tab-settings');
+      if (!settingsTab) return;
+
+      var card = document.getElementById('trackside-settings-card');
+      if (!card) {
+        card = document.createElement('div');
+        card.id = 'trackside-settings-card';
+        card.style.cssText = 'background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;';
+        var proCard = document.getElementById('pro-settings-card');
+        if (proCard && proCard.nextSibling) {
+          settingsTab.insertBefore(card, proCard.nextSibling);
+        } else {
+          settingsTab.insertBefore(card, settingsTab.firstChild);
+        }
+      }
+
+      var isLight = isLightThemeEnabled();
+      var wakeOn = isWakeLockEnabled();
+      var hapticOn = isHapticEnabled();
+
+      card.innerHTML = [
+        '<div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:12px;">⚡ Opzioni Pista & Visibilità</div>',
+
+        // Selettore Tema Giorno / Notte
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;">',
+        '  <div>',
+        '    <div style="font-size:13.5px;font-weight:700;color:var(--text);">' + (isLight ? '☀️ Tema Giorno (Sotto il Sole)' : '🌙 Tema Notte (Scuro Standard)') + '</div>',
+        '    <div style="font-size:12px;color:var(--muted);">Perfetto per leggere il tabellone sotto la luce diretta del sole</div>',
+        '  </div>',
+        '  <div style="display:flex;gap:6px;">',
+        '    <button type="button" onclick="setAppThemeMode(\'dark\')" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:' + (!isLight ? 'var(--accent)' : 'transparent') + ';color:' + (!isLight ? '#fff' : 'var(--text)') + ';font-weight:700;font-size:12px;cursor:pointer;">🌙 Notte</button>',
+        '    <button type="button" onclick="setAppThemeMode(\'light\')" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:' + (isLight ? 'var(--accent)' : 'transparent') + ';color:' + (isLight ? '#fff' : 'var(--text)') + ';font-weight:700;font-size:12px;cursor:pointer;">☀️ Giorno</button>',
+        '  </div>',
+        '</div>',
+
+        // Interruttore Schermo Sempre Acceso
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">',
+        '  <div>',
+        '    <div style="font-size:13.5px;font-weight:700;color:var(--text);">📱 Schermo Sempre Acceso in Gara</div>',
+        '    <div style="font-size:12px;color:var(--muted);">Impedisce al telefono di andare in standby tra una batteria e l\'altra</div>',
+        '  </div>',
+        '  <button type="button" onclick="toggleWakeLockSetting()" style="padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:' + (wakeOn ? 'var(--accent)' : 'transparent') + ';color:' + (wakeOn ? '#fff' : 'var(--text)') + ';font-weight:700;font-size:12px;cursor:pointer;">' + (wakeOn ? 'ATTIVO' : 'OFF') + '</button>',
+        '</div>',
+
+        // Interruttore Vibrazione Tasti
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0 2px 0;">',
+        '  <div>',
+        '    <div style="font-size:13.5px;font-weight:700;color:var(--text);">📳 Feedback Vibrazione Tasti</div>',
+        '    <div style="font-size:12px;color:var(--muted);">Micro-vibrazione di conferma quando assegni i punti batteria</div>',
+        '  </div>',
+        '  <button type="button" onclick="toggleHapticSetting()" style="padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:' + (hapticOn ? 'var(--accent)' : 'transparent') + ';color:' + (hapticOn ? '#fff' : 'var(--text)') + ';font-weight:700;font-size:12px;cursor:pointer;">' + (hapticOn ? 'ATTIVO' : 'OFF') + '</button>',
+        '</div>'
+      ].join('');
+    }
+
+    // 7. Aggancio automatico ai cambi batteria e salvataggi senza toccare le funzioni originali
+    if (typeof window.selectHeat === 'function') {
+      var _origSelectHeat = window.selectHeat;
+      window.selectHeat = function() {
+        resetTwoMinTimer();
+        return _origSelectHeat.apply(this, arguments);
+      };
+    }
+
+    if (typeof window.saveState === 'function') {
+      var _origSaveState = window.saveState;
+      window.saveState = function() {
+        var res = _origSaveState.apply(this, arguments);
+        renderGateStatsWidget();
+        return res;
+      };
+    }
+
+    if (typeof window.switchTab === 'function') {
+      var _origSwitchTab = window.switchTab;
+      window.switchTab = function(tabId) {
+        var res = _origSwitchTab.apply(this, arguments);
+        if (tabId === 'tab-standings') renderGateStatsWidget();
+        if (tabId === 'tab-settings') renderTracksideSettingsCard();
+        if (tabId === 'tab-heats') injectTwoMinTimerBar();
+        return res;
+      };
+    }
+
+    // Avvio iniziale
+    setTimeout(function() {
+      if (isLightThemeEnabled()) document.body.classList.add('light-theme');
+      injectTwoMinTimerBar();
+      renderTracksideSettingsCard();
+      renderGateStatsWidget();
+      if (isWakeLockEnabled()) applyWakeLockState();
+    }, 350);
+  })();
+
   initState();
   renderCurrentHeat();
 </script>
