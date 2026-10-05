@@ -7241,7 +7241,7 @@ Object.assign(I18N.it, {
           supportedMethods: 'https://play.google.com/billing',
           data: { sku: PLAY_STORE_SUBSCRIPTION_SKU }
         }], {
-          total: { label: 'Speedway Live PRO (Annuale)', amount: { currency: 'EUR', value: '9.99' } }
+          total: { label: 'Speedway Live PRO (Annuale)', amount: { currency: 'EUR', value: '4.99' } }
         });
         var response = await request.show();
         await response.complete('success');
@@ -7393,19 +7393,29 @@ Object.assign(I18N.it, {
     }
   };
 
-  // 2. Lucchetto sui Formati Gara Avanzati (Free = 'sgp' e 'ita14'; tutti gli altri sono PRO)
-  if (typeof window.selectAppMode === 'function') {
-    var _origSelectAppMode = window.selectAppMode;
-    window.selectAppMode = function(mode) {
-      var freeModes = ['sgp', 'ita14', 'ind14'];
-      if (!isProUser() && freeModes.indexOf(mode) === -1) {
-        if (typeof closeModeModal === 'function') closeModeModal();
-        showProPaywallModal('Formato Gara Internazionale / Squadre');
-        return;
-      }
-      return _origSelectAppMode.apply(this, arguments);
-    };
-  }
+// 2. Tutti i campionati (Polonia, UK, Svezia, Danimarca, GP, ITA, Pardubice) sono provabili gratis per le prime 4 Batterie!
+//    Dalla Batteria 5 in poi (state.currentHeat >= 4) scatta la richiesta di Speedway Live PRO.
+if (typeof window.setScore === 'function') {
+  var _origSetScore = window.setScore;
+  window.setScore = function(slotIdx, val) {
+    if (!isProUser() && typeof state !== 'undefined' && state.currentHeat >= 4) {
+      showProPaywallModal('Batterie successive alla 4ª (Gara Completa PRO)');
+      return;
+    }
+    return _origSetScore.apply(this, arguments);
+  };
+}
+
+if (typeof window.toggleWarning === 'function') {
+  var _origToggleWarning = window.toggleWarning;
+  window.toggleWarning = function(slotIdx) {
+    if (!isProUser() && typeof state !== 'undefined' && state.currentHeat >= 4) {
+      showProPaywallModal('Batterie successive alla 4ª (Gara Completa PRO)');
+      return;
+    }
+    return _origToggleWarning.apply(this, arguments);
+  };
+}
 
   // 3. Lucchetto su Locandina Poster, QR Code, Salvataggio Storico e Backup
   ['exportRacePoster', 'openQrModal', 'saveCurrentToArchive', 'exportBackupJson'].forEach(function(fnName) {
