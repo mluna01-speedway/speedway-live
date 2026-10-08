@@ -1,8 +1,11 @@
-[{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "io.github.mluna01_speedway.twa",
-        "sha256_cert_fingerprints": ["FC:E3:51:4E:B3:65:3C:C5:36:15:5D:C9:45:15:8A:50:BA:95:5F:7F:64:08:FC:2E:8C:14:A0:9F:EA:65:95:0F"]
-      }
-    }]
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.mluna01_speedway.twa",
+      "sha256_cert_fingerprints":
+        ["67:DC:FF:E7:2A:90:07:9F:81:B4:6A:A1:3E:A2:38:A4:A2:A4:5E:39:4A:1D:30:E3:A3:31:F4:46:8C:46:1F:0E"]
+    }
+  }
+]
