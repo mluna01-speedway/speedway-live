@@ -8255,7 +8255,7 @@ async function acquistaAbbonamento() {
     const service = await window.getDigitalGoodsService('https://play.google.com/billing');
     const request = new PaymentRequest([{
       supportedMethods: 'https://play.google.com/billing',
-      data: { sku: 'speedway_live_pro' } // ATTENZIONE: questo deve essere l'ID esatto su Google Play!
+      data: { sku: 'speedway_live_pro' }
     }]);
     const paymentResponse = await request.show();
     await service.acknowledge(paymentResponse.details.purchaseToken, 'onetime');
@@ -8265,21 +8265,6 @@ async function acquistaAbbonamento() {
     console.error("Errore durante il pagamento:", error);
   }
 }
-
-// Intercetta il clic in modo più ampio
-document.addEventListener('click', function(event) {
-    // Cerca l'elemento cliccato (bottone, link o un loro contenitore)
-    var elementoCliccato = event.target.closest('button, a, div.bottone-pro'); 
-    
-    if (elementoCliccato && elementoCliccato.innerText) {
-        var testo = elementoCliccato.innerText.toLowerCase();
-        // Se il testo contiene la parola "pro" o la corona
-        if (testo.includes('pro') || testo.includes('👑')) {
-            event.preventDefault(); // Blocca l'apertura di altre pagine
-            acquistaAbbonamento();
-        }
-    }
-});
 </script>
 </body>
 </html>
