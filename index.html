@@ -7235,6 +7235,17 @@ Object.assign(I18N.it, {
         
         var response = await request.show();
         await response.complete('success');
+        try {
+    const service = await window.getDigitalGoodsService('https://play.google.com/billing');
+    const purchases = await service.listPurchases();
+    for (const p of purchases) {
+        if (!p.acknowledged) {
+            await service.acknowledge(p.purchaseToken, 'repeatable');
+        }
+    }
+} catch (e) {
+    console.log('Errore acknowledge: ', e);
+}
         setProStatus(true, 'Google Play Store');
         alert('🎉 Benvenuto in Speedway Live PRO!');
         return;
