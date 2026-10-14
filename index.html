@@ -7180,7 +7180,7 @@ Object.assign(I18N.it, {
 
 // --- SISTEMA FREEMIUM & ABBONAMENTO ANNUALE (GOOGLE PLAY BILLING + VIP CODE) ---
 
-  var PLAY_STORE_SUBSCRIPTION_SKU = 'speedway_live_pro'; // ID abbonamento nella Google Play Console
+  var PLAY_STORE_SUBSCRIPTION_SKU = 'speedway_live_pro'; // ID CORRETTO per Google Play
   var SECRET_ADMIN_VIP_CODES = ['LUNA-VIP-2026', 'SPEEDWAY-VIP-PRO']; // Codici segreti per te e i tuoi tester
 
   function isProUser() {
@@ -7268,6 +7268,15 @@ Object.assign(I18N.it, {
       alert('❌ Codice non valido. Verifica di averlo scritto correttamente.');
     }
   }
+
+  // ATTIVATORE AUTOMATICO DEL BOTTONE ARANCIONE
+  document.addEventListener('click', function(event) {
+    var elemento = event.target.closest('button, a, div');
+    if (elemento && elemento.innerText && elemento.innerText.toLowerCase().includes('pro')) {
+      event.preventDefault();
+      startPlayStoreSubscription();
+    }
+  });
 
   // Mostra il Popup Paywall quando un utente FREE tocca una funzione PRO
   function showProPaywallModal(featureName) {
