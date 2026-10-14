@@ -7880,6 +7880,31 @@ Object.assign(I18N.it, {
       });
     }
 
+    // Funzioni ponte per i pulsanti del box multilingua
+    window.openProPaywallModal = function(btnEl) {
+      if (typeof window.startPlayStoreSubscription === 'function') {
+        window.startPlayStoreSubscription(btnEl);
+      } else if (typeof window.showProPaywallModal === 'function') {
+        window.showProPaywallModal();
+      }
+    };
+
+    window.promptVipCode = function() {
+      var code = prompt('👑 SPEEDWAY LIVE PRO\n\nInserisci il tuo Codice Promo / VIP:');
+      if (code && typeof window.redeemVipCode === 'function') {
+        window.redeemVipCode(code);
+        translateProSettingsCard();
+      }
+    };
+
+    window.deactivateProPass = function() {
+      if (confirm('Vuoi disattivare la licenza PRO su questo dispositivo?')) {
+        localStorage.removeItem('speedway_pro_confirmed');
+        if (typeof window.setProStatus === 'function') window.setProStatus(false, '');
+        translateProSettingsCard();
+      }
+    };
+
     // Traduce il box Licenza PRO in tab-settings nella lingua attiva
     function translateProSettingsCard() {
       var proCard = document.getElementById('pro-settings-card');
@@ -7892,7 +7917,7 @@ Object.assign(I18N.it, {
           '    <div style="font-size:16px;font-weight:800;color:var(--accent);">' + trExt('proActiveTitle') + '</div>',
           '    <div style="font-size:12.5px;color:var(--muted);margin-top:3px;">' + trExt('proActiveSub') + '</div>',
           '  </div>',
-          '  <button type="button" onclick="deactivateProPass()" style="padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11.5px;cursor:pointer;">' + trExt('proBtnDeactivate') + '</button>',
+          '  <button type="button" onclick="window.deactivateProPass()" style="padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11.5px;cursor:pointer;">' + trExt('proBtnDeactivate') + '</button>',
           '</div>'
         ].join('');
       } else {
@@ -7902,16 +7927,15 @@ Object.assign(I18N.it, {
           '  <div style="font-size:12.5px;color:var(--muted);margin-top:3px;">' + trExt('proFreeSub') + '</div>',
           '</div>',
           '<div style="display:flex;flex-direction:column;gap:8px;">',
-          '  <button type="button" onclick="openProPaywallModal()" style="width:100%;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;font-weight:800;font-size:13.5px;cursor:pointer;">' + trExt('proBtnUpgrade') + '</button>',
+          '  <button type="button" onclick="window.startPlayStoreSubscription(this)" style="width:100%;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;font-weight:800;font-size:13.5px;cursor:pointer;">' + trExt('proBtnUpgrade') + '</button>',
           '  <div style="display:flex;gap:8px;flex-wrap:wrap;">',
-          '    <button type="button" onclick="checkPlayStoreEntitlements(false)" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:12px;font-weight:600;cursor:pointer;">' + trExt('proBtnRestore') + '</button>',
-          '    <button type="button" onclick="promptVipCode()" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;">' + trExt('proBtnPromo') + '</button>',
+          '    <button type="button" onclick="window.checkPlayStoreEntitlements(false)" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:12px;font-weight:600;cursor:pointer;">' + trExt('proBtnRestore') + '</button>',
+          '    <button type="button" onclick="window.promptVipCode()" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;">' + trExt('proBtnPromo') + '</button>',
           '  </div>',
           '</div>'
         ].join('');
       }
     }
-
     function renderPrivacyLinkBox() {
       var st = document.getElementById('tab-settings');
       if (!st) return;
