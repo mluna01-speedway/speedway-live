@@ -1,4 +1,4 @@
-const CACHE_NAME = 'speedway-live-offline-v40';
+const CACHE_NAME = 'speedway-live-offline-v50';
 
 const URLS_TO_CACHE = [
   './',
@@ -7,7 +7,6 @@ const URLS_TO_CACHE = [
   './privacy.html'
 ];
 
-// Pulisce eventuali risposte redirect che Chrome Android blocca in modalità offline
 function cleanResponse(response) {
   if (!response || !response.redirected) return Promise.resolve(response);
   return response.blob().then(bodyBlob => new Response(bodyBlob, {
@@ -20,10 +19,10 @@ function cleanResponse(response) {
 self.addEventListener('install', event => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then( async cache => {
+    caches.open(CACHE_NAME).then(async cache => {
       for (const url of URLS_TO_CACHE) {
         try {
-          const res = await fetch(url, { cache: 'no-store' });
+          const res = await fetch(url, { cache: 'reload' });
           if (res && res.ok) {
             const clean = await cleanResponse(res);
             await cache.put(url, clean);
@@ -48,7 +47,6 @@ self.addEventListener('fetch', event => {
   const isNav = event.request.mode === 'navigate' ||
     (event.request.headers.get('accept') || '').includes('text/html');
 
-  // Per l'apertura dell'app (navigate): se sei in Modalità Aereo (!navigator.onLine) risponde in 0ms dalla cache!
   event.respondWith(
     (async () => {
       const cache = await caches.open(CACHE_NAME);
@@ -56,25 +54,26 @@ self.addEventListener('fetch', event => {
       if (navigator.onLine) {
         try {
           const controller = new AbortController();
-          const timer = setTimeout(() => controller.abort(), 3000);
+          const timer = setTimeout(() => controller.abort(), 4000);
           const netRes = await fetch(event.request, { cache: 'no-store', signal: controller.signal });
           clearTimeout(timer);
 
           if (netRes && netRes.status === 200) {
-            const clean = await cleanResponse(netRes.clone());
-            cache.put(event.request, clean.clone());
-            if (isNav) {
-              cache.put('./', clean.clone());
-              cache.put('./index.html', clean.clone());
-            }
+            const copyForCache = netRes.clone();
+            cleanResponse(copyForCache).then(clean => {
+              cache.put(event.request, clean.clone());
+              if (isNav) {
+                cache.put('./', clean.clone());
+                cache.put('./index.html', clean.clone());
+              }
+            }).catch(() => {});
             return netRes;
           }
         } catch (err) {
-          // Rete assente o timeout: passa subito alla cache qui sotto
+          // Passa alla cache se offline
         }
       }
 
-      // MODALITÀ AEREO / OFFLINE:
       const exactMatch = await cache.match(event.request, { ignoreSearch: true });
       if (exactMatch) return exactMatch;
 
