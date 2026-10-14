@@ -7182,13 +7182,6 @@ Object.assign(I18N.it, {
 
   var PLAY_STORE_SUBSCRIPTION_SKU = 'speedway_live_pro';
   var SECRET_ADMIN_VIP_CODES = ['LUNA-VIP-2026', 'SPEEDWAY-VIP-PRO'];
-  var playBillingService = null;
-
-  if ('getDigitalGoodsService' in window) {
-    window.getDigitalGoodsService('https://play.google.com/billing')
-      .then(function(service) { playBillingService = service; })
-      .catch(function(err) {});
-  }
 
   function isProUser() {
     return localStorage.getItem('speedway_pro_active') === 'true';
@@ -7214,9 +7207,10 @@ Object.assign(I18N.it, {
   }
 
   async function checkPlayStoreEntitlements() {
-    if (!playBillingService) return false;
+    if (!('getDigitalGoodsService' in window)) return false;
     try {
-      var purchases = await playBillingService.listPurchases();
+      var service = await window.getDigitalGoodsService('https://play.google.com/billing');
+      var purchases = await service.listPurchases();
       var hasActiveSub = Array.isArray(purchases) && purchases.some(function(p) {
         return p.itemId === PLAY_STORE_SUBSCRIPTION_SKU;
       });
@@ -7229,8 +7223,9 @@ Object.assign(I18N.it, {
   }
 
   async function startPlayStoreSubscription() {
-    if (playBillingService && window.PaymentRequest) {
+    if ('getDigitalGoodsService' in window && window.PaymentRequest) {
       try {
+        var service = await window.getDigitalGoodsService('https://play.google.com/billing');
         var request = new PaymentRequest([{
           supportedMethods: 'https://play.google.com/billing',
           data: { sku: PLAY_STORE_SUBSCRIPTION_SKU }
@@ -7244,6 +7239,8 @@ Object.assign(I18N.it, {
         alert('🎉 Benvenuto in Speedway Live PRO!');
         return;
       } catch (err) {
+        // Se Google blocca, ora ci dice perché invece di morire in silenzio
+        alert('Avviso di sistema: ' + err.message);
         return; 
       }
     }
@@ -7262,16 +7259,6 @@ Object.assign(I18N.it, {
       alert('❌ Codice non valido.');
     }
   }
-
-  // ATTIVATORE CON BLOCCO ANTI DOPPIO-CLIC
-  document.addEventListener('click', function(event) {
-    var elemento = event.target.closest('button, a, div');
-    if (elemento && elemento.innerText && elemento.innerText.toLowerCase().includes('pro')) {
-      event.preventDefault();
-      event.stopImmediatePropagation(); 
-      startPlayStoreSubscription();
-    }
-  });
 
   // Mostra il Popup Paywall quando un utente FREE tocca una funzione PRO
   function showProPaywallModal(featureName) {
