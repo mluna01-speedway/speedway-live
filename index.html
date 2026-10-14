@@ -8137,7 +8137,6 @@ if (typeof window.toggleWarning === 'function') {
       var hapticOn = isHapticEnabled();
 
       card.innerHTML = [
-        '<button type="button" onclick="acquistaAbbonamento()" style="width: 100%; padding: 15px; background-color: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; margin-bottom: 20px;">Abbonati a 4,99€ all\'anno</button>',
         '<div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:12px;">' + trExt('trackOptsTitle') + '</div>',
         '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;">',
         '  <div>',
@@ -8266,6 +8265,15 @@ async function acquistaAbbonamento() {
     console.error("Errore durante il pagamento:", error);
   }
 }
+
+// TRUCCO AUTOMATICO: Intercetta il clic sul bottone arancione senza toccare l'HTML
+document.addEventListener('click', function(event) {
+    var bottoneCliccato = event.target.closest('button');
+    // Se è stato cliccato un bottone, e contiene la corona o la scritta PRO...
+    if (bottoneCliccato && (bottoneCliccato.innerText.includes('👑') || bottoneCliccato.innerText.includes('Speedway Live PRO'))) {
+        acquistaAbbonamento(); // ...avvia il pagamento!
+    }
+});
 </script>
 </body>
 </html>
