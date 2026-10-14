@@ -8255,7 +8255,7 @@ async function acquistaAbbonamento() {
     const service = await window.getDigitalGoodsService('https://play.google.com/billing');
     const request = new PaymentRequest([{
       supportedMethods: 'https://play.google.com/billing',
-      data: { sku: 'speedway_live_pro' }
+      data: { sku: 'speedway_live_pro' } // ATTENZIONE: questo deve essere l'ID esatto su Google Play!
     }]);
     const paymentResponse = await request.show();
     await service.acknowledge(paymentResponse.details.purchaseToken, 'onetime');
@@ -8266,12 +8266,18 @@ async function acquistaAbbonamento() {
   }
 }
 
-// TRUCCO AUTOMATICO: Intercetta il clic sul bottone arancione senza toccare l'HTML
+// Intercetta il clic in modo più ampio
 document.addEventListener('click', function(event) {
-    var bottoneCliccato = event.target.closest('button');
-    // Se è stato cliccato un bottone, e contiene la corona o la scritta PRO...
-    if (bottoneCliccato && (bottoneCliccato.innerText.includes('👑') || bottoneCliccato.innerText.includes('Speedway Live PRO'))) {
-        acquistaAbbonamento(); // ...avvia il pagamento!
+    // Cerca l'elemento cliccato (bottone, link o un loro contenitore)
+    var elementoCliccato = event.target.closest('button, a, div.bottone-pro'); 
+    
+    if (elementoCliccato && elementoCliccato.innerText) {
+        var testo = elementoCliccato.innerText.toLowerCase();
+        // Se il testo contiene la parola "pro" o la corona
+        if (testo.includes('pro') || testo.includes('👑')) {
+            event.preventDefault(); // Blocca l'apertura di altre pagine
+            acquistaAbbonamento();
+        }
     }
 });
 </script>
