@@ -7182,13 +7182,13 @@ Object.assign(I18N.it, {
 
   var PLAY_STORE_SUBSCRIPTION_SKU = 'speedway_live_pro';
   var SECRET_ADMIN_VIP_CODES = ['LUNA-VIP-2026', 'SPEEDWAY-VIP-PRO'];
-  var playBillingService = null; // Prepara la connessione in background
+  var playBillingService = null;
 
-  // Carica Google Play appena apri l'app, per azzerare i ritardi al clic
+  // Pre-caricamento silenzioso per evitare ritardi al clic e blocchi di Google
   if ('getDigitalGoodsService' in window) {
     window.getDigitalGoodsService('https://play.google.com/billing')
       .then(function(service) { playBillingService = service; })
-      .catch(function(err) { console.warn('Errore pre-caricamento Google Play:', err); });
+      .catch(function(err) { console.warn('Errore pre-caricamento Play Billing:', err); });
   }
 
   function isProUser() {
@@ -7225,9 +7225,7 @@ Object.assign(I18N.it, {
         setProStatus(true, 'Google Play Store');
         return true;
       }
-    } catch (err) {
-      console.warn('Play Billing check:', err);
-    }
+    } catch (err) {}
     return false;
   }
 
@@ -7238,22 +7236,20 @@ Object.assign(I18N.it, {
           supportedMethods: 'https://play.google.com/billing',
           data: { sku: PLAY_STORE_SUBSCRIPTION_SKU }
         }], {
-          total: { label: 'Speedway Live PRO (Annuale)', amount: { currency: 'EUR', value: '4.99' } }
+          total: { label: 'Speedway Live PRO', amount: { currency: 'EUR', value: '4.99' } }
         });
         
-        // Ora si apre all'istante!
         var response = await request.show();
         await response.complete('success');
         setProStatus(true, 'Google Play Store');
-        alert('🎉 Benvenuto in Speedway Live PRO! Tutte le funzioni sono ora sbloccate.');
+        alert('🎉 Benvenuto in Speedway Live PRO!');
         return;
       } catch (err) {
-        console.warn('Pagamento annullato:', err);
-        return;
+        return; // Nessun popup in caso di annullamento per evitare blocchi
       }
     }
     
-    var code = prompt('👑 SPEEDWAY LIVE PRO\n\nL\'abbonamento diretto si attiva dall\'app ufficiale Google Play Store.\nSe possiedi già un Codice Licenza / VIP, inseriscilo qui sotto:');
+    var code = prompt('👑 SPEEDWAY LIVE PRO\n\nInserisci il tuo Codice VIP o Licenza:');
     if (code) redeemVipCode(code);
   }
 
@@ -7262,9 +7258,9 @@ Object.assign(I18N.it, {
     if (!clean) return;
     if (SECRET_ADMIN_VIP_CODES.indexOf(clean) !== -1) {
       setProStatus(true, 'Codice VIP');
-      alert('👑 Codice VIP riconosciuto! Speedway Live PRO è ora ATTIVO senza limiti.');
+      alert('👑 Codice VIP riconosciuto! PRO è ora ATTIVO.');
     } else {
-      alert('❌ Codice non valido. Verifica di averlo scritto correttamente.');
+      alert('❌ Codice non valido.');
     }
   }
 
