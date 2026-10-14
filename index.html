@@ -7184,11 +7184,10 @@ Object.assign(I18N.it, {
   var SECRET_ADMIN_VIP_CODES = ['LUNA-VIP-2026', 'SPEEDWAY-VIP-PRO'];
   var playBillingService = null;
 
-  // Pre-caricamento silenzioso per evitare ritardi al clic e blocchi di Google
   if ('getDigitalGoodsService' in window) {
     window.getDigitalGoodsService('https://play.google.com/billing')
       .then(function(service) { playBillingService = service; })
-      .catch(function(err) { console.warn('Errore pre-caricamento Play Billing:', err); });
+      .catch(function(err) {});
   }
 
   function isProUser() {
@@ -7214,7 +7213,7 @@ Object.assign(I18N.it, {
     if (modal && active) modal.style.display = 'none';
   }
 
-  async function checkPlayStoreEntitlements(silent) {
+  async function checkPlayStoreEntitlements() {
     if (!playBillingService) return false;
     try {
       var purchases = await playBillingService.listPurchases();
@@ -7245,11 +7244,11 @@ Object.assign(I18N.it, {
         alert('🎉 Benvenuto in Speedway Live PRO!');
         return;
       } catch (err) {
-        return; // Nessun popup in caso di annullamento per evitare blocchi
+        return; 
       }
     }
     
-    var code = prompt('👑 SPEEDWAY LIVE PRO\n\nInserisci il tuo Codice VIP o Licenza:');
+    var code = prompt('👑 SPEEDWAY LIVE PRO\n\nInserisci il tuo Codice VIP:');
     if (code) redeemVipCode(code);
   }
 
@@ -7263,6 +7262,16 @@ Object.assign(I18N.it, {
       alert('❌ Codice non valido.');
     }
   }
+
+  // ATTIVATORE CON BLOCCO ANTI DOPPIO-CLIC
+  document.addEventListener('click', function(event) {
+    var elemento = event.target.closest('button, a, div');
+    if (elemento && elemento.innerText && elemento.innerText.toLowerCase().includes('pro')) {
+      event.preventDefault();
+      event.stopImmediatePropagation(); 
+      startPlayStoreSubscription();
+    }
+  });
 
   // Mostra il Popup Paywall quando un utente FREE tocca una funzione PRO
   function showProPaywallModal(featureName) {
