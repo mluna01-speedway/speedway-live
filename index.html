@@ -7260,15 +7260,6 @@ Object.assign(I18N.it, {
     }
   }
 
-  // ATTIVATORE AUTOMATICO DEL BOTTONE ARANCIONE
-  document.addEventListener('click', function(event) {
-    var elemento = event.target.closest('button, a, div');
-    if (elemento && elemento.innerText && elemento.innerText.toLowerCase().includes('pro')) {
-      event.preventDefault();
-      startPlayStoreSubscription();
-    }
-  });
-
   // Mostra il Popup Paywall quando un utente FREE tocca una funzione PRO
   function showProPaywallModal(featureName) {
     var modal = document.getElementById('pro-paywall-modal');
