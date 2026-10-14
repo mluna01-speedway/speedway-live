@@ -7180,11 +7180,18 @@ Object.assign(I18N.it, {
 
 // --- SISTEMA FREEMIUM & ABBONAMENTO ANNUALE (GOOGLE PLAY BILLING + VIP CODE) ---
 
+  // NOTA: Se crei un "Prodotto in-app" nella Play Console per evitare il server, metti qui il suo ID
   var PLAY_STORE_SUBSCRIPTION_SKU = 'speedway_live_pro';
   var SECRET_ADMIN_VIP_CODES = ['LUNA-VIP-2026', 'SPEEDWAY-VIP-PRO'];
 
   function isProUser() {
-    return localStorage.getItem('speedway_pro_active') === 'true';
+    var active = localStorage.getItem('speedway_pro_active') === 'true';
+    var exp = parseInt(localStorage.getItem('speedway_pro_expiry') || '0', 10);
+    if (active && exp > 0 && Date.now() > exp) {
+      setProStatus(false, '');
+      return false;
+    }
+    return active;
   }
 
   function getFreeAiScansUsed() {
@@ -7194,76 +7201,127 @@ Object.assign(I18N.it, {
   function incrementFreeAiScansUsed() {
     var used = getFreeAiScansUsed() + 1;
     localStorage.setItem('speedway_free_ai_used', String(used));
-    updateProUiBadges();
+    if (typeof updateProUiBadges === 'function') updateProUiBadges();
     return used;
   }
 
   function setProStatus(active, sourceLabel) {
     localStorage.setItem('speedway_pro_active', active ? 'true' : 'false');
-    if (sourceLabel) localStorage.setItem('speedway_pro_source', sourceLabel);
-    updateProUiBadges();
+    if (active) {
+      // Imposta validità 1 anno (365 giorni) se non già presente
+      if (!localStorage.getItem('speedway_pro_expiry')) {
+        var oneYear = Date.now() + (365 * 24 * 60 * 60 * 1000);
+        localStorage.setItem('speedway_pro_expiry', String(oneYear));
+      }
+      if (sourceLabel) localStorage.setItem('speedway_pro_source', sourceLabel);
+    } else {
+      localStorage.removeItem('speedway_pro_expiry');
+      localStorage.removeItem('speedway_pro_source');
+    }
+    if (typeof updateProUiBadges === 'function') updateProUiBadges();
     var modal = document.getElementById('pro-paywall-modal');
     if (modal && active) modal.style.display = 'none';
   }
 
   async function checkPlayStoreEntitlements() {
+    // Se è stato attivato col Codice VIP, non toccarlo
+    if (localStorage.getItem('speedway_pro_source') === 'Codice VIP') return true;
+
     if (!('getDigitalGoodsService' in window)) return false;
     try {
       var service = await window.getDigitalGoodsService('https://play.google.com/billing');
+      if (!service) return false;
+
       var purchases = await service.listPurchases();
-      var hasActiveSub = Array.isArray(purchases) && purchases.some(function(p) {
+      var validPurchase = Array.isArray(purchases) ? purchases.find(function(p) {
         return p.itemId === PLAY_STORE_SUBSCRIPTION_SKU;
-      });
-      if (hasActiveSub) {
+      }) : null;
+
+      if (validPurchase) {
+        // Tenta di confermare/consumare se rimasto in sospeso
+        try {
+          if (typeof service.consume === 'function') {
+            await service.consume(validPurchase.purchaseToken);
+          } else if (typeof service.acknowledge === 'function') {
+            await service.acknowledge(validPurchase.purchaseToken, 'onetime');
+          }
+        } catch (e) {}
         setProStatus(true, 'Google Play Store');
         return true;
+      } else {
+        // Se era attivo da Play Store ma non c'è più (es. rimborsato) e non abbiamo un acquisto consumato valido, resetta
+        if (localStorage.getItem('speedway_pro_source') === 'Google Play Store' && !localStorage.getItem('speedway_pro_confirmed')) {
+          setProStatus(false, '');
+        }
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error('Errore controllo Play Store:', err);
+    }
     return false;
   }
 
   async function startPlayStoreSubscription() {
-    if ('getDigitalGoodsService' in window && window.PaymentRequest) {
-      try {
+    try {
+      if ('getDigitalGoodsService' in window && window.PaymentRequest) {
         var service = await window.getDigitalGoodsService('https://play.google.com/billing');
+        
+        if (!service) {
+          alert('Attenzione: Google Play Billing non ha risposto su questo dispositivo. Verifica che l\'app sia aggiornata dal Play Store.');
+          return;
+        }
+
         var request = new PaymentRequest([{
           supportedMethods: 'https://play.google.com/billing',
           data: { sku: PLAY_STORE_SUBSCRIPTION_SKU }
         }], {
-          total: { label: 'Speedway Live PRO', amount: { currency: 'EUR', value: '4.99' } }
+          total: { label: 'Speedway Live PRO (1 Anno)', amount: { currency: 'EUR', value: '4.99' } }
         });
         
         var response = await request.show();
+        var purchaseToken = response.details ? response.details.purchaseToken : null;
         await response.complete('success');
+
+        // CONFERMA ACQUISTO PER BLOCCARE IL RIMBORSO DI GOOGLE
         try {
-    const service = await window.getDigitalGoodsService('https://play.google.com/billing');
-    const purchases = await service.listPurchases();
-    for (const p of purchases) {
-        if (!p.acknowledged) {
-            await service.acknowledge(p.purchaseToken, 'repeatable');
+          if (!purchaseToken) {
+            var purchases = await service.listPurchases();
+            for (var i = 0; i < purchases.length; i++) {
+              if (purchases[i].itemId === PLAY_STORE_SUBSCRIPTION_SKU) {
+                purchaseToken = purchases[i].purchaseToken;
+              }
+            }
+          }
+
+          if (purchaseToken) {
+            if (typeof service.consume === 'function') {
+              await service.consume(purchaseToken);
+            } else if (typeof service.acknowledge === 'function') {
+              await service.acknowledge(purchaseToken, 'onetime');
+            }
+          }
+        } catch (ackErr) {
+          console.log('Dettaglio conferma:', ackErr);
         }
-    }
-} catch (e) {
-    console.log('Errore acknowledge: ', e);
-}
+
+        localStorage.setItem('speedway_pro_confirmed', 'true');
         setProStatus(true, 'Google Play Store');
-        alert('🎉 Benvenuto in Speedway Live PRO!');
+        alert('🎉 Benvenuto in Speedway Live PRO! Acquisto confermato.');
         return;
-      } catch (err) {
-        // Se Google blocca, ora ci dice perché invece di morire in silenzio
-        alert('Avviso di sistema: ' + err.message);
-        return; 
+      } else {
+        // Se non siamo dentro l'app Play Store o l'API è bloccata, avvisa prima di chiedere il codice VIP
+        var code = prompt('👑 SPEEDWAY LIVE PRO\n(Servizio Play Store non rilevato su questo browser)\n\nInserisci il tuo Codice VIP:');
+        if (code) redeemVipCode(code);
       }
+    } catch (err) {
+      alert('Avviso Google Play: ' + (err.message || err));
     }
-    
-    var code = prompt('👑 SPEEDWAY LIVE PRO\n\nInserisci il tuo Codice VIP:');
-    if (code) redeemVipCode(code);
   }
 
   function redeemVipCode(rawCode) {
     var clean = (rawCode || '').trim().toUpperCase();
     if (!clean) return;
     if (SECRET_ADMIN_VIP_CODES.indexOf(clean) !== -1) {
+      localStorage.setItem('speedway_pro_confirmed', 'true');
       setProStatus(true, 'Codice VIP');
       alert('👑 Codice VIP riconosciuto! PRO è ora ATTIVO.');
     } else {
