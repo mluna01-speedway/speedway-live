@@ -8392,9 +8392,30 @@ Object.assign(I18N.it, {
     var urlEl = document.getElementById('qr-url-text');
     var imgEl = document.getElementById('qr-img');
     if (urlEl) urlEl.textContent = PLAY_STORE_APP_URL;
-    if (imgEl) {
-      imgEl.src = "https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=4&data=" + encodeURIComponent(PLAY_STORE_APP_URL);
+
+    function renderLocalQr() {
+      if (window.QRious && imgEl) {
+        var qr = new window.QRious({
+          value: PLAY_STORE_APP_URL,
+          size: 240,
+          level: 'M'
+        });
+        imgEl.src = qr.toDataURL('image/png');
+        return true;
+      }
+      return false;
     }
+
+    if (!renderLocalQr()) {
+      var s = document.createElement('script');
+      s.src = "https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js";
+      s.onload = renderLocalQr;
+      s.onerror = function() {
+        if (imgEl) imgEl.src = "https://quickchart.io/qr?size=240&margin=2&text=" + encodeURIComponent(PLAY_STORE_APP_URL);
+      };
+      document.head.appendChild(s);
+    }
+
     var modalEl = document.getElementById('qr-modal');
     if (modalEl) modalEl.classList.add('open');
   };
