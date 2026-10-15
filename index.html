@@ -1486,7 +1486,7 @@
 
     // Mostra subito l'avviso tradotto quando l'utente seleziona la Lega Danese
     if (newMode === 'dk') {
-      switchTab('riders', document.getElementById('nav-riders'));
+      switchTab('event', document.getElementById('nav-event'));
       openDkInfoModal();
     } else {
       switchTab('event', document.getElementById('nav-event'));
@@ -5267,7 +5267,7 @@ Object.assign(I18N.it, {
     closeSonInfoModal();
     renderRidersInputs();
     renderCurrentHeat();
-    switchTab('riders', document.getElementById('nav-riders'));
+    switchTab('event', document.getElementById('nav-event'));
   }
 
   const _sonPrevSelectAppMode = selectAppMode;
