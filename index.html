@@ -8340,6 +8340,89 @@ Object.assign(I18N.it, {
     }, 350);
   })();
 
+// --- AGGIORNAMENTO TESTI CHIARI SCHEDA PILOTI (6 LINGUE) + FIX QR CODE PLAY STORE ---
+  var PLAY_STORE_APP_URL = "https://play.google.com/store/apps/details?id=io.github.mluna01_speedway.twa";
+
+  var CLEAR_RIDERS_AND_QR_I18N = {
+    it: {
+      ridersSectionTitle: "🏍️ Inserimento Piloti (Foto AI / Testo / Manuale)",
+      ridersOcrDesc: "Compila i nomi in 3 modi: 1) Scatta o carica la foto del programma di gara o di una locandina social (l'AI inserisce i piloti in automatico); 2) Tocca 'Incolla elenco' per copiare una lista da WhatsApp/Web; 3) Scrivi o correggi i nomi direttamente nelle caselle #1, #2 qui sotto.",
+      qrTitle: "📲 Scarica Speedway Live da Google Play",
+      qrDesc: "Fai inquadrare questo QR Code con la fotocamera per scaricare l'app ufficiale dal Google Play Store:"
+    },
+    en: {
+      ridersSectionTitle: "🏍️ Rider Entry (AI Photo / Text / Manual)",
+      ridersOcrDesc: "Enter rider names in 3 ways: 1) Take or upload a photo of the race program or social media graphic (AI fills the lineup automatically); 2) Tap 'Paste rider list' to copy a list from WhatsApp/Web; 3) Type or edit names directly in the #1, #2 boxes below.",
+      qrTitle: "📲 Get Speedway Live on Google Play",
+      qrDesc: "Scan this QR Code with a smartphone camera to download the official app from the Google Play Store:"
+    },
+    pl: {
+      ridersSectionTitle: "🏍️ Wprowadzanie Zawodników (Zdjęcie AI / Tekst / Ręcznie)",
+      ridersOcrDesc: "Wpisz nazwiska na 3 sposoby: 1) Zrób lub wgraj zdjęcie programu zawodów albo grafiki z social mediów (AI automatycznie wpisze skład); 2) Kliknij 'Wklej listę', aby skopiować tekst z WhatsAppa/Internetu; 3) Wpisz lub popraw nazwiska ręcznie w polach #1, #2 poniżej.",
+      qrTitle: "📲 Pobierz Speedway Live z Google Play",
+      qrDesc: "Zeskanuj ten kod QR aparatem telefonu, aby pobrać oficjalną aplikację ze sklepu Google Play:"
+    },
+    da: {
+      ridersSectionTitle: "🏍️ Indtastning af Kørere (AI-Foto / Tekst / Manuelt)",
+      ridersOcrDesc: "Indtast kørernavne på 3 måder: 1) Tag eller upload et billede af løbsprogrammet eller et opslag fra sociale medier (AI udfylder automatisk startlisten); 2) Tryk på 'Indsæt kørerliste' for at kopiere tekst; 3) Skriv eller ret navnene direkte i felterne #1, #2 herunder.",
+      qrTitle: "📲 Hent Speedway Live i Google Play",
+      qrDesc: "Scan denne QR-kode med kameraet for at hente den officielle app i Google Play Butik:"
+    },
+    sv: {
+      ridersSectionTitle: "🏍️ Inmatning av Förare (AI-Foto / Text / Manuellt)",
+      ridersOcrDesc: "Ange förarnamn på 3 sätt: 1) Ta eller ladda upp ett foto av tävlingsprogrammet eller grafik från sociala medier (AI fyller i startlistan automatiskt); 2) Tryck på 'Klistra in förarlista' för att kopiera text; 3) Skriv eller ändra namnen direkt i rutorna #1, #2 nedan.",
+      qrTitle: "📲 Ladda ner Speedway Live på Google Play",
+      qrDesc: "Skanna denna QR-kod med mobilkameran för att ladda ner den officiella appen från Google Play Butik:"
+    },
+    cs: {
+      ridersSectionTitle: "🏍️ Zadání Jezdců (AI Foto / Text / Ručně)",
+      ridersOcrDesc: "Jména jezdců můžete zadat 3 způsoby: 1) Vyfoťte nebo nahrajte fotku programu závodu či grafiky ze sociálních sítí (AI automaticky vyplní startovní listinu); 2) Klepněte na 'Vložit seznam' pro zkopírování textu; 3) Napište nebo upravte jména přímo v polích #1, #2 níže.",
+      qrTitle: "📲 Stáhnout Speedway Live z Google Play",
+      qrDesc: "Naskenujte tento QR kód fotoaparátem telefonu a stáhněte si oficiální aplikaci z obchodu Google Play:"
+    }
+  };
+
+  Object.keys(CLEAR_RIDERS_AND_QR_I18N).forEach(function(langKey) {
+    if (I18N[langKey]) {
+      Object.assign(I18N[langKey], CLEAR_RIDERS_AND_QR_I18N[langKey]);
+    }
+  });
+
+  window.openQrModal = openQrModal = function() {
+    var urlEl = document.getElementById('qr-url-text');
+    var imgEl = document.getElementById('qr-img');
+    if (urlEl) urlEl.textContent = PLAY_STORE_APP_URL;
+    if (imgEl) {
+      imgEl.src = "https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=4&data=" + encodeURIComponent(PLAY_STORE_APP_URL);
+    }
+    var modalEl = document.getElementById('qr-modal');
+    if (modalEl) modalEl.classList.add('open');
+  };
+
+  window.closeQrModal = closeQrModal = function() {
+    var modalEl = document.getElementById('qr-modal');
+    if (modalEl) modalEl.classList.remove('open');
+  };
+
+  window.shareAppLink = shareAppLink = async function() {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Speedway Live",
+          text: "🏁 Scarica Speedway Live dal Google Play Store:",
+          url: PLAY_STORE_APP_URL
+        });
+        return;
+      } catch (e) {}
+    }
+    try {
+      await navigator.clipboard.writeText(PLAY_STORE_APP_URL);
+      alert("✅ Link Google Play copiato negli appunti!");
+    } catch (e) {
+      prompt("Link Google Play Store:", PLAY_STORE_APP_URL);
+    }
+  };  
+  
   initState();
   renderCurrentHeat();
 </script>
