@@ -1551,12 +1551,14 @@
     ).join('');
   }
 
-  function openQrModal() {
-    const targetUrl = (window.location.href && window.location.href.startsWith('http')) ? window.location.href.split('#')[0] : APP_PUBLIC_URL;
-    document.getElementById('qr-url-text').textContent = targetUrl;
-    document.getElementById('qr-img').src = "https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=4&data=" + encodeURIComponent(targetUrl);
-    document.getElementById('qr-modal').classList.add('open');
+ function openQrModal() {
+  const storeUrl = "https://play.google.com/store/apps/details?id=io.github.mluna01_speedway.twa";
+  document.getElementById('qr-url-text').textContent = storeUrl;
+  if (typeof drawRealQrCodeOnCanvas === 'function') {
+    document.getElementById('qr-img').src = drawRealQrCodeOnCanvas(storeUrl, 260);
   }
+  document.getElementById('qr-modal').classList.add('open');
+}
 
   function closeQrModal() {
     document.getElementById('qr-modal').classList.remove('open');
