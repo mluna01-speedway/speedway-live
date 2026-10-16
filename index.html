@@ -1552,13 +1552,15 @@
   }
 
  function openQrModal() {
-  const storeUrl = "https://play.google.com/store/apps/details?id=io.github.mluna01_speedway.twa";
-  document.getElementById('qr-url-text').textContent = storeUrl;
-  if (typeof drawRealQrCodeOnCanvas === 'function') {
-    document.getElementById('qr-img').src = drawRealQrCodeOnCanvas(storeUrl, 260);
+    const storeUrl = "https://play.google.com/store/apps/details?id=io.github.mluna01_speedway.twa";
+    const urlEl = document.getElementById('qr-url-text');
+    const boxEl = document.getElementById('qr-svg-container');
+    if (urlEl) urlEl.textContent = storeUrl;
+    if (boxEl && typeof buildVerifiedQrSvg === 'function') {
+      boxEl.innerHTML = buildVerifiedQrSvg(storeUrl);
+    }
+    document.getElementById('qr-modal').classList.add('open');
   }
-  document.getElementById('qr-modal').classList.add('open');
-}
 
   function closeQrModal() {
     document.getElementById('qr-modal').classList.remove('open');
