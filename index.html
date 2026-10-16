@@ -1565,7 +1565,7 @@
   }
 
   async function shareAppLink() {
-    const targetUrl = (window.location.href && window.location.href.startsWith('http')) ? window.location.href.split('#')[0] : APP_PUBLIC_URL;
+    const targetUrl = "https://play.google.com/store/apps/details?id=io.github.mluna01_speedway.twa";
     if (navigator.share) {
       try { await navigator.share({ title: "Speedway Live", text: "🏁 Speedway Live App:", url: targetUrl }); return; } catch (e) {}
     }
