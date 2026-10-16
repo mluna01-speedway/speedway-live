@@ -515,8 +515,8 @@
   <div class="modal-box">
     <h3 data-i18n="qrTitle">📲 Condividi Speedway Live</h3>
     <p data-i18n="qrDesc">Fai inquadrare questo QR Code con la fotocamera per aprire e installare l'app sullo smartphone:</p>
-    <div class="qr-box">
-      <img id="qr-img" src="" alt="QR Code Speedway Live">
+    <div class="qr-box" id="qr-svg-container" style="background: #ffffff; padding: 14px; border-radius: 12px; display: inline-block; margin-bottom: 12px;">
+      <!-- Il QR Code verrà disegnato qui dentro -->
     </div>
     <div class="qr-url" id="qr-url-text">https://play.google.com/store/apps/details?id=io.github.mluna01_speedway.twa</div>
     <div class="qr-btn-row">
@@ -8390,9 +8390,8 @@ Object.assign(I18N.it, {
     }
   });
 
-  // Generatore QR Code ISO/IEC 18004 integrato (100% offline, zero siti esterni)
-  function drawRealQrCodeOnCanvas(text, size) {
-    // Codifica Byte + Reed-Solomon ECC Livello L (Versione 4: 33x33 moduli, fino a 78 caratteri)
+ // Generatore QR Code SVG ISO/IEC 18004 (Versione 4-L, 33x33) - Bit-order verificato
+  function buildVerifiedQrSvg(text) {
     var data = [];
     for (var i = 0; i < text.length; i++) data.push(text.charCodeAt(i));
     var bits = [];
@@ -8404,6 +8403,7 @@ Object.assign(I18N.it, {
     for (var i = 0; i < data.length; i++) pushBits(data[i], 8);
     pushBits(0, Math.min(4, 640 - bits.length));
     while (bits.length % 8 !== 0) bits.push(0);
+
     var codewords = [];
     for (var i = 0; i < bits.length; i += 8) {
       var byte = 0;
@@ -8413,7 +8413,7 @@ Object.assign(I18N.it, {
     var pad = [236, 17], pIdx = 0;
     while (codewords.length < 80) codewords.push(pad[pIdx++ % 2]);
 
-    // Polinomio Reed-Solomon (20 byte ECC per Versione 4-L)
+    // Reed-Solomon 20 ECC codewords per Versione 4-L
     var gfExp = new Array(512), gfLog = new Array(256);
     var x = 1;
     for (var i = 0; i < 255; i++) {
@@ -8441,7 +8441,7 @@ Object.assign(I18N.it, {
     var fullWords = codewords.concat(ecc);
 
     var N = 33;
-    var grid = Array.from({ length: N }, function() { return new Array(N).fill(null); });
+    var grid = Array.from({ length: N }, function() { return new Array(N).fill(0); });
     var isFunc = Array.from({ length: N }, function() { return new Array(N).fill(false); });
 
     function setMod(r, c, val) {
@@ -8458,27 +8458,23 @@ Object.assign(I18N.it, {
       }
     }
     drawFinder(0, 0); drawFinder(0, N - 7); drawFinder(N - 7, 0);
-    // Alignment pattern Versione 4 (centro a 26, 26)
+
+    // Alignment pattern Versione 4 (centro in 26,26)
     for (var dr = -2; dr <= 2; dr++) {
       for (var dc = -2; dc <= 2; dc++) {
         setMod(26 + dr, 26 + dc, (Math.max(Math.abs(dr), Math.abs(dc)) !== 1) ? 1 : 0);
       }
     }
+    // Timing patterns
     for (var i = 8; i < N - 8; i++) {
       setMod(6, i, (i % 2 === 0) ? 1 : 0);
       setMod(i, 6, (i % 2 === 0) ? 1 : 0);
     }
-    setMod(N - 8, 8, 1);
+    setMod(N - 8, 8, 1); // Dark module fisso
 
-    // Riserva aree Format Info
-    for (var i = 0; i < 9; i++) {
-      if (!isFunc[8][i]) isFunc[8][i] = true;
-      if (!isFunc[i][8]) isFunc[i][8] = true;
-    }
-    for (var i = 0; i < 8; i++) {
-      isFunc[8][N - 1 - i] = true;
-      isFunc[N - 1 - i][8] = true;
-    }
+    // Riserva Format Info
+    for (var i = 0; i < 9; i++) { isFunc[8][i] = true; isFunc[i][8] = true; }
+    for (var i = 0; i < 8; i++) { isFunc[8][N - 1 - i] = true; isFunc[N - 1 - i][8] = true; }
 
     var allBits = [];
     for (var i = 0; i < fullWords.length; i++) {
@@ -8501,40 +8497,37 @@ Object.assign(I18N.it, {
       up = !up;
     }
 
-    // Format Info per ECC L (01) + Mask 0 (000) -> 0x77C4 (30660)
-    var fmt = 30660;
-    var fBits = [];
-    for (var i = 0; i < 15; i++) fBits.push((fmt >>> i) & 1);
-    var rCoords = [8,8,8,8,8,8,8,8,7,5,4,3,2,1,0];
-    var cCoords = [0,1,2,3,4,5,7,8,8,8,8,8,8,8,8];
-    for (var i = 0; i < 15; i++) grid[rCoords[i]][cCoords[i]] = fBits[i];
-    for (var i = 0; i < 7; i++) grid[N - 1 - i][8] = fBits[i];
-    for (var i = 7; i < 15; i++) grid[8][N - 15 + i] = fBits[i];
+    // Format Info per ECC Livello L (01) + Mask 0 (000) = 0x77C4 (MSB -> LSB)
+    var fmt = 0x77C4;
+    var r1 = [0,1,2,3,4,5,7,8,8,8,8,8,8,8,8];
+    var c1 = [8,8,8,8,8,8,8,8,7,5,4,3,2,1,0];
+    for (var i = 0; i < 15; i++) {
+      var bit = (fmt >>> i) & 1; // i=0 è LSB, i=14 è MSB
+      grid[r1[i]][c1[i]] = bit;
+      if (i < 8) grid[8][N - 1 - i] = bit;
+      else grid[N - 15 + i][8] = bit;
+    }
 
-    var canvas = document.createElement('canvas');
-    canvas.width = size; canvas.height = size;
-    var ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, size, size);
-    var margin = 16;
-    var cell = Math.floor((size - margin * 2) / N);
-    var offset = Math.floor((size - cell * N) / 2);
-    ctx.fillStyle = '#000000';
+    // Genera SVG vettoriale nitido
+    var paths = '';
     for (var r = 0; r < N; r++) {
       for (var c = 0; c < N; c++) {
-        if (grid[r][c]) ctx.fillRect(offset + c * cell, offset + r * cell, cell, cell);
+        if (grid[r][c]) paths += 'M' + (c + 2) + ',' + (r + 2) + 'h1v1h-1z';
       }
     }
-    return canvas.toDataURL('image/png');
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37" width="210" height="210" shape-rendering="crispEdges" style="display:block;">' +
+           '<rect width="37" height="37" fill="#ffffff"/>' +
+           '<path d="' + paths + '" fill="#000000"/>' +
+           '</svg>';
   }
 
   window.openQrModal = openQrModal = function() {
+    var storeUrl = "https://play.google.com/store/apps/details?id=io.github.mluna01_speedway.twa";
     var urlEl = document.getElementById('qr-url-text');
-    var imgEl = document.getElementById('qr-img');
-    if (urlEl) urlEl.textContent = PLAY_STORE_APP_URL;
-    if (imgEl) {
-      imgEl.onerror = null;
-      imgEl.src = drawRealQrCodeOnCanvas(PLAY_STORE_APP_URL, 260);
+    var boxEl = document.getElementById('qr-svg-container');
+    if (urlEl) urlEl.textContent = storeUrl;
+    if (boxEl) {
+      boxEl.innerHTML = buildVerifiedQrSvg(storeUrl);
     }
     var modalEl = document.getElementById('qr-modal');
     if (modalEl) modalEl.classList.add('open');
