@@ -8646,20 +8646,6 @@ async function acquistaAbbonamento() {
     return window.startPlayStoreSubscription();
   }
 }
-  try {
-    const service = await window.getDigitalGoodsService('https://play.google.com/billing');
-    const request = new PaymentRequest([{
-      supportedMethods: 'https://play.google.com/billing',
-      data: { sku: 'speedway_live_pro' }
-    }]);
-    const paymentResponse = await request.show();
-    await service.acknowledge(paymentResponse.details.purchaseToken, 'onetime');
-    await paymentResponse.complete('success');
-    alert("Abbonamento attivato con successo!");
-  } catch (error) {
-    console.error("Errore durante il pagamento:", error);
-  }
-}
 </script>
 </body>
 </html>
