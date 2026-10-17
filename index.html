@@ -3331,27 +3331,154 @@ Object.assign(I18N.it, {
     reader.readAsText(file);
   }
 
+  var historyFilterYear = 'ALL';
+  var historyFilterType = 'ALL';
+
+  window.setHistoryFilter = function(kind, val) {
+    if (kind === 'year') historyFilterYear = val;
+    if (kind === 'type') historyFilterType = val;
+    renderHistory();
+  };
+
+  function getRaceYear(item) {
+    var m = (item && item.eventMeta) ? item.eventMeta : {};
+    if (m.date) {
+      var match = String(m.date).match(/\b(20\d{2})\b/);
+      if (match) return match[1];
+    }
+    if (item && item.savedAt) {
+      var matchSaved = String(item.savedAt).match(/\b(20\d{2})\b/);
+      if (matchSaved) return matchSaved[1];
+    }
+    if (item && typeof item.id === 'number' && item.id > 1000000000000) {
+      return String(new Date(item.id).getFullYear());
+    }
+    return String(new Date().getFullYear());
+  }
+
   function renderHistory() {
     const archive = getArchive();
     const container = document.getElementById('history-list');
+    if (!container) return;
+
     if (archive.length === 0) {
       container.innerHTML = '<div class="card-box" style="text-align:center;color:var(--muted);font-size:0.85rem;">' + t('emptyHistory') + '</div>';
       return;
     }
-    container.innerHTML = archive.map(item => {
-      const m = item.eventMeta || {};
-      const modeTitle = getModeTitle(item);
-      const loc = [modeTitle, m.track, m.city, m.date].filter(Boolean).join(" • ");
-      return '<div class="history-item">' +
-        '<div class="history-top"><div><div class="history-title">' + (m.name || "Speedway") + '</div><div class="history-meta">' + loc + '</div></div></div>' +
-        '<div class="history-podium">' + getPodiumSummary(item) + '</div>' +
-        '<div class="history-actions">' +
-          '<button type="button" onclick="loadArchivedRace(' + item.id + ')">' + t('btnOpenRace') + '</button>' +
-          '<button type="button" class="del" onclick="deleteArchivedRace(' + item.id + ')">' + t('btnDelRace') + '</button>' +
-        '</div></div>';
-    }).join('');
-  }
 
+    var lang = (typeof state !== 'undefined' && state.lang) ? state.lang : (localStorage.getItem('speedway_lang') || 'it');
+    var lblAllYears = {
+      it: '📅 Tutti gli anni',
+      en: '📅 All years',
+      pl: '📅 Wszystkie lata',
+      da: '📅 Alle år',
+      sv: '📅 Alla år',
+      cs: '📅 Všechny roky'
+    }[lang] || '📅 Tutti gli anni';
+
+    var lblAllTypes = {
+      it: '🏁 Tutte le tipologie',
+      en: '🏁 All formats',
+      pl: '🏁 Wszystkie formaty',
+      da: '🏁 Alle formater',
+      sv: '🏁 Alla format',
+      cs: '🏁 Všechny formáty'
+    }[lang] || '🏁 Tutte le tipologie';
+
+    var lblNoMatch = {
+      it: 'Nessuna gara trovata per i filtri selezionati.',
+      en: 'No races found for the selected filters.',
+      pl: 'Brak zawodów dla wybranych filtrów.',
+      da: 'Ingen løb fundet for de valgte filtre.',
+      sv: 'Inga tävlingar hittades för valda filter.',
+      cs: 'Pro vybrané filtry nebyly nalezeny žádné závody.'
+    }[lang] || 'Nessuna gara trovata per i filtri selezionati.';
+
+    // 1. Raccogli tutti gli Anni e le Tipologie presenti nello storico
+    var yearsSet = {};
+    var typesMap = {};
+    archive.forEach(function(item) {
+      var y = getRaceYear(item);
+      yearsSet[y] = true;
+      var mKey = item.raceMode || 'gp16';
+      typesMap[mKey] = getModeTitle(item);
+    });
+
+    var yearsList = Object.keys(yearsSet).sort(function(a, b) { return b.localeCompare(a); });
+    var typesList = Object.keys(typesMap);
+
+    if (historyFilterYear !== 'ALL' && !yearsSet[historyFilterYear]) historyFilterYear = 'ALL';
+    if (historyFilterType !== 'ALL' && !typesMap[historyFilterType]) historyFilterType = 'ALL';
+
+    // 2. Costruisci barra filtri Anno + Tipologia
+    var filterBarHtml = '<div class="card-box" style="margin-bottom:12px;padding:10px;">' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+        '<select onchange="window.setHistoryFilter(\'year\', this.value)" style="flex:1;min-width:130px;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card2, #18211b);color:var(--text);font-weight:700;font-size:0.84rem;">' +
+          '<option value="ALL"' + (historyFilterYear === 'ALL' ? ' selected' : '') + '>' + lblAllYears + ' (' + archive.length + ')</option>' +
+          yearsList.map(function(y) {
+            return '<option value="' + y + '"' + (historyFilterYear === y ? ' selected' : '') + '>📅 ' + y + '</option>';
+          }).join('') +
+        '</select>' +
+        '<select onchange="window.setHistoryFilter(\'type\', this.value)" style="flex:1.4;min-width:160px;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card2, #18211b);color:var(--text);font-weight:700;font-size:0.84rem;">' +
+          '<option value="ALL"' + (historyFilterType === 'ALL' ? ' selected' : '') + '>' + lblAllTypes + '</option>' +
+          typesList.map(function(tk) {
+            return '<option value="' + tk + '"' + (historyFilterType === tk ? ' selected' : '') + '>🏁 ' + typesMap[tk] + '</option>';
+          }).join('') +
+        '</select>' +
+      '</div>' +
+    '</div>';
+
+    // 3. Filtra le gare in base alla selezione
+    var filtered = archive.filter(function(item) {
+      var yOk = (historyFilterYear === 'ALL') || (getRaceYear(item) === historyFilterYear);
+      var tOk = (historyFilterType === 'ALL') || ((item.raceMode || 'gp16') === historyFilterType);
+      return yOk && tOk;
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = filterBarHtml + '<div class="card-box" style="text-align:center;color:var(--muted);font-size:0.85rem;">' + lblNoMatch + '</div>';
+      return;
+    }
+
+    // 4. Raggruppa visivamente per Anno
+    var groupedByYear = {};
+    filtered.forEach(function(item) {
+      var y = getRaceYear(item);
+      if (!groupedByYear[y]) groupedByYear[y] = [];
+      groupedByYear[y].push(item);
+    });
+
+    var sortedFilteredYears = Object.keys(groupedByYear).sort(function(a, b) { return b.localeCompare(a); });
+
+    var listHtml = sortedFilteredYears.map(function(year) {
+      var yearItems = groupedByYear[year];
+      var yearHeader = '<div style="display:flex;align-items:center;justify-content:space-between;margin:14px 4px 8px;padding-bottom:4px;border-bottom:1px solid var(--border);">' +
+        '<span style="font-size:0.95rem;font-weight:900;color:var(--accent);letter-spacing:0.5px;">📅 ' + year + '</span>' +
+        '<span style="font-size:0.75rem;color:var(--muted);font-weight:700;">' + yearItems.length + ' 🏁</span>' +
+      '</div>';
+
+      var cardsHtml = yearItems.map(function(item) {
+        const m = item.eventMeta || {};
+        const modeTitle = getModeTitle(item);
+        const loc = [m.track, m.city, m.date].filter(Boolean).join(" • ");
+        return '<div class="history-item">' +
+          '<div class="history-top"><div>' +
+            '<div style="display:inline-block;padding:2px 8px;margin-bottom:5px;border-radius:6px;background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.3);color:var(--accent);font-size:0.72rem;font-weight:800;">🏁 ' + modeTitle + '</div>' +
+            '<div class="history-title">' + (m.name || "Speedway") + '</div>' +
+            (loc ? '<div class="history-meta">' + loc + '</div>' : '') +
+          '</div></div>' +
+          '<div class="history-podium">' + getPodiumSummary(item) + '</div>' +
+          '<div class="history-actions">' +
+            '<button type="button" onclick="loadArchivedRace(' + item.id + ')">' + t('btnOpenRace') + '</button>' +
+            '<button type="button" class="del" onclick="deleteArchivedRace(' + item.id + ')">' + t('btnDelRace') + '</button>' +
+          '</div></div>';
+      }).join('');
+
+      return yearHeader + cardsHtml;
+    }).join('');
+
+    container.innerHTML = filterBarHtml + listHtml;
+  }
   function resetAllScores() {
     if (confirm(t('confirmResetScores'))) {
       const def = createDefaultState(state.mode);
