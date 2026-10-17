@@ -7980,11 +7980,45 @@ Object.assign(I18N.it, {
     };
 
     window.deactivateProPass = function() {
-      if (confirm('Vuoi disattivare la licenza PRO su questo dispositivo?')) {
+      var lang = (typeof state !== 'undefined' && state.lang) ? state.lang : (localStorage.getItem('speedway_lang') || 'it');
+      var msgMap = {
+        it: 'Vuoi disattivare la licenza VIP su questo dispositivo?',
+        en: 'Do you want to deactivate the VIP license on this device?',
+        pl: 'Czy chcesz dezaktywować licencję VIP na tym urządzeniu?',
+        da: 'Vil du deaktivere VIP-licensen på denne enhed?',
+        sv: 'Vill du inaktivera VIP-licensen på den här enheten?',
+        cs: 'Chcete na tomto zařízení deaktivovat VIP licenci?'
+      };
+      var cancelMap = { it: 'Annulla', en: 'Cancel', pl: 'Anuluj', da: 'Annuller', sv: 'Avbryt', cs: 'Zrušit' };
+      var cBox = document.getElementById('sw-custom-confirm');
+      if (!cBox) {
+        cBox = document.createElement('div');
+        cBox.id = 'sw-custom-confirm';
+        cBox.className = 'modal-backdrop';
+        cBox.style.zIndex = '99999';
+        cBox.innerHTML = '<div class="modal-box" style="max-width:340px;text-align:center;">' +
+          '<h3 style="margin-top:0;color:#00e676;display:flex;align-items:center;justify-content:center;gap:8px;">🏁 Speedway Live</h3>' +
+          '<p id="sw-custom-confirm-msg" style="font-size:0.98rem;line-height:1.45;margin:16px 0 20px;"></p>' +
+          '<div class="qr-btn-row" style="display:flex;gap:10px;">' +
+            '<button type="button" id="sw-confirm-cancel" class="qr-btn-close" style="flex:1;padding:11px;font-weight:700;"></button>' +
+            '<button type="button" id="sw-confirm-ok" class="qr-btn-share" style="flex:1;padding:11px;font-weight:700;">OK</button>' +
+          '</div>' +
+        '</div>';
+        document.body.appendChild(cBox);
+      }
+      document.getElementById('sw-custom-confirm-msg').textContent = msgMap[lang] || msgMap.it;
+      document.getElementById('sw-confirm-cancel').textContent = cancelMap[lang] || cancelMap.it;
+      document.getElementById('sw-confirm-cancel').onclick = function() {
+        cBox.classList.remove('open');
+      };
+      document.getElementById('sw-confirm-ok').onclick = function() {
+        cBox.classList.remove('open');
         localStorage.removeItem('speedway_pro_confirmed');
+        localStorage.removeItem('speedway_pro_expiry');
         if (typeof window.setProStatus === 'function') window.setProStatus(false, '');
         translateProSettingsCard();
-      }
+      };
+      cBox.classList.add('open');
     };
 
     // Traduce il box Licenza PRO in tab-settings nella lingua attiva
@@ -7993,13 +8027,19 @@ Object.assign(I18N.it, {
       if (!proCard) return;
       var isPro = typeof window.isProUser === 'function' && window.isProUser();
       if (isPro) {
+        var proSource = localStorage.getItem('speedway_pro_source') || '';
+        var isVipCode = (proSource === 'Codice VIP');
+        var actionHtml = isVipCode
+          ? '<button type="button" onclick="window.deactivateProPass()" style="padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11.5px;cursor:pointer;">' + trExt('proBtnDeactivate') + '</button>'
+          : '<span style="padding:5px 10px;border-radius:8px;background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.35);color:#00e676;font-size:11.5px;font-weight:700;">✅ Google Play (365d)</span>';
+
         proCard.innerHTML = [
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">',
           '  <div>',
           '    <div style="font-size:16px;font-weight:800;color:var(--accent);">' + trExt('proActiveTitle') + '</div>',
           '    <div style="font-size:12.5px;color:var(--muted);margin-top:3px;">' + trExt('proActiveSub') + '</div>',
           '  </div>',
-          '  <button type="button" onclick="window.deactivateProPass()" style="padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11.5px;cursor:pointer;">' + trExt('proBtnDeactivate') + '</button>',
+          '  ' + actionHtml,
           '</div>'
         ].join('');
       } else {
