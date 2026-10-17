@@ -8646,6 +8646,86 @@ async function acquistaAbbonamento() {
     return window.startPlayStoreSubscription();
   }
 }
+
+// Popup grafico ufficiale Speedway Live (elimina "github.io dice" e traduce in automatico)
+(function() {
+  var proAlertDict = {
+    '🎉 Benvenuto in Speedway Live PRO! Acquisto confermato per 365 giorni.': {
+      en: '🎉 Welcome to Speedway Live PRO! Purchase confirmed for 365 days.',
+      pl: '🎉 Witamy w Speedway Live PRO! Zakup potwierdzony na 365 dni.',
+      da: '🎉 Velkommen til Speedway Live PRO! Køb bekræftet i 365 dage.',
+      sv: '🎉 Välkommen till Speedway Live PRO! Köp bekräftat i 365 dagar.',
+      cs: '🎉 Vítejte ve Speedway Live PRO! Nákup potvrzen na 365 dní.'
+    },
+    '✅ Acquisto confermato con successo! Speedway Live PRO è ATTIVO per 365 giorni.': {
+      en: '✅ Purchase confirmed! Speedway Live PRO is ACTIVE for 365 days.',
+      pl: '✅ Zakup potwierdzony! Speedway Live PRO jest AKTYWNY przez 365 dni.',
+      da: '✅ Køb bekræftet! Speedway Live PRO er AKTIV i 365 dage.',
+      sv: '✅ Köp bekräftat! Speedway Live PRO är AKTIV i 365 dagar.',
+      cs: '✅ Nákup potvrzen! Speedway Live PRO je AKTIVNÍ na 365 dní.'
+    },
+    '👑 Licenza VIP già attiva!': {
+      en: '👑 VIP License already active!',
+      pl: '👑 Licencja VIP jest już aktywna!',
+      da: '👑 VIP-licens er allerede aktiv!',
+      sv: '👑 VIP-licens är redan aktiv!',
+      cs: '👑 VIP licence je již aktivní!'
+    },
+    'Nessun Pass attivo trovato (o Pass 365 giorni scaduto).': {
+      en: 'No active Pass found (or 365-day Pass expired).',
+      pl: 'Nie znaleziono aktywnego karnetu (lub karnet 365-dniowy wygasł).',
+      da: 'Ingen aktivt pas fundet (eller 365-dages pas er udløbet).',
+      sv: 'Inget aktivt pass hittades (eller 365-dagarspasset har gått ut).',
+      cs: 'Nebyl nalezen žádný aktivní pas (nebo platnost 365denního pasu vypršela).'
+    },
+    '✅ Link Google Play copiato negli appunti!': {
+      en: '✅ Google Play link copied to clipboard!',
+      pl: '✅ Link Google Play skopiowany do schowka!',
+      da: '✅ Google Play-link kopieret til udklipsholder!',
+      sv: '✅ Google Play-länk kopierad till urklipp!',
+      cs: '✅ Odkaz Google Play zkopírován do schránky!'
+    }
+  };
+
+  window.alert = function(msg) {
+    var text = String(msg || '');
+    var lang = (typeof state !== 'undefined' && state.lang) ? state.lang : (localStorage.getItem('speedway_lang') || 'it');
+
+    if (lang !== 'it') {
+      if (proAlertDict[text] && proAlertDict[text][lang]) {
+        text = proAlertDict[text][lang];
+      } else if (text.indexOf('✅ Pass Speedway Live PRO attivo!') === 0) {
+        var dMatch = text.match(/\d+/g);
+        var days = dMatch ? dMatch[dMatch.length - 1] : '365';
+        var daysMap = {
+          en: '✅ Speedway Live PRO Pass active! (Days left: ' + days + ')',
+          pl: '✅ Karnet Speedway Live PRO aktywny! (Pozostało dni: ' + days + ')',
+          da: '✅ Speedway Live PRO-pas aktivt! (Dage tilbage: ' + days + ')',
+          sv: '✅ Speedway Live PRO-pass aktivt! (Dagar kvar: ' + days + ')',
+          cs: '✅ Pas Speedway Live PRO aktivní! (Zbývá dní: ' + days + ')'
+        };
+        if (daysMap[lang]) text = daysMap[lang];
+      }
+    }
+
+    var box = document.getElementById('sw-custom-alert');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'sw-custom-alert';
+      box.className = 'modal-backdrop';
+      box.style.zIndex = '99999';
+      box.innerHTML = '<div class="modal-box" style="max-width:340px;text-align:center;">' +
+        '<h3 style="margin-top:0;color:#00e676;display:flex;align-items:center;justify-content:center;gap:8px;">🏁 Speedway Live</h3>' +
+        '<p id="sw-custom-alert-msg" style="font-size:0.98rem;line-height:1.45;margin:16px 0 20px;white-space:pre-line;"></p>' +
+        '<button type="button" class="qr-btn-share" style="width:100%;padding:12px;font-weight:700;font-size:1rem;" onclick="document.getElementById(\'sw-custom-alert\').classList.remove(\'open\')">OK</button>' +
+      '</div>';
+      document.body.appendChild(box);
+    }
+    var msgEl = document.getElementById('sw-custom-alert-msg');
+    if (msgEl) msgEl.textContent = text;
+    box.classList.add('open');
+  };
+})();
 </script>
 </body>
 </html>
