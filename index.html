@@ -7225,6 +7225,56 @@ Object.assign(I18N.it, {
     if (modal && active) modal.style.display = 'none';
   };
 
+  // Durata Pass PRO: 365 giorni in millisecondi
+  var PRO_PASS_DURATION_MS = 365 * 24 * 60 * 60 * 1000;
+
+  function isProPassValidOnDevice() {
+    if (localStorage.getItem('speedway_pro_confirmed') !== 'true') return false;
+    var expStr = localStorage.getItem('speedway_pro_expiry');
+    if (!expStr) {
+      // Se era già attivo ma senza data di scadenza, imposta 365 giorni da oggi
+      var newExp = Date.now() + PRO_PASS_DURATION_MS;
+      localStorage.setItem('speedway_pro_expiry', String(newExp));
+      return true;
+    }
+    var expTime = parseInt(expStr, 10);
+    if (isNaN(expTime) || Date.now() < expTime) {
+      return true;
+    }
+    // Pass scaduto dopo 365 giorni: pulisci stato per permettere nuovo acquisto
+    localStorage.removeItem('speedway_pro_confirmed');
+    localStorage.removeItem('speedway_pro_expiry');
+    return false;
+  }
+
+  // Conferma e consuma il token su Google Play (evita il rimborso automatico dei 3 minuti)
+  async function confirmPlayStoreToken(service, token) {
+    if (!service || !token) return false;
+    var confirmed = false;
+    // 1. Su Chrome moderni (Digital Goods API v2.1), consume() è il comando ufficiale per i prodotti in-app
+    if (typeof service.consume === 'function') {
+      try {
+        await service.consume(token);
+        confirmed = true;
+      } catch (e1) {
+        console.log('Info consume:', e1);
+      }
+    }
+    // 2. Fallback per versioni precedenti (Digital Goods API v1)
+    if (!confirmed && typeof service.acknowledge === 'function') {
+      try {
+        await service.acknowledge(token, 'repeatable');
+        confirmed = true;
+      } catch (e2) {
+        try {
+          await service.acknowledge(token, 'onetime');
+          confirmed = true;
+        } catch (e3) {}
+      }
+    }
+    return confirmed;
+  }
+
   window.checkPlayStoreEntitlements = async function(silent) {
     if (localStorage.getItem('speedway_pro_source') === 'Codice VIP') {
       if (!silent) alert('👑 Licenza VIP già attiva!');
@@ -7232,47 +7282,56 @@ Object.assign(I18N.it, {
     }
 
     if (!('getDigitalGoodsService' in window)) {
+      if (isProPassValidOnDevice()) {
+        window.setProStatus(true, 'Google Play Store');
+        return true;
+      }
       if (!silent) alert('Servizio Google Play non rilevato su questo dispositivo/browser.');
       return false;
     }
+
     try {
       var service = await window.getDigitalGoodsService('https://play.google.com/billing');
-      if (!service) {
-        if (!silent) alert('Impossibile contattare Google Play Billing.');
-        return false;
-      }
-
-      var purchases = await service.listPurchases();
-      var validPurchase = Array.isArray(purchases) ? purchases.find(function(p) {
-        return p.itemId === PLAY_STORE_SUBSCRIPTION_SKU || p.itemId === 'speedway_live_pro';
-      }) : null;
-
-      if (validPurchase) {
-        try {
-          if (typeof service.consume === 'function') {
-            await service.consume(validPurchase.purchaseToken);
-          } else if (typeof service.acknowledge === 'function') {
-            await service.acknowledge(validPurchase.purchaseToken, 'onetime');
+      if (service) {
+        var purchases = await service.listPurchases();
+        if (Array.isArray(purchases) && purchases.length > 0) {
+          for (var i = 0; i < purchases.length; i++) {
+            var p = purchases[i];
+            if (p && p.purchaseToken) {
+              await confirmPlayStoreToken(service, p.purchaseToken);
+            }
           }
-        } catch (e) {}
-        localStorage.setItem('speedway_pro_confirmed', 'true');
-        window.setProStatus(true, 'Google Play Store');
-        if (!silent) alert('✅ Acquisto ripristinato con successo! Speedway Live PRO è ATTIVO.');
-        return true;
-      } else {
-        if (localStorage.getItem('speedway_pro_source') === 'Google Play Store' && !localStorage.getItem('speedway_pro_confirmed')) {
-          window.setProStatus(false, '');
+          var expiryDate = Date.now() + PRO_PASS_DURATION_MS;
+          localStorage.setItem('speedway_pro_confirmed', 'true');
+          localStorage.setItem('speedway_pro_expiry', String(expiryDate));
+          window.setProStatus(true, 'Google Play Store');
+          if (!silent) alert('✅ Acquisto confermato con successo! Speedway Live PRO è ATTIVO per 365 giorni.');
+          return true;
         }
-        if (!silent) alert('Nessun acquisto attivo trovato per questo account Google.');
       }
     } catch (err) {
       if (!silent) alert('Errore verifica Play Store: ' + (err.message || err));
+    }
+
+    // Se il pass era già stato confermato/consumato ed è ancora entro i 365 giorni
+    if (isProPassValidOnDevice()) {
+      window.setProStatus(true, 'Google Play Store');
+      if (!silent) {
+        var exp = parseInt(localStorage.getItem('speedway_pro_expiry'), 10);
+        var daysLeft = Math.max(1, Math.ceil((exp - Date.now()) / (24 * 60 * 60 * 1000)));
+        alert('✅ Pass Speedway Live PRO attivo! (Giorni rimanenti: ' + daysLeft + ')');
+      }
+      return true;
+    } else {
+      if (localStorage.getItem('speedway_pro_source') === 'Google Play Store') {
+        window.setProStatus(false, '');
+      }
+      if (!silent) alert('Nessun Pass attivo trovato (o Pass 365 giorni scaduto).');
     }
     return false;
   };
 
   window.startPlayStoreSubscription = async function(btnEl) {
-    // 1. Feedback visivo ISTANTANEO appena tocchi il pulsante
     var originalText = '';
     if (btnEl) {
       originalText = btnEl.innerHTML;
@@ -7288,7 +7347,6 @@ Object.assign(I18N.it, {
     }
 
     try {
-      // Controllo se siamo dentro la PWA installata da Play Store
       if (!('getDigitalGoodsService' in window) || !window.PaymentRequest) {
         restoreBtn();
         var code = prompt('👑 SPEEDWAY LIVE PRO\n(API Google Play Billing non attiva in questa sessione)\n\nInserisci il tuo Codice VIP oppure assicurati di aver aperto l\'app installata dal Google Play Store:');
@@ -7296,46 +7354,66 @@ Object.assign(I18N.it, {
         return;
       }
 
-      // 2. Avvia PaymentRequest SUBITO (per non perdere il tocco utente su Android)
+      var service = await window.getDigitalGoodsService('https://play.google.com/billing');
+
       var request = new PaymentRequest([{
         supportedMethods: 'https://play.google.com/billing',
         data: { sku: PLAY_STORE_SUBSCRIPTION_SKU }
       }], {
-        total: { label: 'Speedway Live PRO (Pass 1 Anno)', amount: { currency: 'EUR', value: '4.99' } }
+        total: { label: 'Speedway Live PRO (Pass 365 Giorni)', amount: { currency: 'EUR', value: '4.99' } }
       });
 
       var response = await request.show();
-      var purchaseToken = (response && response.details) ? response.details.purchaseToken : null;
+
+      // 1. Estrai il purchaseToken dalla risposta di Google Play
+      var details = (response && response.details) ? response.details : {};
+      if (typeof details === 'string') {
+        try { details = JSON.parse(details); } catch (e) {}
+      }
+      var purchaseToken = details.purchaseToken || details.token || (details.purchaseData && details.purchaseData.purchaseToken) || null;
+
+      // 2. Se non fosse in details, recuperalo da listPurchases() PRIMA di chiudere la finestra
+      if (service && !purchaseToken) {
+        try {
+          var prePurchases = await service.listPurchases();
+          if (Array.isArray(prePurchases) && prePurchases.length > 0) {
+            purchaseToken = prePurchases[0].purchaseToken;
+          }
+        } catch (e) {}
+      }
+
+      // 3. CONFERMA E CONSUMA IMMEDIATAMENTE (PRIMA di response.complete!)
+      var tokenConfirmed = false;
+      if (service && purchaseToken) {
+        tokenConfirmed = await confirmPlayStoreToken(service, purchaseToken);
+      }
+
+      // 4. Chiudi la finestra di pagamento con successo
       await response.complete('success');
 
-      // 3. Conferma e consuma l'acquisto per evitare qualsiasi rimborso da Google
-      try {
-        var service = await window.getDigitalGoodsService('https://play.google.com/billing');
-        if (service) {
-          if (!purchaseToken) {
-            var purchases = await service.listPurchases();
-            for (var i = 0; i < purchases.length; i++) {
-              if (purchases[i].itemId === PLAY_STORE_SUBSCRIPTION_SKU) {
-                purchaseToken = purchases[i].purchaseToken;
+      // 5. Secondo controllo di sicurezza su eventuali acquisti ancora non consumati
+      if (service && !tokenConfirmed) {
+        try {
+          var postPurchases = await service.listPurchases();
+          if (Array.isArray(postPurchases)) {
+            for (var i = 0; i < postPurchases.length; i++) {
+              if (postPurchases[i] && postPurchases[i].purchaseToken) {
+                await confirmPlayStoreToken(service, postPurchases[i].purchaseToken);
               }
             }
           }
-          if (purchaseToken) {
-            if (typeof service.consume === 'function') {
-              await service.consume(purchaseToken);
-            } else if (typeof service.acknowledge === 'function') {
-              await service.acknowledge(purchaseToken, 'onetime');
-            }
-          }
+        } catch (ackErr) {
+          console.log('Dettaglio conferma post:', ackErr);
         }
-      } catch (ackErr) {
-        console.log('Dettaglio conferma:', ackErr);
       }
 
-      restoreBtn();
+      // 6. Salva l'attivazione e la scadenza a 365 giorni da oggi
+      var expiryDate = Date.now() + PRO_PASS_DURATION_MS;
       localStorage.setItem('speedway_pro_confirmed', 'true');
+      localStorage.setItem('speedway_pro_expiry', String(expiryDate));
+      restoreBtn();
       window.setProStatus(true, 'Google Play Store');
-      alert('🎉 Benvenuto in Speedway Live PRO! Acquisto confermato per 1 anno.');
+      alert('🎉 Benvenuto in Speedway Live PRO! Acquisto confermato per 365 giorni.');
 
     } catch (err) {
       restoreBtn();
@@ -8564,10 +8642,10 @@ Object.assign(I18N.it, {
 </script>
 <script>
 async function acquistaAbbonamento() {
-  if (!('getDigitalGoodsService' in window)) {
-    alert("Gli acquisti sono disponibili solo nell'app Android scaricata dal Play Store.");
-    return;
+  if (typeof window.startPlayStoreSubscription === 'function') {
+    return window.startPlayStoreSubscription();
   }
+}
   try {
     const service = await window.getDigitalGoodsService('https://play.google.com/billing');
     const request = new PaymentRequest([{
