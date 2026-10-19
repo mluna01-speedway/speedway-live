@@ -8424,26 +8424,6 @@ Object.assign(I18N.it, {
       updateTimerUi();
     }
 
-      var bar = document.createElement('div');
-      bar.id = 'two-min-timer-bar';
-      bar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:12px;';
-      bar.innerHTML = [
-        '<div style="display:flex;align-items:center;gap:8px;">',
-        '  <span style="font-size:18px;">⏱</span>',
-        '  <div>',
-        '    <div id="two-min-title-lbl" style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">' + trExt('timerTitle') + '</div>',
-        '    <div id="two-min-display" style="font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent);line-height:1.1;">02:00</div>',
-        '  </div>',
-        '</div>',
-        '<div style="display:flex;gap:8px;">',
-        '  <button type="button" id="two-min-toggle-btn" onclick="toggleTwoMinTimer()" style="padding:8px 14px;border:none;border-radius:8px;background:#10b981;color:#fff;font-weight:700;font-size:13px;cursor:pointer;">' + trExt('start2m') + '</button>',
-        '  <button type="button" id="two-min-reset-btn" onclick="resetTwoMinTimer()" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text);font-weight:600;font-size:13px;cursor:pointer;">' + trExt('reset2m') + '</button>',
-        '</div>'
-      ].join('');
-      heatsTab.insertBefore(bar, heatsTab.firstChild);
-      updateTimerUi();
-    }
-
     // 7. Statistica Live "Rendimento Corsie / Gate" Multilingua
     function renderGateStatsWidget() {
       var standingsTab = document.getElementById('tab-standings');
@@ -8960,6 +8940,770 @@ async function acquistaAbbonamento() {
     if (msgEl) msgEl.textContent = text;
     box.classList.add('open');
   };
+})();
+/* =========================================================================
+   MODULO UFFICIALE CAMPIONATO ITALIANO FMI 2026 (12, 14, 16 PILOTI + LC + FINALE)
+   & BATTERIE DI SPAREGGIO (RUN-OFF) PER TUTTE LE COMPETIZIONI INDIVIDUALI
+   ========================================================================= */
+(function initFmi2026AndRunOffs() {
+  // 1. Traduzioni complete nelle 6 lingue (IT, EN, PL, DA, SV, CS)
+  var FMI_I18N = {
+    it: {
+      modeItaTitle: "Campionato Italiano / Formato FMI (12, 14 o 16 Piloti)",
+      modeItaSub: "Griglie ufficiali FMI 2026 (15, 18 o 20 Batterie) + Last Chance (4°–7°) + Finale (Top 3 + 1° LC)",
+      itaChooseModalTitle: "🇮🇹 Scegli Formato Campionato Italiano (FMI 2026)",
+      itaChooseModalSub: "Secondo l'Art. 11 del Regolamento FMI 2026, in tutte e 3 le griglie i primi 3 classificati accedono direttamente alla Finale, i classificati dal 4° al 7° posto disputano la Last Chance e il 1° classificato della Last Chance completa la Finale:",
+      itaMode16Title: "Formato 16 Piloti (20 Batterie + LC + Finale)",
+      itaMode16Sub: "15–16 Piloti + 2 Riserve • 20 Batterie Regolari + B21 Last Chance (4°–7°) + B22 Finale (1°–3° + 1° LC)",
+      itaMode14Title: "Formato 14 Piloti (18 Batterie + LC + Finale)",
+      itaMode14Sub: "13–14 Piloti + 2 Riserve • 18 Batterie Regolari (Allegato 3 FMI) + B19 Last Chance + B20 Finale",
+      itaMode12Title: "Formato 12 Piloti (15 Batterie + LC + Finale)",
+      itaMode12Sub: "10–12 Piloti + 2 Riserve • 15 Batterie Regolari (Allegato 2 FMI) + B16 Last Chance + B17 Finale",
+      itaLcqTitle: "🔥 LAST CHANCE QUALIFIER (4°, 5°, 6° e 7° Classificato)",
+      itaLcqSub: "Partecipano i piloti classificati dal 4° al 7° posto dopo le batterie regolari. SOLO il 1° classificato accede alla Finale!",
+      itaFinTitle: "🏆 FINALE (1°, 2°, 3° Classificato + 1° Last Chance)",
+      itaFinSub: "Partecipano i primi 3 classificati delle batterie più il vincitore della Last Chance. L'ordine di arrivo nella Finale assegna il 1°, 2°, 3° e 4° posto assoluto di gara.",
+      runOffLbl: "Spareggio",
+      btnAddIndivRunOff: "➕ Aggiungi Batteria di Spareggio (Run-Off)",
+      btnRemIndivRunOff: "🗑️ Rimuovi Ultimo Spareggio",
+      runOffCardTitle: "⚡ BATTERIA DI SPAREGGIO (RUN-OFF)",
+      runOffCardSub: "Seleziona dai menù a tendina i 2, 3 o 4 piloti coinvolti nello spareggio (lasciando vuote le corsie non usate). Come da Art. 28 FMI / FIM, lo spareggio decide la posizione ma non altera il totale punti delle batterie."
+    },
+    en: {
+      modeItaTitle: "Italian Championship / FMI Format (12, 14 or 16 Riders)",
+      modeItaSub: "Official FMI 2026 Grids (15, 18 or 20 Heats) + Last Chance (4th–7th) + Final (Top 3 + 1st LC)",
+      itaChooseModalTitle: "🇮🇹 Select Italian Championship Format (FMI 2026)",
+      itaChooseModalSub: "Under 2026 FMI Rules (Art. 11), in all 3 grids the Top 3 riders after regular heats advance directly to the Final, 4th to 7th contest the Last Chance, and only 1st in the Last Chance advances to the Final:",
+      itaMode16Title: "16-Rider Format (20 Heats + LC + Final)",
+      itaMode16Sub: "15–16 Riders + 2 Reserves • 20 Regular Heats + H21 Last Chance (4th–7th) + H22 Final (1st–3rd + 1st LC)",
+      itaMode14Title: "14-Rider Format (18 Heats + LC + Final)",
+      itaMode14Sub: "13–14 Riders + 2 Reserves • 18 Regular Heats (FMI Annex 3) + H19 Last Chance + H20 Final",
+      itaMode12Title: "12-Rider Format (15 Heats + LC + Final)",
+      itaMode12Sub: "10–12 Riders + 2 Reserves • 15 Regular Heats (FMI Annex 2) + H16 Last Chance + H17 Final",
+      itaLcqTitle: "🔥 LAST CHANCE QUALIFIER (4th, 5th, 6th & 7th Place)",
+      itaLcqSub: "Contested by riders ranked 4th to 7th after regular heats. ONLY 1st place advances to the Final!",
+      itaFinTitle: "🏆 FINAL (1st, 2nd, 3rd Place + 1st Last Chance)",
+      itaFinSub: "Top 3 qualifiers plus the Last Chance winner. Finishing order in the Final determines 1st, 2nd, 3rd and 4th overall.",
+      runOffLbl: "Run-Off",
+      btnAddIndivRunOff: "➕ Add Run-Off / Tie-Break Heat",
+      btnRemIndivRunOff: "🗑️ Remove Last Run-Off",
+      runOffCardTitle: "⚡ RUN-OFF / TIE-BREAK HEAT",
+      runOffCardSub: "Select the 2, 3 or 4 riders involved in the run-off from the dropdowns (leave unused gates empty). As per FIM/FMI rules, run-off placements decide positions without adding extra points to heat totals."
+    },
+    pl: {
+      modeItaTitle: "Mistrzostwa Włoch / Format FMI (12, 14 lub 16 Zawodników)",
+      modeItaSub: "Oficjalne tabele FMI 2026 (15, 18 lub 20 Biegów) + Baraż LC (4.–7.) + Finał (Top 3 + 1. z LC)",
+      itaChooseModalTitle: "🇮🇹 Wybierz Format Mistrzostw Włoch (FMI 2026)",
+      itaChooseModalSub: "Zgodnie z regulaminem FMI 2026 (Art. 11), we wszystkich 3 formatach zawodnicy z miejsc 1–3 awansują bezpośrednio do Finału, miejsca 4–7 jadą w Barażu (Last Chance), a zwycięzca Barażu uzupełnia stawkę Finału:",
+      itaMode16Title: "Format 16 Zawodników (20 Biegów + Baraż + Finał)",
+      itaMode16Sub: "15–16 Zawodników + 2 Rezerwy • 20 Biegów + B21 Baraż (4.–7.) + B22 Finał (1.–3. + 1. z Barażu)",
+      itaMode14Title: "Format 14 Zawodników (18 Biegów + Baraż + Finał)",
+      itaMode14Sub: "13–14 Zawodników + 2 Rezerwy • 18 Biegów (Załącznik 3 FMI) + B19 Baraż + B20 Finał",
+      itaMode12Title: "Format 12 Zawodników (15 Biegów + Baraż + Finał)",
+      itaMode12Sub: "10–12 Zawodników + 2 Rezerwy • 15 Biegów (Załącznik 2 FMI) + B16 Baraż + B17 Finał",
+      itaLcqTitle: "🔥 BARAŻ / LAST CHANCE (Miejsca 4., 5., 6. i 7.)",
+      itaLcqSub: "Startują zawodnicy z miejsc 4–7 po rundzie zasadniczej. TYLKO 1. miejsce awansuje do Finału!",
+      itaFinTitle: "🏆 FINAŁ (Miejsca 1., 2., 3. + Zwycięzca Barażu)",
+      itaFinSub: "Startuje Top 3 po rundzie zasadniczej oraz zwycięzca Barażu. Kolejność w Finale decyduje o miejscach 1–4.",
+      runOffLbl: "Bieg Dodatkowy",
+      btnAddIndivRunOff: "➕ Dodaj Bieg Dodatkowy (Run-Off)",
+      btnRemIndivRunOff: "🗑️ Usuń Ostatni Bieg Dodatkowy",
+      runOffCardTitle: "⚡ BIEG DODATKOWY (RUN-OFF)",
+      runOffCardSub: "Wybierz z listy 2, 3 lub 4 zawodników biorących udział w biegu dodatkowym (pozostaw wolne tory puste). Bieg rozstrzyga o miejscu bez dodawania punktów do tabeli zasadniczej."
+    },
+    da: {
+      modeItaTitle: "Italiensk Mesterskab / FMI Format (12, 14 eller 16 Kørere)",
+      modeItaSub: "Officielle FMI 2026-skemaer (15, 18 eller 20 Heats) + Last Chance (4.–7.) + Finale (Top 3 + 1. LC)",
+      itaChooseModalTitle: "🇮🇹 Vælg Italiensk Mesterskabsformat (FMI 2026)",
+      itaChooseModalSub: "Ifølge FMI 2026-reglerne (Art. 11) går Top 3 direkte i Finalen, nr. 4–7 kører Last Chance, og kun vinderen af Last Chance går videre til Finalen:",
+      itaMode16Title: "16-Kørere Format (20 Heats + LC + Finale)",
+      itaMode16Sub: "15–16 Kørere + 2 Reserver • 20 Heats + H21 Last Chance (4.–7.) + H22 Finale (1.–3. + 1. LC)",
+      itaMode14Title: "14-Kørere Format (18 Heats + LC + Finale)",
+      itaMode14Sub: "13–14 Kørere + 2 Reserver • 18 Heats (FMI Bilag 3) + H19 Last Chance + H20 Finale",
+      itaMode12Title: "12-Kørere Format (15 Heats + LC + Finale)",
+      itaMode12Sub: "10–12 Kørere + 2 Reserver • 15 Heats (FMI Bilag 2) + H16 Last Chance + H17 Finale",
+      itaLcqTitle: "🔥 LAST CHANCE QUALIFIER (4., 5., 6. & 7. plads)",
+      itaLcqSub: "Kørerne på 4.–7. pladsen efter grundheats. KUN 1. pladsen går videre til Finalen!",
+      itaFinTitle: "🏆 FINALE (1., 2., 3. plads + 1. Last Chance)",
+      itaFinSub: "Top 3 samt vinderen af Last Chance. Placering i Finalen afgør 1.–4. pladsen.",
+      runOffLbl: "Omkørsel",
+      btnAddIndivRunOff: "➕ Tilføj Omkørsel (Run-Off Heat)",
+      btnRemIndivRunOff: "🗑️ Fjern Sidste Omkørsel",
+      runOffCardTitle: "⚡ OMKØRSEL (RUN-OFF HEAT)",
+      runOffCardSub: "Vælg de 2, 3 eller 4 kørere i omkørslen fra rullemenuerne (lad ubrugte startbaner stå tomme). Omkørslen afgør placeringen uden at ændre heatpoint."
+    },
+    sv: {
+      modeItaTitle: "Italienska Mästerskapet / FMI Format (12, 14 eller 16 Förare)",
+      modeItaSub: "Officiella FMI 2026-scheman (15, 18 eller 20 Heat) + Last Chance (4–7) + Final (Topp 3 + 1:a LC)",
+      itaChooseModalTitle: "🇮🇹 Välj Format Italienska Mästerskapet (FMI 2026)",
+      itaChooseModalSub: "Enligt FMI 2026-reglerna (Art. 11) går Topp 3 direkt till Final, 4:an–7:an kör Last Chance och endast vinnaren i Last Chance går till Final:",
+      itaMode16Title: "16-Förare Format (20 Heat + LC + Final)",
+      itaMode16Sub: "15–16 Förare + 2 Reserver • 20 Heat + H21 Last Chance (4–7) + H22 Final (1–3 + 1:a LC)",
+      itaMode14Title: "14-Förare Format (18 Heat + LC + Final)",
+      itaMode14Sub: "13–14 Förare + 2 Reserver • 18 Heat (FMI Bilaga 3) + H19 Last Chance + H20 Final",
+      itaMode12Title: "12-Förare Format (15 Heat + LC + Final)",
+      itaMode12Sub: "10–12 Förare + 2 Reserver • 15 Heat (FMI Bilaga 2) + H16 Last Chance + H17 Final",
+      itaLcqTitle: "🔥 LAST CHANCE QUALIFIER (4:e, 5:e, 6:e & 7:e plats)",
+      itaLcqSub: "Förarna på plats 4–7 efter grundheaten. ENDAST 1:an går vidare till Final!",
+      itaFinTitle: "🏆 FINAL (1:a, 2:a, 3:a + 1:a Last Chance)",
+      itaFinSub: "Topp 3 samt vinnaren av Last Chance. Resultatet i Finalen avgör plats 1–4.",
+      runOffLbl: "Skiljeheat",
+      btnAddIndivRunOff: "➕ Lägg till Skiljeheat (Run-Off)",
+      btnRemIndivRunOff: "🗑️ Ta bort Sista Skiljeheat",
+      runOffCardTitle: "⚡ SKILJEHEAT (RUN-OFF)",
+      runOffCardSub: "Välj de 2, 3 eller 4 förarna i skiljeheatet i menyerna (lämna oanvända spår tomma). Skiljeheatet avgör placering utan att lägga till poäng i grundtabellen."
+    },
+    cs: {
+      modeItaTitle: "Mistrovství Itálie / Formát FMI (12, 14 nebo 16 jezdců)",
+      modeItaSub: "Oficiální rozpisy FMI 2026 (15, 18 nebo 20 jízd) + Last Chance (4.–7.) + Finále (Top 3 + 1. z LC)",
+      itaChooseModalTitle: "🇮🇹 Vyberte formát Mistrovství Itálie (FMI 2026)",
+      itaChooseModalSub: "Podle pravidel FMI 2026 (Čl. 11) postupují první 3 jezdci přímo do Finále, 4.–7. jedou Last Chance a pouze vítěz Last Chance postupuje do Finále:",
+      itaMode16Title: "Formát 16 jezdců (20 jízd + LC + Finále)",
+      itaMode16Sub: "15–16 jezdců + 2 náhradníci • 20 jízd + J21 Last Chance (4.–7.) + J22 Finále (1.–3. + 1. LC)",
+      itaMode14Title: "Formát 14 jezdců (18 jízd + LC + Finále)",
+      itaMode14Sub: "13–14 jezdců + 2 náhradníci • 18 jízd (Příloha 3 FMI) + J19 Last Chance + J20 Finále",
+      itaMode12Title: "Formát 12 jezdců (15 jízd + LC + Finále)",
+      itaMode12Sub: "10–12 jezdců + 2 náhradníci • 15 jízd (Příloha 2 FMI) + J16 Last Chance + J17 Finále",
+      itaLcqTitle: "🔥 LAST CHANCE QUALIFIER (4., 5., 6. a 7. místo)",
+      itaLcqSub: "Jezdci na 4.–7. místě po základní části. POUZE 1. místo postupuje do Finále!",
+      itaFinTitle: "🏆 FINÁLE (1., 2., 3. místo + 1. z Last Chance)",
+      itaFinSub: "První 3 po základní části a vítěz Last Chance. Pořadí ve Finále určuje celkové 1.–4. místo.",
+      runOffLbl: "Rozjezd",
+      btnAddIndivRunOff: "➕ Přidat rozjezd (Run-Off)",
+      btnRemIndivRunOff: "🗑️ Odebrat poslední rozjezd",
+      runOffCardTitle: "⚡ ROZJEZD O POŘADÍ (RUN-OFF)",
+      runOffCardSub: "Vyberte 2, 3 nebo 4 jezdce do rozjezdu (neobsazené dráhy nechte prázdné). Rozjezd rozhoduje o pořadí bez přičítání bodů do základní tabulky."
+    }
+  };
+
+  Object.keys(FMI_I18N).forEach(function(l) {
+    if (I18N[l]) Object.assign(I18N[l], FMI_I18N[l]);
+  });
+
+  // 2. Punti Ufficiali Campionato Italiano FMI 2026 (Art. 12 - pag. 50)
+  var FMI_CHAMP_POINTS = [25, 22, 20, 18, 16, 14, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+
+  // 3. Griglie Ufficiali Regolamento FMI 2026 [Rosso, Blu, Bianco, Giallo]
+  // Allegato 2 (pag. 102) - Formato 12 Piloti (15 Batterie Regolari)
+  var FMI_12_SCHEDULE = [
+    [1, 2, 12, 11], [5, 6, 7, 8],   [9, 4, 3, 10],
+    [8, 1, 5, 9],   [4, 7, 2, 6],   [11, 8, 10, 3],
+    [4, 5, 1, 12],  [6, 11, 9, 2],  [3, 12, 10, 7],
+    [7, 9, 11, 4],  [2, 3, 8, 5],   [7, 10, 6, 1],
+    [12, 9, 4, 8],  [10, 2, 11, 5], [1, 12, 6, 3]
+  ];
+
+  // Allegato 3 (pag. 103) - Formato 14 Piloti (18 Batterie Regolari)
+  var FMI_14_SCHEDULE = [
+    [1, 2, 3, 4],      [5, 7, 6, 8],      [10, 11, 9, 12],  [11, 14, 7, 13],
+    [4, 8, 12, 3],     [13, 1, 5, null],  [14, null, 2, 10],[6, 1, 11, 4],
+    [12, 5, 2, 9],     [8, 9, 3, 14],     [13, 4, 10, 7],   [7, 12, 14, 1],
+    [2, 13, 8, 11],    [9, 3, 10, 5],     [9, 6, 4, 2],     [1, 8, 7, 10],
+    [3, 12, 13, 6],    [5, 14, 11, 4]
+  ];
+
+  // Configurazione dei 3 Formati FMI 2026 in LEAGUE_CONFIGS
+  LEAGUE_CONFIGS.ita16 = {
+    titleKey: "itaMode16Title", isTeam: false, isFmiMode: true,
+    mainRidersCount: 16, totalRidersCount: 18, regHeatsCount: 20, lcqHeatIdx: 20, finalHeatIdx: 21,
+    totalHeats: 22, scores: [3, 2, 1, 0], schedule: FIM_SCHEDULE
+  };
+
+  LEAGUE_CONFIGS.ita_indiv = {
+    titleKey: "itaMode14Title", isTeam: false, is14Format: true, isFmiMode: true,
+    mainRidersCount: 14, totalRidersCount: 16, regHeatsCount: 18, lcqHeatIdx: 18, finalHeatIdx: 19,
+    totalHeats: 20, scores: [3, 2, 1, 0], schedule: FMI_14_SCHEDULE
+  };
+
+  LEAGUE_CONFIGS.ita12 = {
+    titleKey: "itaMode12Title", isTeam: false, isFmiMode: true,
+    mainRidersCount: 12, totalRidersCount: 14, regHeatsCount: 15, lcqHeatIdx: 15, finalHeatIdx: 16,
+    totalHeats: 17, scores: [3, 2, 1, 0], schedule: FMI_12_SCHEDULE
+  };
+
+  window.isFmiFormat = function(stObj) {
+    var s = stObj || state;
+    return Boolean(s && (s.mode === 'ita16' || s.mode === 'ita_indiv' || s.mode === 'ita12'));
+  };
+
+  // 4. Crea il Modal Sottomenù Scelta Formato Campionato Italiano (16, 14 o 12 Piloti)
+  function ensureItaSubModal() {
+    var m = document.getElementById('ita-fmi-modal');
+    if (m) return m;
+    m = document.createElement('div');
+    m.id = 'ita-fmi-modal';
+    m.className = 'modal-backdrop';
+    m.onclick = function(ev) { if (ev.target === m) m.classList.remove('open'); };
+    m.innerHTML = [
+      '<div class="modal-box" style="border-color:var(--accent);">',
+      '  <div style="font-size:2.1rem;margin-bottom:4px;">🇮🇹</div>',
+      '  <h3 id="ita-modal-h3" style="color:var(--accent);"></h3>',
+      '  <p id="ita-modal-p" style="text-align:left;font-size:0.78rem;color:var(--text);line-height:1.45;background:#15181f;padding:10px 12px;border-radius:10px;border:1px solid var(--border);margin-bottom:12px;"></p>',
+      '  <button type="button" class="mode-choice-btn" id="btn-ita-16" onclick="window.chooseItaFmiMode(\'ita16\')">',
+      '    <div class="mode-choice-left"><span class="mode-choice-ico">🏁</span><div>',
+      '      <div class="mode-choice-title" id="ita-16-t"></div>',
+      '      <div class="mode-choice-sub" id="ita-16-s"></div>',
+      '    </div></div><span>▶</span>',
+      '  </button>',
+      '  <button type="button" class="mode-choice-btn" id="btn-ita-14" onclick="window.chooseItaFmiMode(\'ita_indiv\')">',
+      '    <div class="mode-choice-left"><span class="mode-choice-ico">🏍️</span><div>',
+      '      <div class="mode-choice-title" id="ita-14-t"></div>',
+      '      <div class="mode-choice-sub" id="ita-14-s"></div>',
+      '    </div></div><span>▶</span>',
+      '  </button>',
+      '  <button type="button" class="mode-choice-btn" id="btn-ita-12" onclick="window.chooseItaFmiMode(\'ita12\')">',
+      '    <div class="mode-choice-left"><span class="mode-choice-ico">⚡</span><div>',
+      '      <div class="mode-choice-title" id="ita-12-t"></div>',
+      '      <div class="mode-choice-sub" id="ita-12-s"></div>',
+      '    </div></div><span>▶</span>',
+      '  </button>',
+      '  <button type="button" class="qr-btn-close" id="ita-modal-back" style="width:100%;padding:10px;border-radius:8px;border:none;font-weight:800;margin-top:4px;cursor:pointer;" onclick="document.getElementById(\'ita-fmi-modal\').classList.remove(\'open\');openModeModal();"></button>',
+      '</div>'
+    ].join('');
+    document.body.appendChild(m);
+    return m;
+  }
+
+  window.openItaFmiModal = function() {
+    closeModeModal();
+    var m = ensureItaSubModal();
+    document.getElementById('ita-modal-h3').textContent = t('itaChooseModalTitle');
+    document.getElementById('ita-modal-p').textContent = t('itaChooseModalSub');
+    document.getElementById('ita-16-t').textContent = t('itaMode16Title');
+    document.getElementById('ita-16-s').textContent = t('itaMode16Sub');
+    document.getElementById('ita-14-t').textContent = t('itaMode14Title');
+    document.getElementById('ita-14-s').textContent = t('itaMode14Sub');
+    document.getElementById('ita-12-t').textContent = t('itaMode12Title');
+    document.getElementById('ita-12-s').textContent = t('itaMode12Sub');
+    document.getElementById('ita-modal-back').textContent = t('btnBack');
+    document.getElementById('btn-ita-16').classList.toggle('active', state.mode === 'ita16');
+    document.getElementById('btn-ita-14').classList.toggle('active', state.mode === 'ita_indiv');
+    document.getElementById('btn-ita-12').classList.toggle('active', state.mode === 'ita12');
+    m.classList.add('open');
+  };
+
+  window.chooseItaFmiMode = function(fmiKey) {
+    var hasScores = state.heats && state.heats.some(function(h) { return h.slots.some(function(s) { return s.score !== null; }); });
+    if (hasScores && state.mode !== fmiKey) {
+      if (!confirm(t('confirmChangeMode'))) return;
+    }
+    if (state.mode !== fmiKey || hasScores) {
+      state = createDefaultState(fmiKey);
+      populateEventForm();
+      saveState();
+    }
+    var m = document.getElementById('ita-fmi-modal');
+    if (m) m.classList.remove('open');
+    renderRidersInputs();
+    renderCurrentHeat();
+    switchTab('event', document.getElementById('nav-event'));
+  };
+
+  var _fmiPrevSelectAppMode = selectAppMode;
+  selectAppMode = function(newMode) {
+    if (newMode === 'ita_indiv') {
+      window.openItaFmiModal();
+      return;
+    }
+    return _fmiPrevSelectAppMode(newMode);
+  };
+
+  // 5. Creazione Stato e Normalizzazione per ita12, ita_indiv (14) e ita16 + conservazione Spareggi Individuali
+  var _fmiPrevCreateDefaultState = createDefaultState;
+  createDefaultState = function(modeKey) {
+    if (modeKey === 'ita16' || modeKey === 'ita_indiv' || modeKey === 'ita12') {
+      var cfg = LEAGUE_CONFIGS[modeKey];
+      var today = new Date().toISOString().split('T')[0];
+      var riders = {};
+      for (var i = 1; i <= cfg.totalRidersCount; i++) {
+        riders[i] = (i <= cfg.mainRidersCount ? t('riderDefault') : t('reserveDefault')) + " " + i;
+      }
+      var heats = cfg.schedule.map(function(row, idx) {
+        return {
+          heatNumber: idx + 1,
+          time: "",
+          slots: row.map(function(rId, gIdx) {
+            return { riderId: rId || null, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false, gate: gIdx + 1 };
+          })
+        };
+      });
+      // Aggiunge Last Chance + Finale
+      for (var k = 0; k < 2; k++) {
+        heats.push({
+          heatNumber: cfg.regHeatsCount + 1 + k,
+          time: "",
+          slots: [0, 1, 2, 3].map(function(gIdx) {
+            return { riderId: null, score: null, helmet: GATE_STYLE[gIdx].helmet, warning: false, gate: gIdx + 1 };
+          })
+        });
+      }
+      return {
+        id: Date.now(),
+        mode: modeKey,
+        teamNames: { a: "Italia", b: "FMI" },
+        eventMeta: { name: "", date: today, track: "", city: "", country: "🇮🇹", length: "", notes: "", photoDataUrl: "" },
+        currentHeat: 0,
+        riders: riders,
+        heats: heats,
+        tieOrder: []
+      };
+    }
+    return _fmiPrevCreateDefaultState(modeKey);
+  };
+
+  var _fmiPrevNormalize = normalizeLoadedState;
+  normalizeLoadedState = function(saved) {
+    var extraIndivTieHeats = (saved && Array.isArray(saved.heats))
+      ? saved.heats.filter(function(h) { return h && h.isTieBreak; })
+      : [];
+    var merged = _fmiPrevNormalize(saved);
+    var cfg = getModeConfig(merged);
+    if (window.isFmiFormat(merged)) {
+      for (var i = 1; i <= cfg.totalRidersCount; i++) {
+        if (!merged.riders[i]) {
+          merged.riders[i] = (i <= cfg.mainRidersCount ? t('riderDefault') : t('reserveDefault')) + " " + i;
+        }
+      }
+    }
+    if (!cfg.isTeam && extraIndivTieHeats.length > 0 && merged.heats.length === cfg.totalHeats) {
+      extraIndivTieHeats.forEach(function(th, idx) {
+        th.heatNumber = cfg.totalHeats + idx + 1;
+        th.isTieBreak = true;
+        merged.heats.push(th);
+      });
+    }
+    return merged;
+  };
+
+  // 6. Batterie di Spareggio (Run-Off) abilitate ANCHE per tutte le gare individuali (GP, FMI 12/14/16, Pardubice)
+  var _fmiPrevAddTieBreak = addTieBreakHeat;
+  addTieBreakHeat = function() {
+    if (isTeamMode()) return _fmiPrevAddTieBreak();
+    var newHeatNum = state.heats.length + 1;
+    var sixGates = (typeof isPardubiceMode === 'function' && isPardubiceMode());
+    var colors = sixGates ? ['R', 'B', 'W', 'Y', 'G', 'K'] : ['R', 'B', 'W', 'Y'];
+    state.heats.push({
+      heatNumber: newHeatNum,
+      time: "",
+      isTieBreak: true,
+      slots: colors.map(function(col, idx) {
+        return { helmet: col, riderId: null, gate: idx + 1, score: null, warning: false };
+      })
+    });
+    state.currentHeat = state.heats.length - 1;
+    saveState();
+    renderCurrentHeat();
+  };
+
+  var _fmiPrevRemTieBreak = removeLastTieBreakHeat;
+  removeLastTieBreakHeat = function() {
+    var cfg = getModeConfig();
+    if (cfg.isTeam) return _fmiPrevRemTieBreak();
+    if (state.heats.length <= cfg.totalHeats) return;
+    state.heats.pop();
+    if (state.currentHeat >= state.heats.length) {
+      state.currentHeat = state.heats.length - 1;
+    }
+    saveState();
+    renderCurrentHeat();
+  };
+
+  // 7. Etichette Batterie per FMI (12, 14, 16) e per Batterie di Spareggio Individuali
+  var _fmiPrevGetHeatLabel = getHeatLabel;
+  getHeatLabel = function(idx, includeTime) {
+    var cfg = getModeConfig();
+    var h = state.heats[idx];
+    if (!cfg.isTeam && ((h && h.isTieBreak) || idx >= cfg.totalHeats)) {
+      var tieNum = (idx - cfg.totalHeats) + 1;
+      var lbl = t('heatLbl') + " " + (idx + 1) + " (" + t('runOffLbl') + " #" + tieNum + ")";
+      if (includeTime && h && h.time) lbl += " •⏱️ " + h.time + "s";
+      return lbl;
+    }
+    if (window.isFmiFormat()) {
+      var base = "";
+      if (idx < cfg.regHeatsCount) {
+        var perSeries = cfg.mainRidersCount === 12 ? 3 : 4;
+        base = t('heatLbl') + " " + (idx + 1) + " (" + t('seriesLbl') + " " + Math.min(5, Math.floor(idx / perSeries) + 1) + ")";
+      } else if (idx === cfg.lcqHeatIdx) {
+        base = t('heatLbl') + " " + (idx + 1) + " (Last Chance • 4°–7°)";
+      } else {
+        base = t('heatLbl') + " " + (idx + 1) + " (" + t('finalLbl') + ")";
+      }
+      if (includeTime && h && h.time) base += " •⏱️ " + h.time + "s";
+      return base;
+    }
+    return _fmiPrevGetHeatLabel(idx, includeTime);
+  };
+
+  // 8. Calcolo Statistiche, Qualificati FMI (Top 3 in Finale, 4°–7° in LC, 1° LC in Finale) e Classifica Finale
+  var _fmiPrevComputeStats = computeStats;
+  computeStats = function(raceObj) {
+    var rState = raceObj || state;
+    if (!window.isFmiFormat(rState)) return _fmiPrevComputeStats(raceObj);
+
+    var cfg = getModeConfig(rState);
+    var stats = [];
+    var riderIds = Object.keys(rState.riders).map(function(k) { return parseInt(k, 10); }).sort(function(a, b) { return a - b; });
+    riderIds.forEach(function(r) {
+      stats.push({
+        id: r, team: 'A', name: rState.riders[r], runs: [], total: 0,
+        ones: 0, twos: 0, threes: 0, finishedZeros: 0, nonFinished: [], zeros: 0,
+        lcqRaw: null, finRaw: null, sfScore: '-', finScore: '-', qualRank: 99, finalRank: 99, sgpPts: 0, sprintPts: 0
+      });
+    });
+
+    rState.heats.slice(0, cfg.regHeatsCount).forEach(function(h) {
+      h.slots.forEach(function(s) {
+        if (!s.riderId) return;
+        var st = stats.find(function(x) { return x.id === s.riderId; });
+        if (!st) return;
+        if (s.score !== null) {
+          if (typeof s.score === 'number') {
+            var codeStr = s.score + (s.warning ? (usePolishCodes() ? '!' : 'W') : '');
+            st.runs.push(codeStr);
+            st.total += s.score;
+            if (s.score === 3) st.ones++;
+            else if (s.score === 2) st.twos++;
+            else if (s.score === 1) st.threes++;
+            else { st.finishedZeros++; st.zeros++; }
+          } else {
+            var c = String(s.score).toUpperCase();
+            if (usePolishCodes()) c = (c === 'R' ? 'D' : (c === 'F' ? 'U' : (c === 'X' ? 'W' : c)));
+            st.runs.push(c + (s.warning ? (usePolishCodes() ? '!' : 'W') : ''));
+            st.nonFinished.push(c);
+            st.zeros++;
+          }
+        } else {
+          st.runs.push(s.warning ? (usePolishCodes() ? '!' : 'W') : '-');
+        }
+      });
+    });
+
+    if (rState.heats[cfg.lcqHeatIdx]) {
+      rState.heats[cfg.lcqHeatIdx].slots.forEach(function(s) {
+        if (!s.riderId) return;
+        var st = stats.find(function(x) { return x.id === s.riderId; });
+        if (st && s.score !== null) { st.lcqRaw = s.score; st.sfScore = formatPlacement(s.score); }
+      });
+    }
+    if (rState.heats[cfg.finalHeatIdx]) {
+      rState.heats[cfg.finalHeatIdx].slots.forEach(function(s) {
+        if (!s.riderId) return;
+        var st = stats.find(function(x) { return x.id === s.riderId; });
+        if (st && s.score !== null) { st.finRaw = s.score; st.finScore = formatPlacement(s.score); }
+      });
+    }
+    return stats;
+  };
+
+  var _fmiPrevGetSortedQual = getSortedQualifyingStandings;
+  getSortedQualifyingStandings = function() {
+    if (!window.isFmiFormat()) return _fmiPrevGetSortedQual();
+    var cfg = getModeConfig();
+    var allStats = computeStats().filter(function(s) {
+      return s.id <= cfg.mainRidersCount || s.runs.some(function(x) { return x !== '-'; });
+    });
+    var tieOrder = Array.isArray(state.tieOrder) ? state.tieOrder : [];
+    allStats.sort(function(a, b) {
+      if (b.total !== a.total) return b.total - a.total;
+      if (b.ones !== a.ones) return b.ones - a.ones;
+      if (b.twos !== a.twos) return b.twos - a.twos;
+      if (b.threes !== a.threes) return b.threes - a.threes;
+      if (b.finishedZeros !== a.finishedZeros) return b.finishedZeros - a.finishedZeros;
+      var idxA = tieOrder.indexOf(a.id), idxB = tieOrder.indexOf(b.id);
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      var h2h = compareHeadToHead(a.id, b.id);
+      if (h2h !== 0) return h2h;
+      return a.id - b.id;
+    });
+    allStats.forEach(function(st, idx) { st.qualRank = idx + 1; });
+    return allStats;
+  };
+
+  // Regola Ufficiale Art. 11 FMI 2026:
+  // - Last Chance: 4°, 5°, 6° e 7° classificato (indici 3, 4, 5, 6)
+  // - Finale: 1°, 2°, 3° classificato (indici 0, 1, 2) + 1° classificato della Last Chance (score === 3)
+  var _fmiPrevGetEligible = getEligibleRidersForSpecialHeat;
+  getEligibleRidersForSpecialHeat = function(heatIdx) {
+    if (!window.isFmiFormat()) return _fmiPrevGetEligible(heatIdx);
+    var cfg = getModeConfig();
+    var ranked = getSortedQualifyingStandings();
+    var rankMap = {};
+    ranked.forEach(function(st, i) { rankMap[st.id] = i + 1; });
+
+    if (heatIdx === cfg.lcqHeatIdx) {
+      return [3, 4, 5, 6].filter(function(idx) { return ranked[idx]; }).map(function(idx) {
+        return {
+          id: ranked[idx].id,
+          name: state.riders[ranked[idx].id],
+          badge: (idx + 1) + t('rankBadge') + " (" + ranked[idx].total + " pt)"
+        };
+      });
+    }
+    if (heatIdx === cfg.finalHeatIdx) {
+      var list = [];
+      [0, 1, 2].forEach(function(idx) {
+        if (ranked[idx]) {
+          list.push({
+            id: ranked[idx].id,
+            name: state.riders[ranked[idx].id],
+            badge: (idx + 1) + t('standingsBadge') + " (" + ranked[idx].total + " pt)"
+          });
+        }
+      });
+      var lcqHeat = state.heats[cfg.lcqHeatIdx];
+      var lcq1st = lcqHeat ? lcqHeat.slots.find(function(s) { return s.score === 3 && s.riderId; }) : null;
+      if (lcq1st && !list.some(function(x) { return x.id === lcq1st.riderId; })) {
+        var rId = lcq1st.riderId;
+        list.push({
+          id: rId,
+          name: state.riders[rId],
+          badge: "1° LC (" + (rankMap[rId] ? rankMap[rId] + t('rankBadge') : "") + ")"
+        });
+      }
+      return list;
+    }
+    return [];
+  };
+
+  var _fmiPrevSyncSpecial = syncSpecialHeatsWithQualifiers;
+  syncSpecialHeatsWithQualifiers = function() {
+    if (!window.isFmiFormat()) return _fmiPrevSyncSpecial();
+    var cfg = getModeConfig();
+    var regDone = state.heats.slice(0, cfg.regHeatsCount).filter(function(h) {
+      return h.slots.some(function(s) { return s.score !== null; });
+    }).length;
+    if (regDone < cfg.regHeatsCount) return;
+
+    [cfg.lcqHeatIdx, cfg.finalHeatIdx].forEach(function(heatIdx) {
+      var eligibleIds = getEligibleRidersForSpecialHeat(heatIdx).map(function(x) { return x.id; });
+      var slots = state.heats[heatIdx].slots;
+      slots.forEach(function(slot) {
+        if (slot.riderId && !eligibleIds.includes(slot.riderId)) {
+          var currentlyUsed = slots.map(function(s) { return s.riderId; }).filter(function(id) { return id && eligibleIds.includes(id); });
+          var missing = eligibleIds.filter(function(id) { return !currentlyUsed.includes(id); });
+          if (missing.length === 1) slot.riderId = missing[0];
+          else { slot.riderId = null; slot.score = null; }
+        }
+      });
+    });
+  };
+
+  var _fmiPrevGetFinalStandings = getFinalGpStandings;
+  getFinalGpStandings = function() {
+    if (!window.isFmiFormat()) return _fmiPrevGetFinalStandings();
+    var cfg = getModeConfig();
+    var qualList = getSortedQualifyingStandings();
+    var eligibleFinalIds = getEligibleRidersForSpecialHeat(cfg.finalHeatIdx).map(function(x) { return x.id; });
+
+    function placementWeight(raw) {
+      if (raw === 3) return 4;
+      if (raw === 2) return 3;
+      if (raw === 1) return 2;
+      if (raw === 0) return 1;
+      if (typeof raw === 'string') return 0;
+      return -1;
+    }
+
+    var finalCompleted = state.heats[cfg.finalHeatIdx] && state.heats[cfg.finalHeatIdx].slots.some(function(s) { return s.score !== null && s.riderId; });
+
+    var sortedFinal = qualList.slice().sort(function(a, b) {
+      var aInFin = finalCompleted && a.finRaw !== null && eligibleFinalIds.includes(a.id);
+      var bInFin = finalCompleted && b.finRaw !== null && eligibleFinalIds.includes(b.id);
+      if (aInFin && bInFin) {
+        var wDiff = placementWeight(b.finRaw) - placementWeight(a.finRaw);
+        if (wDiff !== 0) return wDiff;
+        return a.qualRank - b.qualRank;
+      }
+      if (aInFin !== bInFin) return aInFin ? -1 : 1;
+      // Dal 5° posto in giù conta la classifica stilata al termine delle batterie regolari (Art. 11 FMI 2026)
+      return a.qualRank - b.qualRank;
+    });
+
+    sortedFinal.forEach(function(st, idx) {
+      st.finalRank = idx + 1;
+      st.sgpPts = FMI_CHAMP_POINTS[idx] || 0;
+    });
+    return sortedFinal;
+  };
+
+  // 9. Aggiornamento Scheda Piloti, Scheda Batterie (con tasto Spareggio) e Classifica
+  var _fmiPrevRenderRiders = renderRidersInputs;
+  renderRidersInputs = function() {
+    if (!window.isFmiFormat()) return _fmiPrevRenderRiders();
+    var cfg = getModeConfig();
+    var container = document.getElementById('riders-inputs');
+    var ocrTargetBar = document.getElementById('ocr-team-target-bar');
+    if (ocrTargetBar) ocrTargetBar.classList.remove('visible');
+
+    var html = '<div style="display:flex;justify-content:space-between;align-items:center;background:#161920;border:1px solid var(--accent);border-radius:10px;padding:8px 12px;margin-bottom:10px;">' +
+      '<span style="font-size:0.78rem;font-weight:800;color:var(--accent);">🇮🇹 ' + getModeTitle() + '</span>' +
+      '<button type="button" class="btn-mini" onclick="window.openItaFmiModal()">⚙️ 12 / 14 / 16 Piloti</button>' +
+    '</div>';
+
+    for (var r = 1; r <= cfg.totalRidersCount; r++) {
+      var isRes = r > cfg.mainRidersCount;
+      var lbl = isRes ? ('#' + r + ' (' + t('roleReserve') + ')') : ('#' + r);
+      html += '<div class="rider-input-row"><span>' + lbl + '</span>' +
+        '<input type="text" value="' + (state.riders[r] || '').replace(/"/g, '&quot;') + '" oninput="updateRiderName(' + r + ', this.value)"></div>';
+    }
+    container.innerHTML = html;
+  };
+
+  var _fmiPrevRenderHeat = renderCurrentHeat;
+  renderCurrentHeat = function() {
+    _fmiPrevRenderHeat();
+    var cfg = getModeConfig();
+    var heat = state.heats[state.currentHeat];
+    var autoBox = document.getElementById('auto-finals-box');
+    var tieBar = document.getElementById('tiebreak-controls-bar');
+
+    // A) Mostra il pulsante "➕ Aggiungi Batteria di Spareggio (Run-Off)" sull'ultima batteria (o sugli spareggi) di QUALSIASI gara individuale
+    if (tieBar && !cfg.isTeam) {
+      var isAtEndIndiv = (state.currentHeat >= cfg.totalHeats - 1);
+      if (isAtEndIndiv) {
+        tieBar.style.display = 'flex';
+        var extraCount = state.heats.length - cfg.totalHeats;
+        var nextTieNum = extraCount + 1;
+        tieBar.innerHTML =
+          '<button type="button" class="btn-secondary" style="padding:8px 10px;font-size:0.76rem;flex:1;" onclick="addTieBreakHeat()">' + t('btnAddIndivRunOff') + ' (#' + nextTieNum + ')</button>' +
+          (extraCount > 0 ? '<button type="button" class="btn-outline-danger" style="margin-top:0;padding:8px 10px;font-size:0.75rem;width:auto;" onclick="removeLastTieBreakHeat()">' + t('btnRemIndivRunOff') + ' (#' + extraCount + ')</button>' : '');
+      } else {
+        tieBar.style.display = 'none';
+        tieBar.innerHTML = '';
+      }
+    }
+
+    // B) Se siamo in una Batteria di Spareggio Individuale, mostra il box informativo e tutti i piloti selezionabili
+    if (!cfg.isTeam && heat && (heat.isTieBreak || state.currentHeat >= cfg.totalHeats)) {
+      if (autoBox) {
+        autoBox.innerHTML = '<div class="qual-info-card" style="border-color:var(--accent);">' +
+          '<div class="qual-info-header"><span class="qual-info-title">' + t('runOffCardTitle') + ' — ' + getHeatLabel(state.currentHeat, false) + '</span>' +
+          '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button></div>' +
+          '<div class="qual-info-sub">' + t('runOffCardSub') + '</div></div>';
+      }
+      var maxRiders = cfg.totalRidersCount || (cfg.isPardubice ? 38 : 18);
+      var selects = document.querySelectorAll('#gates-container .gate-card .sub-select');
+      selects.forEach(function(sel, sIdx) {
+        var slot = heat.slots[sIdx];
+        var opts = '<option value="" ' + (!slot.riderId ? 'selected' : '') + '>' + t('selectQualRider') + '</option>';
+        for (var r = 1; r <= maxRiders; r++) {
+          opts += '<option value="' + r + '" ' + (slot.riderId == r ? 'selected' : '') + '>#' + r + ' ' + (state.riders[r] || '') + '</option>';
+        }
+        sel.innerHTML = opts;
+      });
+      return;
+    }
+
+    // C) Gestione Batterie FMI (12, 14, 16 Piloti)
+    if (window.isFmiFormat() && heat) {
+      var isFmiSpecial = (state.currentHeat === cfg.lcqHeatIdx || state.currentHeat === cfg.finalHeatIdx);
+      if (!isFmiSpecial) {
+        // Batterie regolari: popola menu a tendina con Piloti + 2 Riserve
+        var regSelects = document.querySelectorAll('#gates-container .gate-card .sub-select');
+        regSelects.forEach(function(sel, sIdx) {
+          var slot = heat.slots[sIdx];
+          var opts = '<option value="" ' + (!slot.riderId ? 'selected' : '') + '>' + t('selectQualRider') + '</option>';
+          for (var r = 1; r <= cfg.totalRidersCount; r++) {
+            var resTag = r > cfg.mainRidersCount ? (' [' + t('roleReserve') + ']') : '';
+            opts += '<option value="' + r + '" ' + (slot.riderId == r ? 'selected' : '') + '>#' + r + ' ' + (state.riders[r] || '') + resTag + '</option>';
+          }
+          sel.innerHTML = opts;
+        });
+      } else {
+        // Last Chance (4°–7°) e Finale (1°–3° + 1° LC)
+        syncSpecialHeatsWithQualifiers();
+        var eligibleList = getEligibleRidersForSpecialHeat(state.currentHeat);
+        var isLcq = (state.currentHeat === cfg.lcqHeatIdx);
+        var titleTxt = isLcq ? t('itaLcqTitle') : t('itaFinTitle');
+        var subTxt = isLcq ? t('itaLcqSub') : t('itaFinSub');
+        var pillsHtml = eligibleList.length > 0
+          ? eligibleList.map(function(item) { return '<div class="qual-pill"><span>' + item.badge + ':</span>#' + item.id + ' ' + item.name + '</div>'; }).join('')
+          : '<div class="qual-pill">' + t('waitingResults') + '</div>';
+
+        if (autoBox) {
+          autoBox.innerHTML = '<div class="qual-info-card" style="border-color:var(--accent);">' +
+            '<div class="qual-info-header"><span class="qual-info-title">' + titleTxt + '</span>' +
+            '<div style="display:flex;gap:5px;">' +
+              '<button type="button" class="btn-mini" style="border-color:var(--accent);color:var(--accent);" onclick="autoFillIndividualSpecialHeat(' + state.currentHeat + ')">' + t('btnAutoFillQual') + '</button>' +
+              '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button>' +
+            '</div></div>' +
+            '<div class="qual-info-sub">' + subTxt + '</div>' +
+            '<div class="qual-badges-list">' + pillsHtml + '</div></div>';
+        }
+
+        var eligibleIds = eligibleList.map(function(x) { return x.id; });
+        var spSelects = document.querySelectorAll('#gates-container .gate-card .sub-select');
+        spSelects.forEach(function(sel, sIdx) {
+          var slot = heat.slots[sIdx];
+          var opts = '<option value="" ' + (!slot.riderId ? 'selected' : '') + '>' + t('selectQualRider') + '</option>';
+          if (eligibleList.length > 0) {
+            opts += '<optgroup label="★ Qualificati">';
+            eligibleList.forEach(function(item) {
+              opts += '<option value="' + item.id + '" ' + (slot.riderId == item.id ? 'selected' : '') + '>#' + item.id + ' ' + item.name + ' (' + item.badge + ')</option>';
+            });
+            opts += '</optgroup>';
+          }
+          opts += '<optgroup label="Tutti i Piloti">';
+          for (var r = 1; r <= cfg.totalRidersCount; r++) {
+            if (!eligibleIds.includes(r)) {
+              opts += '<option value="' + r + '" ' + (slot.riderId == r ? 'selected' : '') + '>#' + r + ' ' + (state.riders[r] || '') + '</option>';
+            }
+          }
+          opts += '</optgroup>';
+          sel.innerHTML = opts;
+        });
+
+        // Bottoni 1°, 2°, 3°, 4° per Last Chance e Finale
+        var placeLabels = [{ val: 3, label: '1°' }, { val: 2, label: '2°' }, { val: 1, label: '3°' }, { val: 0, label: '4°' }];
+        var scoreGrids = document.querySelectorAll('#gates-container .gate-card .score-btns');
+        scoreGrids.forEach(function(grid, sIdx) {
+          var slot = heat.slots[sIdx];
+          var hasRider = Boolean(slot && slot.riderId);
+          var sc = slot ? slot.score : null;
+          grid.innerHTML = placeLabels.map(function(btn) {
+            return '<button type="button" ' + (!hasRider ? 'disabled' : '') + ' class="score-btn ' + (sc === btn.val ? 'selected-' + btn.val : '') + '" onclick="setScore(' + sIdx + ', ' + btn.val + ')">' + btn.label + '</button>';
+          }).join('');
+        });
+      }
+    }
+  };
+
+  // Linee tratteggiate in Classifica per i formati FMI (Top 3 in Finale = linea gialla dopo il 3°, 4°–7° in LC = linea verde dopo il 7°)
+  var _fmiPrevRenderStandings = renderStandings;
+  renderStandings = function() {
+    _fmiPrevRenderStandings();
+    if (!window.isFmiFormat()) return;
+    var rows = document.querySelectorAll('#standings-table tbody tr');
+    rows.forEach(function(tr, idx) {
+      tr.classList.remove('final-line', 'qual-line');
+      if (idx === 2) tr.classList.add('final-line');
+      if (idx === 6) tr.classList.add('qual-line');
+    });
+  };
+
+  // Podio Storico per tutti i formati FMI
+  var _fmiPrevGetPodium = getPodiumSummary;
+  getPodiumSummary = function(raceState) {
+    if (window.isFmiFormat(raceState)) {
+      var cfg = getModeConfig(raceState);
+      var finHeat = raceState.heats && raceState.heats[cfg.finalHeatIdx];
+      if (finHeat) {
+        var p1 = finHeat.slots.find(function(s) { return s.score === 3 && s.riderId; });
+        var p2 = finHeat.slots.find(function(s) { return s.score === 2 && s.riderId; });
+        var p3 = finHeat.slots.find(function(s) { return s.score === 1 && s.riderId; });
+        if (p1) {
+          return "🥇 1° " + raceState.riders[p1.riderId] +
+            (p2 ? " • 🥈 2° " + raceState.riders[p2.riderId] : "") +
+            (p3 ? " • 🥉 3° " + raceState.riders[p3.riderId] : "");
+        }
+      }
+      return t('raceInProgress');
+    }
+    return _fmiPrevGetPodium(raceState);
+  };
+
+  applyTranslations();
 })();
 </script>
 </body>
