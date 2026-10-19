@@ -10252,6 +10252,200 @@ async function acquistaAbbonamento() {
 
   applyTranslations();
 })();  
+/* =========================================================================
+   MODULO UFFICIALE SVEZIA (SVEMO 2026 - KÖRSCHEMA 2.15.7-ELITSERIEN)
+   & AUTO-FILL BATTERIE NOMINATE SVEZIA (H15) E POLONIA (H14-H15)
+   ========================================================================= */
+(function initSvemoAndPzm2026OfficialRules() {
+  var SE_PL_2026_I18N = {
+    it: {
+      seNoticeTitle: "Regolamento Ufficiale Lega Svedese (SVEMO Elitserien 2026)",
+      seNoticeBody: "Tabella ufficiale SVEMO 2026 (Körschema 2.15.7) a 15 batterie con corsie ufficiali Bana 1–4 precaricate: Batterie 1–14 programmate (4 uscite per ogni pilota #1–#7) + Batteria 15 Unica Nominata (2 tra i 3 migliori piloti titolari per punteggio). Riserva Tattica consentita da B5 a B14 con almeno 6 punti di svantaggio.",
+      seHeat14Info: "Batteria 14 (Programmata — SVEMO 2026): Ultima batteria programmata prima della Nominata Finale (ancora valida per eventuale Riserva Tattica da -6 pt o Rider Replacement).",
+      seHeat15Info: "Batteria 15 (Unica Nominata Finale — Art. 5.8.5 SVEMO 2026): Ogni Team Manager deve nominare 2 tra i 3 piloti titolari (#1–#5) con il punteggio più alto. La squadra di casa nomina per prima e sceglie se partire dalle corsie 1-3 o 2-4."
+    },
+    en: {
+      seNoticeTitle: "Official Swedish League Rules (SVEMO Elitserien 2026)",
+      seNoticeBody: "Official 2026 SVEMO 15-heat schedule (Körschema 2.15.7) with pre-loaded Gates 1–4: Heats 1–14 programmed (4 rides for each rider #1–#7) + Heat 15 Final Nominated Heat (2 of the top 3 scoring regular riders #1–#5). Tactical Reserve allowed in Heats 5–14 when trailing by 6+ points.",
+      seHeat14Info: "Heat 14 (Programmed — SVEMO 2026): Final programmed heat before Heat 15 nominations (Tactical Reserve at -6 pts or Rider Replacement still permitted).",
+      seHeat15Info: "Heat 15 (Final Nominated Heat — SVEMO Art. 5.8.5): Each Team Manager nominates 2 out of the top 3 highest-scoring regular riders (#1–#5). Home team nominates first and chooses Gates 1-3 or 2-4."
+    },
+    pl: {
+      seNoticeTitle: "Oficjalny Regulamin Ligi Szwedzkiej (SVEMO Elitserien 2026)",
+      seNoticeBody: "Oficjalna tabela SVEMO 2026 (Körschema 2.15.7, 15 biegów) z polami startowymi 1–4: Biegi 1–14 programowe (po 4 starty dla #1–#7) + Bieg 15 Nominowany (2 z 3 najlepiej punktujących zawodników #1–#5). Rezerwa taktyczna (-6 pkt) dozwolona w biegach 5–14.",
+      seHeat14Info: "Bieg 14 (Programowy — SVEMO 2026): Ostatni bieg programowy przed nominacjami do Biegu 15 (dozwolona rezerwa taktyczna od -6 pkt).",
+      seHeat15Info: "Bieg 15 (Finałowy Bieg Nominowany — Art. 5.8.5 SVEMO): Menedżerowie nominują po 2 z 3 najlepiej punktujących zawodników podstawowych (#1–#5). Gospodarze wybierają pola 1-3 lub 2-4."
+    },
+    da: {
+      seNoticeTitle: "Officielle Regler Svensk Liga (SVEMO Elitserien 2026)",
+      seNoticeBody: "Officielt SVEMO 2026 15-heats skema (Körschema 2.15.7) med faste startbaner 1–4: Heat 1–14 fastlagt (4 heats pr. kører #1–#7) + Heat 15 Nomineret Finale (2 af holdets 3 højest scorende ordinære kørere #1–#5). Taktisk reserve (-6 pt) tilladt i Heat 5–14.",
+      seHeat14Info: "Heat 14 (Fastlagt — SVEMO 2026): Sidste ordinære heat før Heat 15-nominering (Taktisk reserve ved -6 pt tilladt).",
+      seHeat15Info: "Heat 15 (Nomineret Finale — SVEMO Art. 5.8.5): Holdlederne nominerer 2 af de 3 højest scorende ordinære kørere (#1–#5). Hjemmeholdet vælger bane 1-3 eller 2-4."
+    },
+    sv: {
+      seNoticeTitle: "Officiella Regler Svenska Elitserien (SVEMO 2026)",
+      seNoticeBody: "Officiellt körschema 2.15.7-Elitserien 2026 (15 heat) med förladdade startspår (Bana 1–4): Heat 1–14 ordinarie (4 heat per förare #1–#7) + Heat 15 Nomineringsheat (2 av lagets 3 poängmässigt främsta ordinarie förare #1–#5). Taktisk reserv tillåten fr.o.m. heat 5 t.o.m. heat 14 vid underläge med minst 6 poäng.",
+      seHeat14Info: "Heat 14 (Ordinarie heat — SVEMO 2026): Sista ordinarie heatet före nominering till Heat 15 (Taktisk reserv vid -6 p är tillåten t.o.m. heat 14).",
+      seHeat15Info: "Heat 15 (Nomineringsheat — SVEMO 5.8.5): Till heat 15 ska 2 av lagets 3 poängmässigt främsta ordinarie förare (#1–#5) nomineras. Hemmalaget nominerar först och väljer bana 1-3 eller 2-4."
+    },
+    cs: {
+      seNoticeTitle: "Oficiální pravidla Švédské ligy (SVEMO Elitserien 2026)",
+      seNoticeBody: "Oficiální rozpis SVEMO 2026 (Körschema 2.15.7, 15 jízd) s drahami 1–4: Jízdy 1–14 programové + Jízda 15 nominovaná (2 ze 3 nejlépe bodujících jezdců #1–#5). Taktická rezerva (-6 b.) povolena v jízdách 5–14.",
+      seHeat14Info: "Jízda 14 (Programová — SVEMO 2026): Poslední programová jízda před nominací do Jízdy 15.",
+      seHeat15Info: "Jízda 15 (Finálová nominovaná — SVEMO 5.8.5): Manažeři nominují 2 ze 3 nejlépe bodujících jezdců (#1–#5). Domácí volí dráhy 1-3 nebo 2-4."
+    }
+  };
+
+  Object.keys(SE_PL_2026_I18N).forEach(function(l) {
+    if (I18N[l]) Object.assign(I18N[l], SE_PL_2026_I18N[l]);
+  });
+
+  // 1. Tabella Ufficiale SVEMO Körschema 2.15.7-Elitserien 2026 (Batterie 1–14 programmate con 4 uscite esatte per #1..#7 + B15 Nominata)
+  // Ordine slot: [Rosso (Casa), Blu (Casa), Bianco (Ospiti), Giallo (Ospiti)]
+  LEAGUE_CONFIGS.se.schedule = [
+    [1, 2, 101, 102], // H1:  R1, B2 vs V1, G2
+    [6, 7, 106, 107], // H2:  R6, B7 vs V6, G7 (Reserver)
+    [3, 4, 103, 104], // H3:  R3, B4 vs V3, G4
+    [6, 5, 105, 107], // H4:  R6, B5 vs V5, G7
+    [2, 7, 106, 104], // H5:  R2, B7 vs V6, G4
+    [3, 4, 101, 102], // H6:  R3, B4 vs V1, G2
+    [1, 2, 103, 104], // H7:  R1, B2 vs V3, G4
+    [3, 4, 105, 107], // H8:  R3, B4 vs V5, G7
+    [6, 5, 101, 102], // H9:  R6, B5 vs V1, G2
+    [1, 7, 106, 105], // H10: R1, B7 vs V6, G5
+    [4, 5, 103, 102], // H11: R4, B5 vs V3, G2
+    [3, 2, 101, 104], // H12: R3, B2 vs V1, G4
+    [1, 5, 105, 103], // H13: R1, B5 vs V5, G3
+    [6, 2, 106, 107], // H14: R6, B2 vs V6, G7 (Programmata)
+    [null, null, null, null] // H15: Unica Nominata Finale (Top 2 tra i primi 3 titolari)
+  ];
+
+  // Corsie ufficiali SVEMO 2.15.7 per ciascun casco [Gate R, Gate B, Gate W, Gate Y]
+  var SE_OFFICIAL_GATES = [
+    [3, 1, 2, 4], // H1:  Bana1=B, Bana2=V, Bana3=R, Bana4=G
+    [2, 4, 3, 1], // H2:  Bana1=G, Bana2=R, Bana3=V, Bana4=B
+    [1, 3, 2, 4], // H3:  Bana1=R, Bana2=V, Bana3=B, Bana4=G
+    [4, 2, 1, 3], // H4:  Bana1=V, Bana2=B, Bana3=G, Bana4=R
+    [3, 1, 4, 2], // H5:  Bana1=B, Bana2=G, Bana3=R, Bana4=V
+    [2, 4, 3, 1], // H6:  Bana1=G, Bana2=R, Bana3=V, Bana4=B
+    [2, 4, 3, 1], // H7:  Bana1=G, Bana2=R, Bana3=V, Bana4=B
+    [3, 1, 4, 2], // H8:  Bana1=B, Bana2=G, Bana3=R, Bana4=V
+    [3, 1, 4, 2], // H9:  Bana1=B, Bana2=G, Bana3=R, Bana4=V
+    [4, 2, 1, 3], // H10: Bana1=V, Bana2=B, Bana3=G, Bana4=R
+    [1, 3, 2, 4], // H11
+    [3, 1, 2, 4], // H12
+    [2, 4, 1, 3], // H13
+    [1, 3, 4, 2], // H14
+    [1, 3, 2, 4]  // H15 (Nominata: Casa sceglie 1-3 o 2-4)
+  ];
+
+  var _sePrevCreateDefault = createDefaultState;
+  createDefaultState = function(modeKey) {
+    var st = _sePrevCreateDefault(modeKey);
+    if (modeKey === 'se') {
+      st.heats.forEach(function(h, idx) {
+        if (idx < 15 && SE_OFFICIAL_GATES[idx]) {
+          h.slots.forEach(function(s, sIdx) {
+            s.gate = SE_OFFICIAL_GATES[idx][sIdx];
+          });
+        }
+      });
+    }
+    return st;
+  };
+
+  // Etichetta Batteria 14 in Svezia: è programmata (solo la 15 è Nominata!)
+  var _sePrevGetHeatLabel = getHeatLabel;
+  getHeatLabel = function(idx, includeTime) {
+    var cfg = getModeConfig();
+    var h = state.heats[idx];
+    if (state.mode === 'se' && (!h || !h.isTieBreak) && idx < cfg.totalHeats) {
+      var hNum = idx + 1;
+      var base = t('heatLbl') + " " + hNum;
+      if (hNum === 2) base += " (" + t('roleReserve') + " #6-#7)";
+      else if (hNum === 15) base += " (" + t('nominatedLbl') + ")";
+      if (includeTime && h && h.time) base += " •⏱️ " + h.time + "s";
+      return base;
+    }
+    return _sePrevGetHeatLabel(idx, includeTime);
+  };
+
+  // Funzione Auto-Fill per le Batterie Nominate di Svezia (H15) e Polonia (H14 e H15)
+  window.autoFillSeOrPlNominatedHeat = function(heatIdx) {
+    var heat = state.heats[heatIdx];
+    if (!heat) return;
+    var allStats = computeStats();
+
+    if (state.mode === 'se' && heatIdx === 14) {
+      // Svezia H15: Top 2 tra i piloti titolari (#1-#5)
+      var hMain = allStats.filter(function(s) { return s.team === 'A' && s.id <= 5; }).sort(function(a, b) { return b.total - a.total; });
+      var aMain = allStats.filter(function(s) { return s.team === 'B' && s.id <= 105; }).sort(function(a, b) { return b.total - a.total; });
+      heat.slots[0].riderId = hMain[0] ? hMain[0].id : null;
+      heat.slots[1].riderId = hMain[1] ? hMain[1].id : null;
+      heat.slots[2].riderId = aMain[0] ? aMain[0].id : null;
+      heat.slots[3].riderId = aMain[1] ? aMain[1].id : null;
+    } else if (state.mode === 'pl' && (heatIdx === 13 || heatIdx === 14)) {
+      var hAll = allStats.filter(function(s) { return s.team === 'A'; }).sort(function(a, b) { return b.total - a.total; });
+      var aAll = allStats.filter(function(s) { return s.team === 'B'; }).sort(function(a, b) { return b.total - a.total; });
+      if (heatIdx === 14) {
+        // Polonia Bieg 15: Top 2 assoluti
+        heat.slots[0].riderId = hAll[0] ? hAll[0].id : null;
+        heat.slots[1].riderId = hAll[1] ? hAll[1].id : null;
+        heat.slots[2].riderId = aAll[0] ? aAll[0].id : null;
+        heat.slots[3].riderId = aAll[1] ? aAll[1].id : null;
+      } else {
+        // Polonia Bieg 14: 3° e 4° miglior punteggio (esclusi i Top 2 destinati al Bieg 15)
+        heat.slots[0].riderId = hAll[2] ? hAll[2].id : null;
+        heat.slots[1].riderId = hAll[3] ? hAll[3].id : null;
+        heat.slots[2].riderId = aAll[2] ? aAll[2].id : null;
+        heat.slots[3].riderId = aAll[3] ? aAll[3].id : null;
+      }
+    }
+    saveState();
+    renderCurrentHeat();
+  };
+
+  var _sePlPrevRenderHeat = renderCurrentHeat;
+  renderCurrentHeat = function() {
+    _sePlPrevRenderHeat();
+    var heat = state.heats[state.currentHeat];
+    if (!heat || heat.isTieBreak) return;
+    var autoBox = document.getElementById('auto-finals-box');
+    if (!autoBox) return;
+
+    // A) Svezia Batteria 15 (mostra i Top 3 titolari #1-#5 + bottone Auto-Fill)
+    if (state.mode === 'se' && state.currentHeat === 14) {
+      var allStats = computeStats();
+      var hTop3 = allStats.filter(function(s) { return s.team === 'A' && s.id <= 5; }).sort(function(a, b) { return b.total - a.total; }).slice(0, 3);
+      var aTop3 = allStats.filter(function(s) { return s.team === 'B' && s.id <= 105; }).sort(function(a, b) { return b.total - a.total; }).slice(0, 3);
+      var hPills = hTop3.map(function(x) { return '<div class="qual-pill"><span>🔴 #' + x.id + ':</span>' + x.name + ' (' + x.total + 'pt)</div>'; }).join('');
+      var aPills = aTop3.map(function(x) { return '<div class="qual-pill"><span>🟡 #' + (x.id - 100) + ':</span>' + x.name + ' (' + x.total + 'pt)</div>'; }).join('');
+      autoBox.innerHTML = '<div class="qual-info-card" style="border-color:var(--yellow);">' +
+        '<div class="qual-info-header"><span class="qual-info-title" style="color:var(--yellow);">🇸🇪 ' + getHeatLabel(14, false) + '</span>' +
+        '<div style="display:flex;gap:5px;">' +
+          '<button type="button" class="btn-mini" style="border-color:var(--accent);color:var(--accent);" onclick="window.autoFillSeOrPlNominatedHeat(14)">' + t('btnAutoFillNom') + '</button>' +
+          '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button>' +
+        '</div></div>' +
+        '<div class="qual-info-sub">' + t('seHeat15Info') + '</div>' +
+        '<div class="qual-badges-list">' + hPills + aPills + '</div></div>';
+    }
+
+    // B) Polonia Batterie 14 e 15: aggiunge il pulsante rapido Auto-Fill
+    if (state.mode === 'pl' && (state.currentHeat === 13 || state.currentHeat === 14)) {
+      var hdrPl = autoBox.querySelector('.qual-info-header');
+      if (hdrPl && !hdrPl.innerHTML.includes('autoFillSeOrPlNominatedHeat')) {
+        var titleSpanPl = hdrPl.querySelector('.qual-info-title');
+        hdrPl.innerHTML = (titleSpanPl ? titleSpanPl.outerHTML : '') +
+          '<div style="display:flex;gap:5px;">' +
+            '<button type="button" class="btn-mini" style="border-color:var(--accent);color:var(--accent);" onclick="window.autoFillSeOrPlNominatedHeat(' + state.currentHeat + ')">' + t('btnAutoFillNom') + '</button>' +
+            '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button>' +
+          '</div>';
+      }
+    }
+  };
+
+  applyTranslations();
+})();
 </script>
 </body>
 </html>
