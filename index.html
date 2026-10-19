@@ -9705,6 +9705,281 @@ async function acquistaAbbonamento() {
 
   applyTranslations();
 })();
+/* =========================================================================
+   MODULO DEFINITIVO POPUP GRAFICI "SPEEDWAY LIVE" (ZERO "github.io dice")
+   Sostituisce tutti i confirm(), prompt() e alert() con modali in stile App (6 Lingue)
+   ========================================================================= */
+(function initCustomSpeedwayDialogs() {
+  var DIALOG_I18N = {
+    it: { cancel: "Annulla", ok: "Conferma", close: "OK", vipTitle: "👑 Codice Promo / VIP", vipSub: "Inserisci il tuo Codice Promo o VIP per sbloccare Speedway Live PRO:", vipPh: "Es. LUNA-VIP-2026", copyTitle: "🔗 Link Google Play Store" },
+    en: { cancel: "Cancel", ok: "Confirm", close: "OK", vipTitle: "👑 Promo / VIP Code", vipSub: "Enter your Promo or VIP Code to unlock Speedway Live PRO:", vipPh: "E.g. LUNA-VIP-2026", copyTitle: "🔗 Google Play Store Link" },
+    pl: { cancel: "Anuluj", ok: "Potwierdź", close: "OK", vipTitle: "👑 Kod Promo / VIP", vipSub: "Wpisz swój kod Promo lub VIP, aby odblokować Speedway Live PRO:", vipPh: "Np. LUNA-VIP-2026", copyTitle: "🔗 Link do Google Play Store" },
+    da: { cancel: "Annuller", ok: "Bekræft", close: "OK", vipTitle: "👑 Promo / VIP-kode", vipSub: "Indtast din Promo- eller VIP-kode for at låse Speedway Live PRO op:", vipPh: "F.eks. LUNA-VIP-2026", copyTitle: "🔗 Google Play Butik-link" },
+    sv: { cancel: "Avbryt", ok: "Bekräfta", close: "OK", vipTitle: "👑 Promo / VIP-kod", vipSub: "Ange din Promo- eller VIP-kod för att låsa upp Speedway Live PRO:", vipPh: "T.ex. LUNA-VIP-2026", copyTitle: "🔗 Google Play Butik-länk" },
+    cs: { cancel: "Zrušit", ok: "Potvrdit", close: "OK", vipTitle: "👑 Promo / VIP kód", vipSub: "Zadejte svůj Promo nebo VIP kód pro odemknutí Speedway Live PRO:", vipPh: "Např. LUNA-VIP-2026", copyTitle: "🔗 Odkaz na Google Play" }
+  };
+
+  function getDlgDict() {
+    var l = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : (localStorage.getItem('speedway_fim_lang_v1') || localStorage.getItem('speedway_lang') || 'it');
+    return DIALOG_I18N[l] || DIALOG_I18N.it;
+  }
+
+  // 1. Finestra di Conferma Grafica Universale (Sostituisce tutti i confirm() del browser)
+  window.swConfirm = function(message, onConfirm) {
+    var d = getDlgDict();
+    var cBox = document.getElementById('sw-custom-confirm');
+    if (!cBox) {
+      cBox = document.createElement('div');
+      cBox.id = 'sw-custom-confirm';
+      cBox.className = 'modal-backdrop';
+      cBox.style.zIndex = '100000';
+      cBox.innerHTML = [
+        '<div class="modal-box" style="max-width:350px;text-align:center;border-color:var(--accent);">',
+        '  <h3 style="margin-top:0;color:var(--accent);display:flex;align-items:center;justify-content:center;gap:8px;">🏁 Speedway Live</h3>',
+        '  <p id="sw-custom-confirm-msg" style="font-size:0.92rem;color:var(--text);line-height:1.45;margin:14px 0 18px;white-space:pre-line;"></p>',
+        '  <div class="qr-btn-row" style="display:flex;gap:10px;">',
+        '    <button type="button" id="sw-confirm-cancel" class="qr-btn-close" style="flex:1;padding:11px;font-weight:800;border-radius:8px;border:1px solid var(--border);cursor:pointer;"></button>',
+        '    <button type="button" id="sw-confirm-ok" class="qr-btn-share" style="flex:1;padding:11px;font-weight:800;border-radius:8px;border:none;cursor:pointer;"></button>',
+        '  </div>',
+        '</div>'
+      ].join('');
+      document.body.appendChild(cBox);
+    }
+    document.getElementById('sw-custom-confirm-msg').textContent = message;
+    document.getElementById('sw-confirm-cancel').textContent = d.cancel;
+    document.getElementById('sw-confirm-ok').textContent = d.ok;
+
+    document.getElementById('sw-confirm-cancel').onclick = function() {
+      cBox.classList.remove('open');
+    };
+    document.getElementById('sw-confirm-ok').onclick = function() {
+      cBox.classList.remove('open');
+      if (typeof onConfirm === 'function') onConfirm();
+    };
+    cBox.classList.add('open');
+  };
+
+  // 2. Finestra di Inserimento Testo Grafica (Sostituisce tutti i prompt() del browser per Codice VIP / Link)
+  window.swPrompt = function(title, subtitle, placeholder, defaultValue, onSubmit) {
+    var d = getDlgDict();
+    var pBox = document.getElementById('sw-custom-prompt');
+    if (!pBox) {
+      pBox = document.createElement('div');
+      pBox.id = 'sw-custom-prompt';
+      pBox.className = 'modal-backdrop';
+      pBox.style.zIndex = '100000';
+      pBox.innerHTML = [
+        '<div class="modal-box" style="max-width:360px;text-align:center;border-color:var(--accent);">',
+        '  <h3 id="sw-prompt-title" style="margin-top:0;color:var(--accent);"></h3>',
+        '  <p id="sw-prompt-sub" style="font-size:0.82rem;color:var(--muted);line-height:1.4;margin:8px 0 12px;"></p>',
+        '  <input type="text" id="sw-prompt-input" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--accent);background:#121418;color:var(--text);font-size:0.92rem;font-weight:700;text-align:center;margin-bottom:14px;">',
+        '  <div class="qr-btn-row" style="display:flex;gap:10px;">',
+        '    <button type="button" id="sw-prompt-cancel" class="qr-btn-close" style="flex:1;padding:11px;font-weight:800;border-radius:8px;border:1px solid var(--border);cursor:pointer;"></button>',
+        '    <button type="button" id="sw-prompt-ok" class="qr-btn-share" style="flex:1;padding:11px;font-weight:800;border-radius:8px;border:none;cursor:pointer;"></button>',
+        '  </div>',
+        '</div>'
+      ].join('');
+      document.body.appendChild(pBox);
+    }
+    document.getElementById('sw-prompt-title').textContent = title || '🏁 Speedway Live';
+    document.getElementById('sw-prompt-sub').textContent = subtitle || '';
+    var inp = document.getElementById('sw-prompt-input');
+    inp.placeholder = placeholder || '';
+    inp.value = defaultValue || '';
+    document.getElementById('sw-prompt-cancel').textContent = d.cancel;
+    document.getElementById('sw-prompt-ok').textContent = d.ok;
+
+    document.getElementById('sw-prompt-cancel').onclick = function() {
+      pBox.classList.remove('open');
+    };
+    document.getElementById('sw-prompt-ok').onclick = function() {
+      var val = inp.value;
+      pBox.classList.remove('open');
+      if (typeof onSubmit === 'function') onSubmit(val);
+    };
+    pBox.classList.add('open');
+    setTimeout(function() { inp.focus(); }, 80);
+  };
+
+  // 3. Funzione interna per applicare il cambio formato senza confirm() nativo
+  function applyNewAppModeNow(targetMode) {
+    state = createDefaultState(targetMode);
+    if (typeof ocrTeamTarget !== 'undefined') ocrTeamTarget = 'both';
+    populateEventForm();
+    saveState();
+    closeModeModal();
+    if (typeof closeDkInfoModal === 'function') closeDkInfoModal();
+    if (typeof closeSonInfoModal === 'function') closeSonInfoModal();
+    var itaM = document.getElementById('ita-fmi-modal');
+    if (itaM) itaM.classList.remove('open');
+    renderRidersInputs();
+    renderCurrentHeat();
+    switchTab('event', document.getElementById('nav-event'));
+  }
+
+  function hasAnyScoredHeat() {
+    return Boolean(state && state.heats && state.heats.some(function(h) {
+      return h.slots && h.slots.some(function(s) { return s.score !== null; });
+    }));
+  }
+
+  // 4. Sostituzione di TUTTE le funzioni che usavano confirm() o prompt()
+
+  // A) Scelta Formato Principale (SGP, Sprint, Pardubice, Leghe UK/SE/PL + apertura sottomenù ITA/DK/SON)
+  window.selectAppMode = selectAppMode = function(newMode) {
+    if (newMode === 'ita_indiv' && typeof window.openItaFmiModal === 'function') {
+      window.openItaFmiModal();
+      return;
+    }
+    if ((newMode === 'dk' || newMode === 'dk4') && typeof openDkEntryFlow === 'function') {
+      openDkEntryFlow();
+      return;
+    }
+    if ((newMode === 'son' || newMode === 'son7') && typeof openSonEntryFlow === 'function') {
+      openSonEntryFlow();
+      return;
+    }
+    var hasScores = hasAnyScoredHeat();
+    if (hasScores && state.mode !== newMode) {
+      window.swConfirm(t('confirmChangeMode'), function() {
+        applyNewAppModeNow(newMode);
+      });
+      return;
+    }
+    if (state.mode !== newMode || hasScores) {
+      applyNewAppModeNow(newMode);
+    } else {
+      closeModeModal();
+      renderRidersInputs();
+      renderCurrentHeat();
+      switchTab('event', document.getElementById('nav-event'));
+    }
+  };
+
+  // B) Scelta Sottomenù Campionato Italiano FMI 2026 (12, 14, 16 Piloti)
+  window.chooseItaFmiMode = function(fmiKey) {
+    var hasScores = hasAnyScoredHeat();
+    if (hasScores && state.mode !== fmiKey) {
+      window.swConfirm(t('confirmChangeMode'), function() {
+        applyNewAppModeNow(fmiKey);
+      });
+      return;
+    }
+    if (state.mode !== fmiKey || hasScores) {
+      applyNewAppModeNow(fmiKey);
+    } else {
+      var itaM = document.getElementById('ita-fmi-modal');
+      if (itaM) itaM.classList.remove('open');
+      renderRidersInputs();
+      renderCurrentHeat();
+      switchTab('event', document.getElementById('nav-event'));
+    }
+  };
+
+  // C) Scelta Sottomenù Lega Danese (2 Squadre / 4 Squadre)
+  window.chooseDkCompetition = chooseDkCompetition = function(dkModeKey) {
+    var targetMode = dkModeKey === 'dk4' ? 'dk4' : 'dk';
+    var hasScores = hasAnyScoredHeat();
+    if (hasScores && state.mode !== targetMode) {
+      window.swConfirm(t('confirmChangeMode'), function() {
+        applyNewAppModeNow(targetMode);
+      });
+      return;
+    }
+    if (state.mode !== targetMode || hasScores) {
+      applyNewAppModeNow(targetMode);
+    } else {
+      closeDkInfoModal();
+      renderRidersInputs();
+      renderCurrentHeat();
+      switchTab('event', document.getElementById('nav-event'));
+    }
+  };
+
+  // D) Scelta Sottomenù Speedway of Nations (7 Nazioni / 2 Nazioni)
+  window.chooseSonCompetition = chooseSonCompetition = function(sonModeKey) {
+    var targetMode = sonModeKey === 'son7' ? 'son7' : 'son';
+    var hasScores = hasAnyScoredHeat();
+    if (hasScores && state.mode !== targetMode) {
+      window.swConfirm(t('confirmChangeMode'), function() {
+        applyNewAppModeNow(targetMode);
+      });
+      return;
+    }
+    if (state.mode !== targetMode || hasScores) {
+      applyNewAppModeNow(targetMode);
+    } else {
+      closeSonInfoModal();
+      renderRidersInputs();
+      renderCurrentHeat();
+      switchTab('event', document.getElementById('nav-event'));
+    }
+  };
+
+  // E) Svuota Tutto (Nuova Gara Pulita)
+  window.fullResetApp = fullResetApp = function() {
+    window.swConfirm(t('confirmFullReset'), function() {
+      state = createDefaultState(state.mode || 'sgp');
+      populateEventForm();
+      saveState();
+      renderRidersInputs();
+      renderCurrentHeat();
+      openModeModal();
+    });
+  };
+
+  // F) Svuota Dati Evento
+  window.clearEventMetaOnly = clearEventMetaOnly = function() {
+    window.swConfirm(t('confirmClearEvent'), function() {
+      state.eventMeta = createDefaultState(state.mode).eventMeta;
+      populateEventForm();
+      saveState();
+    });
+  };
+
+  // G) Ripristina Nomi Piloti
+  window.resetRidersNames = resetRidersNames = function() {
+    window.swConfirm(t('confirmResetRiders'), function() {
+      var def = createDefaultState(state.mode);
+      state.riders = def.riders;
+      state.teamNames = def.teamNames;
+      saveState();
+      renderRidersInputs();
+      renderCurrentHeat();
+    });
+  };
+
+  // H) Azzera Punteggi e Piazzamenti Batteria
+  window.resetAllScores = resetAllScores = function() {
+    window.swConfirm(t('confirmResetScores'), function() {
+      var def = createDefaultState(state.mode);
+      state.heats = def.heats;
+      state.tieOrder = [];
+      state.currentHeat = 0;
+      saveState();
+      renderCurrentHeat();
+    });
+  };
+
+  // I) Elimina Gara dallo Storico
+  window.deleteArchivedRace = deleteArchivedRace = function(id) {
+    window.swConfirm(t('confirmDelHistory'), function() {
+      saveArchive(getArchive().filter(function(x) { return x.id !== id; }));
+      renderHistory();
+    });
+  };
+
+  // J) Inserimento Codice Promo / VIP (Sostituisce prompt() nativo)
+  window.promptVipCode = function() {
+    var d = getDlgDict();
+    window.swPrompt(d.vipTitle, d.vipSub, d.vipPh, '', function(code) {
+      if (code && typeof window.redeemVipCode === 'function') {
+        window.redeemVipCode(code);
+        if (typeof window.updateProUiBadges === 'function') window.updateProUiBadges();
+      }
+    });
+  };
+})();  
 </script>
 </body>
 </html>
