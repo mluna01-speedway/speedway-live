@@ -8272,8 +8272,10 @@ Object.assign(I18N.it, {
       }
     }, true);
 
-    // 6. Cronometro Ufficiale dei "2 Minuti" (120s) Multilingua
-    var timerSeconds = 120;
+    // 6. Cronometro Ufficiale Configurabile (120s / 90s / 60s) Multilingua
+    var defaultTimerDuration = parseInt(localStorage.getItem('speedway_timer_duration') || '90', 10);
+    if ([60, 90, 120].indexOf(defaultTimerDuration) === -1) defaultTimerDuration = 90;
+    var timerSeconds = defaultTimerDuration;
     var timerInterval = null;
 
     function formatTwoMin(sec) {
@@ -8282,6 +8284,35 @@ Object.assign(I18N.it, {
       return '0' + m + ':' + (s < 10 ? '0' + s : s);
     }
 
+    function getTimerTitleLocalized(dur) {
+      var lang = getActiveLang();
+      if (dur === 90) {
+        return { it: 'Timer 90 Secondi (1:30)', en: '90-Second Timer (1:30)', pl: 'Timer 90 Sekund (1:30)', da: '90-Sekunders Timer (1:30)', sv: '90-Sekunders Timer (1:30)', cs: 'Timer 90 Sekund (1:30)' }[lang] || 'Timer 1:30';
+      }
+      if (dur === 60) {
+        return { it: 'Timer 60 Secondi (1:00)', en: '60-Second Timer (1:00)', pl: 'Timer 60 Sekund (1:00)', da: '60-Sekunders Timer (1:00)', sv: '60-Sekunders Timer (1:00)', cs: 'Timer 60 Sekund (1:00)' }[lang] || 'Timer 1:00';
+      }
+      return trExt('timerTitle');
+    }
+
+    function getStartLabelLocalized(dur) {
+      var timeStr = dur === 90 ? '1:30' : (dur === 60 ? '1:00' : '2:00');
+      return trExt('start2m').replace('2:00', timeStr);
+    }
+
+    window.setTimerDurationPreset = function(sec) {
+      var s = parseInt(sec, 10);
+      if ([60, 90, 120].indexOf(s) === -1) return;
+      defaultTimerDuration = s;
+      localStorage.setItem('speedway_timer_duration', String(s));
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      timerSeconds = defaultTimerDuration;
+      updateTimerUi();
+    };
+
     function updateTimerUi() {
       var disp = document.getElementById('two-min-display');
       var toggleBtn = document.getElementById('two-min-toggle-btn');
@@ -8289,8 +8320,18 @@ Object.assign(I18N.it, {
       var titleLbl = document.getElementById('two-min-title-lbl');
       if (!disp || !toggleBtn) return;
 
-      if (titleLbl) titleLbl.textContent = trExt('timerTitle');
+      if (titleLbl) titleLbl.textContent = getTimerTitleLocalized(defaultTimerDuration);
       if (resetBtn) resetBtn.innerHTML = trExt('reset2m');
+
+      [120, 90, 60].forEach(function(val) {
+        var pBtn = document.getElementById('timer-preset-' + val);
+        if (pBtn) {
+          var active = (defaultTimerDuration === val);
+          pBtn.style.background = active ? 'var(--accent)' : 'transparent';
+          pBtn.style.color = active ? '#000' : 'var(--muted)';
+          pBtn.style.borderColor = active ? 'var(--accent)' : 'var(--border)';
+        }
+      });
 
       disp.textContent = formatTwoMin(timerSeconds);
       if (timerSeconds === 0) {
@@ -8311,7 +8352,7 @@ Object.assign(I18N.it, {
         toggleBtn.innerHTML = trExt('pause2m');
         toggleBtn.style.background = '#f59e0b';
       } else {
-        toggleBtn.innerHTML = timerSeconds < 120 && timerSeconds > 0 ? trExt('resume2m') : trExt('start2m');
+        toggleBtn.innerHTML = (timerSeconds < defaultTimerDuration && timerSeconds > 0) ? trExt('resume2m') : getStartLabelLocalized(defaultTimerDuration);
         toggleBtn.style.background = '#10b981';
       }
     }
@@ -8323,7 +8364,7 @@ Object.assign(I18N.it, {
         updateTimerUi();
         return;
       }
-      if (timerSeconds <= 0) timerSeconds = 120;
+      if (timerSeconds <= 0) timerSeconds = defaultTimerDuration;
       timerInterval = setInterval(function() {
         if (timerSeconds > 0) {
           timerSeconds--;
@@ -8344,7 +8385,7 @@ Object.assign(I18N.it, {
         clearInterval(timerInterval);
         timerInterval = null;
       }
-      timerSeconds = 120;
+      timerSeconds = defaultTimerDuration;
       updateTimerUi();
     };
 
@@ -8355,6 +8396,33 @@ Object.assign(I18N.it, {
         updateTimerUi();
         return;
       }
+
+      var bar = document.createElement('div');
+      bar.id = 'two-min-timer-bar';
+      bar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:12px;';
+      bar.innerHTML = [
+        '<div style="display:flex;align-items:center;gap:8px;">',
+        '  <span style="font-size:18px;">⏱</span>',
+        '  <div>',
+        '    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">',
+        '      <div id="two-min-title-lbl" style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">' + getTimerTitleLocalized(defaultTimerDuration) + '</div>',
+        '      <div style="display:inline-flex;gap:3px;">',
+        '        <button type="button" id="timer-preset-120" onclick="window.setTimerDurationPreset(120)" style="padding:1px 6px;border-radius:5px;border:1px solid var(--border);font-size:10px;font-weight:800;cursor:pointer;">2:00</button>',
+        '        <button type="button" id="timer-preset-90" onclick="window.setTimerDurationPreset(90)" style="padding:1px 6px;border-radius:5px;border:1px solid var(--border);font-size:10px;font-weight:800;cursor:pointer;">1:30</button>',
+        '        <button type="button" id="timer-preset-60" onclick="window.setTimerDurationPreset(60)" style="padding:1px 6px;border-radius:5px;border:1px solid var(--border);font-size:10px;font-weight:800;cursor:pointer;">1:00</button>',
+        '      </div>',
+        '    </div>',
+        '    <div id="two-min-display" style="font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent);line-height:1.1;margin-top:2px;">01:30</div>',
+        '  </div>',
+        '</div>',
+        '<div style="display:flex;gap:8px;">',
+        '  <button type="button" id="two-min-toggle-btn" onclick="toggleTwoMinTimer()" style="padding:8px 14px;border:none;border-radius:8px;background:#10b981;color:#fff;font-weight:700;font-size:13px;cursor:pointer;">' + getStartLabelLocalized(defaultTimerDuration) + '</button>',
+        '  <button type="button" id="two-min-reset-btn" onclick="resetTwoMinTimer()" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text);font-weight:600;font-size:13px;cursor:pointer;">' + trExt('reset2m') + '</button>',
+        '</div>'
+      ].join('');
+      heatsTab.insertBefore(bar, heatsTab.firstChild);
+      updateTimerUi();
+    }
 
       var bar = document.createElement('div');
       bar.id = 'two-min-timer-bar';
