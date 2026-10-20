@@ -10834,6 +10834,292 @@ async function acquistaAbbonamento() {
 
   setTimeout(injectFlagsGuideButtonsAndCard, 250);
 })();
+/* =========================================================================
+   MODULO UFFICIALE FIM SPEEDWAY OF NATIONS (SON RULES - FIMSPEEDWAY.COM)
+   - Tie-Break Ufficiale FIM: Punti -> Batterie Vinte (Heat Wins) -> Scontro Diretto -> 1°/2°/3° posti
+   - Scelta Corsie Ufficiale in B22 (2ª classificata) e B23 (1ª classificata): Gate 1-3 vs Gate 2-4
+   - Calcolo automatico Vincente B22 e Podio Finale B23 (con regola 3+2 = 5 pt > 4+0 = 4 pt)
+   ========================================================================= */
+(function initFimSonOfficialRules() {
+  var SON_FIM_I18N = {
+    it: {
+      sonNoticeTitle: "Regolamento Ufficiale FIM Speedway of Nations (SON)",
+      sonNoticeBody: "Punteggio ufficiale FIM 4-3-2-0 (dove 2°+3° = 5 pt batte 1°+4° = 4 pt!). Ogni Nazione schiera #1 e #2 più la Riserva #3 U21 (inseribile in qualsiasi batteria). Dopo 21 batterie: la 1ª va direttamente alla Grand Final (B23); 2ª e 3ª disputano il Grand Final Qualifier (B22). In caso di parità in classifica contano: 1) Batterie vinte, 2) Scontro diretto, 3) Maggior numero di 1°, 2° e 3° posti.",
+      sonGateChoiceLbl: "🌍 Scelta Corsie Leader (🔴🔵 Rosso/Blu):",
+      sonGates13Btn: "🏁 Corsie 1 & 3 (A-C)",
+      sonGates24Btn: "🏁 Corsie 2 & 4 (B-D)",
+      sonWinsShort: "V",
+      sonWinnerB22Badge: "✅ Qualificata alla Grand Final (B23): ",
+      sonChampionB23Badge: "🏆 CAMPIONE SPEEDWAY OF NATIONS: "
+    },
+    en: {
+      sonNoticeTitle: "Official FIM Speedway of Nations (SON) Rules",
+      sonNoticeBody: "Official FIM 4-3-2-0 scoring (where 2nd+3rd = 5 pts beats 1st+4th = 4 pts!). Each Nation fields #1 & #2 plus #3 U21 Reserve (usable in any heat). After 21 heats: 1st goes directly to the Grand Final (H23); 2nd & 3rd contest the Grand Final Qualifier (H22). Ties after 21 heats are resolved by: 1) Heat wins, 2) Head-to-head result, 3) Most 1st, 2nd & 3rd places.",
+      sonGateChoiceLbl: "🌍 Higher-Seeded Nation Gate Choice (🔴🔵 R/B):",
+      sonGates13Btn: "🏁 Gates 1 & 3 (A-C)",
+      sonGates24Btn: "🏁 Gates 2 & 4 (B-D)",
+      sonWinsShort: "W",
+      sonWinnerB22Badge: "✅ Advances to Grand Final (H23): ",
+      sonChampionB23Badge: "🏆 SPEEDWAY OF NATIONS CHAMPION: "
+    },
+    pl: {
+      sonNoticeTitle: "Oficjalny Regulamin FIM Speedway of Nations (SON)",
+      sonNoticeBody: "Oficjalna punktacja FIM 4-3-2-0 (gdzie 2.+3. miejsce = 5 pkt pokonuje 1.+4. miejsce = 4 pkt!). Każda reprezentacja wystawia #1 i #2 oraz rezerwowego #3 U21. Po 21 biegach: 1. drużyna awansuje bezpośrednio do Wielkiego Finału (B23); 2. i 3. jadą w Barażu (B22). Przy równej liczbie punktów decydują: 1) Wygrane biegi, 2) Mecz bezpośredni, 3) Liczba 1., 2. i 3. miejsc.",
+      sonGateChoiceLbl: "🌍 Wybór Pól Startowych (🔴🔵 Czerw./Nieb.):",
+      sonGates13Btn: "🏁 Pola 1 i 3 (A-C)",
+      sonGates24Btn: "🏁 Pola 2 i 4 (B-D)",
+      sonWinsShort: "Z",
+      sonWinnerB22Badge: "✅ Awans do Wielkiego Finału (B23): ",
+      sonChampionB23Badge: "🏆 MISTRZ SPEEDWAY OF NATIONS: "
+    },
+    da: {
+      sonNoticeTitle: "Officielle Regler FIM Speedway of Nations (SON)",
+      sonNoticeBody: "Officielt FIM 4-3-2-0 pointsystem (hvor 2.+3. plads = 5 pt slår 1.+4. plads = 4 pt!). Hver nation stiller med #1 og #2 samt #3 U21-reserve. Efter 21 heats går nr. 1 direkte i Grand Final (H23); nr. 2 og 3 kører Grand Final Qualifier (H22). Ved pointlighed tæller: 1) Flest heatsejre, 2) Indbyrdes heat, 3) Flest 1., 2. og 3. pladser.",
+      sonGateChoiceLbl: "🌍 Valg af Startbaner (🔴🔵 Rød/Blå):",
+      sonGates13Btn: "🏁 Bane 1 & 3 (A-C)",
+      sonGates24Btn: "🏁 Bane 2 & 4 (B-D)",
+      sonWinsShort: "S",
+      sonWinnerB22Badge: "✅ Går videre til Grand Final (H23): ",
+      sonChampionB23Badge: "🏆 SPEEDWAY OF NATIONS MESTER: "
+    },
+    sv: {
+      sonNoticeTitle: "Officiella Regler FIM Speedway of Nations (SON)",
+      sonNoticeBody: "Officiellt FIM 4-3-2-0 poängsystem (där 2:a+3:a = 5 p slår 1:a+4:a = 4 p!). Varje nation ställer upp med #1 och #2 samt #3 U21-reserv. Efter 21 heat går 1:an direkt till Grand Final (H23); 2:an och 3:an kör Grand Final Qualifier (H22). Vid lika poäng avgör: 1) Flest heatsegrar, 2) Inbördes möte, 3) Flest 1:a, 2:a och 3:e platser.",
+      sonGateChoiceLbl: "🌍 Spårval Högre Rankad Nation (🔴🔵 Röd/Blå):",
+      sonGates13Btn: "🏁 Bana 1 & 3 (A-C)",
+      sonGates24Btn: "🏁 Bana 2 & 4 (B-D)",
+      sonWinsShort: "S",
+      sonWinnerB22Badge: "✅ Kvalificerad till Grand Final (H23): ",
+      sonChampionB23Badge: "🏆 SPEEDWAY OF NATIONS MÄSTARE: "
+    },
+    cs: {
+      sonNoticeTitle: "Oficiální pravidla FIM Speedway of Nations (SON)",
+      sonNoticeBody: "Oficiální bodování FIM 4-3-2-0 (kde 2.+3. místo = 5 b. poráží 1.+4. místo = 4 b.!). Každý tým má #1 a #2 plus náhradníka #3 U21. Po 21 jízdách jde 1. tým přímo do Grand Final (J23); 2. a 3. jedou baráž (J22). Při rovnosti bodů rozhodují: 1) Vyhrané jízdy, 2) Vzájemná jízda, 3) Počet 1., 2. a 3. míst.",
+      sonGateChoiceLbl: "🌍 Volba drah (🔴🔵 Červená/Modrá):",
+      sonGates13Btn: "🏁 Dráhy 1 a 3 (A-C)",
+      sonGates24Btn: "🏁 Dráhy 2 a 4 (B-D)",
+      sonWinsShort: "V",
+      sonWinnerB22Badge: "✅ Postupuje do Grand Final (J23): ",
+      sonChampionB23Badge: "🏆 VÍTĚZ SPEEDWAY OF NATIONS: "
+    }
+  };
+
+  Object.keys(SON_FIM_I18N).forEach(function(l) {
+    if (I18N[l]) Object.assign(I18N[l], SON_FIM_I18N[l]);
+  });
+
+  // 1. Classifica Ufficiale FIM SON (21 Batterie) con Tie-Break:
+  //    Punti Totali -> Batterie Vinte (Heat Wins) -> Scontro Diretto -> 1° posti (4pt) -> 2° posti (3pt) -> 3° posti (2pt)
+  window.getSon7Standings = getSon7Standings = function(raceObj) {
+    var rState = raceObj || state;
+    var regTotals = computeTeamTotals(rState, true);
+
+    var statsMap = {};
+    SON7_TEAM_KEYS.forEach(function(k) {
+      statsMap[k] = { heatWins: 0, fours: 0, threes: 0, twos: 0 };
+    });
+
+    for (var i = 0; i < 21; i++) {
+      var pair = SON7_PAIRINGS[i];
+      var h = rState.heats && rState.heats[i];
+      if (!h || !pair[0] || !pair[1]) continue;
+
+      var k1 = pair[0], k2 = pair[1];
+      var p1 = 0, p2 = 0, hasScore = false;
+
+      h.slots.forEach(function(s, sIdx) {
+        if (typeof s.score === 'number') {
+          hasScore = true;
+          var tKey = s.riderId ? getRiderTeamSide(s.riderId, s.helmet, rState).toLowerCase() : (sIdx < 2 ? k1 : k2);
+          if (tKey === k1) p1 += s.score;
+          else if (tKey === k2) p2 += s.score;
+
+          if (statsMap[tKey]) {
+            if (s.score === 4) statsMap[tKey].fours++;
+            else if (s.score === 3) statsMap[tKey].threes++;
+            else if (s.score === 2) statsMap[tKey].twos++;
+          }
+        }
+      });
+
+      if (hasScore) {
+        if (p1 > p2 && statsMap[k1]) statsMap[k1].heatWins++;
+        else if (p2 > p1 && statsMap[k2]) statsMap[k2].heatWins++;
+      }
+    }
+
+    var list = SON7_TEAM_KEYS.map(function(k) {
+      return {
+        key: k,
+        code: k.toUpperCase(),
+        base: SON7_BASES[k],
+        name: (rState.teamNames && rState.teamNames[k]) || getDefaultTeamName(k, 'son7'),
+        pts: regTotals[k] || 0,
+        heatWins: statsMap[k].heatWins,
+        fours: statsMap[k].fours,
+        threes: statsMap[k].threes,
+        twos: statsMap[k].twos
+      };
+    });
+
+    list.sort(function(t1, t2) {
+      // 1) Punti totali dopo 21 batterie
+      if (t2.pts !== t1.pts) return t2.pts - t1.pts;
+      // 2) Maggior numero di Batterie Vinte (Heat Wins)
+      if (t2.heatWins !== t1.heatWins) return t2.heatWins - t1.heatWins;
+      // 3) Scontro Diretto (Head-to-Head)
+      for (var i = 0; i < 21; i++) {
+        var pair = SON7_PAIRINGS[i];
+        if ((pair[0] === t1.key && pair[1] === t2.key) || (pair[0] === t2.key && pair[1] === t1.key)) {
+          var h = rState.heats[i];
+          if (h) {
+            var p1 = 0, p2 = 0;
+            h.slots.forEach(function(s) {
+              if (typeof s.score === 'number' && s.riderId) {
+                var sd = getRiderTeamSide(s.riderId, s.helmet, rState).toLowerCase();
+                if (sd === t1.key) p1 += s.score;
+                if (sd === t2.key) p2 += s.score;
+              }
+            });
+            if (p1 !== p2) return p2 - p1;
+          }
+        }
+      }
+      // 4) Maggior numero di 1° posti (4 pt), 2° posti (3 pt), 3° posti (2 pt)
+      if (t2.fours !== t1.fours) return t2.fours - t1.fours;
+      if (t2.threes !== t1.threes) return t2.threes - t1.threes;
+      if (t2.twos !== t1.twos) return t2.twos - t1.twos;
+      return t1.base - t2.base;
+    });
+
+    return list;
+  };
+
+  // 2. Determina il vincitore di una batteria a eliminazione diretta SON (B22 o B23):
+  //    In caso di parità punti (es. 3-3) o a parità di 5-4 / 7-2, passa chi ha più punti (e in caso di 3-3 chi ha la migliore classifica)
+  function getSonKnockoutHeatWinnerKey(heat, fallbackKeyRB, fallbackKeyWY, rState) {
+    if (!heat || !heat.slots.some(function(s) { return typeof s.score === 'number'; })) return null;
+    var ptsRB = 0, ptsWY = 0;
+    heat.slots.forEach(function(s, idx) {
+      if (typeof s.score === 'number') {
+        if (idx < 2) ptsRB += s.score;
+        else ptsWY += s.score;
+      }
+    });
+    var keyRB = (heat.slots[0] && heat.slots[0].riderId)
+      ? getRiderTeamSide(heat.slots[0].riderId, 'R', rState).toLowerCase()
+      : fallbackKeyRB;
+    var keyWY = (heat.slots[2] && heat.slots[2].riderId)
+      ? getRiderTeamSide(heat.slots[2].riderId, 'W', rState).toLowerCase()
+      : fallbackKeyWY;
+
+    if (ptsRB > ptsWY) return { winKey: keyRB, loseKey: keyWY, winPts: ptsRB, losePts: ptsWY };
+    if (ptsWY > ptsRB) return { winKey: keyWY, loseKey: keyRB, winPts: ptsWY, losePts: ptsRB };
+    // Se finisce 3-3, la nazione in Rosso/Blu (meglio classificata dopo le 21 batterie) prevale salvo tie-break
+    return { winKey: keyRB, loseKey: keyWY, winPts: ptsRB, losePts: ptsWY };
+  }
+
+  // 3. Scelta Corsie Ufficiale FIM SON (1-3 vs 2-4) per la batteria corrente
+  window.setSonCurrentHeatGatePair = function(pairType) {
+    var heat = state.heats[state.currentHeat];
+    if (!heat) return;
+    var rbGates = (pairType === '24') ? [2, 4] : [1, 3];
+    var wyGates = (pairType === '24') ? [1, 3] : [2, 4];
+    heat.slots[0].gate = rbGates[0];
+    heat.slots[1].gate = rbGates[1];
+    heat.slots[2].gate = wyGates[0];
+    heat.slots[3].gate = wyGates[1];
+    saveState();
+    renderCurrentHeat();
+  };
+
+  // Aggiorna autoFillSon7FinalHeat per rispettare il vincitore di B22
+  window.autoFillSon7FinalHeat = autoFillSon7FinalHeat = function(heatIdx) {
+    if (!isSevenTeamMode()) return;
+    var ranked = getSon7Standings();
+    var heat = state.heats[heatIdx];
+    if (!heat || ranked.length < 3) return;
+
+    if (heatIdx === 21) {
+      var b2 = ranked[1].base, b3 = ranked[2].base;
+      heat.slots[0].riderId = b2 + 1;
+      heat.slots[1].riderId = b2 + 2;
+      heat.slots[2].riderId = b3 + 1;
+      heat.slots[3].riderId = b3 + 2;
+    } else if (heatIdx === 22) {
+      var b1 = ranked[0].base;
+      var h22Res = getSonKnockoutHeatWinnerKey(state.heats[21], ranked[1].key, ranked[2].key, state);
+      var winB22Key = h22Res ? h22Res.winKey : ranked[1].key;
+      var winB22Base = SON7_BASES[winB22Key] !== undefined ? SON7_BASES[winB22Key] : ranked[1].base;
+      heat.slots[0].riderId = b1 + 1;
+      heat.slots[1].riderId = b1 + 2;
+      heat.slots[2].riderId = winB22Base + 1;
+      heat.slots[3].riderId = winB22Base + 2;
+    }
+    saveState();
+    renderCurrentHeat();
+  };
+
+  // 4. Arricchisce Batteria 22 e 23 con il selettore Corsie Ufficiale (1-3 vs 2-4) e il Badge del Vincitore Live
+  var _sonFimPrevRenderHeat = renderCurrentHeat;
+  renderCurrentHeat = function() {
+    _sonFimPrevRenderHeat();
+    if (!isSonMode()) return;
+
+    var heat = state.heats[state.currentHeat];
+    if (!heat) return;
+
+    var swapBox = document.getElementById('team-swap-lanes-box');
+    var autoBox = document.getElementById('auto-finals-box');
+    var isRB13 = (heat.slots[0].gate === 1 || heat.slots[0].gate === 3) && (heat.slots[1].gate === 1 || heat.slots[1].gate === 3);
+
+    // Mostra la barra rapida scelta corsie (1-3 vs 2-4) in B22, B23 e in SON 2 Nazioni
+    if (swapBox && (state.mode === 'son' || state.currentHeat >= 21)) {
+      swapBox.innerHTML =
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px 10px;margin-bottom:8px;flex-wrap:wrap;">' +
+          '<span style="font-size:0.73rem;font-weight:800;color:var(--muted);">' + t('sonGateChoiceLbl') + '</span>' +
+          '<div style="display:flex;gap:6px;">' +
+            '<button type="button" class="btn-mini" style="' + (isRB13 ? 'border-color:var(--accent);color:var(--accent);background:rgba(0,230,118,0.12);' : '') + '" onclick="window.setSonCurrentHeatGatePair(\'13\')">' + t('sonGates13Btn') + '</button>' +
+            '<button type="button" class="btn-mini" style="' + (!isRB13 ? 'border-color:var(--accent);color:var(--accent);background:rgba(0,230,118,0.12);' : '') + '" onclick="window.setSonCurrentHeatGatePair(\'24\')">' + t('sonGates24Btn') + '</button>' +
+          '</div>' +
+        '</div>';
+    }
+
+    // In SON 7 Nazioni: mostra nelle pillole anche il numero di Batterie Vinte (V/W) e il vincitore live di B22/B23
+    if (isSevenTeamMode() && (state.currentHeat === 21 || state.currentHeat === 22) && autoBox) {
+      var ranked = getSon7Standings();
+      var res = getSonKnockoutHeatWinnerKey(heat, state.currentHeat === 21 ? ranked[1].key : ranked[0].key, state.currentHeat === 21 ? ranked[2].key : ranked[1].key, state);
+      if (res && res.winKey) {
+        var winName = (state.teamNames && state.teamNames[res.winKey]) || res.winKey.toUpperCase();
+        var badgePrefix = state.currentHeat === 21 ? t('sonWinnerB22Badge') : t('sonChampionB23Badge');
+        var resBanner = '<div style="margin-top:8px;padding:7px 10px;border-radius:8px;background:rgba(0,230,118,0.14);border:1px solid var(--accent);color:var(--accent);font-size:0.78rem;font-weight:900;">' +
+          badgePrefix + winName + ' (' + res.winPts + ':' + res.losePts + ')' +
+        '</div>';
+        var cardEl = autoBox.querySelector('.qual-info-card');
+        if (cardEl && !cardEl.innerHTML.includes(winName + ' (' + res.winPts)) {
+          cardEl.insertAdjacentHTML('beforeend', resBanner);
+        }
+      }
+    }
+  };
+
+  // Mostra anche le Batterie Vinte (W/V) nella barra legenda della Classifica SON 7 Nazioni
+  var _sonFimPrevRenderStandings = renderStandings;
+  renderStandings = function() {
+    _sonFimPrevRenderStandings();
+    if (isSevenTeamMode()) {
+      var stLeg = document.getElementById('standings-legend-bar');
+      var ranked = getSon7Standings();
+      if (stLeg) {
+        stLeg.innerHTML = ranked.map(function(item, i) {
+          return '<span><strong>' + (i + 1) + '°. ' + item.name + ': ' + item.pts + ' pt (' + item.heatWins + t('sonWinsShort') + ')</strong></span>';
+        }).join(' • ');
+      }
+    }
+  };
+
+  applyTranslations();
+})();
 </script>
 </body>
 </html>
