@@ -11120,6 +11120,252 @@ async function acquistaAbbonamento() {
 
   applyTranslations();
 })();
+/* =========================================================================
+   MODULO REVISIONE SGP SPRINT RACE (TABELLONE AUTOMATICO Q1 -> Q2 -> FINALE)
+   & VERO CASCO D'ORO IN SVG DORATO PER LA ZLATÁ PŘILBA DI PARDUBICE
+   ========================================================================= */
+(function initSprintBracketAndGoldenHelmetSvg() {
+  var SPRINT_I18N = {
+    it: {
+      sprintPassLbl: "1° (Passa ▶)", sprintOutLbl: "2° (Elim.)",
+      sprintQ1Title: "⏱️ Q1 — OTTAVI DI FINALE (Testa a Testa)",
+      sprintQ1Sub: "Sfida diretta tra 2 piloti: il 1° classificato avanza automaticamente ai Quarti di Finale (Q2).",
+      sprintQ2Title: "🔥 Q2 — QUARTI DI FINALE (Vincitori Q1)",
+      sprintQ2Sub: "Si affrontano i vincitori degli Ottavi: il 1° classificato accede alla Finale Sprint Race!",
+      sprintFinTitle: "🏆 FINALE SPRINT RACE (Punti Mondiali 4 - 3 - 2 - 1)",
+      sprintFinSub: "I 4 vincitori dei Quarti (Q2) si sfidano per i punti del Mondiale SGP: 1° = 4 pt, 2° = 3 pt, 3° = 2 pt, 4° = 1 pt.",
+      sprintWinnerFrom: "Vinc. "
+    },
+    en: {
+      sprintPassLbl: "1st (Advances ▶)", sprintOutLbl: "2nd (Out)",
+      sprintQ1Title: "⏱️ Q1 — ROUND OF 16 (Head-to-Head)",
+      sprintQ1Sub: "2-rider match race: 1st place automatically advances to the Quarterfinals (Q2).",
+      sprintQ2Title: "🔥 Q2 — QUARTERFINALS (Q1 Winners)",
+      sprintQ2Sub: "Contested by Q1 winners: 1st place advances to the Sprint Race Final!",
+      sprintFinTitle: "🏆 SPRINT RACE FINAL (Championship Pts 4 - 3 - 2 - 1)",
+      sprintFinSub: "The 4 Quarterfinal winners race for SGP World Championship points: 1st = 4 pts, 2nd = 3 pts, 3rd = 2 pts, 4th = 1 pt.",
+      sprintWinnerFrom: "Win "
+    },
+    pl: {
+      sprintPassLbl: "1. (Awans ▶)", sprintOutLbl: "2. (Odpadł)",
+      sprintQ1Title: "⏱️ Q1 — 1/8 FINAŁU (Pojedynki 1 na 1)",
+      sprintQ1Sub: "Pojedynek 2 zawodników: zwycięzca (1.) automatycznie awansuje do Ćwierćfinału (Q2).",
+      sprintQ2Title: "🔥 Q2 — ĆWIERĆFINAŁ (Zwycięzcy Q1)",
+      sprintQ2Sub: "Pojedynek zwycięzców Q1: 1. miejsce awansuje do Finału Sprint Race!",
+      sprintFinTitle: "🏆 FINAŁ SPRINT RACE (Punkty MŚ 4 - 3 - 2 - 1)",
+      sprintFinSub: "4 zwycięzców ćwierćfinałów walczy o punkty SGP: 1. = 4 pkt, 2. = 3 pkt, 3. = 2 pkt, 4. = 1 pkt.",
+      sprintWinnerFrom: "Zw. "
+    },
+    da: {
+      sprintPassLbl: "1. (Videre ▶)", sprintOutLbl: "2. (Ude)",
+      sprintQ1Title: "⏱️ Q1 — OTTENDEDELSFINALE (1 mod 1)",
+      sprintQ1Sub: "Matchrace mellem 2 kørere: 1. pladsen går automatisk videre til Kvartfinalen (Q2).",
+      sprintQ2Title: "🔥 Q2 — KVARTFINALE (Vindere fra Q1)",
+      sprintQ2Sub: "Vinderne fra Q1 mødes: 1. pladsen går i Sprint Race Finalen!",
+      sprintFinTitle: "🏆 SPRINT RACE FINALE (VM-Point 4 - 3 - 2 - 1)",
+      sprintFinSub: "De 4 kvartfinalevindere kører om VM-point: 1. = 4 pt, 2. = 3 pt, 3. = 2 pt, 4. = 1 pt.",
+      sprintWinnerFrom: "Vind. "
+    },
+    sv: {
+      sprintPassLbl: "1:a (Vidare ▶)", sprintOutLbl: "2:a (Utslagen)",
+      sprintQ1Title: "⏱️ Q1 — ÅTTONDELSFINAL (1 mot 1)",
+      sprintQ1Sub: "Duell mellan 2 förare: 1:an går automatiskt vidare till Kvartsfinal (Q2).",
+      sprintQ2Title: "🔥 Q2 — KVARTSFINAL (Vinnare från Q1)",
+      sprintQ2Sub: "Vinnarna från Q1 möts: 1:an går till Sprint Race-finalen!",
+      sprintFinTitle: "🏆 SPRINT RACE FINAL (VM-Poäng 4 - 3 - 2 - 1)",
+      sprintFinSub: "De 4 kvartsfinalvinnarna kör om VM-poäng: 1:a = 4 p, 2:a = 3 p, 3:a = 2 p, 4:a = 1 p.",
+      sprintWinnerFrom: "Vinn. "
+    },
+    cs: {
+      sprintPassLbl: "1. (Postup ▶)", sprintOutLbl: "2. (Vyřazen)",
+      sprintQ1Title: "⏱️ Q1 — OSMIFINÁLE (Souboj 1 na 1)",
+      sprintQ1Sub: "Jízda 2 jezdců: vítěz (1.) automaticky postupuje do Čtvrtfinále (Q2).",
+      sprintQ2Title: "🔥 Q2 — ČTVRTFINÁLE (Vítězové Q1)",
+      sprintQ2Sub: "Utkají se vítězové Q1: 1. místo postupuje do Finále Sprint Race!",
+      sprintFinTitle: "🏆 FINÁLE SPRINT RACE (Body MS 4 - 3 - 2 - 1)",
+      sprintFinSub: "4 vítězové čtvrtfinále jedou o body SGP: 1. = 4 b., 2. = 3 b., 3. = 2 b., 4. = 1 b.",
+      sprintWinnerFrom: "Vít. "
+    }
+  };
+
+  Object.keys(SPRINT_I18N).forEach(function(l) {
+    if (I18N[l]) Object.assign(I18N[l], SPRINT_I18N[l]);
+  });
+
+  // 1. Disegna il Vero Casco d'Oro di Pardubice (Zlatá přilba) in SVG metallizzato oro
+  function getGoldenHelmetSvg(sizePx) {
+    var sz = sizePx || 28;
+    return '<svg width="' + sz + '" height="' + sz + '" viewBox="0 0 44 40" style="vertical-align:middle;flex-shrink:0;filter:drop-shadow(0 2px 5px rgba(245,158,11,0.55));">' +
+      '<defs>' +
+        '<linearGradient id="goldHelmGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+          '<stop offset="0%" stop-color="#fffbeb"/>' +
+          '<stop offset="25%" stop-color="#fde047"/>' +
+          '<stop offset="55%" stop-color="#f59e0b"/>' +
+          '<stop offset="85%" stop-color="#b45309"/>' +
+          '<stop offset="100%" stop-color="#fde047"/>' +
+        '</linearGradient>' +
+      '</defs>' +
+      '<!-- Calotta Casco d\'Oro -->' +
+      '<path d="M6,25 C5,12 13,3 25,3 C36,3 42,10 42,20 C42,23 41,26 39,28 L31,34 L13,34 C8,34 6,30 6,25 Z" fill="url(#goldHelmGrad)" stroke="#78350f" stroke-width="2"/>' +
+      '<!-- Riflesso di luce sulla calotta d\'oro -->' +
+      '<path d="M12,11 C16,6 23,5 29,7" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" opacity="0.85"/>' +
+      '<!-- Frontino dorato -->' +
+      '<path d="M26,7 L43,11 L41,14 L25,11 Z" fill="#d97706" stroke="#78350f" stroke-width="1.3"/>' +
+      '<!-- Visiera / Goggles -->' +
+      '<path d="M26,13 L39,15 C39,19 37,22 34,23 L25,21 Z" fill="#1e293b" stroke="#fde047" stroke-width="1.3"/>' +
+      '<!-- Mentoniera d\'oro -->' +
+      '<path d="M25,22 L40,25 L36,34 L22,34 Z" fill="url(#goldHelmGrad)" stroke="#78350f" stroke-width="1.6"/>' +
+      '<!-- Corona d\'alloro / fregio d\'oro -->' +
+      '<circle cx="16" cy="22" r="4.2" fill="#b45309" stroke="#fef08a" stroke-width="1.2"/>' +
+      '<text x="16" y="24.5" text-anchor="middle" font-size="6.5" font-weight="900" fill="#fef08a">★</text>' +
+    '</svg>';
+  }
+
+  // Sostituisce l'elmetto militare verde con il Casco d'Oro SVG nel pulsante del Modal Scelta Gara e nei Banner Pardubice
+  function upgradeMilitaryHelmetToGoldenSvg() {
+    var zpModalBtn = document.querySelector('#mode-modal button[onclick*="pardubice"] .mode-choice-ico');
+    if (zpModalBtn) {
+      zpModalBtn.innerHTML = getGoldenHelmetSvg(32);
+    }
+    ['zp-banner-riders', 'zp-banner-heats'].forEach(function(id) {
+      var b = document.getElementById(id);
+      if (b) {
+        var topSpan = b.querySelector('.dk-info-banner-top span');
+        if (topSpan && topSpan.innerHTML.indexOf('svg') === -1) {
+          topSpan.innerHTML = '🇨🇿 ' + getGoldenHelmetSvg(20) + ' <span data-i18n="zpNoticeTitle">' + t('zpNoticeTitle') + '</span>';
+        }
+      }
+    });
+  }
+
+  // 2. Logica Automatica Tabellone SGP Sprint Race:
+  //    - Vincitori Q1 (Batterie 1..8, score === 3) -> Avanzano in Q2 (Batterie 9..12)
+  //    - Vincitori Q2 (Batterie 9..12, score === 3) -> Avanzano nella Finale Sprint (Batteria 13)
+  window.syncSprintBracketHeats = function(forceOverwrite) {
+    if (!state || state.mode !== 'sgp_sprint' || !Array.isArray(state.heats)) return;
+
+    // A) Da Q1 (indici 0..7) a Q2 (indici 8..11)
+    for (var q2Idx = 0; q2Idx < 4; q2Idx++) {
+      var heatQ2 = state.heats[8 + q2Idx];
+      if (!heatQ2) continue;
+      var q1A = state.heats[q2Idx * 2];
+      var q1B = state.heats[q2Idx * 2 + 1];
+      var winA = q1A && q1A.slots ? q1A.slots.find(function(s) { return s.score === 3 && s.riderId; }) : null;
+      var winB = q1B && q1B.slots ? q1B.slots.find(function(s) { return s.score === 3 && s.riderId; }) : null;
+
+      if (winA && (forceOverwrite || !heatQ2.slots[0].riderId || heatQ2.slots[0].score === null)) {
+        heatQ2.slots[0].riderId = winA.riderId;
+      }
+      if (winB && (forceOverwrite || !heatQ2.slots[1].riderId || heatQ2.slots[1].score === null)) {
+        heatQ2.slots[1].riderId = winB.riderId;
+      }
+    }
+
+    // B) Da Q2 (indici 8..11) a Finale Sprint (indice 12)
+    var finHeat = state.heats[12];
+    if (finHeat) {
+      for (var sIdx = 0; sIdx < 4; sIdx++) {
+        var srcQ2 = state.heats[8 + sIdx];
+        var winQ2 = srcQ2 && srcQ2.slots ? srcQ2.slots.find(function(s) { return s.score === 3 && s.riderId; }) : null;
+        if (winQ2 && (forceOverwrite || !finHeat.slots[sIdx].riderId || finHeat.slots[sIdx].score === null)) {
+          finHeat.slots[sIdx].riderId = winQ2.riderId;
+        }
+      }
+    }
+  };
+
+  // Quando si assegna il 1° posto in Q1 o Q2 nella Sprint Race, aggiorna subito il turno successivo
+  var _spPrevSetScore = setScore;
+  setScore = function(gateIdx, val) {
+    _spPrevSetScore(gateIdx, val);
+    if (state && state.mode === 'sgp_sprint') {
+      window.syncSprintBracketHeats(false);
+      saveState();
+      renderCurrentHeat();
+    }
+  };
+
+  // Arricchisce l'interfaccia di SGP Sprint Race (Q1, Q2, Finale) e sostituisce l'icona nel box Pardubice
+  var _spPrevRenderHeat = renderCurrentHeat;
+  renderCurrentHeat = function() {
+    if (state && state.mode === 'sgp_sprint') {
+      window.syncSprintBracketHeats(false);
+    }
+    _spPrevRenderHeat();
+
+    // Se siamo in Pardubice, sostituisce l'emoji elmetto militare col Casco d'Oro SVG anche nel titolo della batteria
+    if (typeof isPardubiceMode === 'function' && isPardubiceMode()) {
+      var zpTitleEl = document.querySelector('#auto-finals-box .qual-info-title');
+      if (zpTitleEl && zpTitleEl.innerHTML.indexOf('🪖') !== -1) {
+        zpTitleEl.innerHTML = zpTitleEl.innerHTML.replace('🪖', getGoldenHelmetSvg(18));
+      }
+      return;
+    }
+
+    if (!state || state.mode !== 'sgp_sprint') return;
+    var autoBox = document.getElementById('auto-finals-box');
+    var heat = state.heats[state.currentHeat];
+    if (!heat || !autoBox) return;
+
+    // Traduce i bottoni 1° (Passa) e 2° (Elim.) in Q1 e Q2 nella lingua attiva
+    if (state.currentHeat < 12) {
+      var btns = document.querySelectorAll('#gates-container .gate-card .score-btns .score-btn');
+      btns.forEach(function(b) {
+        if (b.textContent.indexOf('1°') !== -1) b.textContent = t('sprintPassLbl');
+        if (b.textContent.indexOf('2°') !== -1) b.textContent = t('sprintOutLbl');
+      });
+    }
+
+    // Box informativo intelligente per Q1 (0..7), Q2 (8..11) e Finale Sprint (12)
+    if (state.currentHeat < 8) {
+      autoBox.innerHTML = '<div class="qual-info-card" style="border-color:#29b6f6;">' +
+        '<div class="qual-info-header"><span class="qual-info-title" style="color:#29b6f6;">' + t('sprintQ1Title') + '</span>' +
+        '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button></div>' +
+        '<div class="qual-info-sub">' + t('sprintQ1Sub') + '</div></div>';
+    } else if (state.currentHeat < 12) {
+      var q2Num = state.currentHeat - 8;
+      var hA = state.heats[q2Num * 2], hB = state.heats[q2Num * 2 + 1];
+      var wA = hA.slots.find(function(s) { return s.score === 3 && s.riderId; });
+      var wB = hB.slots.find(function(s) { return s.score === 3 && s.riderId; });
+      var pillsQ2 = [
+        wA ? '<div class="qual-pill"><span>' + t('sprintWinnerFrom') + 'Q1-' + (q2Num * 2 + 1) + ':</span>#' + wA.riderId + ' ' + state.riders[wA.riderId] + '</div>' : '',
+        wB ? '<div class="qual-pill"><span>' + t('sprintWinnerFrom') + 'Q1-' + (q2Num * 2 + 2) + ':</span>#' + wB.riderId + ' ' + state.riders[wB.riderId] + '</div>' : ''
+      ].filter(Boolean).join('') || ('<div class="qual-pill">' + t('waitingResults') + '</div>');
+
+      autoBox.innerHTML = '<div class="qual-info-card" style="border-color:var(--yellow);">' +
+        '<div class="qual-info-header"><span class="qual-info-title" style="color:var(--yellow);">' + t('sprintQ2Title') + '</span>' +
+        '<div style="display:flex;gap:5px;">' +
+          '<button type="button" class="btn-mini" style="border-color:var(--accent);color:var(--accent);" onclick="window.syncSprintBracketHeats(true);saveState();renderCurrentHeat();">' + t('btnAutoFillQual') + '</button>' +
+          '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button>' +
+        '</div></div>' +
+        '<div class="qual-info-sub">' + t('sprintQ2Sub') + '</div>' +
+        '<div class="qual-badges-list">' + pillsQ2 + '</div></div>';
+    } else if (state.currentHeat === 12) {
+      var pillsFin = [0, 1, 2, 3].map(function(i) {
+        var hQ2 = state.heats[8 + i];
+        var wQ2 = hQ2 ? hQ2.slots.find(function(s) { return s.score === 3 && s.riderId; }) : null;
+        return wQ2 ? ('<div class="qual-pill"><span>1° Q2-' + (i + 1) + ':</span>#' + wQ2.riderId + ' ' + state.riders[wQ2.riderId] + '</div>') : '';
+      }).filter(Boolean).join('') || ('<div class="qual-pill">' + t('waitingResults') + '</div>');
+
+      autoBox.innerHTML = '<div class="qual-info-card" style="border-color:var(--accent);">' +
+        '<div class="qual-info-header"><span class="qual-info-title" style="color:var(--accent);">' + t('sprintFinTitle') + '</span>' +
+        '<div style="display:flex;gap:5px;">' +
+          '<button type="button" class="btn-mini" style="border-color:var(--accent);color:var(--accent);" onclick="window.syncSprintBracketHeats(true);saveState();renderCurrentHeat();">' + t('btnAutoFillQual') + '</button>' +
+          '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button>' +
+        '</div></div>' +
+        '<div class="qual-info-sub">' + t('sprintFinSub') + '</div>' +
+        '<div class="qual-badges-list">' + pillsFin + '</div></div>';
+    }
+  };
+
+  var _spPrevApplyTranslations = applyTranslations;
+  applyTranslations = function() {
+    _spPrevApplyTranslations();
+    upgradeMilitaryHelmetToGoldenSvg();
+  };
+
+  setTimeout(upgradeMilitaryHelmetToGoldenSvg, 150);
+})();
 </script>
 </body>
 </html>
