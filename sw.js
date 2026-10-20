@@ -1,4 +1,4 @@
-const CACHE_NAME = 'speedway-live-offline-v71';
+const CACHE_NAME = 'speedway-live-offline-v72';
 
 const URLS_TO_CACHE = [
   './',
