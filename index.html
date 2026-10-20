@@ -11366,6 +11366,131 @@ async function acquistaAbbonamento() {
 
   setTimeout(upgradeMilitaryHelmetToGoldenSvg, 150);
 })();
+/* =========================================================================
+   AUTO-RICONOSCIMENTO NOMI SQUADRE (UK, SE, DK, PL) DAI PILOTI CARICATI
+   100% INDIPENDENTE DA AI VISION (Non modifica né tocca il sistema OCR/AI)
+   ========================================================================= */
+(function initAutoTeamNameDetectorFromRosters() {
+  // Database Rose Club Leghe Nazionali (Polonia, UK, Svezia, Danimarca)
+  var LEAGUE_CLUB_ROSTERS = {
+    pl: [
+      { name: "Orlen Oil Motor Lublin", riders: ["zmarzlik", "kubera", "jack holder", "lindgren", "cierniak", "przyjemski", "bankbor", "jaworski"] },
+      { name: "Betard Sparta Wrocław", riders: ["laguta", "bewley", "janowski", "kurtz", "kowalski", "kowolik", "mikkel andersen", "krawczyk"] },
+      { name: "KS Apator Toruń", riders: ["dudek", "lambert", "sajfutdinow", "michelsen", "kvěch", "kvech", "blödorn", "bloedorn", "kawczyński", "kawczynski", "duchiński", "duchinski", "lewandowski"] },
+      { name: "ebut.pl Stal Gorzów", riders: ["vaculik", "vaculík", "thomsen", "woźniak", "wozniak", "lebiediew", "fajfer", "paluch", "stojanowski", "jabłoński"] },
+      { name: "NovyHotel Falubaz Zielona Góra", riders: ["jarosław hampel", "hampel", "przemysław pawlicki", "piotr pawlicki", "rasmus jensen", "madba", "kveg", "ratajczak", "hurysz", "curzytek"] },
+      { name: "ZOOleszcz GKM Grudziądz", riders: ["fricke", "jepsen jensen", "tarasenko", "lidsey", "miśkowiak", "miskowiak", "pludra", "łobodziński", "lobodzinski", "małkiewicz", "malkiewicz"] },
+      { name: "Krono-Plast Włókniarz Częstochowa", riders: ["madsen", "woryna", "drabik", "hansen", "doyle", "pawlicki", "lampart", "ludwiczak", "kupiec", "karczewski"] },
+      { name: "Fogo Unia Leszno", riders: ["kołodziej", "kolodziej", "zengota", "smektala", "smektała", "cook", "keynan", "mencel", "mania", "jabłoński"] },
+      { name: "Innpro ROW Rybnik", riders: ["rohan tungate", "tungate", "brady kurtz", "jamróg", "jamrog", "walasek", "tkocz", "borowiak", "pedersen", "cugier"] }
+    ],
+    uk: [
+      { name: "Belle Vue Aces", riders: ["bewley", "kurtz", "lidsey", "cook", "norick", "bloedorn", "blödorn", "mulford", "tate zischke"] },
+      { name: "Sheffield Tigers", riders: ["jack holder", "chris holder", "tai woffinden", "woffinden", "josh pickering", "pickering", "kyle howarth", "howarth", "jason edwards", "dan gilkes"] },
+      { name: "Ipswich Witches", riders: ["emil sayfutdinov", "sajfutdinow", "jason doyle", "doyle", "danny king", "adam ellis", "ellis", "keynan rewe", "jordan jenkins", "dan thompson"] },
+      { name: "Leicester Lions", riders: ["max fricke", "fricke", "richard lawson", "sam masters", "luke becker", "becker", "ryan douglas", "douglas", "craig cook", "sam hagon"] },
+      { name: "Oxford Spires", riders: ["maciej janowski", "janowski", "rohan tungate", "tungate", "charles wright", "chris harris", "harris", "erik riss", "ashton boughen", "luke killeen"] },
+      { name: "Birmingham Brummies", riders: ["fredrik lindgren", "lindgren", "tom brennen", "brennen", "wiktor lampart", "piotr pawlicki", "zach cook", "michael palm toft", "leon flint"] },
+      { name: "King's Lynn Stars", riders: ["tobiasz musielak", "niels-kristian iversen", "iversen", "benjamin basso", "jan kvech", "kvěch", "nicolai klindt", "patryk wojdylo", "anders rowe"] }
+    ],
+    se: [
+      { name: "Lejonen Gislaved", riders: ["zmarzlik", "kubera", "jarosław hampel", "hampel", "cierniak", "kacper woryna", "woryna", "oliver berntzon", "berntzon", "casper henriksson"] },
+      { name: "Dackarna Målilla", riders: ["lebiediew", "rasmus jensen", "bewley", "kurtz", "timo lahti", "lahti", "david bellego", "filip hjelmland", "ryan douglas"] },
+      { name: "Västervik Speedway", riders: ["robert lambert", "lambert", "max fricke", "fricke", "mads hansen", "jacob thorssell", "thorssell", "luke becker", "matias nielsen"] },
+      { name: "Indianerna Kumla", riders: ["patryk dudek", "dudek", "szymon woźniak", "wozniak", "krzysztof buczkowski", "gleb chugunov", "jonatan grahn", "rasmus karlsson"] },
+      { name: "Smederna Eskilstuna", riders: ["maksym drabik", "drabik", "kim nilsson", "nilsson", "rohan tungate", "wadim tarasenko", "tarasenko", "grzegorz zengota", "philip hellström", "hellstrom"] },
+      { name: "Rospiggarna Hallstavik", riders: ["artem laguta", "laguta", "kai huckenbeck", "huckenbeck", "dimitri bergé", "antonio lindbäck", "lindback", "wiktor przyjemski", "oskar polis"] },
+      { name: "Vargarna Norrköping", riders: ["niels-kristian iversen", "iversen", "chris harris", "jakub miśkowiak", "miskowiak", "marcin nowak", "ludvig lindgren"] },
+      { name: "Piraterna Motala", riders: ["piotr pawlicki", "przemysław pawlicki", "maciej janowski", "vaclav milík", "milik", "jonathan ejnermark", "mathias thörnblom"] }
+    ],
+    dk: [
+      { name: "Sønderjylland Elite Speedway (SES)", riders: ["anders thomsen", "thomsen", "mads hansen", "jesper knudsen", "mikkel andersen", "marcin nowak", "oliver berntzon"] },
+      { name: "Slangerup Speedway", riders: ["mikkel michelsen", "michelsen", "michael jepsen jensen", "jepsen jensen", "paweł przedpełski", "bartłomiej kowalski", "jonas sejfert", "william drejer"] },
+      { name: "Esbjerg Vikings", riders: ["tai woffinden", "woffinden", "luke becker", "matias nielsen", "niels-kristian iversen", "iversen", "niklas holm jakobsen", "jonas jeppesen"] },
+      { name: "Holsted Tigers", riders: ["rasmus jensen", "timo lahti", "jacob thorssell", "rene bach", "bastian pedersen", "kevin juhl pedersen"] },
+      { name: "GSK Liga (Grindsted)", riders: ["przemysław pawlicki", "piotr pawlicki", "kenneth bjerre", "bjerre", "patryk wojdyło", "villads nagel", "rune thorst"] },
+      { name: "Team Fjelsted", riders: ["frederik jakobsen", "andžejs ļebedevs", "lebiediew", "benjamin basso", "basso", "peter kildemand", "sam jensen"] },
+      { name: "Region Varde Elitesport", riders: ["gleb chugunov", "vadim tarasenko", "nicolai klindt", "klindt", "tim sørensen", "adam ellis"] }
+    ]
+  };
+  LEAGUE_CLUB_ROSTERS.dk4 = LEAGUE_CLUB_ROSTERS.dk;
+
+  function detectClubFromRiderNames(mode, riderNamesArray) {
+    var clubs = LEAGUE_CLUB_ROSTERS[mode];
+    if (!clubs || !Array.isArray(riderNamesArray) || riderNamesArray.length === 0) return null;
+
+    var normalizedInput = riderNamesArray
+      .map(function(n) { return String(n || '').toLowerCase().trim(); })
+      .filter(function(n) { return n.length >= 3 && !/^(pilota|rider|zawodnik|kører|förare|jezdec)\s+\d+$/i.test(n); });
+
+    if (normalizedInput.length < 2) return null;
+
+    var bestClub = null;
+    var bestScore = 0;
+
+    clubs.forEach(function(club) {
+      var hits = 0;
+      normalizedInput.forEach(function(rName) {
+        var matched = club.riders.some(function(key) {
+          return rName.indexOf(key) !== -1;
+        });
+        if (matched) hits++;
+      });
+      if (hits > bestScore) {
+        bestScore = hits;
+        bestClub = club.name;
+      }
+    });
+
+    // Richiede almeno 2 piloti riconosciuti dello stesso club per assegnare il nome in sicurezza
+    return bestScore >= 2 ? bestClub : null;
+  }
+
+  function autoDetectTeamNamesAfterLineupLoad() {
+    if (typeof state === 'undefined' || !state || !state.riders || !state.teamNames) return;
+    var m = state.mode;
+    if (m !== 'pl' && m !== 'uk' && m !== 'se' && m !== 'dk' && m !== 'dk4') return;
+
+    var cfg = getModeConfig();
+    if (!cfg || !cfg.isTeam) return;
+
+    var teamsToScan = (m === 'dk4')
+      ? [{ side: 'a', base: 0 }, { side: 'b', base: 100 }, { side: 'c', base: 200 }, { side: 'd', base: 300 }]
+      : [{ side: 'a', base: 0 }, { side: 'b', base: 100 }];
+
+    var anyUpdated = false;
+    teamsToScan.forEach(function(tObj) {
+      var names = [];
+      for (var i = 1; i <= cfg.ridersPerTeam; i++) {
+        if (state.riders[tObj.base + i]) names.push(state.riders[tObj.base + i]);
+      }
+      var detectedClub = detectClubFromRiderNames(m, names);
+      if (detectedClub && state.teamNames[tObj.side] !== detectedClub) {
+        state.teamNames[tObj.side] = detectedClub;
+        anyUpdated = true;
+      }
+    });
+
+    if (anyUpdated) {
+      saveState();
+      renderRidersInputs();
+      renderCurrentHeat();
+      updateHeaderAndHero();
+    }
+  }
+
+  // Si aggancia in sola lettura DOPO che i piloti sono stati caricati (senza toccare AI Vision)
+  var _prevRenderRidersForClubDetect = renderRidersInputs;
+  var isDetectingClub = false;
+  renderRidersInputs = function() {
+    _prevRenderRidersForClubDetect();
+    if (!isDetectingClub) {
+      isDetectingClub = true;
+      try { autoDetectTeamNamesAfterLineupLoad(); } catch (e) {}
+      isDetectingClub = false;
+    }
+  };
+})();
 </script>
 </body>
 </html>
