@@ -10450,6 +10450,326 @@ async function acquistaAbbonamento() {
 
   applyTranslations();
 })();
+/* =========================================================================
+   MODULO GUIDA VISIVA UNIVERSALE: BANDIERE, LUCI DI PISTA & CASCHI FIM (6 LINGUE)
+   Accessibile con 1 clic dalla scheda Batterie (popup rapido) e dalla scheda Setting
+   ========================================================================= */
+(function initFlagsAndLightsGuide() {
+  var FLAGS_I18N = {
+    it: {
+      btnOpenGuide: "🚦 Bandiere & Luci Pista",
+      guideTitle: "🚦 Guida Ufficiale Bandiere, Luci & Caschi (FIM)",
+      guideSub: "Significato universale dei segnali luminosi, delle bandiere dei commissari e dei colori dei caschi nello Speedway:",
+      secLights: "💡 SEMAFORI E LUCI DI PISTA",
+      lAmberT: "Luce Gialla/Ambra Lampeggiante + Sirena",
+      lAmberD: "Avvia il conto alla rovescia (2 minuti o 90 secondi): i piloti devono uscire dai box e schierarsi al nastro prima dello scadere del tempo.",
+      lGreenT: "Luce Verde Fissa (Semaforo di Partenza)",
+      lGreenD: "Partenza imminente! Il preallineatore si sposta, i piloti devono restare immobili con la ruota anteriore vicina al nastro finché non scatta.",
+      lRedT: "Luci Rosse Lampeggianti + Sirena",
+      lRedD: "STOP IMMEDIATO! Batteria interrotta dall'Arbitro per caduta, pericolo in pista o partenza irregolare.",
+      lExclT: "Luci Colorate di Esclusione (R / B / W / Y)",
+      lExclD: "Accese sulla torretta/partenza: indicano il colore del casco del pilota squalificato dalla batteria (per nastro toccato, 2 minuti scaduti o fallo).",
+      secFlags: "🚩 BANDIERE DEI COMMISSARI",
+      fRedT: "Bandiera Rossa",
+      fRedD: "Sventolata in curva insieme alle luci rosse: gara fermata, i piloti devono rallentare subito e rientrare ai box.",
+      fLastT: "Bandiera Gialla con Croce Nera Diagonale",
+      fLastD: "ULTIMO GIRO! Mostrata sulla linea del traguardo quando il pilota in testa inizia il 4° e ultimo giro.",
+      fCheqT: "Bandiera a Scacchi Bianca e Nera",
+      fCheqD: "Traguardo! Indica la fine ufficiale della batteria.",
+      fBlackT: "Bandiera Nera + Disco Colorato",
+      fBlackD: "Squalifica: il pilota con il copricasco dello stesso colore del disco mostrato è escluso e deve lasciare subito la pista.",
+      fGreenT: "Bandiera Verde (Partenza di Emergenza)",
+      fGreenD: "Usata solo se il meccanismo elettrico del nastro di partenza è guasto: l'abbassamento della bandiera dà il via alla batteria.",
+      secHelmets: "🪖 COLORI COPRICASCHI (SCALA RAL FIM)",
+      hHomeT: "Rosso & Blu (Squadra di Casa / Home)",
+      hHomeD: "Nelle gare a squadre o coppie i caschi Rosso e Blu sono sempre assegnati ai due piloti della squadra di Casa.",
+      hAwayT: "Bianco & Giallo (Squadra Ospite / Away)",
+      hAwayD: "Nelle gare a squadre o coppie i caschi Bianco e Giallo sono sempre assegnati ai due piloti della squadra Ospite.",
+      hSixT: "Verde & Nero-Bianco (Gare a 6 Piloti)",
+      hSixD: "Usati per il 5° e 6° pilota in pista nei tornei speciali a 6 moto (es. Casco d'Oro di Pardubice).",
+      closeBtn: "Chiudi Guida"
+    },
+    en: {
+      btnOpenGuide: "🚦 Track Flags & Lights",
+      guideTitle: "🚦 Official Speedway Flags, Lights & Helmets Guide",
+      guideSub: "Universal meaning of track lights, marshal flags and helmet colours under FIM rules:",
+      secLights: "💡 TRACK SIGNAL LIGHTS",
+      lAmberT: "Flashing Amber Light + Horn/Siren",
+      lAmberD: "Starts the time allowance countdown (2 minutes or 90 seconds): riders must be at the starting tapes before time expires.",
+      lGreenT: "Steady Green Light (Starting Gate)",
+      lGreenD: "Under starters orders! Start Marshal steps away; riders must remain completely stationary until the tapes rise.",
+      lRedT: "Flashing Red Lights + Siren",
+      lRedD: "IMMEDIATE STOP! Heat stopped by the Referee due to a crash, track hazard or unsatisfactory start.",
+      lExclT: "Helmet Colour Disqualification Lights",
+      lExclD: "Illuminated near the start line: indicates the helmet colour of the rider disqualified from the heat (tapes, 2-min rule or foul riding).",
+      secFlags: "🚩 MARSHAL SIGNAL FLAGS",
+      fRedT: "Red Flag",
+      fRedD: "Waved on bends alongside red lights: race stopped, riders must slow down immediately and return to the pits.",
+      fLastT: "Yellow Flag with Black Diagonal Cross",
+      fLastD: "LAST LAP! Displayed at the finish line when the leading rider begins the 4th and final lap.",
+      fCheqT: "Black & White Chequered Flag",
+      fCheqD: "Finish! Signals the official end of the heat.",
+      fBlackT: "Black Flag + Coloured Disc",
+      fBlackD: "Disqualification: the rider wearing the helmet colour matching the displayed disc is excluded and must leave the track.",
+      fGreenT: "Green Flag (Backup Start)",
+      fGreenD: "Used only if the starting gate mechanism fails: dropping the green flag starts the race.",
+      secHelmets: "🪖 HELMET COLOURS (FIM STANDARD)",
+      hHomeT: "Red & Blue (Home Team)",
+      hHomeD: "In team and pairs matches, Red and Blue helmets are always worn by the Home team riders.",
+      hAwayT: "White & Yellow (Away Team)",
+      hAwayD: "In team and pairs matches, White and Yellow helmets are always worn by the Away team riders.",
+      hSixT: "Green & Black/White (6-Rider Heats)",
+      hSixD: "Worn by the 5th and 6th riders in special 6-rider events (such as the Golden Helmet of Pardubice).",
+      closeBtn: "Close Guide"
+    },
+    pl: {
+      btnOpenGuide: "🚦 Flagi i Światła Torowe",
+      guideTitle: "🚦 Oficjalny Przewodnik: Flagi, Światła i Kaski (FIM)",
+      guideSub: "Uniwersalne znaczenie świateł na torze, flag wirażowych oraz kolorów kasków w sporcie żużlowym:",
+      secLights: "💡 SYGNALIZACJA ŚWIETLNA NA TORZE",
+      lAmberT: "Pulsujące Pomarańczowe/Żółte Światło + Syrena",
+      lAmberD: "Rozpoczyna odliczanie czasu (2 minuty lub 90 sekund) na ustawienie się zawodników pod taśmą startową.",
+      lGreenT: "Zielone Światło Ciągłe (Start)",
+      lGreenD: "Start za chwilę! Kierownik startu schodzi z toru, a zawodnicy muszą stać nieruchomo do momentu zwolnienia taśmy.",
+      lRedT: "Pulsujące Czerwone Światła + Syrena",
+      lRedD: "NATYCHMIASTOWY STOP! Bieg przerwany przez sędziego z powodu upadku, zagrożenia lub nierównego startu.",
+      lExclT: "Kolorowe Światła Wykluczeń (Czerw./Nieb./Biał./Żółt.)",
+      lExclD: "Wskazują kolor kasku zawodnika wykluczonego z biegu (za dotknięcie taśmy, przekroczenie czasu lub faul).",
+      secFlags: "🚩 FLAGI SĘDZIOWSKIE I WIRAŻOWE",
+      fRedT: "Czerwona Flaga",
+      fRedD: "Pokazywana na łukach wraz z czerwonym światłem: bieg przerwany, zawodnicy muszą zwolnić i zjechać do parku maszyn.",
+      fLastT: "Żółta Flaga z Czarnym Ukośnym Krzyżem",
+      fLastD: "OSTATNIE OKRĄŻENIE! Pokazywana na linii mety, gdy prowadzący zawodnik rozpoczyna 4. (ostatnie) okrążenie.",
+      fCheqT: "Szachownica (Flaga Biało-Czarna)",
+      fCheqD: "Meta! Oznacza oficjalne zakończenie biegu.",
+      fBlackT: "Czarna Flaga + Kolorowy Dysk",
+      fBlackD: "Wykluczenie: zawodnik w kasku odpowiadającym kolorowi dysku jest wykluczony i musi opuścić tor.",
+      fGreenT: "Zielona Flaga (Start Awaryjny)",
+      fGreenD: "Używana tylko w przypadku awarii maszyny startowej do ręcznego puszczenia biegu.",
+      secHelmets: "🪖 KOLORY KASKÓW (STANDARD FIM)",
+      hHomeT: "Czerwony i Niebieski (Gospodarze / Home)",
+      hHomeD: "W meczach ligowych i parowych kaski Czerwony i Niebieski należą zawsze do drużyny Gospodarzy.",
+      hAwayT: "Biały i Żółty (Goście / Away)",
+      hAwayD: "W meczach ligowych i parowych kaski Biały i Żółty należą zawsze do drużyny Gości.",
+      hSixT: "Zielony i Czarno-Biały (Biegi 6-osobowe)",
+      hSixD: "Używane przez 5. i 6. zawodnika w turniejach 6-osobowych (np. Złoty Kask w Pardubicach).",
+      closeBtn: "Zamknij Przewodnik"
+    },
+    da: {
+      btnOpenGuide: "🚦 Flag & Banelys",
+      guideTitle: "🚦 Officiel Guide: Flag, Banelys & Hjelmfarver (FIM)",
+      guideSub: "Universel betydning af lyssignaler, flag og hjelmfarver i speedway:",
+      secLights: "💡 BANESIGNALLYGTER",
+      lAmberT: "Gult Blinkende Lys + Sirene",
+      lAmberD: "Starter nedtællingen (2 minutter eller 90 sekunder): kørerne skal være klar ved starttapen inden tiden udløber.",
+      lGreenT: "Grønt Startlys",
+      lGreenD: "Starten går! Startmasteren går væk fra banen, og kørerne skal holde helt stille indtil tapen går op.",
+      lRedT: "Røde Blinkende Stoplamper + Sirene",
+      lRedD: "STOP! Heatet er stoppet øjeblikkeligt af dommeren pga. styrt, fare på banen eller omstart.",
+      lExclT: "Diskvalifikationslamper (Hjelmfarve)",
+      lExclD: "Viser hjelmfarven på den kører, der er udelukket fra heatet (startbånd, 2-minutters regel eller ureglementeret kørsel).",
+      secFlags: "🚩 SIGNALFLAG",
+      fRedT: "Rødt Flag",
+      fRedD: "Vises i svingene sammen med røde stoplys: heatet er stoppet, sænk farten og kør i ryttergården.",
+      fLastT: "Gult Flag med Sort Diagonalkryds",
+      fLastD: "SIDSTE OMGANG! Vises ved mållinjen, når den førende kører påbegynder 4. og sidste omgang.",
+      fCheqT: "Sort/Hvidternet Målflag",
+      fCheqD: "Mål! Markerer afslutningen på heatet.",
+      fBlackT: "Sort Flag + Farvet Skive",
+      fBlackD: "Diskvalifikation: køreren med den viste hjelmfarve er udelukket og skal straks forlade banen.",
+      fGreenT: "Grønt Flag (Nødstart)",
+      fGreenD: "Bruges kun hvis startgridden svigter.",
+      secHelmets: "🪖 HJELMFARVER (FIM STANDARD)",
+      hHomeT: "Rød & Blå (Hjemmehold)",
+      hHomeD: "I hold- og parløb kører hjemmeholdet altid med Rød og Blå hjelmfarve.",
+      hAwayT: "Hvid & Gul (Udehold)",
+      hAwayD: "I hold- og parløb kører udeholdet altid med Hvid og Gul hjelmfarve.",
+      hSixT: "Grøn & Sort/Hvid (6-Kørere Heats)",
+      hSixD: "Bruges til 5. og 6. kører i 6-mands heats (f.eks. Den Gyldne Hjelm i Pardubice).",
+      closeBtn: "Luk Guide"
+    },
+    sv: {
+      btnOpenGuide: "🚦 Flaggor & Banljus",
+      guideTitle: "🚦 Officiell Guide: Flaggor, Ljus & Hjälmfärger (FIM)",
+      guideSub: "Universell betydelse av ljussignaler, flaggor och hjälmfärger inom speedway:",
+      secLights: "💡 LJUSSIGNALER PÅ BANAN",
+      lAmberT: "Gul Blinkande Lampa + Siren",
+      lAmberD: "Startar nedräkningen (2 minuter eller 90 sekunder): förarna måste vara klara vid starttejpen innan tiden går ut.",
+      lGreenT: "Fast Grönt Ljus (Start)",
+      lGreenD: "Starten är omedelbart förestående! Förarna måste stå helt stilla tills starttejpen släpps.",
+      lRedT: "Röda Blinkande Stoppljus + Siren",
+      lRedD: "STOPP! Heatet har stoppats av domaren på grund av omkullkörning eller felaktig start.",
+      lExclT: "Uteslutningslampor (Hjälmfärg)",
+      lExclD: "Visar hjälmfärgen på den förare som uteslutits ur heatet (tejp, 2-minutersregel eller farlig körning).",
+      secFlags: "🚩 SIGNALFLAGGOR",
+      fRedT: "Röd Flagga",
+      fRedD: "Visas i kurvorna tillsammans med röda ljus: heatet är stoppat, sänk farten och kör in i depån.",
+      fLastT: "Gul Flagga med Svart Diagonalkors",
+      fLastD: "SISTA VARVET! Visas vid mållinjen när ledaren påbörjar det 4:e och sista varvet.",
+      fCheqT: "Svart/Vitrutig Målflagga",
+      fCheqD: "Mål! Markerar att heatet är slut.",
+      fBlackT: "Svart Flagga + Färgad Skiva",
+      fBlackD: "Uteslutning: föraren med motsvarande hjälmfärg är utesluten och måste lämna banan direkt.",
+      fGreenT: "Grön Flagga (Reservstart)",
+      fGreenD: "Används endast om startgrinden är ur funktion.",
+      secHelmets: "🪖 HJÄLMFÄRGER (FIM STANDARD)",
+      hHomeT: "Röd & Blå (Hemmalag)",
+      hHomeD: "I lag- och partävlingar bär hemmalaget alltid Röd och Blå hjälmfärg.",
+      hAwayT: "Vit & Gul (Bortalag)",
+      hAwayD: "I lag- och partävlingar bär bortalaget alltid Vit och Gul hjälmfärg.",
+      hSixT: "Grön & Svart/Vit (6-Förarheat)",
+      hSixD: "Används av 5:e och 6:e förare i tävlingar med 6 förare per heat (t.ex. Guldhjälmen i Pardubice).",
+      closeBtn: "Stäng Guide"
+    },
+    cs: {
+      btnOpenGuide: "🚦 Vlajky a Světla",
+      guideTitle: "🚦 Oficiální přehled: Vlajky, Světla a Přilby (FIM)",
+      guideSub: "Univerzální význam světelných signálů, vlajek rozhodčích a barev přileb na ploché dráze:",
+      secLights: "💡 SVĚTELNÁ SIGNALIZACE NA DRÁZE",
+      lAmberT: "Blikající žluté/oranžové světlo + Siréna",
+      lAmberD: "Spouští odpočet (2 minuty nebo 90 sekund) pro příjezd jezdců ke startovní pásce.",
+      lGreenT: "Rozsvícené zelené světlo (Start)",
+      lGreenD: "Start je bezprostředně připraven! Jezdec musí stát v klidu, dokud se nezvedne startovní páska.",
+      lRedT: "Blikající červená světla + Siréna",
+      lRedD: "OKAMŽITÉ ZASTAVENÍ! Jízda byla přerušena rozhodčím kvůli pádu nebo nerovnému startu.",
+      lExclT: "Barevná světla vyloučení (Č / M / B / Ž)",
+      lExclD: "Označují barvu přilby jezdce vyloučeného z jízdy (najetí do pásky, překročení limitu 2 minut nebo faul).",
+      secFlags: "🚩 SIGNALIZAČNÍ VLAJKY",
+      fRedT: "Červená vlajka",
+      fRedD: "Vyvěšena v zatáčkách spolu s červenými světly: jízda zastavena, jezdci musí zpomalit a vrátit se do depa.",
+      fLastT: "Žlutá vlajka s černým úhlopříčným křížem",
+      fLastD: "POSLEDNÍ KOLO! Signalizuje vjezd vedoucího jezdce do 4. (posledního) kola.",
+      fCheqT: "Černobílá šachovnicová vlajka",
+      fCheqD: "Cíl! Označuje konec jízdy.",
+      fBlackT: "Černá vlajka + Barevný terč",
+      fBlackD: "Vyloučení: jezdec s přilbou v barvě terče je vyloučen z jízdy a musí okamžitě opustit dráhu.",
+      fGreenT: "Zelená vlajka (Nouzový start)",
+      fGreenD: "Používá se pouze při poruše startovacího zařízení.",
+      secHelmets: "🪖 BARVY PŘILEB (STANDARD FIM)",
+      hHomeT: "Červená a Modrá (Domácí / Home)",
+      hHomeD: "V závodech družstev a dvojic mají domácí jezdci vždy Červenou a Modrou přilbu.",
+      hAwayT: "Bílá a Žlutá (Hosté / Away)",
+      hAwayD: "V závodech družstev a dvojic mají hostující jezdci vždy Bílou a Žlutou přilbu.",
+      hSixT: "Zelená a Černobílá (Jízdy na 6 jezdců)",
+      hSixD: "Používáno pro 5. a 6. jezdce ve speciálních závodech (např. Zlatá přilba města Pardubic).",
+      closeBtn: "Zavřít přehled"
+    }
+  };
+
+  function getFgDict() {
+    var l = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : (localStorage.getItem('speedway_fim_lang_v1') || localStorage.getItem('speedway_lang') || 'it');
+    return FLAGS_I18N[l] || FLAGS_I18N.it;
+  }
+
+  function buildGuideInnerHtml(d) {
+    var itemStyle = 'display:flex;align-items:flex-start;gap:11px;padding:9px 10px;background:rgba(15,23,42,0.45);border:1px solid var(--border);border-radius:10px;margin-bottom:7px;text-align:left;';
+    var icoBox = 'width:34px;height:26px;border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;margin-top:2px;box-shadow:0 2px 5px rgba(0,0,0,0.35);';
+
+    // Icona SVG Bandiera Gialla con Croce Nera Diagonale (Ultimo Giro)
+    var lastLapSvg = '<svg width="34" height="26" viewBox="0 0 34 26" style="border-radius:4px;border:1px solid #000;flex-shrink:0;margin-top:2px;"><rect width="34" height="26" fill="#fdd835"/><line x1="0" y1="0" x2="34" y2="26" stroke="#111" stroke-width="4.5"/><line x1="34" y1="0" x2="0" y2="26" stroke="#111" stroke-width="4.5"/></svg>';
+    // Icona SVG Bandiera a Scacchi
+    var cheqSvg = '<svg width="34" height="26" viewBox="0 0 32 24" style="border-radius:4px;border:1px solid var(--border);flex-shrink:0;margin-top:2px;"><rect width="32" height="24" fill="#fff"/><path d="M0,0h8v8H0zM16,0h8v8h-8zM8,8h8v8H8zM24,8h8v8h-8zM0,16h8v8H0zM16,16h8v8h-8z" fill="#111"/></svg>';
+    // Icona SVG Bandiera Nera + Disco Colorato
+    var blackDiscSvg = '<div style="position:relative;width:34px;height:26px;background:#111;border:1px solid #64748b;border-radius:4px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;"><span style="width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#e53935 50%,#1e88e5 50%);border:1.5px solid #fff;display:block;"></span></div>';
+
+    return [
+      '<div style="font-size:0.75rem;color:var(--muted);margin-bottom:12px;line-height:1.4;text-align:left;">' + d.guideSub + '</div>',
+
+      '<div style="font-size:0.74rem;font-weight:900;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin:10px 0 6px;text-align:left;">' + d.secLights + '</div>',
+      '<div style="' + itemStyle + '"><div style="' + icoBox + 'background:#f59e0b;color:#000;border:2px solid #fde047;">⏱️</div><div><div style="font-size:0.82rem;font-weight:800;color:var(--text);">' + d.lAmberT + '</div><div style="font-size:0.73rem;color:var(--muted);line-height:1.35;margin-top:2px;">' + d.lAmberD + '</div></div></div>',
+      '<div style="' + itemStyle + '"><div style="' + icoBox + 'background:#00c853;color:#000;border:2px solid #69f0ae;">🟢</div><div><div style="font-size:0.82rem;font-weight:800;color:var(--text);">' + d.lGreenT + '</div><div style="font-size:0.73rem;color:var(--muted);line-height:1.35;margin-top:2px;">' + d.lGreenD + '</div></div></div>',
+      '<div style="' + itemStyle + '"><div style="' + icoBox + 'background:#e53935;color:#fff;border:2px solid #ff8a80;">🚨</div><div><div style="font-size:0.82rem;font-weight:800;color:var(--text);">' + d.lRedT + '</div><div style="font-size:0.73rem;color:var(--muted);line-height:1.35;margin-top:2px;">' + d.lRedD + '</div></div></div>',
+      '<div style="' + itemStyle + '"><div style="' + icoBox + 'background:#1e293b;border:1px solid #475569;gap:2px;"><span style="width:6px;height:6px;border-radius:50%;background:#e53935;"></span><span style="width:6px;height:6px;border-radius:50%;background:#1e88e5;"></span><span style="width:6px;height:6px;border-radius:50%;background:#fff;"></span><span style="width:6px;height:6px;border-radius:50%;background:#fdd835;"></span></div><div><div style="font-size:0.82rem;font-weight:800;color:var(--text);">' + d.lExclT + '</div><div style="font-size:0.73rem;color:var(--muted);line-height:1.35;margin-top:2px;">' + d.lExclD + '</div></div></div>',
+
+      '<div style="font-size:0.74rem;font-weight:900;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 6px;text-align:left;">' + d.secFlags + '</div>',
+      '<div style="' + itemStyle + '"><div style="' + icoBox + 'background:#e53935;border:1px solid #b71c1c;"></div><div><div style="font-size:0.82rem;font-weight:800;color:var(--text);">' + d.fRedT + '</div><div style="font-size:0.73rem;color:var(--muted);line-height:1.35;margin-top:2px;">' + d.fRedD + '</div></div></div>',
+      '<div style="' + itemStyle + '">' + lastLapSvg + '<div><div style="font-size:0.82rem;font-weight:800;color:var(--text);">' + d.fLastT + '</div><div style="font-size:0.73rem;color:var(--muted);line-height:1.35;margin-top:2px;">' + d.fLastD + '</div></div></div>',
+      '<div style="' + itemStyle + '">' + cheqSvg + '<div><div style="font-size:0.82rem;font-weight:800;color:var(--text);">' + d.fCheqT + '</div><div style="font-size:0.73rem;color:var(--muted);line-height:1.35;margin-top:2px;">' + d.fCheqD + '</div></div></div>',
+      '<div style="' + itemStyle + '">' + blackDiscSvg + '<div><div style="font-size:0.82rem;font-weight:800;color:var(--text);">' + d.fBlackT + '</div><div style="font-size:0.73rem;color:var(--muted);line-height:1.35;margin-top:2px;">' + d.fBlackD + '</div></div></div>',
+      '<div style="' + itemStyle + '"><div style="' + icoBox + 'background:#00c853;border:1px solid #1b5e20;"></div><div><div style="font-size:0.82rem;font-weight:800;color:var(--text);">' + d.fGreenT + '</div><div style="font-size:0.73rem;color:var(--muted);line-height:1.35;margin-top:2px;">' + d.fGreenD + '</div></div></div>',
+
+      '<div style="font-size:0.74rem;font-weight:900;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 6px;text-align:left;">' + d.secHelmets + '</div>',
+      '<div style="' + itemStyle + '"><div style="' + icoBox + 'background:linear-gradient(90deg,#e53935 50%,#1e88e5 50%);border:1px solid rgba(255,255,255,0.3);"></div><div><div style="font-size:0.82rem;font-weight:800;color:var(--text);">' + d.hHomeT + '</div><div style="font-size:0.73rem;color:var(--muted);line-height:1.35;margin-top:2px;">' + d.hHomeD + '</div></div></div>',
+      '<div style="' + itemStyle + '"><div style="' + icoBox + 'background:linear-gradient(90deg,#ffffff 50%,#fdd835 50%);border:1px solid #94a3b8;"></div><div><div style="font-size:0.82rem;font-weight:800;color:var(--text);">' + d.hAwayT + '</div><div style="font-size:0.73rem;color:var(--muted);line-height:1.35;margin-top:2px;">' + d.hAwayD + '</div></div></div>',
+      '<div style="' + itemStyle + '"><div style="' + icoBox + 'background:linear-gradient(90deg,#00c853 50%,#111 50%);border:1px solid rgba(255,255,255,0.3);"></div><div><div style="font-size:0.82rem;font-weight:800;color:var(--text);">' + d.hSixT + '</div><div style="font-size:0.73rem;color:var(--muted);line-height:1.35;margin-top:2px;">' + d.hSixD + '</div></div></div>'
+    ].join('');
+  }
+
+  // 1. Apre il Popup Rapido quando sei in Scheda Batterie
+  window.openFlagsGuideModal = function() {
+    var d = getFgDict();
+    var m = document.getElementById('flags-guide-modal');
+    if (!m) {
+      m = document.createElement('div');
+      m.id = 'flags-guide-modal';
+      m.className = 'modal-backdrop';
+      m.style.zIndex = '99998';
+      m.onclick = function(ev) { if (ev.target === m) m.classList.remove('open'); };
+      document.body.appendChild(m);
+    }
+    m.innerHTML = [
+      '<div class="modal-box" style="max-width:430px;max-height:86vh;overflow-y:auto;border-color:var(--accent);padding:16px;">',
+      '  <h3 style="margin-top:0;color:var(--accent);font-size:1.02rem;">' + d.guideTitle + '</h3>',
+      '  ' + buildGuideInnerHtml(d),
+      '  <button type="button" class="qr-btn-share" style="width:100%;padding:11px;border:none;border-radius:8px;font-weight:800;margin-top:8px;cursor:pointer;" onclick="document.getElementById(\'flags-guide-modal\').classList.remove(\'open\')">' + d.closeBtn + '</button>',
+      '</div>'
+    ].join('');
+    m.classList.add('open');
+  };
+
+  // 2. Inserisce il pulsante rapido "🚦 Bandiere & Luci Pista" sotto la legenda in Scheda Batterie e la Card in Setting
+  function injectFlagsGuideButtonsAndCard() {
+    var d = getFgDict();
+
+    // A) Pulsante rapido dentro Scheda Batterie
+    var heatsTab = document.getElementById('tab-heats');
+    if (heatsTab) {
+      var btnWrap = document.getElementById('heats-flags-guide-btn-wrap');
+      if (!btnWrap) {
+        btnWrap = document.createElement('div');
+        btnWrap.id = 'heats-flags-guide-btn-wrap';
+        btnWrap.style.cssText = 'margin-top:8px;text-align:center;';
+        heatsTab.appendChild(btnWrap);
+      }
+      btnWrap.innerHTML = '<button type="button" onclick="window.openFlagsGuideModal()" style="width:100%;padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--card);color:var(--accent);font-size:0.78rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">' + d.btnOpenGuide + '</button>';
+    }
+
+    // B) Card consultabile dentro Scheda Setting
+    var settingsTab = document.getElementById('tab-settings');
+    if (settingsTab) {
+      var gCard = document.getElementById('settings-flags-guide-card');
+      if (!gCard) {
+        gCard = document.createElement('div');
+        gCard.id = 'settings-flags-guide-card';
+        gCard.className = 'card-box';
+        var legalCards = settingsTab.querySelectorAll('.card-box');
+        var lastCard = legalCards.length > 0 ? legalCards[legalCards.length - 1] : null;
+        if (lastCard) {
+          settingsTab.insertBefore(gCard, lastCard);
+        } else {
+          settingsTab.appendChild(gCard);
+        }
+      }
+      gCard.innerHTML = [
+        '<details style="cursor:pointer;">',
+        '  <summary style="font-size:0.92rem;font-weight:900;color:var(--accent);outline:none;list-style:none;display:flex;align-items:center;justify-content:space-between;">',
+        '    <span>' + d.guideTitle + '</span>',
+        '    <span style="font-size:0.75rem;color:var(--muted);">▼</span>',
+        '  </summary>',
+        '  <div style="margin-top:12px;">' + buildGuideInnerHtml(d) + '</div>',
+        '</details>'
+      ].join('');
+    }
+  }
+
+  var _fgPrevApplyTranslations = applyTranslations;
+  applyTranslations = function() {
+    _fgPrevApplyTranslations();
+    injectFlagsGuideButtonsAndCard();
+  };
+
+  setTimeout(injectFlagsGuideButtonsAndCard, 250);
+})();  
 </script>
 </body>
 </html>
