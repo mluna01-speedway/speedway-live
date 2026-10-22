@@ -7608,10 +7608,137 @@ Object.assign(I18N.it, {
     window.updateProUiBadges();
   };
 
+  window.getProUiLang = function() {
+    var l = (window.currentLang || localStorage.getItem('speedway_lang') || localStorage.getItem('lang') || localStorage.getItem('appLang') || document.documentElement.lang || 'it').toLowerCase().slice(0, 2);
+    if (l === 'dk') l = 'da';
+    if (l === 'se') l = 'sv';
+    if (l === 'cz') l = 'cs';
+    return ['it', 'en', 'pl', 'da', 'sv', 'cs'].indexOf(l) !== -1 ? l : 'en';
+  };
+
+  window.PRO_UI_I18N = {
+    it: {
+      badgePro: '👑 <b>Speedway Live PRO attivo:</b> Scansioni AI Vision illimitate',
+      badgeFree: '🎁 <b>Versione Free:</b> Hai <b>1 scansione AI Vision gratuita</b> di prova disponibile!',
+      badgeOut1: '🔒 Prova gratuita AI esaurita — ',
+      badgeOut2: 'Passa a PRO per scansioni illimitate',
+      featAiScan: 'Scansione Foto AI Vision',
+      featAiLimit: 'Scansioni AI Vision Illimitate (hai già usato la tua 1ª prova gratuita)',
+      defaultSource: 'Pass Annuale',
+      cardProTitle: '👑 Speedway Live PRO — ATTIVO',
+      cardProSub1: 'Licenza attiva (',
+      cardProSub2: ') • Tutte le competizioni e AI Vision illimitata sbloccate',
+      cardFreeTitle: '🔒 Piano Attuale: FREE (Funzioni Base)',
+      cardFreeSub1: 'Scansioni AI Vision di prova rimaste: ',
+      cardFreeSub2: '. Passa a PRO per sbloccare tutti i campionati (Polonia, UK, Svezia, Danimarca, SON, Pardubice), AI illimitata, Storico e Locandine.',
+      btnBuyPro: '👑 Attiva Pass Annuale PRO',
+      btnRestore: '🔄 Ripristina da Play Store',
+      vipPlaceholder: 'Hai un codice Promo / VIP?',
+      btnRedeem: 'Attiva Codice'
+    },
+    en: {
+      badgePro: '👑 <b>Speedway Live PRO active:</b> Unlimited AI Vision scans',
+      badgeFree: '🎁 <b>Free Version:</b> You have <b>1 free AI Vision trial scan</b> available!',
+      badgeOut1: '🔒 Free AI trial used — ',
+      badgeOut2: 'Upgrade to PRO for unlimited scans',
+      featAiScan: 'AI Vision Photo Scan',
+      featAiLimit: 'Unlimited AI Vision Scans (you already used your 1st free trial)',
+      defaultSource: 'Annual Pass',
+      cardProTitle: '👑 Speedway Live PRO — ACTIVE',
+      cardProSub1: 'Active license (',
+      cardProSub2: ') • All competitions and unlimited AI Vision unlocked',
+      cardFreeTitle: '🔒 Current Plan: FREE (Basic Features)',
+      cardFreeSub1: 'Trial AI Vision scans left: ',
+      cardFreeSub2: '. Upgrade to PRO to unlock all leagues (Poland, UK, Sweden, Denmark, SON, Pardubice), unlimited AI, History & Posters.',
+      btnBuyPro: '👑 Activate Annual PRO Pass',
+      btnRestore: '🔄 Restore from Play Store',
+      vipPlaceholder: 'Have a Promo / VIP code?',
+      btnRedeem: 'Redeem Code'
+    },
+    pl: {
+      badgePro: '👑 <b>Speedway Live PRO aktywne:</b> Nielimitowane skany AI Vision',
+      badgeFree: '🎁 <b>Wersja Free:</b> Masz <b>1 darmowy skan próbny AI Vision</b>!',
+      badgeOut1: '🔒 Darmowy skan AI wykorzystany — ',
+      badgeOut2: 'Przejdź na PRO dla skanów bez limitu',
+      featAiScan: 'Skaner zdjęć AI Vision',
+      featAiLimit: 'Nielimitowane skany AI Vision (wykorzystano już 1. darmową próbę)',
+      defaultSource: 'Karnet Roczny',
+      cardProTitle: '👑 Speedway Live PRO — AKTYWNE',
+      cardProSub1: 'Aktywna licencja (',
+      cardProSub2: ') • Wszystkie rozgrywki i skaner AI bez limitu odblokowane',
+      cardFreeTitle: '🔒 Obecny plan: FREE (Funkcje podstawowe)',
+      cardFreeSub1: 'Pozostałe próbne skany AI Vision: ',
+      cardFreeSub2: '. Przejdź na PRO, aby odblokować wszystkie ligi (Polska, UK, Szwecja, Dania, SON, Pardubice), nielimitowane AI, Historię i Plakaty.',
+      btnBuyPro: '👑 Aktywuj Roczny Pakiet PRO',
+      btnRestore: '🔄 Przywróć z Google Play',
+      vipPlaceholder: 'Masz kod Promo / VIP?',
+      btnRedeem: 'Aktywuj kod'
+    },
+    da: {
+      badgePro: '👑 <b>Speedway Live PRO aktiv:</b> Ubegrænsede AI Vision-scanninger',
+      badgeFree: '🎁 <b>Gratis version:</b> Du har <b>1 gratis AI Vision-prøvescanning</b> tilgængelig!',
+      badgeOut1: '🔒 Gratis AI-prøve brugt — ',
+      badgeOut2: 'Opgrader til PRO for ubegrænsede scanninger',
+      featAiScan: 'AI Vision Fotoscanning',
+      featAiLimit: 'Ubegrænsede AI Vision-scanninger (du har brugt dit 1. gratis forsøg)',
+      defaultSource: 'Årskort',
+      cardProTitle: '👑 Speedway Live PRO — AKTIV',
+      cardProSub1: 'Aktiv licens (',
+      cardProSub2: ') • Alle turneringer og ubegrænset AI Vision låst op',
+      cardFreeTitle: '🔒 Nuværende plan: FREE (Basisfunktioner)',
+      cardFreeSub1: 'Resterende AI Vision-prøvescanninger: ',
+      cardFreeSub2: '. Opgrader til PRO for at låse op for alle ligaer (Polen, UK, Sverige, Danmark, SON, Pardubice), ubegrænset AI, Historik og Plakater.',
+      btnBuyPro: '👑 Aktiver Årligt PRO-Pas',
+      btnRestore: '🔄 Gendan fra Play Butik',
+      vipPlaceholder: 'Har du en Promo / VIP-kode?',
+      btnRedeem: 'Aktiver kode'
+    },
+    sv: {
+      badgePro: '👑 <b>Speedway Live PRO aktiv:</b> Obegränsade AI Vision-skanningar',
+      badgeFree: '🎁 <b>Gratisversion:</b> Du har <b>1 gratis AI Vision-provskanning</b> tillgänglig!',
+      badgeOut1: '🔒 Gratis AI-prov förbrukat — ',
+      badgeOut2: 'Uppgradera till PRO för obegränsade skanningar',
+      featAiScan: 'AI Vision Fotoskanning',
+      featAiLimit: 'Obegränsade AI Vision-skanningar (du har redan använt ditt 1:a gratisprov)',
+      defaultSource: 'Årspass',
+      cardProTitle: '👑 Speedway Live PRO — AKTIV',
+      cardProSub1: 'Aktiv licens (',
+      cardProSub2: ') • Alla tävlingar och obegränsad AI Vision upplåsta',
+      cardFreeTitle: '🔒 Nuvarande plan: FREE (Basfunktioner)',
+      cardFreeSub1: 'Återstående AI Vision-provskanningar: ',
+      cardFreeSub2: '. Uppgradera till PRO för att låsa upp alla ligor (Polen, UK, Sverige, Danmark, SON, Pardubice), obegränsad AI, Historik och Affischer.',
+      btnBuyPro: '👑 Aktivera Årligt PRO-Pass',
+      btnRestore: '🔄 Återställ från Play Butik',
+      vipPlaceholder: 'Har du en Promo / VIP-kod?',
+      btnRedeem: 'Aktivera kod'
+    },
+    cs: {
+      badgePro: '👑 <b>Speedway Live PRO aktivní:</b> Neomezené AI Vision skeny',
+      badgeFree: '🎁 <b>Verze zdarma:</b> Máte k dispozici <b>1 zkušební AI Vision sken zdarma</b>!',
+      badgeOut1: '🔒 Zkušební AI sken vyčerpán — ',
+      badgeOut2: 'Přejděte na PRO pro neomezené skenování',
+      featAiScan: 'AI Vision skenování fotek',
+      featAiLimit: 'Neomezené AI Vision skeny (již jste využili svůj 1. pokus zdarma)',
+      defaultSource: 'Roční pas',
+      cardProTitle: '👑 Speedway Live PRO — AKTIVNÍ',
+      cardProSub1: 'Aktivní licence (',
+      cardProSub2: ') • Všechny soutěže a neomezené AI Vision odemčeny',
+      cardFreeTitle: '🔒 Aktuální plán: FREE (Základní funkce)',
+      cardFreeSub1: 'Zbývající zkušební AI Vision skeny: ',
+      cardFreeSub2: '. Přejděte na PRO a odemkněte všechny ligy (Polsko, UK, Švédsko, Dánsko, SON, Pardubice), neomezené AI, Historii a Plakáty.',
+      btnBuyPro: '👑 Aktivovat Roční PRO Pas',
+      btnRestore: '🔄 Obnovit z Google Play',
+      vipPlaceholder: 'Máte Promo / VIP kód?',
+      btnRedeem: 'Aktivovat kód'
+    }
+  };
+
   window.updateProUiBadges = function() {
     var pro = window.isProUser();
     var usedScans = window.getFreeAiScansUsed();
     var leftScans = Math.max(0, 1 - usedScans);
+    var lang = window.getProUiLang();
+    var t = window.PRO_UI_I18N[lang] || window.PRO_UI_I18N.en;
 
     var trialBadge = document.getElementById('ai-trial-badge');
     var galleryInput = document.getElementById('ocr-gallery-input');
@@ -7625,55 +7752,68 @@ Object.assign(I18N.it, {
       if (pro) {
         trialBadge.style.background = 'rgba(16,185,129,0.12)';
         trialBadge.style.color = '#10b981';
-        trialBadge.innerHTML = '👑 <b>Speedway Live PRO attivo:</b> Scansioni AI Vision illimitate';
+        trialBadge.innerHTML = t.badgePro;
       } else if (leftScans > 0) {
         trialBadge.style.background = 'rgba(251,191,36,0.12)';
         trialBadge.style.color = '#fbbf24';
-        trialBadge.innerHTML = '🎁 <b>Versione Free:</b> Hai <b>1 scansione AI Vision gratuita</b> di prova disponibile!';
+        trialBadge.innerHTML = t.badgeFree;
       } else {
         trialBadge.style.background = 'rgba(239,68,68,0.12)';
         trialBadge.style.color = '#f87171';
-        trialBadge.innerHTML = '🔒 Prova gratuita AI esaurita — <span style="text-decoration:underline;cursor:pointer;" onclick="window.showProPaywallModal(\'Scansione Foto AI Vision\')">Passa a PRO per scansioni illimitate</span>';
+        var safeFeat = t.featAiScan.replace(/'/g, "\\'");
+        trialBadge.innerHTML = t.badgeOut1 + '<span style="text-decoration:underline;cursor:pointer;" onclick="window.showProPaywallModal(\'' + safeFeat + '\')">' + t.badgeOut2 + '</span>';
       }
     }
 
     var card = document.getElementById('pro-settings-card');
     if (card) {
-      var source = localStorage.getItem('speedway_pro_source') || 'Pass Annuale';
+      var source = localStorage.getItem('speedway_pro_source') || t.defaultSource;
       if (pro) {
         card.innerHTML = [
           '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">',
           '  <div>',
-          '    <div style="font-size:16px;font-weight:700;color:#10b981;">👑 Speedway Live PRO — ATTIVO</div>',
-          '    <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Licenza attiva (' + source + ') • Tutte le competizioni e AI Vision illimitata sbloccate</div>',
+          '    <div style="font-size:16px;font-weight:700;color:#10b981;">' + t.cardProTitle + '</div>',
+          '    <div style="font-size:12px;color:#94a3b8;margin-top:2px;">' + t.cardProSub1 + source + t.cardProSub2 + '</div>',
           '  </div>',
           '</div>'
         ].join('');
       } else {
         card.innerHTML = [
           '<div style="margin-bottom:10px;">',
-          '  <div style="font-size:16px;font-weight:700;color:#fbbf24;">🔒 Piano Attuale: FREE (Funzioni Base)</div>',
-          '  <div style="font-size:12.5px;color:#cbd5e1;margin-top:4px;">Scansioni AI Vision di prova rimaste: <b>' + leftScans + ' / 1</b>. Passa a PRO per sbloccare tutti i campionati (Polonia, UK, Svezia, Danimarca, SON, Pardubice), AI illimitata, Storico e Locandine.</div>',
+          '  <div style="font-size:16px;font-weight:700;color:#fbbf24;">' + t.cardFreeTitle + '</div>',
+          '  <div style="font-size:12.5px;color:#cbd5e1;margin-top:4px;">' + t.cardFreeSub1 + '<b>' + leftScans + ' / 1</b>' + t.cardFreeSub2 + '</div>',
           '</div>',
           '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">',
-          '  <button type="button" onclick="window.startPlayStoreSubscription(this)" style="flex:2;min-width:180px;padding:10px;border:none;border-radius:8px;background:#10b981;color:#fff;font-weight:700;font-size:13px;cursor:pointer;">👑 Attiva Pass Annuale PRO</button>',
-          '  <button type="button" onclick="window.checkPlayStoreEntitlements(false)" style="flex:1;min-width:120px;padding:10px;border:1px solid #334155;border-radius:8px;background:#1e293b;color:#cbd5e1;font-size:12px;cursor:pointer;">🔄 Ripristina da Play Store</button>',
+          '  <button type="button" onclick="window.startPlayStoreSubscription(this)" style="flex:2;min-width:180px;padding:10px;border:none;border-radius:8px;background:#10b981;color:#fff;font-weight:700;font-size:13px;cursor:pointer;">' + t.btnBuyPro + '</button>',
+          '  <button type="button" onclick="window.checkPlayStoreEntitlements(false)" style="flex:1;min-width:120px;padding:10px;border:1px solid #334155;border-radius:8px;background:#1e293b;color:#cbd5e1;font-size:12px;cursor:pointer;">' + t.btnRestore + '</button>',
           '</div>',
           '<div style="display:flex;gap:6px;align-items:center;">',
-          '  <input type="text" id="vip-code-input" placeholder="Hai un codice Promo / VIP?" style="flex:1;padding:8px 10px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:#fff;font-size:12px;">',
-          '  <button type="button" onclick="window.redeemVipCode(document.getElementById(\'vip-code-input\').value)" style="padding:8px 14px;border-radius:6px;border:1px solid #10b981;background:transparent;color:#10b981;font-weight:600;font-size:12px;cursor:pointer;">Attiva Codice</button>',
+          '  <input type="text" id="vip-code-input" placeholder="' + t.vipPlaceholder + '" style="flex:1;padding:8px 10px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:#fff;font-size:12px;">',
+          '  <button type="button" onclick="window.redeemVipCode(document.getElementById(\'vip-code-input\').value)" style="padding:8px 14px;border-radius:6px;border:1px solid #10b981;background:transparent;color:#10b981;font-weight:600;font-size:12px;cursor:pointer;">' + t.btnRedeem + '</button>',
           '</div>'
         ].join('');
       }
     }
   };
 
+  // Aggiorna automaticamente il badge quando l'utente cambia lingua
+  if (!window._proLangHooked) {
+    window._proLangHooked = true;
+    document.addEventListener('click', function() {
+      setTimeout(function() {
+        if (typeof window.updateProUiBadges === 'function') window.updateProUiBadges();
+      }, 60);
+    });
+  }
+
   // --- LUCCHETTI SULLE FUNZIONI PRO ---
   var _proBaseProcessRiderListPhoto = window.processRiderListPhoto;
   window.processRiderListPhoto = async function(input) {
     if (!window.isProUser() && window.getFreeAiScansUsed() >= 1) {
       input.value = '';
-      window.showProPaywallModal('Scansioni AI Vision Illimitate (hai già usato la tua 1ª prova gratuita)');
+      var lang = window.getProUiLang ? window.getProUiLang() : 'en';
+      var t = (window.PRO_UI_I18N && window.PRO_UI_I18N[lang]) || (window.PRO_UI_I18N && window.PRO_UI_I18N.en);
+      window.showProPaywallModal(t ? t.featAiLimit : 'Unlimited AI Vision Scans');
       return;
     }
     if (typeof _proBaseProcessRiderListPhoto === 'function') {
