@@ -458,9 +458,9 @@
       <div class="mode-choice-left">
         <span class="mode-choice-ico">⚔️</span>
         <div>
-          <div class="mode-choice-title" data-i18n="dkMode2TeamsTitle">Competizione a 2 Squadre (14 Batterie)</div>
-          <div class="mode-choice-sub" data-i18n="dkMode2TeamsSub">Regular Season • Casa (Rosso/Blu) vs Ospiti (Bianco/Giallo) • 5 Piloti per squadra (Cat. A-E) • Batterie 13-14 Nominate</div>
-        </div>
+          <div class="mode-choice-title" data-i18n="dkMode2TeamsTitle">Competizione a 2 Squadre (15 Batterie)</div>
+          <div class="mode-choice-sub" data-i18n="dkMode2TeamsSub">Regular Season 2027 • Casa (Rosso/Blu) vs Ospiti (Bianco/Giallo) • 6 Piloti per squadra • Batterie 14-15 Nominate</div>
+          </div>
       </div>
       <span>▶</span>
     </button>
@@ -11630,6 +11630,272 @@ async function acquistaAbbonamento() {
       isDetectingClub = false;
     }
   };
+})();
+/* =========================================================================
+   MODULO UFFICIALE SPEEDWAYLIGAEN 2027 (6 PILOTI PER SQUADRA • 15 BATTERIE)
+   Comunicato Ufficiale SpeedwayLigaen del 23 Ottobre 2026:
+   - 6 Piloti per squadra (#1-#4: 5 batterie programmate; #5-#6: 3 batterie programmate + fino a 4 riserve)
+   - 15 Batterie totali con griglia e corsie ufficiali precaricate (Batterie 1-13)
+   - Batteria 14 Nominata (scelti tra i 2°-4° migliori punteggi) & Batteria 15 Nominata (scelti tra i 1°-3° migliori punteggi)
+   ========================================================================= */
+(function initSpeedwayLigaen2027OfficialRules() {
+  var DK_2027_I18N = {
+    it: {
+      leagueDkSub: "2 Squadre (15 Batterie • 6 Piloti) oppure 4 Squadre Semifinale/Finale (22 Batterie)",
+      dkMode2TeamsTitle: "Competizione a 2 Squadre (15 Batterie • Regolamento 2027)",
+      dkMode2TeamsSub: "Nuovo Formato 2027 • Casa (Rosso/Blu) vs Ospiti (Bianco/Giallo) • 6 Piloti per squadra (#1–#4: 5 uscite, #5–#6: 3 uscite) • Batterie 14–15 Nominate",
+      dkNoticeTitle: "Regolamento Ufficiale SpeedwayLigaen 2027 (15 Batterie • 6 Piloti)",
+      dkNoticeBody: "Nuova tabella ufficiale 2027 a 15 batterie precaricata con corsie di partenza ufficiali (Batterie 1–13): i piloti #1–#4 hanno 5 batterie programmate, mentre i piloti #5–#6 hanno 3 batterie programmate e possono effettuare complessivamente fino a 4 uscite come riserve (anche senza essere sotto di 6 punti, max 7 batterie totali). Due piloti devono essere U21 (non bloccati sui numeri 5–6). Batteria 14 Nominata (2°–4° miglior punteggio) e Batteria 15 Nominata (1°–3° miglior punteggio).",
+      dkHeat2Info: "Batteria 2 (Piloti #5–#6): Batteria riservata ai numeri #5 e #6 delle due squadre. Ricorda che #5 e #6 possono fare fino a 4 uscite complessive come riserva anche senza 6 punti di svantaggio.",
+      dkHeat14Info: "Batteria 14 (1ª Nominata — Regolamento 2027): Ogni Team Manager schiera 2 piloti scelti tra il 2°, 3° e 4° miglior punteggio della propria squadra (dopo 13 batterie). Usa il tasto rapido o i menù a tendina.",
+      dkHeat15Info: "Batteria 15 (Finale Nominata — Regolamento 2027): Ogni Team Manager schiera 2 piloti scelti tra il 1°, 2° e 3° miglior punteggio della propria squadra. Usa il tasto rapido o i menù a tendina.",
+      roleDkMain: "Titolare (5B)",
+      roleDkRes: "Riserva / 3B"
+    },
+    en: {
+      leagueDkSub: "2 Teams (15 Heats • 6 Riders) or 4 Teams Semifinal/Final (22 Heats)",
+      dkMode2TeamsTitle: "2-Team Competition (15 Heats • 2027 Rules)",
+      dkMode2TeamsSub: "New 2027 Format • Home (Red/Blue) vs Away (White/Yellow) • 6 Riders per team (#1–#4: 5 rides, #5–#6: 3 rides) • Heats 14–15 Nominated",
+      dkNoticeTitle: "Official 2027 SpeedwayLigaen Rules (15 Heats • 6 Riders)",
+      dkNoticeBody: "Official 2027 15-heat schedule and starting gates pre-loaded (Heats 1–13): riders #1–#4 have 5 programmed heats, while riders #5–#6 have 3 programmed heats and can take up to 4 reserve rides combined without needing to be 6 points behind (max 7 heats). Two U21 riders required (not locked to #5–#6). Heat 14 Nominated (from 2nd–4th highest scorers) and Heat 15 Nominated (from 1st–3rd highest scorers).",
+      dkHeat2Info: "Heat 2 (Riders #5–#6): Dedicated heat for riders #5 and #6. Remember #5 and #6 can take up to 4 reserve rides combined without trailing by 6 points.",
+      dkHeat14Info: "Heat 14 (1st Nominated — 2027 Rules): Each Team Manager nominates 2 riders from their 2nd, 3rd and 4th highest scorers after 13 heats.",
+      dkHeat15Info: "Heat 15 (Final Nominated — 2027 Rules): Each Team Manager nominates 2 riders from their 1st, 2nd and 3rd highest scorers.",
+      roleDkMain: "Starter (5H)",
+      roleDkRes: "Reserve / 3H"
+    },
+    pl: {
+      leagueDkSub: "Mecz 2 Drużyn (15 Biegów • 6 Zawodników) lub 4 Drużyny Półfinał/Finał (22 Biegi)",
+      dkMode2TeamsTitle: "Mecz 2 Drużyn (15 Biegów • Regulamin 2027)",
+      dkMode2TeamsSub: "Nowy Format 2027 • Gospodarze (Czerw./Nieb.) vs Goście (Biały/Żółty) • 6 Zawodników (#1–#4: 5 startów, #5–#6: 3 starty) • Biegi 14–15 Nominowane",
+      dkNoticeTitle: "Oficjalny Regulamin SpeedwayLigaen 2027 (15 Biegów • 6 Zawodników)",
+      dkNoticeBody: "Nowa tabela 2027 (15 biegów) z oficjalnymi polami startowymi (Biegi 1–13): zawodnicy #1–#4 mają po 5 biegów programowych, a #5–#6 po 3 biegi programowe i mogą łącznie pojechać do 4 razy jako rezerwa zwykła (bez wymogu 6 pkt straty, max 7 biegów). Wymaganych dwóch zawodników U21 (nieprzypisanych na stałe do #5–#6). Bieg 14 Nominowany (z miejsc 2–4 wg pkt) oraz Bieg 15 Nominowany (z miejsc 1–3 wg pkt).",
+      dkHeat2Info: "Bieg 2 (Zawodnicy #5–#6): Bieg dla zawodników #5 i #6. Zawodnicy #5–#6 mogą łącznie wykonać do 4 zmian rezerwowych bez wymogu 6 pkt straty.",
+      dkHeat14Info: "Bieg 14 (1. Nominowany — Regulamin 2027): Menedżerowie wybierają po 2 zawodników spośród 2., 3. i 4. najlepiej punktującego zawodnika drużyny.",
+      dkHeat15Info: "Bieg 15 (Finałowy Nominowany — Regulamin 2027): Menedżerowie wybierają po 2 zawodników spośród 1., 2. i 3. najlepiej punktującego zawodnika drużyny.",
+      roleDkMain: "Podstawowy (5B)",
+      roleDkRes: "Rezerwa / 3B"
+    },
+    da: {
+      leagueDkSub: "2 Hold (15 Heats • 6 Kørere) eller 4 Hold Semifinale/Finale (22 Heats)",
+      dkMode2TeamsTitle: "2-Holdsmatch (15 Heats • 2027-Reglement)",
+      dkMode2TeamsSub: "Nyt 2027-format • Hjemme (Rød/Blå) vs Ude (Hvid/Gul) • 6 Kørere pr. hold (#1–#4: 5 heats, #5–#6: 3 heats) • Heat 14–15 Nominerede",
+      dkNoticeTitle: "Officielt SpeedwayLigaen 2027-Reglement (15 Heats • 6 Kørere)",
+      dkNoticeBody: "Nyt 2027-skema med 15 heats og officielle startbaner er forudindlæst (Heat 1–13): Kørere 1–4 har 5 programsatte heats, mens kørere 5–6 får 3 programsatte heats og sammenlagt kan køre 4 heats som reserver uden at være 6 point bagud (reserverne kan køre op til 7 heats). To U21-kørere kræves (ikke låst til plads 5–6). Heat 14 (2.–4. bedste) og Heat 15 (1.–3. bedste) er nominerede heats.",
+      dkHeat2Info: "Heat 2 (Kørere 5–6): Programsạt heat for kører 5 og 6. Kørere 5–6 kan sammenlagt køre 4 heats som reserver uden at være 6 point bagud.",
+      dkHeat14Info: "Heat 14 (1. Nomineret Heat — 2027-regler): Holdlederen vælger 2 kørere blandt holdets 2.–4. højest scorende kørere efter 13 heats.",
+      dkHeat15Info: "Heat 15 (Nomineret Finale — 2027-regler): Holdlederen vælger 2 kørere blandt holdets 1.–3. højest scorende kørere.",
+      roleDkMain: "5 progr. heats",
+      roleDkRes: "Reserve / 3 heats"
+    },
+    sv: {
+      leagueDkSub: "2 Lag (15 Heat • 6 Förare) eller 4 Lag Semifinal/Final (22 Heat)",
+      dkMode2TeamsTitle: "2-Lagsmatch (15 Heat • 2027 Regler)",
+      dkMode2TeamsSub: "Nytt 2027-format • Hemma (Röd/Blå) vs Borta (Vit/Gul) • 6 Förare per lag (#1–#4: 5 heat, #5–#6: 3 heat) • Heat 14–15 Nominerade",
+      dkNoticeTitle: "Officiella Regler SpeedwayLigaen 2027 (15 Heat • 6 Förare)",
+      dkNoticeBody: "Nytt officiellt 2027-körschema (15 heat) med startspår förladdat (Heat 1–13): förare 1–4 har 5 schemalagda heat, medan förare 5–6 har 3 schemalagda heat och tillsammans kan köra 4 heat som reserver utan att ligga under med 6 poäng (max 7 heat). Två U21-förare krävs (ej låsta till plats 5–6). Heat 14 (2:a–4:e bästa) och Heat 15 (1:a–3:e bästa) är nomineringsheat.",
+      dkHeat2Info: "Heat 2 (Förare 5–6): Förare 5–6 kan tillsammans köra 4 heat som reserver utan att ligga under med 6 poäng.",
+      dkHeat14Info: "Heat 14 (1:a Nomineringsheat — 2027): Lagledaren väljer 2 förare bland lagets 2:a–4:e poängbästa förare efter 13 heat.",
+      dkHeat15Info: "Heat 15 (Final Nomineringsheat — 2027): Lagledaren väljer 2 förare bland lagets 1:a–3:e poängbästa förare.",
+      roleDkMain: "Ordinarie (5H)",
+      roleDkRes: "Reserv / 3H"
+    },
+    cs: {
+      leagueDkSub: "2 týmy (15 jízd • 6 jezdců) nebo 4 týmy Semifinále/Finále (22 jízd)",
+      dkMode2TeamsTitle: "Závod 2 týmů (15 jízd • Pravidla 2027)",
+      dkMode2TeamsSub: "Nový formát 2027 • Domácí (Červená/Modrá) vs Hosté (Bílá/Žlutá) • 6 jezdců (#1–#4: 5 jízd, #5–#6: 3 jízdy) • Jízdy 14–15 nominované",
+      dkNoticeTitle: "Oficiální pravidla SpeedwayLigaen 2027 (15 jízd • 6 jezdců)",
+      dkNoticeBody: "Nový rozpis 2027 na 15 jízd s oficiálními drahami (Jízdy 1–13): jezdci 1–4 mají 5 programových jízd, jezdci 5–6 mají 3 programové jízdy a dohromady mohou jet až 4× jako rezerva bez nutnosti ztráty 6 bodů (max 7 jízd). Povinní 2 jezdci U21 (nejsou vázáni na č. 5–6). Jízda 14 (2.–4. bodující) a Jízda 15 (1.–3. bodující) jsou nominované.",
+      dkHeat2Info: "Jízda 2 (Jezdci #5–#6): Jezdci 5–6 mohou dohromady absolvovat až 4 rezervní jízdy i bez ztráty 6 bodů.",
+      dkHeat14Info: "Jízda 14 (1. nominovaná — 2027): Manažer nominuje 2 jezdce z 2.–4. nejlépe bodujícího jezdce týmu.",
+      dkHeat15Info: "Jízda 15 (Finálová nominovaná — 2027): Manažer nominuje 2 jezdce z 1.–3. nejlépe bodujícího jezdce týmu.",
+      roleDkMain: "Základní (5J)",
+      roleDkRes: "Rezerva / 3J"
+    }
+  };
+
+  Object.keys(DK_2027_I18N).forEach(function(l) {
+    if (I18N[l]) Object.assign(I18N[l], DK_2027_I18N[l]);
+  });
+
+  // 1. Griglia Ufficiale SpeedwayLigaen 2027 (15 Batterie: Casa 1..6, Ospiti 101..106)
+  // Ordine slot fissi dell'app: [Rosso (Casa), Blu (Casa), Bianco (Ospiti), Giallo (Ospiti)]
+  LEAGUE_CONFIGS.dk.ridersPerTeam = 6;
+  LEAGUE_CONFIGS.dk.totalHeats = 15;
+  LEAGUE_CONFIGS.dk.roles = {
+    1: "roleDkMain", 2: "roleDkMain", 3: "roleDkMain", 4: "roleDkMain",
+    5: "roleDkRes",  6: "roleDkRes"
+  };
+
+  LEAGUE_CONFIGS.dk.schedule = [
+    [1, 2, 102, 101], // H1:  R=#1, B=#2, W=#102, Y=#101
+    [5, 6, 105, 106], // H2:  R=#5, B=#6, W=#105, Y=#106
+    [3, 4, 103, 104], // H3:  R=#3, B=#4, W=#103, Y=#104
+    [5, 2, 105, 102], // H4:  R=#5, B=#2, W=#105, Y=#102
+    [3, 1, 101, 106], // H5:  R=#3, B=#1, W=#101, Y=#106
+    [6, 4, 103, 104], // H6:  R=#6, B=#4, W=#103, Y=#104
+    [1, 3, 102, 101], // H7:  R=#1, B=#3, W=#102, Y=#101
+    [2, 5, 106, 103], // H8:  R=#2, B=#5, W=#106, Y=#103
+    [4, 3, 104, 101], // H9:  R=#4, B=#3, W=#104, Y=#101
+    [2, 1, 103, 102], // H10: R=#2, B=#1, W=#103, Y=#102
+    [4, 6, 104, 105], // H11: R=#4, B=#6, W=#104, Y=#105
+    [3, 2, 101, 103], // H12: R=#3, B=#2, W=#101, Y=#103
+    [1, 4, 104, 102], // H13: R=#1, B=#4, W=#104, Y=#102
+    [null, null, null, null], // H14: Nominata (2°-4° migliori punteggi)
+    [null, null, null, null]  // H15: Nominata Finale (1°-3° migliori punteggi)
+  ];
+
+  // Corsie Ufficiali 2027 [Gate Rosso, Gate Blu, Gate Bianco, Gate Giallo] estratte dalla tabella DMU 23.10.2026
+  var DK_2027_OFFICIAL_GATES = [
+    [2, 4, 1, 3], // H1
+    [2, 4, 1, 3], // H2
+    [1, 3, 2, 4], // H3
+    [1, 3, 2, 4], // H4
+    [1, 3, 2, 4], // H5
+    [2, 4, 1, 3], // H6
+    [1, 3, 2, 4], // H7
+    [1, 3, 2, 4], // H8
+    [2, 4, 1, 3], // H9
+    [3, 4, 1, 2], // H10 (Incrocio speciale tabella DMU: R=3, B=4, W=1, Y=2)
+    [1, 3, 2, 4], // H11
+    [2, 4, 1, 3], // H12
+    [1, 3, 2, 4], // H13
+    [1, 3, 2, 4], // H14 (Nominata 2°-4°)
+    [2, 4, 1, 3]  // H15 (Nominata 1°-3°)
+  ];
+
+  // 2. Applica le corsie ufficiali 2027 quando si crea una nuova gara 'dk'
+  var _dk2027PrevCreateDefault = createDefaultState;
+  createDefaultState = function(modeKey) {
+    var st = _dk2027PrevCreateDefault(modeKey);
+    if (modeKey === 'dk') {
+      st.heats.forEach(function(h, idx) {
+        if (idx < 15 && DK_2027_OFFICIAL_GATES[idx]) {
+          h.slots.forEach(function(s, sIdx) {
+            s.gate = DK_2027_OFFICIAL_GATES[idx][sIdx];
+          });
+        }
+      });
+    }
+    return st;
+  };
+
+  // 3. Normalizzazione salvataggio per 6 piloti e 15 batterie
+  var _dk2027PrevNormalize = normalizeLoadedState;
+  normalizeLoadedState = function(saved) {
+    var merged = _dk2027PrevNormalize(saved);
+    if (merged && merged.mode === 'dk') {
+      var cleanRiders = {};
+      for (var i = 1; i <= 6; i++) {
+        cleanRiders[i] = (merged.riders && merged.riders[i]) ? merged.riders[i] : getDefaultRiderName(i, 'dk');
+        cleanRiders[100 + i] = (merged.riders && merged.riders[100 + i]) ? merged.riders[100 + i] : getDefaultRiderName(100 + i, 'dk');
+      }
+      merged.riders = cleanRiders;
+      var hasScores = merged.heats && merged.heats.some(function(h) {
+        return h.slots && h.slots.some(function(s) { return s.score !== null; });
+      });
+      if (!merged.heats || (merged.heats.length < 15 && !hasScores)) {
+        merged.heats = createDefaultState('dk').heats;
+      }
+    }
+    return merged;
+  };
+
+  // 4. Etichette Batterie per la nuova SpeedwayLigaen 2027 (H2 = #5-#6, H14 = Nominata 2°-4°, H15 = Nominata 1°-3°)
+  var _dk2027PrevGetHeatLabel = getHeatLabel;
+  getHeatLabel = function(idx, includeTime) {
+    var cfg = getModeConfig();
+    var h = state.heats[idx];
+    if (state.mode === 'dk' && (!h || !h.isTieBreak) && idx < cfg.totalHeats) {
+      var hNum = idx + 1;
+      var base = t('heatLbl') + " " + hNum;
+      if (hNum === 2) base += " (#5–#6)";
+      else if (hNum === 14) base += " (" + t('nominatedLbl') + " • 2°–4°)";
+      else if (hNum === 15) base += " (" + t('nominatedLbl') + " • 1°–3°)";
+      if (includeTime && h && h.time) base += " •⏱️ " + h.time + "s";
+      return base;
+    }
+    return _dk2027PrevGetHeatLabel(idx, includeTime);
+  };
+
+  // 5. Auto-Fill intelligente per le nuove Batterie Nominate 14 (2°-4°) e 15 (1°-3°)
+  var _dk2027PrevAutoFillDk = window.autoFillDkNominatedHeat;
+  window.autoFillDkNominatedHeat = function(heatIdx) {
+    if (state.mode === 'dk') {
+      var heat = state.heats[heatIdx];
+      if (!heat) return;
+      var allStats = computeStats();
+      var homeSorted = allStats.filter(function(s) { return s.team === 'A'; }).sort(function(a, b) { return b.total - a.total; });
+      var awaySorted = allStats.filter(function(s) { return s.team === 'B'; }).sort(function(a, b) { return b.total - a.total; });
+      if (heatIdx === 13) {
+        // Batteria 14 (scelta tra 2°, 3° e 4° miglior punteggio -> precarica 3° e 4° per lasciare 1° e 2° alla B15)
+        heat.slots[0].riderId = homeSorted[2] ? homeSorted[2].id : (homeSorted[1] ? homeSorted[1].id : null);
+        heat.slots[1].riderId = homeSorted[3] ? homeSorted[3].id : null;
+        heat.slots[2].riderId = awaySorted[2] ? awaySorted[2].id : (awaySorted[1] ? awaySorted[1].id : null);
+        heat.slots[3].riderId = awaySorted[3] ? awaySorted[3].id : null;
+      } else if (heatIdx === 14) {
+        // Batteria 15 (scelta tra 1°, 2° e 3° miglior punteggio -> precarica 1° e 2°)
+        heat.slots[0].riderId = homeSorted[0] ? homeSorted[0].id : null;
+        heat.slots[1].riderId = homeSorted[1] ? homeSorted[1].id : null;
+        heat.slots[2].riderId = awaySorted[0] ? awaySorted[0].id : null;
+        heat.slots[3].riderId = awaySorted[1] ? awaySorted[1].id : null;
+      }
+      saveState();
+      renderCurrentHeat();
+      return;
+    }
+    if (typeof _dk2027PrevAutoFillDk === 'function') _dk2027PrevAutoFillDk(heatIdx);
+  };
+
+  // 6. Guida Live in Batteria 2 (#5-#6), Batteria 14 (2°-4°) e Batteria 15 (1°-3°)
+  var _dk2027PrevRenderHeat = renderCurrentHeat;
+  renderCurrentHeat = function() {
+    _dk2027PrevRenderHeat();
+    if (state.mode !== 'dk') return;
+    var heat = state.heats[state.currentHeat];
+    if (!heat || heat.isTieBreak) return;
+    var autoBox = document.getElementById('auto-finals-box');
+    if (!autoBox) return;
+
+    // Rimuove il vecchio avviso che compariva sulla Batteria 7 e sulla Batteria 13 del formato 2026
+    if (state.currentHeat === 6 || state.currentHeat === 12) {
+      autoBox.innerHTML = '';
+      return;
+    }
+
+    if (state.currentHeat === 1) {
+      autoBox.innerHTML = '<div class="qual-info-card" style="border-color:var(--yellow);">' +
+        '<div class="qual-info-header"><span class="qual-info-title" style="color:var(--yellow);">🇩🇰 ' + getHeatLabel(1, false) + '</span>' +
+        '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button></div>' +
+        '<div class="qual-info-sub">' + t('dkHeat2Info') + '</div></div>';
+    } else if (state.currentHeat === 13 || state.currentHeat === 14) {
+      var isH15 = (state.currentHeat === 14);
+      var allTeamStats = computeStats();
+      var homeSorted = allTeamStats.filter(function(s) { return s.team === 'A'; }).sort(function(a, b) { return b.total - a.total; });
+      var awaySorted = allTeamStats.filter(function(s) { return s.team === 'B'; }).sort(function(a, b) { return b.total - a.total; });
+      // H14: mostra il 2°, 3° e 4° classificato (slice 1..4) | H15: mostra il 1°, 2° e 3° classificato (slice 0..3)
+      var hElig = isH15 ? homeSorted.slice(0, 3) : homeSorted.slice(1, 4);
+      var aElig = isH15 ? awaySorted.slice(0, 3) : awaySorted.slice(1, 4);
+      var hPills = hElig.map(function(x) { return '<div class="qual-pill"><span>🔴 #' + x.id + ':</span>' + x.name + ' (' + x.total + 'pt)</div>'; }).join('');
+      var aPills = aElig.map(function(x) { return '<div class="qual-pill"><span>🟡 #' + (x.id - 100) + ':</span>' + x.name + ' (' + x.total + 'pt)</div>'; }).join('');
+
+      autoBox.innerHTML = '<div class="qual-info-card" style="border-color:var(--yellow);">' +
+        '<div class="qual-info-header"><span class="qual-info-title" style="color:var(--yellow);">🇩🇰 ' + getHeatLabel(state.currentHeat, false) + '</span>' +
+        '<div style="display:flex;gap:5px;">' +
+          '<button type="button" class="btn-mini" style="border-color:var(--accent);color:var(--accent);" onclick="window.autoFillDkNominatedHeat(' + state.currentHeat + ')">' + t('btnAutoFillNom') + '</button>' +
+          '<button type="button" class="btn-mini" onclick="clearCurrentHeatGates()">' + t('clearGatesBtn') + '</button>' +
+        '</div></div>' +
+        '<div class="qual-info-sub">' + t(isH15 ? 'dkHeat15Info' : 'dkHeat14Info') + '</div>' +
+        '<div class="qual-badges-list">' + hPills + aPills + '</div></div>';
+    }
+  };
+
+  applyTranslations();
+  if (state && state.mode === 'dk') {
+    state = normalizeLoadedState(state);
+    renderRidersInputs();
+    renderCurrentHeat();
+  }
 })();
 </script>
 </body>
